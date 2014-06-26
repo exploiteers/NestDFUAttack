@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+<title>Argp Option Flags - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Option-Vectors.html#Argp-Option-Vectors" title="Argp Option Vectors">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Option-Flags"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">25.3.4.1 Flags for Argp Options</h5>
+
+<p>The following flags may be or'd together in the <code>flags</code> field of a
+<code>struct argp_option</code>.  These flags control various aspects of how
+that option is parsed or displayed in help messages:
+
+     <dl>
+<!-- argp.h -->
+<!-- GNU -->
+<dt><code>OPTION_ARG_OPTIONAL</code><a name="index-OPTION_005fARG_005fOPTIONAL-3042"></a><dd>The argument associated with this option is optional.
+
+     <!-- argp.h -->
+     <!-- GNU -->
+     <br><dt><code>OPTION_HIDDEN</code><a name="index-OPTION_005fHIDDEN-3043"></a><dd>This option isn't displayed in any help messages.
+
+     <!-- argp.h -->
+     <!-- GNU -->
+     <br><dt><code>OPTION_ALIAS</code><a name="index-OPTION_005fALIAS-3044"></a><dd>This option is an alias for the closest previous non-alias option.  This
+means that it will be displayed in the same help entry, and will inherit
+fields other than <code>name</code> and <code>key</code> from the option being
+aliased.
+
+     <!-- argp.h -->
+     <!-- GNU -->
+     <br><dt><code>OPTION_DOC</code><a name="index-OPTION_005fDOC-3045"></a><dd>This option isn't actually an option and should be ignored by the actual
+option parser.  It is an arbitrary section of documentation that should
+be displayed in much the same manner as the options.  This is known as a
+<dfn>documentation option</dfn>.
+
+     <p>If this flag is set, then the option <code>name</code> field is displayed
+unmodified (e.g., no &lsquo;<samp><span class="samp">--</span></samp>&rsquo; prefix is added) at the left-margin where
+a <em>short</em> option would normally be displayed, and this
+documentation string is left in it's usual place.  For purposes of
+sorting, any leading whitespace and punctuation is ignored, unless the
+first non-whitespace character is &lsquo;<samp><span class="samp">-</span></samp>&rsquo;.  This entry is displayed
+after all options, after <code>OPTION_DOC</code> entries with a leading
+&lsquo;<samp><span class="samp">-</span></samp>&rsquo;, in the same group.
+
+     <!-- argp.h -->
+     <!-- GNU -->
+     <br><dt><code>OPTION_NO_USAGE</code><a name="index-OPTION_005fNO_005fUSAGE-3046"></a><dd>This option shouldn't be included in `long' usage messages, but should
+still be included in other help messages.  This is intended for options
+that are completely documented in an argp's <code>args_doc</code>
+field.  See <a href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>.  Including this option in the generic usage
+list would be redundant, and should be avoided.
+
+     <p>For instance, if <code>args_doc</code> is <code>"FOO BAR\n-x BLAH"</code>, and the
+&lsquo;<samp><span class="samp">-x</span></samp>&rsquo; option's purpose is to distinguish these two cases, &lsquo;<samp><span class="samp">-x</span></samp>&rsquo;
+should probably be marked <code>OPTION_NO_USAGE</code>. 
+</dl>
+
+   </body></html>
+

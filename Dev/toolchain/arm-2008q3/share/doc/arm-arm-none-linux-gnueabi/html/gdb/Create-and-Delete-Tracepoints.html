@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Create and Delete Tracepoints - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Set-Tracepoints.html#Set-Tracepoints" title="Set Tracepoints">
+<link rel="next" href="Enable-and-Disable-Tracepoints.html#Enable-and-Disable-Tracepoints" title="Enable and Disable Tracepoints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Create-and-Delete-Tracepoints"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Enable-and-Disable-Tracepoints.html#Enable-and-Disable-Tracepoints">Enable and Disable Tracepoints</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Set-Tracepoints.html#Set-Tracepoints">Set Tracepoints</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.1.1 Create and Delete Tracepoints</h4>
+
+     
+<a name="index-set-tracepoint-600"></a>
+<a name="index-trace-601"></a>
+<dl><dt><code>trace</code><dd>The <code>trace</code> command is very similar to the <code>break</code> command. 
+Its argument can be a source line, a function name, or an address in
+the target program.  See <a href="Set-Breaks.html#Set-Breaks">Set Breaks</a>.  The <code>trace</code> command
+defines a tracepoint, which is a point in the target program where the
+debugger will briefly stop, collect some data, and then allow the
+program to continue.  Setting a tracepoint or changing its commands
+doesn't take effect until the next <code>tstart</code> command; thus, you
+cannot change the tracepoint attributes once a trace experiment is
+running.
+
+     <p>Here are some examples of using the <code>trace</code> command:
+
+     <pre class="smallexample">          (gdb) <b>trace foo.c:121</b>    // a source file and line number
+          
+          (gdb) <b>trace +2</b>           // 2 lines forward
+          
+          (gdb) <b>trace my_function</b>  // first source line of function
+          
+          (gdb) <b>trace *my_function</b> // EXACT start address of function
+          
+          (gdb) <b>trace *0x2117c4</b>    // an address
+</pre>
+     <p class="noindent">You can abbreviate <code>trace</code> as <code>tr</code>.
+
+     <p><a name="index-g_t_0024tpnum-602"></a><a name="index-last-tracepoint-number-603"></a><a name="index-recent-tracepoint-number-604"></a><a name="index-tracepoint-number-605"></a>The convenience variable <code>$tpnum</code> records the tracepoint number
+of the most recently set tracepoint.
+
+     <p><a name="index-delete-tracepoint-606"></a><a name="index-tracepoint-deletion-607"></a><br><dt><code>delete tracepoint </code><span class="roman">[</span><var>num</var><span class="roman">]</span><dd>Permanently delete one or more tracepoints.  With no argument, the
+default is to delete all tracepoints.
+
+     <p>Examples:
+
+     <pre class="smallexample">          (gdb) <b>delete trace 1 2 3</b> // remove three tracepoints
+          
+          (gdb) <b>delete trace</b>       // remove all tracepoints
+</pre>
+     <p class="noindent">You can abbreviate this command as <code>del tr</code>. 
+</dl>
+
+   </body></html>
+

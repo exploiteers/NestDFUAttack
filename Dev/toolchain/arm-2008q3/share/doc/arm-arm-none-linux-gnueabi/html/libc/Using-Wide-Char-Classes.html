@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+<title>Using Wide Char Classes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Character-Handling.html#Character-Handling" title="Character Handling">
+<link rel="prev" href="Classification-of-Wide-Characters.html#Classification-of-Wide-Characters" title="Classification of Wide Characters">
+<link rel="next" href="Wide-Character-Case-Conversion.html#Wide-Character-Case-Conversion" title="Wide Character Case Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Using-Wide-Char-Classes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Wide-Character-Case-Conversion.html#Wide-Character-Case-Conversion">Wide Character Case Conversion</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Classification-of-Wide-Characters.html#Classification-of-Wide-Characters">Classification of Wide Characters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Character-Handling.html#Character-Handling">Character Handling</a>
+<hr>
+</div>
+
+<h3 class="section">4.4 Notes on using the wide character classes</h3>
+
+<p>The first note is probably not astonishing but still occasionally a
+cause of problems.  The <code>isw</code><var>XXX</var> functions can be implemented
+using macros and in fact, the GNU C library does this.  They are still
+available as real functions but when the <samp><span class="file">wctype.h</span></samp> header is
+included the macros will be used.  This is the same as the
+<code>char</code> type versions of these functions.
+
+   <p>The second note covers something new.  It can be best illustrated by a
+(real-world) example.  The first piece of code is an excerpt from the
+original code.  It is truncated a bit but the intention should be clear.
+
+<pre class="smallexample">     int
+     is_in_class (int c, const char *class)
+     {
+       if (strcmp (class, "alnum") == 0)
+         return isalnum (c);
+       if (strcmp (class, "alpha") == 0)
+         return isalpha (c);
+       if (strcmp (class, "cntrl") == 0)
+         return iscntrl (c);
+       ...
+       return 0;
+     }
+</pre>
+   <p>Now, with the <code>wctype</code> and <code>iswctype</code> you can avoid the
+<code>if</code> cascades, but rewriting the code as follows is wrong:
+
+<pre class="smallexample">     int
+     is_in_class (int c, const char *class)
+     {
+       wctype_t desc = wctype (class);
+       return desc ? iswctype ((wint_t) c, desc) : 0;
+     }
+</pre>
+   <p>The problem is that it is not guaranteed that the wide character
+representation of a single-byte character can be found using casting. 
+In fact, usually this fails miserably.  The correct solution to this
+problem is to write the code as follows:
+
+<pre class="smallexample">     int
+     is_in_class (int c, const char *class)
+     {
+       wctype_t desc = wctype (class);
+       return desc ? iswctype (btowc (c), desc) : 0;
+     }
+</pre>
+   <p>See <a href="Converting-a-Character.html#Converting-a-Character">Converting a Character</a>, for more information on <code>btowc</code>. 
+Note that this change probably does not improve the performance
+of the program a lot since the <code>wctype</code> function still has to make
+the string comparisons.  It gets really interesting if the
+<code>is_in_class</code> function is called more than once for the
+same class name.  In this case the variable <var>desc</var> could be computed
+once and reused for all the calls.  Therefore the above form of the
+function is probably not the final one.
+
+   </body></html>
+

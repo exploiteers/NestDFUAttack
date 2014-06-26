@@ -1,0 +1,198 @@
+<html lang="en">
+<head>
+<title>Locating gettext catalog - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link rel="prev" href="Translation-with-gettext.html#Translation-with-gettext" title="Translation with gettext">
+<link rel="next" href="Advanced-gettext-functions.html#Advanced-gettext-functions" title="Advanced gettext functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Locating-gettext-catalog"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Advanced-gettext-functions.html#Advanced-gettext-functions">Advanced gettext functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Translation-with-gettext.html#Translation-with-gettext">Translation with gettext</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">8.2.1.2 How to determine which catalog to be used</h5>
+
+<p>The functions to retrieve the translations for a given message have a
+remarkable simple interface.  But to provide the user of the program
+still the opportunity to select exactly the translation s/he wants and
+also to provide the programmer the possibility to influence the way to
+locate the search for catalogs files there is a quite complicated
+underlying mechanism which controls all this.  The code is complicated
+the use is easy.
+
+   <p>Basically we have two different tasks to perform which can also be
+performed by the <code>catgets</code> functions:
+
+     <ol type=1 start=1>
+<li>Locate the set of message catalogs.  There are a number of files for
+different languages and which all belong to the package.  Usually they
+are all stored in the filesystem below a certain directory.
+
+     <p>There can be arbitrary many packages installed and they can follow
+different guidelines for the placement of their files.
+
+     <li>Relative to the location specified by the package the actual translation
+files must be searched, based on the wishes of the user.  I.e., for each
+language the user selects the program should be able to locate the
+appropriate file.
+        </ol>
+
+   <p>This is the functionality required by the specifications for
+<code>gettext</code> and this is also what the <code>catgets</code> functions are
+able to do.  But there are some problems unresolved:
+
+     <ul>
+<li>The language to be used can be specified in several different ways. 
+There is no generally accepted standard for this and the user always
+expects the program understand what s/he means.  E.g., to select the
+German translation one could write <code>de</code>, <code>german</code>, or
+<code>deutsch</code> and the program should always react the same.
+
+     <li>Sometimes the specification of the user is too detailed.  If s/he, e.g.,
+specifies <code>de_DE.ISO-8859-1</code> which means German, spoken in Germany,
+coded using the ISO&nbsp;8859-1<!-- /@w --> character set there is the possibility
+that a message catalog matching this exactly is not available.  But
+there could be a catalog matching <code>de</code> and if the character set
+used on the machine is always ISO&nbsp;8859-1<!-- /@w --> there is no reason why this
+later message catalog should not be used.  (We call this <dfn>message
+inheritance</dfn>.)
+
+     <li>If a catalog for a wanted language is not available it is not always the
+second best choice to fall back on the language of the developer and
+simply not translate any message.  Instead a user might be better able
+to read the messages in another language and so the user of the program
+should be able to define an precedence order of languages. 
+</ul>
+
+   <p>We can divide the configuration actions in two parts: the one is
+performed by the programmer, the other by the user.  We will start with
+the functions the programmer can use since the user configuration will
+be based on this.
+
+   <p>As the functions described in the last sections already mention separate
+sets of messages can be selected by a <dfn>domain name</dfn>.  This is a
+simple string which should be unique for each program part with uses a
+separate domain.  It is possible to use in one program arbitrary many
+domains at the same time.  E.g., the GNU C Library itself uses a domain
+named <code>libc</code> while the program using the C Library could use a
+domain named <code>foo</code>.  The important point is that at any time
+exactly one domain is active.  This is controlled with the following
+function.
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>textdomain</b> (<var>const char *domainname</var>)<var><a name="index-textdomain-810"></a></var><br>
+<blockquote><p>The <code>textdomain</code> function sets the default domain, which is used in
+all future <code>gettext</code> calls, to <var>domainname</var>.  Please note that
+<code>dgettext</code> and <code>dcgettext</code> calls are not influenced if the
+<var>domainname</var> parameter of these functions is not the null pointer.
+
+        <p>Before the first call to <code>textdomain</code> the default domain is
+<code>messages</code>.  This is the name specified in the specification of
+the <code>gettext</code> API.  This name is as good as any other name.  No
+program should ever really use a domain with this name since this can
+only lead to problems.
+
+        <p>The function returns the value which is from now on taken as the default
+domain.  If the system went out of memory the returned value is
+<code>NULL</code> and the global variable <var>errno</var> is set to <code>ENOMEM</code>. 
+Despite the return value type being <code>char *</code> the return string must
+not be changed.  It is allocated internally by the <code>textdomain</code>
+function.
+
+        <p>If the <var>domainname</var> parameter is the null pointer no new default
+domain is set.  Instead the currently selected default domain is
+returned.
+
+        <p>If the <var>domainname</var> parameter is the empty string the default domain
+is reset to its initial value, the domain with the name <code>messages</code>. 
+This possibility is questionable to use since the domain <code>messages</code>
+really never should be used. 
+</p></blockquote></div>
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>bindtextdomain</b> (<var>const char *domainname, const char *dirname</var>)<var><a name="index-bindtextdomain-811"></a></var><br>
+<blockquote><p>The <code>bindtextdomain</code> function can be used to specify the directory
+which contains the message catalogs for domain <var>domainname</var> for the
+different languages.  To be correct, this is the directory where the
+hierarchy of directories is expected.  Details are explained below.
+
+        <p>For the programmer it is important to note that the translations which
+come with the program have be placed in a directory hierarchy starting
+at, say, <samp><span class="file">/foo/bar</span></samp>.  Then the program should make a
+<code>bindtextdomain</code> call to bind the domain for the current program to
+this directory.  So it is made sure the catalogs are found.  A correctly
+running program does not depend on the user setting an environment
+variable.
+
+        <p>The <code>bindtextdomain</code> function can be used several times and if the
+<var>domainname</var> argument is different the previously bound domains
+will not be overwritten.
+
+        <p>If the program which wish to use <code>bindtextdomain</code> at some point of
+time use the <code>chdir</code> function to change the current working
+directory it is important that the <var>dirname</var> strings ought to be an
+absolute pathname.  Otherwise the addressed directory might vary with
+the time.
+
+        <p>If the <var>dirname</var> parameter is the null pointer <code>bindtextdomain</code>
+returns the currently selected directory for the domain with the name
+<var>domainname</var>.
+
+        <p>The <code>bindtextdomain</code> function returns a pointer to a string
+containing the name of the selected directory name.  The string is
+allocated internally in the function and must not be changed by the
+user.  If the system went out of core during the execution of
+<code>bindtextdomain</code> the return value is <code>NULL</code> and the global
+variable <var>errno</var> is set accordingly. 
+</p></blockquote></div>
+
+   </body></html>
+

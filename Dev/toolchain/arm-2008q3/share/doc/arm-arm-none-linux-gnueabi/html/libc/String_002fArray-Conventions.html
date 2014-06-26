@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>String/Array Conventions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Representation-of-Strings.html#Representation-of-Strings" title="Representation of Strings">
+<link rel="next" href="String-Length.html#String-Length" title="String Length">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String%2fArray-Conventions"></a>
+<a name="String_002fArray-Conventions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="String-Length.html#String-Length">String Length</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Representation-of-Strings.html#Representation-of-Strings">Representation of Strings</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.2 String and Array Conventions</h3>
+
+<p>This chapter describes both functions that work on arbitrary arrays or
+blocks of memory, and functions that are specific to null-terminated
+arrays of characters and wide characters.
+
+   <p>Functions that operate on arbitrary blocks of memory have names
+beginning with &lsquo;<samp><span class="samp">mem</span></samp>&rsquo; and &lsquo;<samp><span class="samp">wmem</span></samp>&rsquo; (such as <code>memcpy</code> and
+<code>wmemcpy</code>) and invariably take an argument which specifies the size
+(in bytes and wide characters respectively) of the block of memory to
+operate on.  The array arguments and return values for these functions
+have type <code>void *</code> or <code>wchar_t</code>.  As a matter of style, the
+elements of the arrays used with the &lsquo;<samp><span class="samp">mem</span></samp>&rsquo; functions are referred
+to as &ldquo;bytes&rdquo;.  You can pass any kind of pointer to these functions,
+and the <code>sizeof</code> operator is useful in computing the value for the
+size argument.  Parameters to the &lsquo;<samp><span class="samp">wmem</span></samp>&rsquo; functions must be of type
+<code>wchar_t *</code>.  These functions are not really usable with anything
+but arrays of this type.
+
+   <p>In contrast, functions that operate specifically on strings and wide
+character strings have names beginning with &lsquo;<samp><span class="samp">str</span></samp>&rsquo; and &lsquo;<samp><span class="samp">wcs</span></samp>&rsquo;
+respectively (such as <code>strcpy</code> and <code>wcscpy</code>) and look for a
+null character to terminate the string instead of requiring an explicit
+size argument to be passed.  (Some of these functions accept a specified
+maximum length, but they also check for premature termination with a
+null character.)  The array arguments and return values for these
+functions have type <code>char *</code> and <code>wchar_t *</code> respectively, and
+the array elements are referred to as &ldquo;characters&rdquo; and &ldquo;wide
+characters&rdquo;.
+
+   <p>In many cases, there are both &lsquo;<samp><span class="samp">mem</span></samp>&rsquo; and &lsquo;<samp><span class="samp">str</span></samp>&rsquo;/&lsquo;<samp><span class="samp">wcs</span></samp>&rsquo;
+versions of a function.  The one that is more appropriate to use depends
+on the exact situation.  When your program is manipulating arbitrary
+arrays or blocks of storage, then you should always use the &lsquo;<samp><span class="samp">mem</span></samp>&rsquo;
+functions.  On the other hand, when you are manipulating null-terminated
+strings it is usually more convenient to use the &lsquo;<samp><span class="samp">str</span></samp>&rsquo;/&lsquo;<samp><span class="samp">wcs</span></samp>&rsquo;
+functions, unless you already know the length of the string in advance. 
+The &lsquo;<samp><span class="samp">wmem</span></samp>&rsquo; functions should be used for wide character arrays with
+known size.
+
+   <p><a name="index-wint_005ft-470"></a><a name="index-parameter-promotion-471"></a>Some of the memory and string functions take single characters as
+arguments.  Since a value of type <code>char</code> is automatically promoted
+into an value of type <code>int</code> when used as a parameter, the functions
+are declared with <code>int</code> as the type of the parameter in question. 
+In case of the wide character function the situation is similarly: the
+parameter type for a single wide character is <code>wint_t</code> and not
+<code>wchar_t</code>.  This would for many implementations not be necessary
+since the <code>wchar_t</code> is large enough to not be automatically
+promoted, but since the ISO&nbsp;C<!-- /@w --> standard does not require such a
+choice of types the <code>wint_t</code> type is used.
+
+   </body></html>
+

@@ -1,0 +1,257 @@
+<html lang="en">
+<head>
+<title>File Positioning - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Binary-Streams.html#Binary-Streams" title="Binary Streams">
+<link rel="next" href="Portable-Positioning.html#Portable-Positioning" title="Portable Positioning">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Positioning"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Portable-Positioning.html#Portable-Positioning">Portable Positioning</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Binary-Streams.html#Binary-Streams">Binary Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.18 File Positioning</h3>
+
+<p><a name="index-file-positioning-on-a-stream-1106"></a><a name="index-positioning-a-stream-1107"></a><a name="index-seeking-on-a-stream-1108"></a>
+The <dfn>file position</dfn> of a stream describes where in the file the
+stream is currently reading or writing.  I/O on the stream advances the
+file position through the file.  In the GNU system, the file position is
+represented as an integer, which counts the number of bytes from the
+beginning of the file.  See <a href="File-Position.html#File-Position">File Position</a>.
+
+   <p>During I/O to an ordinary disk file, you can change the file position
+whenever you wish, so as to read or write any portion of the file.  Some
+other kinds of files may also permit this.  Files which support changing
+the file position are sometimes referred to as <dfn>random-access</dfn>
+files.
+
+   <p>You can use the functions in this section to examine or modify the file
+position indicator associated with a stream.  The symbols listed below
+are declared in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1109"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: long int <b>ftell</b> (<var>FILE *stream</var>)<var><a name="index-ftell-1110"></a></var><br>
+<blockquote><p>This function returns the current file position of the stream
+<var>stream</var>.
+
+        <p>This function can fail if the stream doesn't support file positioning,
+or if the file position can't be represented in a <code>long int</code>, and
+possibly for other reasons as well.  If a failure occurs, a value of
+<code>-1</code> is returned. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: off_t <b>ftello</b> (<var>FILE *stream</var>)<var><a name="index-ftello-1111"></a></var><br>
+<blockquote><p>The <code>ftello</code> function is similar to <code>ftell</code>, except that it
+returns a value of type <code>off_t</code>.  Systems which support this type
+use it to describe all file positions, unlike the POSIX specification
+which uses a long int.  The two are not necessarily the same size. 
+Therefore, using ftell can lead to problems if the implementation is
+written on top of a POSIX compliant low-level I/O implementation, and using
+<code>ftello</code> is preferable whenever it is available.
+
+        <p>If this function fails it returns <code>(off_t) -1</code>.  This can happen due
+to missing support for file positioning or internal errors.  Otherwise
+the return value is the current file position.
+
+        <p>The function is an extension defined in the Unix Single Specification
+version 2.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit system this function is in fact <code>ftello64</code>.  I.e., the
+LFS interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: off64_t <b>ftello64</b> (<var>FILE *stream</var>)<var><a name="index-ftello64-1112"></a></var><br>
+<blockquote><p>This function is similar to <code>ftello</code> with the only difference that
+the return value is of type <code>off64_t</code>.  This also requires that the
+stream <var>stream</var> was opened using either <code>fopen64</code>,
+<code>freopen64</code>, or <code>tmpfile64</code> since otherwise the underlying
+file operations to position the file pointer beyond the 2^31
+bytes limit might fail.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a 32
+bits machine this function is available under the name <code>ftello</code>
+and so transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fseek</b> (<var>FILE *stream, long int offset, int whence</var>)<var><a name="index-fseek-1113"></a></var><br>
+<blockquote><p>The <code>fseek</code> function is used to change the file position of the
+stream <var>stream</var>.  The value of <var>whence</var> must be one of the
+constants <code>SEEK_SET</code>, <code>SEEK_CUR</code>, or <code>SEEK_END</code>, to
+indicate whether the <var>offset</var> is relative to the beginning of the
+file, the current file position, or the end of the file, respectively.
+
+        <p>This function returns a value of zero if the operation was successful,
+and a nonzero value to indicate failure.  A successful call also clears
+the end-of-file indicator of <var>stream</var> and discards any characters
+that were &ldquo;pushed back&rdquo; by the use of <code>ungetc</code>.
+
+        <p><code>fseek</code> either flushes any buffered output before setting the file
+position or else remembers it so it will be written later in its proper
+place in the file. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>fseeko</b> (<var>FILE *stream, off_t offset, int whence</var>)<var><a name="index-fseeko-1114"></a></var><br>
+<blockquote><p>This function is similar to <code>fseek</code> but it corrects a problem with
+<code>fseek</code> in a system with POSIX types.  Using a value of type
+<code>long int</code> for the offset is not compatible with POSIX. 
+<code>fseeko</code> uses the correct type <code>off_t</code> for the <var>offset</var>
+parameter.
+
+        <p>For this reason it is a good idea to prefer <code>ftello</code> whenever it is
+available since its functionality is (if different at all) closer the
+underlying definition.
+
+        <p>The functionality and return value is the same as for <code>fseek</code>.
+
+        <p>The function is an extension defined in the Unix Single Specification
+version 2.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit system this function is in fact <code>fseeko64</code>.  I.e., the
+LFS interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>fseeko64</b> (<var>FILE *stream, off64_t offset, int whence</var>)<var><a name="index-fseeko64-1115"></a></var><br>
+<blockquote><p>This function is similar to <code>fseeko</code> with the only difference that
+the <var>offset</var> parameter is of type <code>off64_t</code>.  This also
+requires that the stream <var>stream</var> was opened using either
+<code>fopen64</code>, <code>freopen64</code>, or <code>tmpfile64</code> since otherwise
+the underlying file operations to position the file pointer beyond the
+2^31 bytes limit might fail.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a 32
+bits machine this function is available under the name <code>fseeko</code>
+and so transparently replaces the old interface. 
+</p></blockquote></div>
+
+   <p><strong>Portability Note:</strong> In non-POSIX systems, <code>ftell</code>,
+<code>ftello</code>, <code>fseek</code> and <code>fseeko</code> might work reliably only
+on binary streams.  See <a href="Binary-Streams.html#Binary-Streams">Binary Streams</a>.
+
+   <p>The following symbolic constants are defined for use as the <var>whence</var>
+argument to <code>fseek</code>.  They are also used with the <code>lseek</code>
+function (see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>) and to specify offsets for file locks
+(see <a href="Control-Operations.html#Control-Operations">Control Operations</a>).
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>SEEK_SET</b><var><a name="index-SEEK_005fSET-1116"></a></var><br>
+<blockquote><p>This is an integer constant which, when used as the <var>whence</var>
+argument to the <code>fseek</code> or <code>fseeko</code> function, specifies that
+the offset provided is relative to the beginning of the file. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>SEEK_CUR</b><var><a name="index-SEEK_005fCUR-1117"></a></var><br>
+<blockquote><p>This is an integer constant which, when used as the <var>whence</var>
+argument to the <code>fseek</code> or <code>fseeko</code> function, specifies that
+the offset provided is relative to the current file position. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>SEEK_END</b><var><a name="index-SEEK_005fEND-1118"></a></var><br>
+<blockquote><p>This is an integer constant which, when used as the <var>whence</var>
+argument to the <code>fseek</code> or <code>fseeko</code> function, specifies that
+the offset provided is relative to the end of the file. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: void <b>rewind</b> (<var>FILE *stream</var>)<var><a name="index-rewind-1119"></a></var><br>
+<blockquote><p>The <code>rewind</code> function positions the stream <var>stream</var> at the
+beginning of the file.  It is equivalent to calling <code>fseek</code> or
+<code>fseeko</code> on the <var>stream</var> with an <var>offset</var> argument of
+<code>0L</code> and a <var>whence</var> argument of <code>SEEK_SET</code>, except that
+the return value is discarded and the error indicator for the stream is
+reset. 
+</p></blockquote></div>
+
+   <p>These three aliases for the &lsquo;<samp><span class="samp">SEEK_...</span></samp>&rsquo; constants exist for the
+sake of compatibility with older BSD systems.  They are defined in two
+different header files: <samp><span class="file">fcntl.h</span></samp> and <samp><span class="file">sys/file.h</span></samp>.
+
+     <dl>
+<!-- sys/file.h -->
+<!-- BSD -->
+<dt><code>L_SET</code><dd><a name="index-L_005fSET-1120"></a>An alias for <code>SEEK_SET</code>.
+
+     <!-- sys/file.h -->
+     <!-- BSD -->
+     <br><dt><code>L_INCR</code><dd><a name="index-L_005fINCR-1121"></a>An alias for <code>SEEK_CUR</code>.
+
+     <!-- sys/file.h -->
+     <!-- BSD -->
+     <br><dt><code>L_XTND</code><dd><a name="index-L_005fXTND-1122"></a>An alias for <code>SEEK_END</code>. 
+</dl>
+
+   </body></html>
+

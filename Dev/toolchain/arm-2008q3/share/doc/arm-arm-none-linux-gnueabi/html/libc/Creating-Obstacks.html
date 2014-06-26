@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Creating Obstacks - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="next" href="Preparing-for-Obstacks.html#Preparing-for-Obstacks" title="Preparing for Obstacks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Creating-Obstacks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Preparing-for-Obstacks.html#Preparing-for-Obstacks">Preparing for Obstacks</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.1 Creating Obstacks</h5>
+
+<p>The utilities for manipulating obstacks are declared in the header
+file <samp><span class="file">obstack.h</span></samp>. 
+<a name="index-obstack_002eh-300"></a>
+<!-- obstack.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct obstack</b><var><a name="index-struct-obstack-301"></a></var><br>
+<blockquote><p>An obstack is represented by a data structure of type <code>struct
+obstack</code>.  This structure has a small fixed size; it records the status
+of the obstack and how to find the space in which objects are allocated. 
+It does not contain any of the objects themselves.  You should not try
+to access the contents of the structure directly; use only the functions
+described in this chapter. 
+</p></blockquote></div>
+
+   <p>You can declare variables of type <code>struct obstack</code> and use them as
+obstacks, or you can allocate obstacks dynamically like any other kind
+of object.  Dynamic allocation of obstacks allows your program to have a
+variable number of different stacks.  (You can even allocate an
+obstack structure in another obstack, but this is rarely useful.)
+
+   <p>All the functions that work with obstacks require you to specify which
+obstack to use.  You do this with a pointer of type <code>struct obstack
+*</code>.  In the following, we often say &ldquo;an obstack&rdquo; when strictly
+speaking the object at hand is such a pointer.
+
+   <p>The objects in the obstack are packed into large blocks called
+<dfn>chunks</dfn>.  The <code>struct obstack</code> structure points to a chain of
+the chunks currently in use.
+
+   <p>The obstack library obtains a new chunk whenever you allocate an object
+that won't fit in the previous chunk.  Since the obstack library manages
+chunks automatically, you don't need to pay much attention to them, but
+you do need to supply a function which the obstack library should use to
+get a chunk.  Usually you supply a function which uses <code>malloc</code>
+directly or indirectly.  You must also supply a function to free a chunk. 
+These matters are described in the following section.
+
+   </body></html>
+

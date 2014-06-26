@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>Argp Help Filtering - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Parsers.html#Argp-Parsers" title="Argp Parsers">
+<link rel="prev" href="Argp-Children.html#Argp-Children" title="Argp Children">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Help-Filtering"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Children.html#Argp-Children">Argp Children</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.8 Customizing Argp Help Output</h4>
+
+<p>The <code>help_filter</code> field in a <code>struct argp</code> is a pointer to a
+function that filters the text of help messages before displaying
+them.  They have a function signature like:
+
+<pre class="smallexample">     char *<var>help-filter</var> (int <var>key</var>, const char *<var>text</var>, void *<var>input</var>)
+</pre>
+   <p class="noindent">Where <var>key</var> is either a key from an option, in which case <var>text</var>
+is that option's help text.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.  Alternately, one
+of the special keys with names beginning with &lsquo;<samp><span class="samp">ARGP_KEY_HELP_</span></samp>&rsquo;
+might be used, describing which other help text <var>text</var> will contain. 
+See <a href="Argp-Help-Filter-Keys.html#Argp-Help-Filter-Keys">Argp Help Filter Keys</a>.
+
+   <p>The function should return either <var>text</var> if it remains as-is, or a
+replacement string allocated using <code>malloc</code>.  This will be either be
+freed by argp or zero, which prints nothing.  The value of <var>text</var> is
+supplied <em>after</em> any translation has been done, so if any of the
+replacement text needs translation, it will be done by the filter
+function.  <var>input</var> is either the input supplied to <code>argp_parse</code>
+or it is zero, if <code>argp_help</code> was called directly by the user.
+
+<ul class="menu">
+<li><a accesskey="1" href="Argp-Help-Filter-Keys.html#Argp-Help-Filter-Keys">Keys</a>:   Special <var>key</var> values for help filter functions. 
+</ul>
+
+   </body></html>
+

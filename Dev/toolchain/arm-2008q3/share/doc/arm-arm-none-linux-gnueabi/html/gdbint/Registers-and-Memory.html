@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+<title>Registers and Memory - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Initialize-New-Architecture.html#Initialize-New-Architecture" title="Initialize New Architecture">
+<link rel="next" href="Pointers-and-Addresses.html#Pointers-and-Addresses" title="Pointers and Addresses">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Registers-and-Memory"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pointers-and-Addresses.html#Pointers-and-Addresses">Pointers and Addresses</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Initialize-New-Architecture.html#Initialize-New-Architecture">Initialize New Architecture</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.3 Registers and Memory</h3>
+
+<p><span class="sc">gdb</span>'s model of the target machine is rather simple. 
+<span class="sc">gdb</span> assumes the machine includes a bank of registers and a
+block of memory.  Each register may have a different size.
+
+   <p><span class="sc">gdb</span> does not have a magical way to match up with the
+compiler's idea of which registers are which; however, it is critical
+that they do match up accurately.  The only way to make this work is
+to get accurate information about the order that the compiler uses,
+and to reflect that in the <code>gdbarch_register_name</code> and related functions.
+
+   <p><span class="sc">gdb</span> can handle big-endian, little-endian, and bi-endian architectures.
+
+   </body></html>
+

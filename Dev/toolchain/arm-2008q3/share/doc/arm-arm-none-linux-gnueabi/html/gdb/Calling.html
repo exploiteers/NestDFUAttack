@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>Calling - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Altering.html#Altering" title="Altering">
+<link rel="prev" href="Returning.html#Returning" title="Returning">
+<link rel="next" href="Patching.html#Patching" title="Patching">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Calling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Patching.html#Patching">Patching</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Returning.html#Returning">Returning</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Altering.html#Altering">Altering</a>
+<hr>
+</div>
+
+<h3 class="section">15.5 Calling Program Functions</h3>
+
+     
+<a name="index-calling-functions-804"></a>
+<a name="index-inferior-functions_002c-calling-805"></a>
+<dl><dt><code>print </code><var>expr</var><dd>Evaluate the expression <var>expr</var> and display the resulting value. 
+<var>expr</var> may include calls to functions in the program being
+debugged.
+
+     <p><a name="index-call-806"></a><br><dt><code>call </code><var>expr</var><dd>Evaluate the expression <var>expr</var> without displaying <code>void</code>
+returned values.
+
+     <p>You can use this variant of the <code>print</code> command if you want to
+execute a function from your program that does not return anything
+(a.k.a. <dfn>a void function</dfn>), but without cluttering the output
+with <code>void</code> returned values that <span class="sc">gdb</span> will otherwise
+print.  If the result is not void, it is printed and saved in the
+value history. 
+</dl>
+
+   <p>It is possible for the function you call via the <code>print</code> or
+<code>call</code> command to generate a signal (e.g., if there's a bug in
+the function, or if you passed it incorrect arguments).  What happens
+in that case is controlled by the <code>set unwindonsignal</code> command.
+
+     <dl>
+<dt><code>set unwindonsignal</code><dd><a name="index-set-unwindonsignal-807"></a><a name="index-unwind-stack-in-called-functions-808"></a><a name="index-call-dummy-stack-unwinding-809"></a>Set unwinding of the stack if a signal is received while in a function
+that <span class="sc">gdb</span> called in the program being debugged.  If set to on,
+<span class="sc">gdb</span> unwinds the stack it created for the call and restores
+the context to what it was before the call.  If set to off (the
+default), <span class="sc">gdb</span> stops in the frame where the signal was
+received.
+
+     <br><dt><code>show unwindonsignal</code><dd><a name="index-show-unwindonsignal-810"></a>Show the current setting of stack unwinding in the functions called by
+<span class="sc">gdb</span>. 
+</dl>
+
+   <p><a name="index-weak-alias-functions-811"></a>Sometimes, a function you wish to call is actually a <dfn>weak alias</dfn>
+for another function.  In such case, <span class="sc">gdb</span> might not pick up
+the type information, including the types of the function arguments,
+which causes <span class="sc">gdb</span> to call the inferior function incorrectly. 
+As a result, the called function will function erroneously and may
+even crash.  A solution to that is to use the name of the aliased
+function instead.
+
+   </body></html>
+

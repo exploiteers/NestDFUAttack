@@ -1,0 +1,159 @@
+<html lang="en">
+<head>
+<title>Elapsed Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Date-and-Time.html#Date-and-Time" title="Date and Time">
+<link rel="prev" href="Time-Basics.html#Time-Basics" title="Time Basics">
+<link rel="next" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time" title="Processor And CPU Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Elapsed-Time"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time">Processor And CPU Time</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Time-Basics.html#Time-Basics">Time Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Date-and-Time.html#Date-and-Time">Date and Time</a>
+<hr>
+</div>
+
+<h3 class="section">21.2 Elapsed Time</h3>
+
+<p><a name="index-elapsed-time-2596"></a>
+One way to represent an elapsed time is with a simple arithmetic data
+type, as with the following function to compute the elapsed time between
+two calendar times.  This function is declared in <samp><span class="file">time.h</span></samp>.
+
+<!-- time.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>difftime</b> (<var>time_t time1, time_t time0</var>)<var><a name="index-difftime-2597"></a></var><br>
+<blockquote><p>The <code>difftime</code> function returns the number of seconds of elapsed
+time between calendar time <var>time1</var> and calendar time <var>time0</var>, as
+a value of type <code>double</code>.  The difference ignores leap seconds
+unless leap second support is enabled.
+
+        <p>In the GNU system, you can simply subtract <code>time_t</code> values.  But on
+other systems, the <code>time_t</code> data type might use some other encoding
+where subtraction doesn't work directly. 
+</p></blockquote></div>
+
+   <p>The GNU C library provides two data types specifically for representing
+an elapsed time.  They are used by various GNU C library functions, and
+you can use them for your own purposes too.  They're exactly the same
+except that one has a resolution in microseconds, and the other, newer
+one, is in nanoseconds.
+
+<!-- sys/time.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct timeval</b><var><a name="index-struct-timeval-2598"></a></var><br>
+<blockquote><p><a name="index-timeval-2599"></a>The <code>struct timeval</code> structure represents an elapsed time.  It is
+declared in <samp><span class="file">sys/time.h</span></samp> and has the following members:
+
+          <dl>
+<dt><code>long int tv_sec</code><dd>This represents the number of whole seconds of elapsed time.
+
+          <br><dt><code>long int tv_usec</code><dd>This is the rest of the elapsed time (a fraction of a second),
+represented as the number of microseconds.  It is always less than one
+million.
+
+        </dl>
+        </p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>struct timespec</b><var><a name="index-struct-timespec-2600"></a></var><br>
+<blockquote><p><a name="index-timespec-2601"></a>The <code>struct timespec</code> structure represents an elapsed time.  It is
+declared in <samp><span class="file">time.h</span></samp> and has the following members:
+
+          <dl>
+<dt><code>long int tv_sec</code><dd>This represents the number of whole seconds of elapsed time.
+
+          <br><dt><code>long int tv_nsec</code><dd>This is the rest of the elapsed time (a fraction of a second),
+represented as the number of nanoseconds.  It is always less than one
+billion.
+
+        </dl>
+        </p></blockquote></div>
+
+   <p>It is often necessary to subtract two values of type <code>struct&nbsp;timeval</code><!-- /@w --> or <code>struct&nbsp;timespec</code><!-- /@w -->.  Here is the best way to do
+this.  It works even on some peculiar operating systems where the
+<code>tv_sec</code> member has an unsigned type.
+
+<pre class="smallexample">     /* <span class="roman">Subtract the `struct timeval' values X and Y,</span>
+        <span class="roman">storing the result in RESULT.</span>
+        <span class="roman">Return 1 if the difference is negative, otherwise 0.</span>  */
+     
+     int
+     timeval_subtract (result, x, y)
+          struct timeval *result, *x, *y;
+     {
+       /* <span class="roman">Perform the carry for the later subtraction by updating </span><var>y</var><span class="roman">.</span> */
+       if (x-&gt;tv_usec &lt; y-&gt;tv_usec) {
+         int nsec = (y-&gt;tv_usec - x-&gt;tv_usec) / 1000000 + 1;
+         y-&gt;tv_usec -= 1000000 * nsec;
+         y-&gt;tv_sec += nsec;
+       }
+       if (x-&gt;tv_usec - y-&gt;tv_usec &gt; 1000000) {
+         int nsec = (x-&gt;tv_usec - y-&gt;tv_usec) / 1000000;
+         y-&gt;tv_usec += 1000000 * nsec;
+         y-&gt;tv_sec -= nsec;
+       }
+     
+       /* <span class="roman">Compute the time remaining to wait.</span>
+          <code>tv_usec</code><span class="roman"> is certainly positive.</span> */
+       result-&gt;tv_sec = x-&gt;tv_sec - y-&gt;tv_sec;
+       result-&gt;tv_usec = x-&gt;tv_usec - y-&gt;tv_usec;
+     
+       /* <span class="roman">Return 1 if result is negative.</span> */
+       return x-&gt;tv_sec &lt; y-&gt;tv_sec;
+     }
+</pre>
+   <p>Common functions that use <code>struct timeval</code> are <code>gettimeofday</code>
+and <code>settimeofday</code>.
+
+   <p>There are no GNU C library functions specifically oriented toward
+dealing with elapsed times, but the calendar time, processor time, and
+alarm and sleeping functions have a lot to do with them.
+
+   </body></html>
+

@@ -1,0 +1,250 @@
+<html lang="en">
+<head>
+<title>Launching Jobs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Implementing-a-Shell.html#Implementing-a-Shell" title="Implementing a Shell">
+<link rel="prev" href="Initializing-the-Shell.html#Initializing-the-Shell" title="Initializing the Shell">
+<link rel="next" href="Foreground-and-Background.html#Foreground-and-Background" title="Foreground and Background">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Launching-Jobs"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Foreground-and-Background.html#Foreground-and-Background">Foreground and Background</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Initializing-the-Shell.html#Initializing-the-Shell">Initializing the Shell</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.6.3 Launching Jobs</h4>
+
+<p><a name="index-launching-jobs-3215"></a>
+Once the shell has taken responsibility for performing job control on
+its controlling terminal, it can launch jobs in response to commands
+typed by the user.
+
+   <p>To create the processes in a process group, you use the same <code>fork</code>
+and <code>exec</code> functions described in <a href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>. 
+Since there are multiple child processes involved, though, things are a
+little more complicated and you must be careful to do things in the
+right order.  Otherwise, nasty race conditions can result.
+
+   <p>You have two choices for how to structure the tree of parent-child
+relationships among the processes.  You can either make all the
+processes in the process group be children of the shell process, or you
+can make one process in group be the ancestor of all the other processes
+in that group.  The sample shell program presented in this chapter uses
+the first approach because it makes bookkeeping somewhat simpler.
+
+   <p><a name="index-process-group-leader-3216"></a><a name="index-process-group-ID-3217"></a>As each process is forked, it should put itself in the new process group
+by calling <code>setpgid</code>; see <a href="Process-Group-Functions.html#Process-Group-Functions">Process Group Functions</a>.  The first
+process in the new group becomes its <dfn>process group leader</dfn>, and its
+process ID becomes the <dfn>process group ID</dfn> for the group.
+
+   <p><a name="index-race-conditions_002c-relating-to-job-control-3218"></a>The shell should also call <code>setpgid</code> to put each of its child
+processes into the new process group.  This is because there is a
+potential timing problem: each child process must be put in the process
+group before it begins executing a new program, and the shell depends on
+having all the child processes in the group before it continues
+executing.  If both the child processes and the shell call
+<code>setpgid</code>, this ensures that the right things happen no matter which
+process gets to it first.
+
+   <p>If the job is being launched as a foreground job, the new process group
+also needs to be put into the foreground on the controlling terminal
+using <code>tcsetpgrp</code>.  Again, this should be done by the shell as well
+as by each of its child processes, to avoid race conditions.
+
+   <p>The next thing each child process should do is to reset its signal
+actions.
+
+   <p>During initialization, the shell process set itself to ignore job
+control signals; see <a href="Initializing-the-Shell.html#Initializing-the-Shell">Initializing the Shell</a>.  As a result, any child
+processes it creates also ignore these signals by inheritance.  This is
+definitely undesirable, so each child process should explicitly set the
+actions for these signals back to <code>SIG_DFL</code> just after it is forked.
+
+   <p>Since shells follow this convention, applications can assume that they
+inherit the correct handling of these signals from the parent process. 
+But every application has a responsibility not to mess up the handling
+of stop signals.  Applications that disable the normal interpretation of
+the SUSP character should provide some other mechanism for the user to
+stop the job.  When the user invokes this mechanism, the program should
+send a <code>SIGTSTP</code> signal to the process group of the process, not
+just to the process itself.  See <a href="Signaling-Another-Process.html#Signaling-Another-Process">Signaling Another Process</a>.
+
+   <p>Finally, each child process should call <code>exec</code> in the normal way. 
+This is also the point at which redirection of the standard input and
+output channels should be handled.  See <a href="Duplicating-Descriptors.html#Duplicating-Descriptors">Duplicating Descriptors</a>,
+for an explanation of how to do this.
+
+   <p>Here is the function from the sample shell program that is responsible
+for launching a program.  The function is executed by each child process
+immediately after it has been forked by the shell, and never returns.
+
+<pre class="smallexample">     void
+     launch_process (process *p, pid_t pgid,
+                     int infile, int outfile, int errfile,
+                     int foreground)
+     {
+       pid_t pid;
+     
+       if (shell_is_interactive)
+         {
+           /* <span class="roman">Put the process into the process group and give the process group</span>
+              <span class="roman">the terminal, if appropriate.</span>
+              <span class="roman">This has to be done both by the shell and in the individual</span>
+              <span class="roman">child processes because of potential race conditions.</span>  */
+           pid = getpid ();
+           if (pgid == 0) pgid = pid;
+           setpgid (pid, pgid);
+           if (foreground)
+             tcsetpgrp (shell_terminal, pgid);
+     
+           /* <span class="roman">Set the handling for job control signals back to the default.</span>  */
+           signal (SIGINT, SIG_DFL);
+           signal (SIGQUIT, SIG_DFL);
+           signal (SIGTSTP, SIG_DFL);
+           signal (SIGTTIN, SIG_DFL);
+           signal (SIGTTOU, SIG_DFL);
+           signal (SIGCHLD, SIG_DFL);
+         }
+     
+       /* <span class="roman">Set the standard input/output channels of the new process.</span>  */
+       if (infile != STDIN_FILENO)
+         {
+           dup2 (infile, STDIN_FILENO);
+           close (infile);
+         }
+       if (outfile != STDOUT_FILENO)
+         {
+           dup2 (outfile, STDOUT_FILENO);
+           close (outfile);
+         }
+       if (errfile != STDERR_FILENO)
+         {
+           dup2 (errfile, STDERR_FILENO);
+           close (errfile);
+         }
+     
+       /* <span class="roman">Exec the new process.  Make sure we exit.</span>  */
+       execvp (p-&gt;argv[0], p-&gt;argv);
+       perror ("execvp");
+       exit (1);
+     }
+</pre>
+   <p>If the shell is not running interactively, this function does not do
+anything with process groups or signals.  Remember that a shell not
+performing job control must keep all of its subprocesses in the same
+process group as the shell itself.
+
+   <p>Next, here is the function that actually launches a complete job. 
+After creating the child processes, this function calls some other
+functions to put the newly created job into the foreground or background;
+these are discussed in <a href="Foreground-and-Background.html#Foreground-and-Background">Foreground and Background</a>.
+
+<pre class="smallexample">     void
+     launch_job (job *j, int foreground)
+     {
+       process *p;
+       pid_t pid;
+       int mypipe[2], infile, outfile;
+     
+       infile = j-&gt;stdin;
+       for (p = j-&gt;first_process; p; p = p-&gt;next)
+         {
+           /* <span class="roman">Set up pipes, if necessary.</span>  */
+           if (p-&gt;next)
+             {
+               if (pipe (mypipe) &lt; 0)
+                 {
+                   perror ("pipe");
+                   exit (1);
+                 }
+               outfile = mypipe[1];
+             }
+           else
+             outfile = j-&gt;stdout;
+     
+           /* <span class="roman">Fork the child processes.</span>  */
+           pid = fork ();
+           if (pid == 0)
+             /* <span class="roman">This is the child process.</span>  */
+             launch_process (p, j-&gt;pgid, infile,
+                             outfile, j-&gt;stderr, foreground);
+           else if (pid &lt; 0)
+             {
+               /* <span class="roman">The fork failed.</span>  */
+               perror ("fork");
+               exit (1);
+             }
+           else
+             {
+               /* <span class="roman">This is the parent process.</span>  */
+               p-&gt;pid = pid;
+               if (shell_is_interactive)
+                 {
+                   if (!j-&gt;pgid)
+                     j-&gt;pgid = pid;
+                   setpgid (pid, j-&gt;pgid);
+                 }
+             }
+     
+           /* <span class="roman">Clean up after pipes.</span>  */
+           if (infile != j-&gt;stdin)
+             close (infile);
+           if (outfile != j-&gt;stdout)
+             close (outfile);
+           infile = mypipe[0];
+         }
+     
+       format_job_info (j, "launched");
+     
+       if (!shell_is_interactive)
+         wait_for_job (j);
+       else if (foreground)
+         put_job_in_foreground (j, 0);
+       else
+         put_job_in_background (j, 0);
+     }
+</pre>
+   </body></html>
+

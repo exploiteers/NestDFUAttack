@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>Formatted Input - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link rel="next" href="EOF-and-Errors.html#EOF-and-Errors" title="EOF and Errors">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatted-Input"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="EOF-and-Errors.html#EOF-and-Errors">EOF and Errors</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.14 Formatted Input</h3>
+
+<p><a name="index-formatted-input-from-a-stream-1071"></a><a name="index-reading-from-a-stream_002c-formatted-1072"></a><a name="index-format-string_002c-for-_0040code_007bscanf_007d-1073"></a><a name="index-template_002c-for-_0040code_007bscanf_007d-1074"></a>The functions described in this section (<code>scanf</code> and related
+functions) provide facilities for formatted input analogous to the
+formatted output facilities.  These functions provide a mechanism for
+reading arbitrary values under the control of a <dfn>format string</dfn> or
+<dfn>template string</dfn>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Formatted-Input-Basics.html#Formatted-Input-Basics">Formatted Input Basics</a>:       Some basics to get you started. 
+<li><a accesskey="2" href="Input-Conversion-Syntax.html#Input-Conversion-Syntax">Input Conversion Syntax</a>:      Syntax of conversion specifications. 
+<li><a accesskey="3" href="Table-of-Input-Conversions.html#Table-of-Input-Conversions">Table of Input Conversions</a>:   Summary of input conversions and what they do. 
+<li><a accesskey="4" href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>:    Details of conversions for reading numbers. 
+<li><a accesskey="5" href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>:     Details of conversions for reading strings. 
+<li><a accesskey="6" href="Dynamic-String-Input.html#Dynamic-String-Input">Dynamic String Input</a>: 	String conversions that <code>malloc</code> the buffer. 
+<li><a accesskey="7" href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>:      Details of miscellaneous other conversions. 
+<li><a accesskey="8" href="Formatted-Input-Functions.html#Formatted-Input-Functions">Formatted Input Functions</a>:    Descriptions of the actual functions. 
+<li><a accesskey="9" href="Variable-Arguments-Input.html#Variable-Arguments-Input">Variable Arguments Input</a>:     <code>vscanf</code> and friends. 
+</ul>
+
+   </body></html>
+

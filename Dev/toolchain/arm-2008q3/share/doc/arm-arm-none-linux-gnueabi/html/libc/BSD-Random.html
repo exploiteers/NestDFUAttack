@@ -1,0 +1,187 @@
+<html lang="en">
+<head>
+<title>BSD Random - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers" title="Pseudo-Random Numbers">
+<link rel="prev" href="ISO-Random.html#ISO-Random" title="ISO Random">
+<link rel="next" href="SVID-Random.html#SVID-Random" title="SVID Random">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="BSD-Random"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="SVID-Random.html#SVID-Random">SVID Random</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="ISO-Random.html#ISO-Random">ISO Random</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">Pseudo-Random Numbers</a>
+<hr>
+</div>
+
+<h4 class="subsection">19.8.2 BSD Random Number Functions</h4>
+
+<p>This section describes a set of random number generation functions that
+are derived from BSD.  There is no advantage to using these functions
+with the GNU C library; we support them for BSD compatibility only.
+
+   <p>The prototypes for these functions are in <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-2289"></a>
+<!-- stdlib.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: long int <b>random</b> (<var>void</var>)<var><a name="index-random-2290"></a></var><br>
+<blockquote><p>This function returns the next pseudo-random number in the sequence. 
+The value returned ranges from <code>0</code> to <code>RAND_MAX</code>.
+
+        <p><strong>Note:</strong> Temporarily this function was defined to return a
+<code>int32_t</code> value to indicate that the return value always contains
+32 bits even if <code>long int</code> is wider.  The standard demands it
+differently.  Users must always be aware of the 32-bit limitation,
+though. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>srandom</b> (<var>unsigned int seed</var>)<var><a name="index-srandom-2291"></a></var><br>
+<blockquote><p>The <code>srandom</code> function sets the state of the random number
+generator based on the integer <var>seed</var>.  If you supply a <var>seed</var> value
+of <code>1</code>, this will cause <code>random</code> to reproduce the default set
+of random numbers.
+
+        <p>To produce a different set of pseudo-random numbers each time your
+program runs, do <code>srandom (time (0))</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void * <b>initstate</b> (<var>unsigned int seed, void *state, size_t size</var>)<var><a name="index-initstate-2292"></a></var><br>
+<blockquote><p>The <code>initstate</code> function is used to initialize the random number
+generator state.  The argument <var>state</var> is an array of <var>size</var>
+bytes, used to hold the state information.  It is initialized based on
+<var>seed</var>.  The size must be between 8 and 256 bytes, and should be a
+power of two.  The bigger the <var>state</var> array, the better.
+
+        <p>The return value is the previous value of the state information array. 
+You can use this value later as an argument to <code>setstate</code> to
+restore that state. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void * <b>setstate</b> (<var>void *state</var>)<var><a name="index-setstate-2293"></a></var><br>
+<blockquote><p>The <code>setstate</code> function restores the random number state
+information <var>state</var>.  The argument must have been the result of
+a previous call to <var>initstate</var> or <var>setstate</var>.
+
+        <p>The return value is the previous value of the state information array. 
+You can use this value later as an argument to <code>setstate</code> to
+restore that state.
+
+        <p>If the function fails the return value is <code>NULL</code>. 
+</p></blockquote></div>
+
+   <p>The four functions described so far in this section all work on a state
+which is shared by all threads.  The state is not directly accessible to
+the user and can only be modified by these functions.  This makes it
+hard to deal with situations where each thread should have its own
+pseudo-random number generator.
+
+   <p>The GNU C library contains four additional functions which contain the
+state as an explicit parameter and therefore make it possible to handle
+thread-local PRNGs.  Beside this there are no difference.  In fact, the
+four functions already discussed are implemented internally using the
+following interfaces.
+
+   <p>The <samp><span class="file">stdlib.h</span></samp> header contains a definition of the following type:
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>struct random_data</b><var><a name="index-struct-random_005fdata-2294"></a></var><br>
+<blockquote>
+        <p>Objects of type <code>struct random_data</code> contain the information
+necessary to represent the state of the PRNG.  Although a complete
+definition of the type is present the type should be treated as opaque. 
+</p></blockquote></div>
+
+   <p>The functions modifying the state follow exactly the already described
+functions.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>random_r</b> (<var>struct random_data *restrict buf, int32_t *restrict result</var>)<var><a name="index-random_005fr-2295"></a></var><br>
+<blockquote><p>The <code>random_r</code> function behaves exactly like the <code>random</code>
+function except that it uses and modifies the state in the object
+pointed to by the first parameter instead of the global state. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>srandom_r</b> (<var>unsigned int seed, struct random_data *buf</var>)<var><a name="index-srandom_005fr-2296"></a></var><br>
+<blockquote><p>The <code>srandom_r</code> function behaves exactly like the <code>srandom</code>
+function except that it uses and modifies the state in the object
+pointed to by the second parameter instead of the global state. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>initstate_r</b> (<var>unsigned int seed, char *restrict statebuf, size_t statelen, struct random_data *restrict buf</var>)<var><a name="index-initstate_005fr-2297"></a></var><br>
+<blockquote><p>The <code>initstate_r</code> function behaves exactly like the <code>initstate</code>
+function except that it uses and modifies the state in the object
+pointed to by the fourth parameter instead of the global state. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>setstate_r</b> (<var>char *restrict statebuf, struct random_data *restrict buf</var>)<var><a name="index-setstate_005fr-2298"></a></var><br>
+<blockquote><p>The <code>setstate_r</code> function behaves exactly like the <code>setstate</code>
+function except that it uses and modifies the state in the object
+pointed to by the first parameter instead of the global state. 
+</p></blockquote></div>
+
+   </body></html>
+

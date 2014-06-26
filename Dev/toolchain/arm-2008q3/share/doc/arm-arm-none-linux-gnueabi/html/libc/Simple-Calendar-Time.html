@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Simple Calendar Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link rel="next" href="High_002dResolution-Calendar.html#High_002dResolution-Calendar" title="High-Resolution Calendar">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Simple-Calendar-Time"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.4.1 Simple Calendar Time</h4>
+
+<p>This section describes the <code>time_t</code> data type for representing calendar
+time as simple time, and the functions which operate on simple time objects. 
+These facilities are declared in the header file <samp><span class="file">time.h</span></samp>. 
+<a name="index-time_002eh-2622"></a>
+<a name="index-epoch-2623"></a><!-- time.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Data Type: <b>time_t</b><var><a name="index-time_005ft-2624"></a></var><br>
+<blockquote><p>This is the data type used to represent simple time.  Sometimes, it also
+represents an elapsed time.  When interpreted as a calendar time value,
+it represents the number of seconds elapsed since 00:00:00 on January 1,
+1970, Coordinated Universal Time.  (This calendar time is sometimes
+referred to as the <dfn>epoch</dfn>.)  POSIX requires that this count not
+include leap seconds, but on some systems this count includes leap seconds
+if you set <code>TZ</code> to certain values (see <a href="TZ-Variable.html#TZ-Variable">TZ Variable</a>).
+
+        <p>Note that a simple time has no concept of local time zone.  Calendar
+Time <var>T</var> is the same instant in time regardless of where on the
+globe the computer is.
+
+        <p>In the GNU C library, <code>time_t</code> is equivalent to <code>long int</code>. 
+In other systems, <code>time_t</code> might be either an integer or
+floating-point type. 
+</p></blockquote></div>
+
+   <p>The function <code>difftime</code> tells you the elapsed time between two
+simple calendar times, which is not always as easy to compute as just
+subtracting.  See <a href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>.
+
+<!-- time.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: time_t <b>time</b> (<var>time_t *result</var>)<var><a name="index-time-2625"></a></var><br>
+<blockquote><p>The <code>time</code> function returns the current calendar time as a value of
+type <code>time_t</code>.  If the argument <var>result</var> is not a null pointer,
+the calendar time value is also stored in <code>*</code><var>result</var>.  If the
+current calendar time is not available, the value
+<code>(time_t)(-1)</code><!-- /@w --> is returned. 
+</p></blockquote></div>
+
+<!-- The GNU C library implements stime() with a call to settimeofday() on -->
+<!-- Linux. -->
+<!-- time.h -->
+<!-- SVID, XPG -->
+<div class="defun">
+&mdash; Function: int <b>stime</b> (<var>time_t *newtime</var>)<var><a name="index-stime-2626"></a></var><br>
+<blockquote><p><code>stime</code> sets the system clock, i.e., it tells the system that the
+current calendar time is <var>newtime</var>, where <code>newtime</code> is
+interpreted as described in the above definition of <code>time_t</code>.
+
+        <p><code>settimeofday</code> is a newer function which sets the system clock to
+better than one second precision.  <code>settimeofday</code> is generally a
+better choice than <code>stime</code>.  See <a href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>.
+
+        <p>Only the superuser can set the system clock.
+
+        <p>If the function succeeds, the return value is zero.  Otherwise, it is
+<code>-1</code> and <code>errno</code> is set accordingly:
+
+          <dl>
+<dt><code>EPERM</code><dd>The process is not superuser. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

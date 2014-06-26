@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Wildcard Matching - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Pattern-Matching.html#Pattern-Matching" title="Pattern Matching">
+<link rel="next" href="Globbing.html#Globbing" title="Globbing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Wildcard-Matching"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Globbing.html#Globbing">Globbing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Pattern-Matching.html#Pattern-Matching">Pattern Matching</a>
+<hr>
+</div>
+
+<h3 class="section">10.1 Wildcard Matching</h3>
+
+<p><a name="index-fnmatch_002eh-847"></a>This section describes how to match a wildcard pattern against a
+particular string.  The result is a yes or no answer: does the
+string fit the pattern or not.  The symbols described here are all
+declared in <samp><span class="file">fnmatch.h</span></samp>.
+
+<!-- fnmatch.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: int <b>fnmatch</b> (<var>const char *pattern, const char *string, int flags</var>)<var><a name="index-fnmatch-848"></a></var><br>
+<blockquote><p>This function tests whether the string <var>string</var> matches the pattern
+<var>pattern</var>.  It returns <code>0</code> if they do match; otherwise, it
+returns the nonzero value <code>FNM_NOMATCH</code>.  The arguments
+<var>pattern</var> and <var>string</var> are both strings.
+
+        <p>The argument <var>flags</var> is a combination of flag bits that alter the
+details of matching.  See below for a list of the defined flags.
+
+        <p>In the GNU C Library, <code>fnmatch</code> cannot experience an &ldquo;error&rdquo;&mdash;it
+always returns an answer for whether the match succeeds.  However, other
+implementations of <code>fnmatch</code> might sometimes report &ldquo;errors&rdquo;. 
+They would do so by returning nonzero values that are not equal to
+<code>FNM_NOMATCH</code>. 
+</p></blockquote></div>
+
+   <p>These are the available flags for the <var>flags</var> argument:
+
+     <dl>
+<!-- fnmatch.h -->
+<!-- GNU -->
+<dt><code>FNM_FILE_NAME</code><dd>Treat the &lsquo;<samp><span class="samp">/</span></samp>&rsquo; character specially, for matching file names.  If
+this flag is set, wildcard constructs in <var>pattern</var> cannot match
+&lsquo;<samp><span class="samp">/</span></samp>&rsquo; in <var>string</var>.  Thus, the only way to match &lsquo;<samp><span class="samp">/</span></samp>&rsquo; is with
+an explicit &lsquo;<samp><span class="samp">/</span></samp>&rsquo; in <var>pattern</var>.
+
+     <!-- fnmatch.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>FNM_PATHNAME</code><dd>This is an alias for <code>FNM_FILE_NAME</code>; it comes from POSIX.2.  We
+don't recommend this name because we don't use the term &ldquo;pathname&rdquo; for
+file names.
+
+     <!-- fnmatch.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>FNM_PERIOD</code><dd>Treat the &lsquo;<samp><span class="samp">.</span></samp>&rsquo; character specially if it appears at the beginning of
+<var>string</var>.  If this flag is set, wildcard constructs in <var>pattern</var>
+cannot match &lsquo;<samp><span class="samp">.</span></samp>&rsquo; as the first character of <var>string</var>.
+
+     <p>If you set both <code>FNM_PERIOD</code> and <code>FNM_FILE_NAME</code>, then the
+special treatment applies to &lsquo;<samp><span class="samp">.</span></samp>&rsquo; following &lsquo;<samp><span class="samp">/</span></samp>&rsquo; as well as to
+&lsquo;<samp><span class="samp">.</span></samp>&rsquo; at the beginning of <var>string</var>.  (The shell uses the
+<code>FNM_PERIOD</code> and <code>FNM_FILE_NAME</code> flags together for matching
+file names.)
+
+     <!-- fnmatch.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>FNM_NOESCAPE</code><dd>Don't treat the &lsquo;<samp><span class="samp">\</span></samp>&rsquo; character specially in patterns.  Normally,
+&lsquo;<samp><span class="samp">\</span></samp>&rsquo; quotes the following character, turning off its special meaning
+(if any) so that it matches only itself.  When quoting is enabled, the
+pattern &lsquo;<samp><span class="samp">\?</span></samp>&rsquo; matches only the string &lsquo;<samp><span class="samp">?</span></samp>&rsquo;, because the question
+mark in the pattern acts like an ordinary character.
+
+     <p>If you use <code>FNM_NOESCAPE</code>, then &lsquo;<samp><span class="samp">\</span></samp>&rsquo; is an ordinary character.
+
+     <!-- fnmatch.h -->
+     <!-- GNU -->
+     <br><dt><code>FNM_LEADING_DIR</code><dd>Ignore a trailing sequence of characters starting with a &lsquo;<samp><span class="samp">/</span></samp>&rsquo; in
+<var>string</var>; that is to say, test whether <var>string</var> starts with a
+directory name that <var>pattern</var> matches.
+
+     <p>If this flag is set, either &lsquo;<samp><span class="samp">foo*</span></samp>&rsquo; or &lsquo;<samp><span class="samp">foobar</span></samp>&rsquo; as a pattern
+would match the string &lsquo;<samp><span class="samp">foobar/frobozz</span></samp>&rsquo;.
+
+     <!-- fnmatch.h -->
+     <!-- GNU -->
+     <br><dt><code>FNM_CASEFOLD</code><dd>Ignore case in comparing <var>string</var> to <var>pattern</var>.
+
+     <!-- fnmatch.h -->
+     <!-- GNU -->
+     <br><dt><code>FNM_EXTMATCH</code><dd><a name="index-Korn-Shell-849"></a><a name="index-ksh-850"></a>Recognize beside the normal patterns also the extended patterns
+introduced in <samp><span class="file">ksh</span></samp>.  The patterns are written in the form
+explained in the following table where <var>pattern-list</var> is a <code>|</code>
+separated list of patterns.
+
+          <dl>
+<dt><code>?(</code><var>pattern-list</var><code>)</code><dd>The pattern matches if zero or one occurrences of any of the patterns
+in the <var>pattern-list</var> allow matching the input string.
+
+          <br><dt><code>*(</code><var>pattern-list</var><code>)</code><dd>The pattern matches if zero or more occurrences of any of the patterns
+in the <var>pattern-list</var> allow matching the input string.
+
+          <br><dt><code>+(</code><var>pattern-list</var><code>)</code><dd>The pattern matches if one or more occurrences of any of the patterns
+in the <var>pattern-list</var> allow matching the input string.
+
+          <br><dt><code>@(</code><var>pattern-list</var><code>)</code><dd>The pattern matches if exactly one occurrence of any of the patterns in
+the <var>pattern-list</var> allows matching the input string.
+
+          <br><dt><code>!(</code><var>pattern-list</var><code>)</code><dd>The pattern matches if the input string cannot be matched with any of
+the patterns in the <var>pattern-list</var>. 
+</dl>
+     </dl>
+
+   </body></html>
+

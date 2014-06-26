@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Creating Directories - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Renaming-Files.html#Renaming-Files" title="Renaming Files">
+<link rel="next" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Creating-Directories"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Attributes.html#File-Attributes">File Attributes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Renaming-Files.html#Renaming-Files">Renaming Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.8 Creating Directories</h3>
+
+<p><a name="index-creating-a-directory-1484"></a><a name="index-directories_002c-creating-1485"></a>
+<a name="index-mkdir-1486"></a>Directories are created with the <code>mkdir</code> function.  (There is also
+a shell command <code>mkdir</code> which does the same thing.) 
+<!-- !!! umask -->
+
+<!-- sys/stat.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>mkdir</b> (<var>const char *filename, mode_t mode</var>)<var><a name="index-mkdir-1487"></a></var><br>
+<blockquote><p>The <code>mkdir</code> function creates a new, empty directory with name
+<var>filename</var>.
+
+        <p>The argument <var>mode</var> specifies the file permissions for the new
+directory file.  See <a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>, for more information about
+this.
+
+        <p>A return value of <code>0</code> indicates successful completion, and
+<code>-1</code> indicates failure.  In addition to the usual file name syntax
+errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following <code>errno</code> error
+conditions are defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>Write permission is denied for the parent directory in which the new
+directory is to be added.
+
+          <br><dt><code>EEXIST</code><dd>A file named <var>filename</var> already exists.
+
+          <br><dt><code>EMLINK</code><dd>The parent directory has too many links (entries).
+
+          <p>Well-designed file systems never report this error, because they permit
+more links than your disk could possibly hold.  However, you must still
+take account of the possibility of this error, as it could result from
+network access to a file system on another machine.
+
+          <br><dt><code>ENOSPC</code><dd>The file system doesn't have enough room to create the new directory.
+
+          <br><dt><code>EROFS</code><dd>The parent directory of the directory being created is on a read-only
+file system and cannot be modified. 
+</dl>
+
+        <p>To use this function, your program should include the header file
+<samp><span class="file">sys/stat.h</span></samp>. 
+<a name="index-sys_002fstat_002eh-1488"></a></p></blockquote></div>
+
+   </body></html>
+

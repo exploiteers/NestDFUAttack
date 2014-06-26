@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Parsing Program Arguments - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Arguments.html#Program-Arguments" title="Program Arguments">
+<link rel="prev" href="Argument-Syntax.html#Argument-Syntax" title="Argument Syntax">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Parsing-Program-Arguments"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argument-Syntax.html#Argument-Syntax">Argument Syntax</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Arguments.html#Program-Arguments">Program Arguments</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.1.2 Parsing Program Arguments</h4>
+
+<p><a name="index-program-arguments_002c-parsing-3019"></a><a name="index-command-arguments_002c-parsing-3020"></a><a name="index-parsing-program-arguments-3021"></a>If the syntax for the command line arguments to your program is simple
+enough, you can simply pick the arguments off from <var>argv</var> by hand. 
+But unless your program takes a fixed number of arguments, or all of the
+arguments are interpreted in the same way (as file names, for example),
+you are usually better off using <code>getopt</code> (see <a href="Getopt.html#Getopt">Getopt</a>) or
+<code>argp_parse</code> (see <a href="Argp.html#Argp">Argp</a>) to do the parsing.
+
+   <p><code>getopt</code> is more standard (the short-option only version of it is a
+part of the POSIX standard), but using <code>argp_parse</code> is often
+easier, both for very simple and very complex option structures, because
+it does more of the dirty work for you.
+
+<ul class="menu">
+<li><a accesskey="1" href="Getopt.html#Getopt">Getopt</a>:                       Parsing program options using <code>getopt</code>. 
+<li><a accesskey="2" href="Argp.html#Argp">Argp</a>:                         Parsing program options using <code>argp_parse</code>. 
+<li><a accesskey="3" href="Suboptions.html#Suboptions">Suboptions</a>:                   Some programs need more detailed options. 
+<li><a accesskey="4" href="Suboptions-Example.html#Suboptions-Example">Suboptions Example</a>:           This shows how it could be done for <code>mount</code>. 
+</ul>
+
+<!-- Getopt and argp start at the @section level so that there's -->
+<!-- enough room for their internal hierarchy (mostly a problem with -->
+<!-- argp).         -Miles -->
+   </body></html>
+

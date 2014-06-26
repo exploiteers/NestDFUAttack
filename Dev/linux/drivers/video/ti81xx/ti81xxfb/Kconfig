@@ -1,0 +1,30 @@
+menuconfig FB_TI81XX
+	tristate "TI81XX frame buffer support (EXPERIMENTAL)"
+	depends on FB && ARCH_TI81XX && TI81XX_VPSS
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	---help---
+	     Frame buffer driver for TI81xx based board. This driver
+	     use the GRPX ports inside of HDVPSS HW to display RGB
+	     data format.
+	     Use 'M' to build as module.
+
+config FB_TI81XX_DEBUG_SUPPORT
+	bool "Debug support for TI81XX FB"
+	default y
+	depends on FB_TI81XX
+	---help---
+	     Support for debug output. You have to enable the actual printing
+	     with debug module parameter.
+
+config FB_TI81XX_NUM_FBS
+	int "Number of framebuffers"
+	range 1 3
+	default 3
+	depends on FB_TI81XX
+	---help---
+	     Select the number of FB node to create. Inside of TI81XX HDVPSS,
+	     there are 3 indepentdent GRPX pipelines. Each GRPX pipeline is a
+	     standalone FB node.
+

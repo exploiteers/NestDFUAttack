@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+<title>Initialize New Architecture - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="OS-ABI-Variant-Handling.html#OS-ABI-Variant-Handling" title="OS ABI Variant Handling">
+<link rel="next" href="Registers-and-Memory.html#Registers-and-Memory" title="Registers and Memory">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Initialize-New-Architecture"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Registers-and-Memory.html#Registers-and-Memory">Registers and Memory</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="OS-ABI-Variant-Handling.html#OS-ABI-Variant-Handling">OS ABI Variant Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.2 Initializing a New Architecture</h3>
+
+<p>Each <code>gdbarch</code> is associated with a single <span class="sc">bfd</span> architecture,
+via a <code>bfd_arch_</code><var>arch</var> constant.  The <code>gdbarch</code> is
+registered by a call to <code>register_gdbarch_init</code>, usually from
+the file's <code>_initialize_</code><var>filename</var> routine, which will
+be automatically called during <span class="sc">gdb</span> startup.  The arguments
+are a <span class="sc">bfd</span> architecture constant and an initialization function.
+
+   <p>The initialization function has this type:
+
+<pre class="smallexample">     static struct gdbarch *
+     <var>arch</var>_gdbarch_init (struct gdbarch_info <var>info</var>,
+                              struct gdbarch_list *<var>arches</var>)
+</pre>
+   <p>The <var>info</var> argument contains parameters used to select the correct
+architecture, and <var>arches</var> is a list of architectures which
+have already been created with the same <code>bfd_arch_</code><var>arch</var>
+value.
+
+   <p>The initialization function should first make sure that <var>info</var>
+is acceptable, and return <code>NULL</code> if it is not.  Then, it should
+search through <var>arches</var> for an exact match to <var>info</var>, and
+return one if found.  Lastly, if no exact match was found, it should
+create a new architecture based on <var>info</var> and return it.
+
+   <p>Only information in <var>info</var> should be used to choose the new
+architecture.  Historically, <var>info</var> could be sparse, and
+defaults would be collected from the first element on <var>arches</var>. 
+However, <span class="sc">gdb</span> now fills in <var>info</var> more thoroughly,
+so new <code>gdbarch</code> initialization functions should not take
+defaults from <var>arches</var>.
+
+   </body></html>
+

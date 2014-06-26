@@ -1,0 +1,42 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2011 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop various system
+#      networking infrastructure and services.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+case "${1}" in
+
+'start')
+	${INITDIR}/tiwlan		start
+	${INITDIR}/wpasupplicant	start
+	${INITDIR}/connman		start
+	${INITDIR}/mdnsd		start
+	;;
+
+'stop')
+	${INITDIR}/mdnsd		stop
+	${INITDIR}/connman		stop
+	${INITDIR}/wpasupplicant	stop
+	${INITDIR}/tiwlan		stop
+	;;
+
+'restart')
+	${0} stop
+	${SLEEP} 1
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

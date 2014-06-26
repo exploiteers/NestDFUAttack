@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+<title>Managing Execution State - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Vector-Definition.html#Target-Vector-Definition" title="Target Vector Definition">
+<link rel="next" href="Existing-Targets.html#Existing-Targets" title="Existing Targets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Managing-Execution-State"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Existing-Targets.html#Existing-Targets">Existing Targets</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Vector-Definition.html#Target-Vector-Definition">Target Vector Definition</a>
+<hr>
+</div>
+
+<h3 class="section">12.1 Managing Execution State</h3>
+
+<p><a name="index-execution-state-368"></a>
+A target vector can be completely inactive (not pushed on the target
+stack), active but not running (pushed, but not connected to a fully
+manifested inferior), or completely active (pushed, with an accessible
+inferior).  Most targets are only completely inactive or completely
+active, but some support persistent connections to a target even
+when the target has exited or not yet started.
+
+   <p>For example, connecting to the simulator using <code>target sim</code> does
+not create a running program.  Neither registers nor memory are
+accessible until <code>run</code>.  Similarly, after <code>kill</code>, the
+program can not continue executing.  But in both cases <span class="sc">gdb</span>
+remains connected to the simulator, and target-specific commands
+are directed to the simulator.
+
+   <p>A target which only supports complete activation should push itself
+onto the stack in its <code>to_open</code> routine (by calling
+<code>push_target</code>), and unpush itself from the stack in its
+<code>to_mourn_inferior</code> routine (by calling <code>unpush_target</code>).
+
+   <p>A target which supports both partial and complete activation should
+still call <code>push_target</code> in <code>to_open</code>, but not call
+<code>unpush_target</code> in <code>to_mourn_inferior</code>.  Instead, it should
+call either <code>target_mark_running</code> or <code>target_mark_exited</code>
+in its <code>to_open</code>, depending on whether the target is fully active
+after connection.  It should also call <code>target_mark_running</code> any
+time the inferior becomes fully active (e.g. in
+<code>to_create_inferior</code> and <code>to_attach</code>), and
+<code>target_mark_exited</code> when the inferior becomes inactive (in
+<code>to_mourn_inferior</code>).  The target should also make sure to call
+<code>target_mourn_inferior</code> from its <code>to_kill</code>, to return the
+target to inactive state.
+
+   </body></html>
+

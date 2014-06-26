@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+<title>Parsing a Template String - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Variable-Arguments-Output.html#Variable-Arguments-Output" title="Variable Arguments Output">
+<link rel="next" href="Example-of-Parsing.html#Example-of-Parsing" title="Example of Parsing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Parsing-a-Template-String"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Example-of-Parsing.html#Example-of-Parsing">Example of Parsing</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Variable-Arguments-Output.html#Variable-Arguments-Output">Variable Arguments Output</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.10 Parsing a Template String</h4>
+
+<p><a name="index-parsing-a-template-string-1045"></a>
+You can use the function <code>parse_printf_format</code> to obtain
+information about the number and types of arguments that are expected by
+a given template string.  This function permits interpreters that
+provide interfaces to <code>printf</code> to avoid passing along invalid
+arguments from the user's program, which could cause a crash.
+
+   <p>All the symbols described in this section are declared in the header
+file <samp><span class="file">printf.h</span></samp>.
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>parse_printf_format</b> (<var>const char *template, size_t n, int *argtypes</var>)<var><a name="index-parse_005fprintf_005fformat-1046"></a></var><br>
+<blockquote><p>This function returns information about the number and types of
+arguments expected by the <code>printf</code> template string <var>template</var>. 
+The information is stored in the array <var>argtypes</var>; each element of
+this array describes one argument.  This information is encoded using
+the various &lsquo;<samp><span class="samp">PA_</span></samp>&rsquo; macros, listed below.
+
+        <p>The argument <var>n</var> specifies the number of elements in the array
+<var>argtypes</var>.  This is the maximum number of elements that
+<code>parse_printf_format</code> will try to write.
+
+        <p><code>parse_printf_format</code> returns the total number of arguments required
+by <var>template</var>.  If this number is greater than <var>n</var>, then the
+information returned describes only the first <var>n</var> arguments.  If you
+want information about additional arguments, allocate a bigger
+array and call <code>parse_printf_format</code> again. 
+</p></blockquote></div>
+
+   <p>The argument types are encoded as a combination of a basic type and
+modifier flag bits.
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>PA_FLAG_MASK</b><var><a name="index-PA_005fFLAG_005fMASK-1047"></a></var><br>
+<blockquote><p>This macro is a bitmask for the type modifier flag bits.  You can write
+the expression <code>(argtypes[i] &amp; PA_FLAG_MASK)</code> to extract just the
+flag bits for an argument, or <code>(argtypes[i] &amp; ~PA_FLAG_MASK)</code> to
+extract just the basic type code. 
+</p></blockquote></div>
+
+   <p>Here are symbolic constants that represent the basic types; they stand
+for integer values.
+
+     <dl>
+<!-- printf.h -->
+<!-- GNU -->
+<dt><code>PA_INT</code><a name="index-PA_005fINT-1048"></a><dd>This specifies that the base type is <code>int</code>.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_CHAR</code><a name="index-PA_005fCHAR-1049"></a><dd>This specifies that the base type is <code>int</code>, cast to <code>char</code>.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_STRING</code><a name="index-PA_005fSTRING-1050"></a><dd>This specifies that the base type is <code>char *</code>, a null-terminated string.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_POINTER</code><a name="index-PA_005fPOINTER-1051"></a><dd>This specifies that the base type is <code>void *</code>, an arbitrary pointer.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_FLOAT</code><a name="index-PA_005fFLOAT-1052"></a><dd>This specifies that the base type is <code>float</code>.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_DOUBLE</code><a name="index-PA_005fDOUBLE-1053"></a><dd>This specifies that the base type is <code>double</code>.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_LAST</code><a name="index-PA_005fLAST-1054"></a><dd>You can define additional base types for your own programs as offsets
+from <code>PA_LAST</code>.  For example, if you have data types &lsquo;<samp><span class="samp">foo</span></samp>&rsquo;
+and &lsquo;<samp><span class="samp">bar</span></samp>&rsquo; with their own specialized <code>printf</code> conversions,
+you could define encodings for these types as:
+
+     <pre class="smallexample">          #define PA_FOO  PA_LAST
+          #define PA_BAR  (PA_LAST + 1)
+</pre>
+     </dl>
+
+   <p>Here are the flag bits that modify a basic type.  They are combined with
+the code for the basic type using inclusive-or.
+
+     <dl>
+<!-- printf.h -->
+<!-- GNU -->
+<dt><code>PA_FLAG_PTR</code><a name="index-PA_005fFLAG_005fPTR-1055"></a><dd>If this bit is set, it indicates that the encoded type is a pointer to
+the base type, rather than an immediate value. 
+For example, &lsquo;<samp><span class="samp">PA_INT|PA_FLAG_PTR</span></samp>&rsquo; represents the type &lsquo;<samp><span class="samp">int *</span></samp>&rsquo;.
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_FLAG_SHORT</code><a name="index-PA_005fFLAG_005fSHORT-1056"></a><dd>If this bit is set, it indicates that the base type is modified with
+<code>short</code>.  (This corresponds to the &lsquo;<samp><span class="samp">h</span></samp>&rsquo; type modifier.)
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_FLAG_LONG</code><a name="index-PA_005fFLAG_005fLONG-1057"></a><dd>If this bit is set, it indicates that the base type is modified with
+<code>long</code>.  (This corresponds to the &lsquo;<samp><span class="samp">l</span></samp>&rsquo; type modifier.)
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_FLAG_LONG_LONG</code><a name="index-PA_005fFLAG_005fLONG_005fLONG-1058"></a><dd>If this bit is set, it indicates that the base type is modified with
+<code>long long</code>.  (This corresponds to the &lsquo;<samp><span class="samp">L</span></samp>&rsquo; type modifier.)
+
+     <!-- printf.h -->
+     <!-- GNU -->
+     <br><dt><code>PA_FLAG_LONG_DOUBLE</code><a name="index-PA_005fFLAG_005fLONG_005fDOUBLE-1059"></a><dd>This is a synonym for <code>PA_FLAG_LONG_LONG</code>, used by convention with
+a base type of <code>PA_DOUBLE</code> to indicate a type of <code>long double</code>. 
+</dl>
+
+   </body></html>
+

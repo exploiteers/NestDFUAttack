@@ -1,0 +1,236 @@
+<html lang="en">
+<head>
+<title>Using gettextized software - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link rel="prev" href="GUI-program-problems.html#GUI-program-problems" title="GUI program problems">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Using-gettextized-software"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="GUI-program-problems.html#GUI-program-problems">GUI program problems</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">8.2.1.6 User influence on <code>gettext</code></h5>
+
+<p>The last sections described what the programmer can do to
+internationalize the messages of the program.  But it is finally up to
+the user to select the message s/he wants to see.  S/He must understand
+them.
+
+   <p>The POSIX locale model uses the environment variables <code>LC_COLLATE</code>,
+<code>LC_CTYPE</code>, <code>LC_MESSAGES</code>, <code>LC_MONETARY</code>, <code>LC_NUMERIC</code>,
+and <code>LC_TIME</code> to select the locale which is to be used.  This way
+the user can influence lots of functions.  As we mentioned above the
+<code>gettext</code> functions also take advantage of this.
+
+   <p>To understand how this happens it is necessary to take a look at the
+various components of the filename which gets computed to locate a
+message catalog.  It is composed as follows:
+
+<pre class="smallexample">     <var>dir_name</var>/<var>locale</var>/LC_<var>category</var>/<var>domain_name</var>.mo
+</pre>
+   <p>The default value for <var>dir_name</var> is system specific.  It is computed
+from the value given as the prefix while configuring the C library. 
+This value normally is <samp><span class="file">/usr</span></samp> or <samp><span class="file">/</span></samp>.  For the former the
+complete <var>dir_name</var> is:
+
+<pre class="smallexample">     /usr/share/locale
+</pre>
+   <p>We can use <samp><span class="file">/usr/share</span></samp> since the <samp><span class="file">.mo</span></samp> files containing the
+message catalogs are system independent, so all systems can use the same
+files.  If the program executed the <code>bindtextdomain</code> function for
+the message domain that is currently handled, the <code>dir_name</code>
+component is exactly the value which was given to the function as
+the second parameter.  I.e., <code>bindtextdomain</code> allows overwriting
+the only system dependent and fixed value to make it possible to
+address files anywhere in the filesystem.
+
+   <p>The <var>category</var> is the name of the locale category which was selected
+in the program code.  For <code>gettext</code> and <code>dgettext</code> this is
+always <code>LC_MESSAGES</code>, for <code>dcgettext</code> this is selected by the
+value of the third parameter.  As said above it should be avoided to
+ever use a category other than <code>LC_MESSAGES</code>.
+
+   <p>The <var>locale</var> component is computed based on the category used.  Just
+like for the <code>setlocale</code> function here comes the user selection
+into the play.  Some environment variables are examined in a fixed order
+and the first environment variable set determines the return value of
+the lookup process.  In detail, for the category <code>LC_xxx</code> the
+following variables in this order are examined:
+
+     <dl>
+<dt><code>LANGUAGE</code><br><dt><code>LC_ALL</code><br><dt><code>LC_xxx</code><br><dt><code>LANG</code><dd></dl>
+
+   <p>This looks very familiar.  With the exception of the <code>LANGUAGE</code>
+environment variable this is exactly the lookup order the
+<code>setlocale</code> function uses.  But why introducing the <code>LANGUAGE</code>
+variable?
+
+   <p>The reason is that the syntax of the values these variables can have is
+different to what is expected by the <code>setlocale</code> function.  If we
+would set <code>LC_ALL</code> to a value following the extended syntax that
+would mean the <code>setlocale</code> function will never be able to use the
+value of this variable as well.  An additional variable removes this
+problem plus we can select the language independently of the locale
+setting which sometimes is useful.
+
+   <p>While for the <code>LC_xxx</code> variables the value should consist of
+exactly one specification of a locale the <code>LANGUAGE</code> variable's
+value can consist of a colon separated list of locale names.  The
+attentive reader will realize that this is the way we manage to
+implement one of our additional demands above: we want to be able to
+specify an ordered list of language.
+
+   <p>Back to the constructed filename we have only one component missing. 
+The <var>domain_name</var> part is the name which was either registered using
+the <code>textdomain</code> function or which was given to <code>dgettext</code> or
+<code>dcgettext</code> as the first parameter.  Now it becomes obvious that a
+good choice for the domain name in the program code is a string which is
+closely related to the program/package name.  E.g., for the GNU C
+Library the domain name is <code>libc</code>.
+
+<p class="noindent">A limit piece of example code should show how the programmer is supposed
+to work:
+
+<pre class="smallexample">     {
+       setlocale (LC_ALL, "");
+       textdomain ("test-package");
+       bindtextdomain ("test-package", "/usr/local/share/locale");
+       puts (gettext ("Hello, world!"));
+     }
+</pre>
+   <p>At the program start the default domain is <code>messages</code>, and the
+default locale is "C".  The <code>setlocale</code> call sets the locale
+according to the user's environment variables; remember that correct
+functioning of <code>gettext</code> relies on the correct setting of the
+<code>LC_MESSAGES</code> locale (for looking up the message catalog) and
+of the <code>LC_CTYPE</code> locale (for the character set conversion). 
+The <code>textdomain</code> call changes the default domain to
+<code>test-package</code>.  The <code>bindtextdomain</code> call specifies that
+the message catalogs for the domain <code>test-package</code> can be found
+below the directory <samp><span class="file">/usr/local/share/locale</span></samp>.
+
+   <p>If now the user set in her/his environment the variable <code>LANGUAGE</code>
+to <code>de</code> the <code>gettext</code> function will try to use the
+translations from the file
+
+<pre class="smallexample">     /usr/local/share/locale/de/LC_MESSAGES/test-package.mo
+</pre>
+   <p>From the above descriptions it should be clear which component of this
+filename is determined by which source.
+
+   <p>In the above example we assumed that the <code>LANGUAGE</code> environment
+variable to <code>de</code>.  This might be an appropriate selection but what
+happens if the user wants to use <code>LC_ALL</code> because of the wider
+usability and here the required value is <code>de_DE.ISO-8859-1</code>?  We
+already mentioned above that a situation like this is not infrequent. 
+E.g., a person might prefer reading a dialect and if this is not
+available fall back on the standard language.
+
+   <p>The <code>gettext</code> functions know about situations like this and can
+handle them gracefully.  The functions recognize the format of the value
+of the environment variable.  It can split the value is different pieces
+and by leaving out the only or the other part it can construct new
+values.  This happens of course in a predictable way.  To understand
+this one must know the format of the environment variable value.  There
+is one more or less standardized form, originally from the X/Open
+specification:
+
+   <p><code>language[_territory[.codeset]][@modifier]</code>
+
+   <p>Less specific locale names will be stripped of in the order of the
+following list:
+
+     <ol type=1 start=1>
+<li><code>codeset</code>
+<li><code>normalized codeset</code>
+<li><code>territory</code>
+<li><code>modifier</code>
+        </ol>
+
+   <p>The <code>language</code> field will never be dropped for obvious reasons.
+
+   <p>The only new thing is the <code>normalized codeset</code> entry.  This is
+another goodie which is introduced to help reducing the chaos which
+derives from the inability of the people to standardize the names of
+character sets.  Instead of ISO-8859-1<!-- /@w --> one can often see 8859-1<!-- /@w -->,
+88591<!-- /@w -->, iso8859-1<!-- /@w -->, or iso_8859-1<!-- /@w -->.  The <code>normalized
+codeset</code> value is generated from the user-provided character set name by
+applying the following rules:
+
+     <ol type=1 start=1>
+<li>Remove all characters beside numbers and letters. 
+<li>Fold letters to lowercase. 
+<li>If the same only contains digits prepend the string <code>"iso"</code>.
+        </ol>
+
+<p class="noindent">So all of the above name will be normalized to <code>iso88591</code>.  This
+allows the program user much more freely choosing the locale name.
+
+   <p>Even this extended functionality still does not help to solve the
+problem that completely different names can be used to denote the same
+locale (e.g., <code>de</code> and <code>german</code>).  To be of help in this
+situation the locale implementation and also the <code>gettext</code>
+functions know about aliases.
+
+   <p>The file <samp><span class="file">/usr/share/locale/locale.alias</span></samp> (replace <samp><span class="file">/usr</span></samp> with
+whatever prefix you used for configuring the C library) contains a
+mapping of alternative names to more regular names.  The system manager
+is free to add new entries to fill her/his own needs.  The selected
+locale from the environment is compared with the entries in the first
+column of this file ignoring the case.  If they match the value of the
+second column is used instead for the further handling.
+
+   <p>In the description of the format of the environment variables we already
+mentioned the character set as a factor in the selection of the message
+catalog.  In fact, only catalogs which contain text written using the
+character set of the system/program can be used (directly; there will
+come a solution for this some day).  This means for the user that s/he
+will always have to take care for this.  If in the collection of the
+message catalogs there are files for the same language but coded using
+different character sets the user has to be careful.
+
+   </body></html>
+

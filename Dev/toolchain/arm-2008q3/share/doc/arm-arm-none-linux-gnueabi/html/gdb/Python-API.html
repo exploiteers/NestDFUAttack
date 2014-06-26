@@ -1,0 +1,49 @@
+<html lang="en">
+<head>
+<title>Python API - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Python.html#Python" title="Python">
+<link rel="prev" href="Python-Commands.html#Python-Commands" title="Python Commands">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Python-API"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Python-Commands.html#Python-Commands">Python Commands</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Python.html#Python">Python</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.2.2 Python API</h4>
+
+<p><a name="index-python-api-1390"></a><a name="index-programming-in-python-1391"></a>
+<a name="index-python-stdout-1392"></a><a name="index-python-pagination-1393"></a>At startup, <span class="sc">gdb</span> overrides Python's <code>sys.stdout</code> and
+<code>sys.stderr</code> to print using <span class="sc">gdb</span>'s output-paging streams. 
+A Python program which outputs to one of these streams may have its
+output interrupted by the user (see <a href="Screen-Size.html#Screen-Size">Screen Size</a>).  In this
+situation, a Python <code>KeyboardInterrupt</code> exception is thrown.
+
+<ul class="menu">
+<li><a accesskey="1" href="Basic-Python.html#Basic-Python">Basic Python</a>:                 Basic Python Functions. 
+<li><a accesskey="2" href="Exception-Handling.html#Exception-Handling">Exception Handling</a>
+</ul>
+
+   </body></html>
+

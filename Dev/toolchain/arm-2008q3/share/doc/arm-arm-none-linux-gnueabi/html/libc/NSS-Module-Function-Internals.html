@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>NSS Module Function Internals - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Extending-NSS.html#Extending-NSS" title="Extending NSS">
+<link rel="prev" href="Adding-another-Service-to-NSS.html#Adding-another-Service-to-NSS" title="Adding another Service to NSS">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="NSS-Module-Function-Internals"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Adding-another-Service-to-NSS.html#Adding-another-Service-to-NSS">Adding another Service to NSS</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Extending-NSS.html#Extending-NSS">Extending NSS</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.4.2 Internals of the NSS Module Functions</h4>
+
+<p>Until now we only provided the syntactic interface for the functions in
+the NSS module.  In fact there is not much more we can say since the
+implementation obviously is different for each function.  But a few
+general rules must be followed by all functions.
+
+   <p>In fact there are four kinds of different functions which may appear in
+the interface.  All derive from the traditional ones for system databases. 
+<var>db</var> in the following table is normally an abbreviation for the
+database (e.g., it is <code>pw</code> for the password database).
+
+     <dl>
+<dt><code>enum nss_status _nss_</code><var>database</var><code>_set</code><var>db</var><code>ent (void)</code><dd>This function prepares the service for following operations.  For a
+simple file based lookup this means files could be opened, for other
+services this function simply is a noop.
+
+     <p>One special case for this function is that it takes an additional
+argument for some <var>database</var>s (i.e., the interface is
+<code>int set</code><var>db</var><code>ent (int)</code>).  <a href="Host-Names.html#Host-Names">Host Names</a>, which describes the
+<code>sethostent</code> function.
+
+     <p>The return value should be <var>NSS_STATUS_SUCCESS</var> or according to the
+table above in case of an error (see <a href="NSS-Modules-Interface.html#NSS-Modules-Interface">NSS Modules Interface</a>).
+
+     <br><dt><code>enum nss_status _nss_</code><var>database</var><code>_end</code><var>db</var><code>ent (void)</code><dd>This function simply closes all files which are still open or removes
+buffer caches.  If there are no files or buffers to remove this is again
+a simple noop.
+
+     <p>There normally is no return value different to <var>NSS_STATUS_SUCCESS</var>.
+
+     <br><dt><code>enum nss_status _nss_</code><var>database</var><code>_get</code><var>db</var><code>ent_r (</code><var>STRUCTURE</var><code> *result, char *buffer, size_t buflen, int *errnop)</code><dd>Since this function will be called several times in a row to retrieve
+one entry after the other it must keep some kind of state.  But this
+also means the functions are not really reentrant.  They are reentrant
+only in that simultaneous calls to this function will not try to
+write the retrieved data in the same place (as it would be the case for
+the non-reentrant functions); instead, it writes to the structure
+pointed to by the <var>result</var> parameter.  But the calls share a common
+state and in the case of a file access this means they return neighboring
+entries in the file.
+
+     <p>The buffer of length <var>buflen</var> pointed to by <var>buffer</var> can be used
+for storing some additional data for the result.  It is <em>not</em>
+guaranteed that the same buffer will be passed for the next call of this
+function.  Therefore one must not misuse this buffer to save some state
+information from one call to another.
+
+     <p>Before the function returns the implementation should store the value of
+the local <var>errno</var> variable in the variable pointed to be
+<var>errnop</var>.  This is important to guarantee the module working in
+statically linked programs.
+
+     <p>As explained above this function could also have an additional last
+argument.  This depends on the database used; it happens only for
+<code>host</code> and <code>networks</code>.
+
+     <p>The function shall return <code>NSS_STATUS_SUCCESS</code> as long as there are
+more entries.  When the last entry was read it should return
+<code>NSS_STATUS_NOTFOUND</code>.  When the buffer given as an argument is too
+small for the data to be returned <code>NSS_STATUS_TRYAGAIN</code> should be
+returned.  When the service was not formerly initialized by a call to
+<code>_nss_</code><var>DATABASE</var><code>_set</code><var>db</var><code>ent</code> all return value allowed for
+this function can also be returned here.
+
+     <br><dt><code>enum nss_status _nss_</code><var>DATABASE</var><code>_get</code><var>db</var><code>by</code><var>XX</var><code>_r (</code><var>PARAMS</var><code>, </code><var>STRUCTURE</var><code> *result, char *buffer, size_t buflen, int *errnop)</code><dd>This function shall return the entry from the database which is
+addressed by the <var>PARAMS</var>.  The type and number of these arguments
+vary.  It must be individually determined by looking to the user-level
+interface functions.  All arguments given to the non-reentrant version
+are here described by <var>PARAMS</var>.
+
+     <p>The result must be stored in the structure pointed to by <var>result</var>. 
+If there is additional data to return (say strings, where the
+<var>result</var> structure only contains pointers) the function must use the
+<var>buffer</var> or length <var>buflen</var>.  There must not be any references
+to non-constant global data.
+
+     <p>The implementation of this function should honor the <var>stayopen</var>
+flag set by the <code>set</code><var>DB</var><code>ent</code> function whenever this makes sense.
+
+     <p>Before the function returns the implementation should store the value of
+the local <var>errno</var> variable in the variable pointed to be
+<var>errnop</var>.  This is important to guarantee the module working in
+statically linked programs.
+
+     <p>Again, this function takes an additional last argument for the
+<code>host</code> and <code>networks</code> database.
+
+     <p>The return value should as always follow the rules given above
+(see <a href="NSS-Modules-Interface.html#NSS-Modules-Interface">NSS Modules Interface</a>).
+
+   </dl>
+
+   </body></html>
+

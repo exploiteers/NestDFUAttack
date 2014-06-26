@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Non-Local Details - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits" title="Non-Local Exits">
+<link rel="prev" href="Non_002dLocal-Intro.html#Non_002dLocal-Intro" title="Non-Local Intro">
+<link rel="next" href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals" title="Non-Local Exits and Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Non-Local-Details"></a>
+<a name="Non_002dLocal-Details"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals">Non-Local Exits and Signals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dLocal-Intro.html#Non_002dLocal-Intro">Non-Local Intro</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>
+<hr>
+</div>
+
+<h3 class="section">23.2 Details of Non-Local Exits</h3>
+
+<p>Here are the details on the functions and data structures used for
+performing non-local exits.  These facilities are declared in
+<samp><span class="file">setjmp.h</span></samp>. 
+<a name="index-setjmp_002eh-2796"></a>
+<!-- setjmp.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Data Type: <b>jmp_buf</b><var><a name="index-jmp_005fbuf-2797"></a></var><br>
+<blockquote><p>Objects of type <code>jmp_buf</code> hold the state information to
+be restored by a non-local exit.  The contents of a <code>jmp_buf</code>
+identify a specific place to return to. 
+</p></blockquote></div>
+
+<!-- setjmp.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>setjmp</b> (<var>jmp_buf state</var>)<var><a name="index-setjmp-2798"></a></var><br>
+<blockquote><p>When called normally, <code>setjmp</code> stores information about the
+execution state of the program in <var>state</var> and returns zero.  If
+<code>longjmp</code> is later used to perform a non-local exit to this
+<var>state</var>, <code>setjmp</code> returns a nonzero value. 
+</p></blockquote></div>
+
+<!-- setjmp.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: void <b>longjmp</b> (<var>jmp_buf state, int value</var>)<var><a name="index-longjmp-2799"></a></var><br>
+<blockquote><p>This function restores current execution to the state saved in
+<var>state</var>, and continues execution from the call to <code>setjmp</code> that
+established that return point.  Returning from <code>setjmp</code> by means of
+<code>longjmp</code> returns the <var>value</var> argument that was passed to
+<code>longjmp</code>, rather than <code>0</code>.  (But if <var>value</var> is given as
+<code>0</code>, <code>setjmp</code> returns <code>1</code>). 
+</p></blockquote></div>
+
+   <p>There are a lot of obscure but important restrictions on the use of
+<code>setjmp</code> and <code>longjmp</code>.  Most of these restrictions are
+present because non-local exits require a fair amount of magic on the
+part of the C compiler and can interact with other parts of the language
+in strange ways.
+
+   <p>The <code>setjmp</code> function is actually a macro without an actual
+function definition, so you shouldn't try to &lsquo;<samp><span class="samp">#undef</span></samp>&rsquo; it or take
+its address.  In addition, calls to <code>setjmp</code> are safe in only the
+following contexts:
+
+     <ul>
+<li>As the test expression of a selection or iteration
+statement (such as &lsquo;<samp><span class="samp">if</span></samp>&rsquo;, &lsquo;<samp><span class="samp">switch</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">while</span></samp>&rsquo;).
+
+     <li>As one operand of a equality or comparison operator that appears as the
+test expression of a selection or iteration statement.  The other
+operand must be an integer constant expression.
+
+     <li>As the operand of a unary &lsquo;<samp><span class="samp">!</span></samp>&rsquo; operator, that appears as the
+test expression of a selection or iteration statement.
+
+     <li>By itself as an expression statement. 
+</ul>
+
+   <p>Return points are valid only during the dynamic extent of the function
+that called <code>setjmp</code> to establish them.  If you <code>longjmp</code> to
+a return point that was established in a function that has already
+returned, unpredictable and disastrous things are likely to happen.
+
+   <p>You should use a nonzero <var>value</var> argument to <code>longjmp</code>.  While
+<code>longjmp</code> refuses to pass back a zero argument as the return value
+from <code>setjmp</code>, this is intended as a safety net against accidental
+misuse and is not really good programming style.
+
+   <p>When you perform a non-local exit, accessible objects generally retain
+whatever values they had at the time <code>longjmp</code> was called.  The
+exception is that the values of automatic variables local to the
+function containing the <code>setjmp</code> call that have been changed since
+the call to <code>setjmp</code> are indeterminate, unless you have declared
+them <code>volatile</code>.
+
+   </body></html>
+

@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>Efficiency and Malloc - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Allocating-Cleared-Space.html#Allocating-Cleared-Space" title="Allocating Cleared Space">
+<link rel="next" href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks" title="Aligned Memory Blocks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Efficiency-and-Malloc"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.6 Efficiency Considerations for <code>malloc</code></h5>
+
+<p><a name="index-efficiency-and-_0040code_007bmalloc_007d-269"></a>
+
+   <p>As opposed to other versions, the <code>malloc</code> in the GNU C Library
+does not round up block sizes to powers of two, neither for large nor
+for small sizes.  Neighboring chunks can be coalesced on a <code>free</code>
+no matter what their size is.  This makes the implementation suitable
+for all kinds of allocation patterns without generally incurring high
+memory waste through fragmentation.
+
+   <p>Very large blocks (much larger than a page) are allocated with
+<code>mmap</code> (anonymous or via <code>/dev/zero</code>) by this implementation. 
+This has the great advantage that these chunks are returned to the
+system immediately when they are freed.  Therefore, it cannot happen
+that a large chunk becomes &ldquo;locked&rdquo; in between smaller ones and even
+after calling <code>free</code> wastes memory.  The size threshold for
+<code>mmap</code> to be used can be adjusted with <code>mallopt</code>.  The use of
+<code>mmap</code> can also be disabled completely.
+
+   </body></html>
+

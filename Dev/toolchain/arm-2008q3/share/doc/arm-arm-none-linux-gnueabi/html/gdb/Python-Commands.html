@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+<title>Python Commands - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Python.html#Python" title="Python">
+<link rel="next" href="Python-API.html#Python-API" title="Python API">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Python-Commands"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Python-API.html#Python-API">Python API</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Python.html#Python">Python</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.2.1 Python Commands</h4>
+
+<p><a name="index-python-commands-1386"></a><a name="index-commands-to-access-python-1387"></a>
+<span class="sc">gdb</span> provides one command for accessing the Python interpreter,
+and one related setting:
+
+     
+<a name="index-python-1388"></a>
+<dl><dt><code>python </code><span class="roman">[</span><var>code</var><span class="roman">]</span><dd>The <code>python</code> command can be used to evaluate Python code.
+
+     <p>If given an argument, the <code>python</code> command will evaluate the
+argument as a Python command.  For example:
+
+     <pre class="smallexample">          (gdb) python print 23
+          23
+</pre>
+     <p>If you do not provide an argument to <code>python</code>, it will act as a
+multi-line command, like <code>define</code>.  In this case, the Python
+script is made up of subsequent command lines, given after the
+<code>python</code> command.  This command list is terminated using a line
+containing <code>end</code>.  For example:
+
+     <pre class="smallexample">          (gdb) python
+          Type python script
+          End with a line saying just "end".
+          &gt;print 23
+          &gt;end
+          23
+</pre>
+     <p><a name="index-maint-set-python-print_002dstack-1389"></a><br><dt><code>maint set python print-stack</code><dd>By default, <span class="sc">gdb</span> will print a stack trace when an error occurs
+in a Python script.  This can be controlled using <code>maint set
+python print-stack</code>: if <code>on</code>, the default, then Python stack
+printing is enabled; if <code>off</code>, then Python stack printing is
+disabled. 
+</dl>
+
+   </body></html>
+

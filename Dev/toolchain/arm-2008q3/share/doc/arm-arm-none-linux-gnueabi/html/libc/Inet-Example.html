@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Inet Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Internet-Namespace.html#Internet-Namespace" title="Internet Namespace">
+<link rel="prev" href="Byte-Order.html#Byte-Order" title="Byte Order">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Inet-Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Byte-Order.html#Byte-Order">Byte Order</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.6.7 Internet Socket Example</h4>
+
+<p>Here is an example showing how to create and name a socket in the
+Internet namespace.  The newly created socket exists on the machine that
+the program is running on.  Rather than finding and using the machine's
+Internet address, this example specifies <code>INADDR_ANY</code> as the host
+address; the system replaces that with the machine's actual address.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;sys/socket.h&gt;
+     #include &lt;netinet/in.h&gt;
+     
+     int
+     make_socket (uint16_t port)
+     {
+       int sock;
+       struct sockaddr_in name;
+     
+       /* <span class="roman">Create the socket.</span> */
+       sock = socket (PF_INET, SOCK_STREAM, 0);
+       if (sock &lt; 0)
+         {
+           perror ("socket");
+           exit (EXIT_FAILURE);
+         }
+     
+       /* <span class="roman">Give the socket a name.</span> */
+       name.sin_family = AF_INET;
+       name.sin_port = htons (port);
+       name.sin_addr.s_addr = htonl (INADDR_ANY);
+       if (bind (sock, (struct sockaddr *) &amp;name, sizeof (name)) &lt; 0)
+         {
+           perror ("bind");
+           exit (EXIT_FAILURE);
+         }
+     
+       return sock;
+     }
+</pre>
+   <p>Here is another example, showing how you can fill in a <code>sockaddr_in</code>
+structure, given a host name string and a port number:
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;sys/socket.h&gt;
+     #include &lt;netinet/in.h&gt;
+     #include &lt;netdb.h&gt;
+     
+     void
+     init_sockaddr (struct sockaddr_in *name,
+                    const char *hostname,
+                    uint16_t port)
+     {
+       struct hostent *hostinfo;
+     
+       name-&gt;sin_family = AF_INET;
+       name-&gt;sin_port = htons (port);
+       hostinfo = gethostbyname (hostname);
+       if (hostinfo == NULL)
+         {
+           fprintf (stderr, "Unknown host %s.\n", hostname);
+           exit (EXIT_FAILURE);
+         }
+       name-&gt;sin_addr = *(struct in_addr *) hostinfo-&gt;h_addr;
+     }
+</pre>
+   </body></html>
+

@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Receiving Arguments - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="How-Variadic.html#How-Variadic" title="How Variadic">
+<link rel="prev" href="Variadic-Prototypes.html#Variadic-Prototypes" title="Variadic Prototypes">
+<link rel="next" href="How-Many-Arguments.html#How-Many-Arguments" title="How Many Arguments">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Receiving-Arguments"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="How-Many-Arguments.html#How-Many-Arguments">How Many Arguments</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Variadic-Prototypes.html#Variadic-Prototypes">Variadic Prototypes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="How-Variadic.html#How-Variadic">How Variadic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.2.2.2 Receiving the Argument Values</h5>
+
+<p><a name="index-variadic-function-argument-access-3714"></a><a name="index-arguments-_0028variadic-functions_0029-3715"></a>
+Ordinary fixed arguments have individual names, and you can use these
+names to access their values.  But optional arguments have no
+names&mdash;nothing but &lsquo;<samp><span class="samp">...</span></samp>&rsquo;.  How can you access them?
+
+   <p><a name="index-stdarg_002eh-3716"></a>The only way to access them is sequentially, in the order they were
+written, and you must use special macros from <samp><span class="file">stdarg.h</span></samp> in the
+following three step process:
+
+     <ol type=1 start=1>
+<li>You initialize an argument pointer variable of type <code>va_list</code> using
+<code>va_start</code>.  The argument pointer when initialized points to the
+first optional argument.
+
+     <li>You access the optional arguments by successive calls to <code>va_arg</code>. 
+The first call to <code>va_arg</code> gives you the first optional argument,
+the next call gives you the second, and so on.
+
+     <p>You can stop at any time if you wish to ignore any remaining optional
+arguments.  It is perfectly all right for a function to access fewer
+arguments than were supplied in the call, but you will get garbage
+values if you try to access too many arguments.
+
+     <li>You indicate that you are finished with the argument pointer variable by
+calling <code>va_end</code>.
+
+     <p>(In practice, with most C compilers, calling <code>va_end</code> does nothing. 
+This is always true in the GNU C compiler.  But you might as well call
+<code>va_end</code> just in case your program is someday compiled with a peculiar
+compiler.)
+        </ol>
+
+   <p>See <a href="Argument-Macros.html#Argument-Macros">Argument Macros</a>, for the full definitions of <code>va_start</code>,
+<code>va_arg</code> and <code>va_end</code>.
+
+   <p>Steps 1 and 3 must be performed in the function that accepts the
+optional arguments.  However, you can pass the <code>va_list</code> variable
+as an argument to another function and perform all or part of step 2
+there.
+
+   <p>You can perform the entire sequence of three steps multiple times
+within a single function invocation.  If you want to ignore the optional
+arguments, you can do these steps zero times.
+
+   <p>You can have more than one argument pointer variable if you like.  You
+can initialize each variable with <code>va_start</code> when you wish, and
+then you can fetch arguments with each argument pointer as you wish. 
+Each argument pointer variable will sequence through the same set of
+argument values, but at its own pace.
+
+   <p><strong>Portability note:</strong> With some compilers, once you pass an
+argument pointer value to a subroutine, you must not keep using the same
+argument pointer value after that subroutine returns.  For full
+portability, you should just pass it to <code>va_end</code>.  This is actually
+an ISO&nbsp;C<!-- /@w --> requirement, but most ANSI C compilers work happily
+regardless.
+
+   </body></html>
+

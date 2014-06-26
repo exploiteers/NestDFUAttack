@@ -1,0 +1,43 @@
+#!/bin/sh
+#GTVHacker.com
+#Spawns a telnet shell on the NEST
+
+mkdir /tmp/1
+mount /dev/mtdblock7 /tmp/1 -tjffs2
+
+cp /bin/busybox2 /tmp/1/bin/busybox2
+cp /bin/autossh /tmp/1/bin/autossh
+chmod 777 /tmp/1/bin/busybox2
+chmod 777 /tmp/1/bin/autossh
+
+cp /bin/sshconnect /tmp/1/bin/sshconnect
+chmod +x /tmp/1/bin/sshconnect
+
+cp /bin/dropbearmulti /tmp/1/bin/dropbearmulti
+ln -s /bin/dropbearmulti /tmp/1/bin/dropbear
+ln -s /bin/dropbearmulti /tmp/1/bin/dropbearkey
+ln -s /bin/dropbearmulti /tmp/1/bin/ssh
+ln -s /bin/dropbearmulti /tmp/1/bin/dropbearconvert
+
+chmod +x /tmp/1/bin/dropbearmulti
+chmod +x /tmp/1/bin/dropbear
+chmod +x /tmp/1/bin/dropbearkey
+chmod +x /tmp/1/bin/ssh
+chmod +x /tmp/1/bin/dropbearconvert
+
+mkdir /tmp/1/etc/dropbear
+/tmp/1/bin/dropbearkey -t dss -f /tmp/1/etc/dropbear/dropbear_dss_host_key
+/tmp/1/bin/dropbearkey -t rsa -s 2048 -f /tmp/1/etc/dropbear/dropbear_rsa_host_key
+/tmp/1/bin/dropbearkey -t ecdsa -s 521 -f /tmp/1/etc/dropbear/dropbear_ecdsa_host_key
+
+cat /tmp/1/etc/shadow | grep -v root > /tmp/1/etc/shadow
+echo "root:MkxPNEHFJvbEI:16243:0:99999:7:::" >> /tmp/1/etc/shadow
+
+#cat /tmp/1/etc/init.d/rcS|grep -v "sshconnect"|grep -v "dropbear" > /tmp/1/etc/init.d/rcS
+
+echo "/bin/dropbear" >> /tmp/1/etc/init.d/rcS
+
+echo "/bin/sshconnect" >> /tmp/1/etc/init.d/rcS
+
+umount /tmp/1
+reboot

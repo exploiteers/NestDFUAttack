@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+<title>Non-reentrant Character Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion" title="Non-reentrant Conversion">
+<link rel="next" href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion" title="Non-reentrant String Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Non-reentrant-Character-Conversion"></a>
+<a name="Non_002dreentrant-Character-Conversion"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion">Non-reentrant String Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.4.1 Non-reentrant Conversion of Single Characters</h4>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>mbtowc</b> (<var>wchar_t *restrict result, const char *restrict string, size_t size</var>)<var><a name="index-mbtowc-661"></a></var><br>
+<blockquote><p>The <code>mbtowc</code> (&ldquo;multibyte to wide character&rdquo;) function when called
+with non-null <var>string</var> converts the first multibyte character
+beginning at <var>string</var> to its corresponding wide character code.  It
+stores the result in <code>*</code><var>result</var>.
+
+        <p><code>mbtowc</code> never examines more than <var>size</var> bytes.  (The idea is
+to supply for <var>size</var> the number of bytes of data you have in hand.)
+
+        <p><code>mbtowc</code> with non-null <var>string</var> distinguishes three
+possibilities: the first <var>size</var> bytes at <var>string</var> start with
+valid multibyte characters, they start with an invalid byte sequence or
+just part of a character, or <var>string</var> points to an empty string (a
+null character).
+
+        <p>For a valid multibyte character, <code>mbtowc</code> converts it to a wide
+character and stores that in <code>*</code><var>result</var>, and returns the
+number of bytes in that character (always at least 1 and never
+more than <var>size</var>).
+
+        <p>For an invalid byte sequence, <code>mbtowc</code> returns -1.  For an
+empty string, it returns 0, also storing <code>'\0'</code> in
+<code>*</code><var>result</var>.
+
+        <p>If the multibyte character code uses shift characters, then
+<code>mbtowc</code> maintains and updates a shift state as it scans.  If you
+call <code>mbtowc</code> with a null pointer for <var>string</var>, that
+initializes the shift state to its standard initial value.  It also
+returns nonzero if the multibyte character code in use actually has a
+shift state.  See <a href="Shift-State.html#Shift-State">Shift State</a>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wctomb</b> (<var>char *string, wchar_t wchar</var>)<var><a name="index-wctomb-662"></a></var><br>
+<blockquote><p>The <code>wctomb</code> (&ldquo;wide character to multibyte&rdquo;) function converts
+the wide character code <var>wchar</var> to its corresponding multibyte
+character sequence, and stores the result in bytes starting at
+<var>string</var>.  At most <code>MB_CUR_MAX</code> characters are stored.
+
+        <p><code>wctomb</code> with non-null <var>string</var> distinguishes three
+possibilities for <var>wchar</var>: a valid wide character code (one that can
+be translated to a multibyte character), an invalid code, and
+<code>L'\0'</code>.
+
+        <p>Given a valid code, <code>wctomb</code> converts it to a multibyte character,
+storing the bytes starting at <var>string</var>.  Then it returns the number
+of bytes in that character (always at least 1 and never more
+than <code>MB_CUR_MAX</code>).
+
+        <p>If <var>wchar</var> is an invalid wide character code, <code>wctomb</code> returns
+-1.  If <var>wchar</var> is <code>L'\0'</code>, it returns <code>0</code>, also
+storing <code>'\0'</code> in <code>*</code><var>string</var>.
+
+        <p>If the multibyte character code uses shift characters, then
+<code>wctomb</code> maintains and updates a shift state as it scans.  If you
+call <code>wctomb</code> with a null pointer for <var>string</var>, that
+initializes the shift state to its standard initial value.  It also
+returns nonzero if the multibyte character code in use actually has a
+shift state.  See <a href="Shift-State.html#Shift-State">Shift State</a>.
+
+        <p>Calling this function with a <var>wchar</var> argument of zero when
+<var>string</var> is not null has the side-effect of reinitializing the
+stored shift state <em>as well as</em> storing the multibyte character
+<code>'\0'</code> and returning 0. 
+</p></blockquote></div>
+
+   <p>Similar to <code>mbrlen</code> there is also a non-reentrant function that
+computes the length of a multibyte character.  It can be defined in
+terms of <code>mbtowc</code>.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>mblen</b> (<var>const char *string, size_t size</var>)<var><a name="index-mblen-663"></a></var><br>
+<blockquote><p>The <code>mblen</code> function with a non-null <var>string</var> argument returns
+the number of bytes that make up the multibyte character beginning at
+<var>string</var>, never examining more than <var>size</var> bytes.  (The idea is
+to supply for <var>size</var> the number of bytes of data you have in hand.)
+
+        <p>The return value of <code>mblen</code> distinguishes three possibilities: the
+first <var>size</var> bytes at <var>string</var> start with valid multibyte
+characters, they start with an invalid byte sequence or just part of a
+character, or <var>string</var> points to an empty string (a null character).
+
+        <p>For a valid multibyte character, <code>mblen</code> returns the number of
+bytes in that character (always at least <code>1</code> and never more than
+<var>size</var>).  For an invalid byte sequence, <code>mblen</code> returns
+-1.  For an empty string, it returns 0.
+
+        <p>If the multibyte character code uses shift characters, then <code>mblen</code>
+maintains and updates a shift state as it scans.  If you call
+<code>mblen</code> with a null pointer for <var>string</var>, that initializes the
+shift state to its standard initial value.  It also returns a nonzero
+value if the multibyte character code in use actually has a shift state. 
+See <a href="Shift-State.html#Shift-State">Shift State</a>.
+
+        <p><a name="index-stdlib_002eh-664"></a>The function <code>mblen</code> is declared in <samp><span class="file">stdlib.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

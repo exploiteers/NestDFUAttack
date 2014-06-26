@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Environment Variables - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link rel="prev" href="Program-Arguments.html#Program-Arguments" title="Program Arguments">
+<link rel="next" href="System-Calls.html#System-Calls" title="System Calls">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Environment-Variables"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-Calls.html#System-Calls">System Calls</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Program-Arguments.html#Program-Arguments">Program Arguments</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Basics.html#Program-Basics">Program Basics</a>
+<hr>
+</div>
+
+<h3 class="section">25.4 Environment Variables</h3>
+
+<p><a name="index-environment-variable-3097"></a>When a program is executed, it receives information about the context in
+which it was invoked in two ways.  The first mechanism uses the
+<var>argv</var> and <var>argc</var> arguments to its <code>main</code> function, and is
+discussed in <a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>.  The second mechanism uses
+<dfn>environment variables</dfn> and is discussed in this section.
+
+   <p>The <var>argv</var> mechanism is typically used to pass command-line
+arguments specific to the particular program being invoked.  The
+environment, on the other hand, keeps track of information that is
+shared by many programs, changes infrequently, and that is less
+frequently used.
+
+   <p>The environment variables discussed in this section are the same
+environment variables that you set using assignments and the
+<code>export</code> command in the shell.  Programs executed from the shell
+inherit all of the environment variables from the shell. 
+<!-- !!! xref to right part of bash manual when it exists -->
+
+   <p><a name="index-environment-3098"></a>Standard environment variables are used for information about the user's
+home directory, terminal type, current locale, and so on; you can define
+additional variables for other purposes.  The set of all environment
+variables that have values is collectively known as the
+<dfn>environment</dfn>.
+
+   <p>Names of environment variables are case-sensitive and must not contain
+the character &lsquo;<samp><span class="samp">=</span></samp>&rsquo;.  System-defined environment variables are
+invariably uppercase.
+
+   <p>The values of environment variables can be anything that can be
+represented as a string.  A value must not contain an embedded null
+character, since this is assumed to terminate the string.
+
+<ul class="menu">
+<li><a accesskey="1" href="Environment-Access.html#Environment-Access">Environment Access</a>:           How to get and set the values of
+				 environment variables. 
+<li><a accesskey="2" href="Standard-Environment.html#Standard-Environment">Standard Environment</a>:         These environment variables have
+                		 standard interpretations. 
+</ul>
+
+   </body></html>
+

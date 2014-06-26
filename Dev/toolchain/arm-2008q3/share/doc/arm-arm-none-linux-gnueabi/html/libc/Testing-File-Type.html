@@ -1,0 +1,219 @@
+<html lang="en">
+<head>
+<title>Testing File Type - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="Reading-Attributes.html#Reading-Attributes" title="Reading Attributes">
+<link rel="next" href="File-Owner.html#File-Owner" title="File Owner">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Testing-File-Type"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Owner.html#File-Owner">File Owner</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Reading-Attributes.html#Reading-Attributes">Reading Attributes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.3 Testing the Type of a File</h4>
+
+<p>The <dfn>file mode</dfn>, stored in the <code>st_mode</code> field of the file
+attributes, contains two kinds of information: the file type code, and
+the access permission bits.  This section discusses only the type code,
+which you can use to tell whether the file is a directory, socket,
+symbolic link, and so on.  For details about access permissions see
+<a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>.
+
+   <p>There are two ways you can access the file type information in a file
+mode.  Firstly, for each file type there is a <dfn>predicate macro</dfn>
+which examines a given file mode and returns whether it is of that type
+or not.  Secondly, you can mask out the rest of the file mode to leave
+just the file type code, and compare this against constants for each of
+the supported file types.
+
+   <p>All of the symbols listed in this section are defined in the header file
+<samp><span class="file">sys/stat.h</span></samp>. 
+<a name="index-sys_002fstat_002eh-1510"></a>
+The following predicate macros test the type of a file, given the value
+<var>m</var> which is the <code>st_mode</code> field returned by <code>stat</code> on
+that file:
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISDIR</b> (<var>mode_t m</var>)<var><a name="index-S_005fISDIR-1511"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a directory. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISCHR</b> (<var>mode_t m</var>)<var><a name="index-S_005fISCHR-1512"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a character special file (a
+device like a terminal). 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISBLK</b> (<var>mode_t m</var>)<var><a name="index-S_005fISBLK-1513"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a block special file (a device
+like a disk). 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISREG</b> (<var>mode_t m</var>)<var><a name="index-S_005fISREG-1514"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a regular file. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISFIFO</b> (<var>mode_t m</var>)<var><a name="index-S_005fISFIFO-1515"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a FIFO special file, or a
+pipe.  See <a href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISLNK</b> (<var>mode_t m</var>)<var><a name="index-S_005fISLNK-1516"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a symbolic link. 
+See <a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>S_ISSOCK</b> (<var>mode_t m</var>)<var><a name="index-S_005fISSOCK-1517"></a></var><br>
+<blockquote><p>This macro returns non-zero if the file is a socket.  See <a href="Sockets.html#Sockets">Sockets</a>. 
+</p></blockquote></div>
+
+   <p>An alternate non-POSIX method of testing the file type is supported for
+compatibility with BSD.  The mode can be bitwise AND-ed with
+<code>S_IFMT</code> to extract the file type code, and compared to the
+appropriate constant.  For example,
+
+<pre class="smallexample">     S_ISCHR (<var>mode</var>)
+</pre>
+   <p class="noindent">is equivalent to:
+
+<pre class="smallexample">     ((<var>mode</var> &amp; S_IFMT) == S_IFCHR)
+</pre>
+   <!-- sys/stat.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>S_IFMT</b><var><a name="index-S_005fIFMT-1518"></a></var><br>
+<blockquote><p>This is a bit mask used to extract the file type code from a mode value. 
+</p></blockquote></div>
+
+   <p>These are the symbolic names for the different file type codes:
+
+     <dl>
+<!-- sys/stat.h -->
+<!-- BSD -->
+<dt><code>S_IFDIR</code><dd><a name="index-S_005fIFDIR-1519"></a>This is the file type constant of a directory file.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFCHR</code><dd><a name="index-S_005fIFCHR-1520"></a>This is the file type constant of a character-oriented device file.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFBLK</code><dd><a name="index-S_005fIFBLK-1521"></a>This is the file type constant of a block-oriented device file.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFREG</code><dd><a name="index-S_005fIFREG-1522"></a>This is the file type constant of a regular file.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFLNK</code><dd><a name="index-S_005fIFLNK-1523"></a>This is the file type constant of a symbolic link.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFSOCK</code><dd><a name="index-S_005fIFSOCK-1524"></a>This is the file type constant of a socket.
+
+     <!-- sys/stat.h -->
+     <!-- BSD -->
+     <br><dt><code>S_IFIFO</code><dd><a name="index-S_005fIFIFO-1525"></a>This is the file type constant of a FIFO or pipe. 
+</dl>
+
+   <p>The POSIX.1b standard introduced a few more objects which possibly can
+be implemented as object in the filesystem.  These are message queues,
+semaphores, and shared memory objects.  To allow differentiating these
+objects from other files the POSIX standard introduces three new test
+macros.  But unlike the other macros it does not take the value of the
+<code>st_mode</code> field as the parameter.  Instead they expect a pointer to
+the whole <code>struct stat</code> structure.
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_TYPEISMQ</b> (<var>struct stat *s</var>)<var><a name="index-S_005fTYPEISMQ-1526"></a></var><br>
+<blockquote><p>If the system implement POSIX message queues as distinct objects and the
+file is a message queue object, this macro returns a non-zero value. 
+In all other cases the result is zero. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_TYPEISSEM</b> (<var>struct stat *s</var>)<var><a name="index-S_005fTYPEISSEM-1527"></a></var><br>
+<blockquote><p>If the system implement POSIX semaphores as distinct objects and the
+file is a semaphore object, this macro returns a non-zero value. 
+In all other cases the result is zero. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>S_TYPEISSHM</b> (<var>struct stat *s</var>)<var><a name="index-S_005fTYPEISSHM-1528"></a></var><br>
+<blockquote><p>If the system implement POSIX shared memory objects as distinct objects
+and the file is an shared memory object, this macro returns a non-zero
+value.  In all other cases the result is zero. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,200 @@
+<html lang="en">
+<head>
+<title>Permission Bits - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="File-Owner.html#File-Owner" title="File Owner">
+<link rel="next" href="Access-Permission.html#Access-Permission" title="Access Permission">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Permission-Bits"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Access-Permission.html#Access-Permission">Access Permission</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Owner.html#File-Owner">File Owner</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.5 The Mode Bits for Access Permission</h4>
+
+<p>The <dfn>file mode</dfn>, stored in the <code>st_mode</code> field of the file
+attributes, contains two kinds of information: the file type code, and
+the access permission bits.  This section discusses only the access
+permission bits, which control who can read or write the file. 
+See <a href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>, for information about the file type code.
+
+   <p>All of the symbols listed in this section are defined in the header file
+<samp><span class="file">sys/stat.h</span></samp>. 
+<a name="index-sys_002fstat_002eh-1537"></a>
+<a name="index-file-permission-bits-1538"></a>These symbolic constants are defined for the file mode bits that control
+access permission for the file:
+
+     <dl>
+<!-- sys/stat.h -->
+<!-- POSIX.1 -->
+<dt><code>S_IRUSR</code><dd><a name="index-S_005fIRUSR-1539"></a><!-- sys/stat.h -->
+<!-- BSD -->
+<dt><code>S_IREAD</code><dd><a name="index-S_005fIREAD-1540"></a>Read permission bit for the owner of the file.  On many systems this bit
+is 0400.  <code>S_IREAD</code> is an obsolete synonym provided for BSD
+compatibility.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IWUSR</code><dd><a name="index-S_005fIWUSR-1541"></a><!-- sys/stat.h -->
+<!-- BSD -->
+<dt><code>S_IWRITE</code><dd><a name="index-S_005fIWRITE-1542"></a>Write permission bit for the owner of the file.  Usually 0200. 
+<code>S_IWRITE</code><!-- /@w --> is an obsolete synonym provided for BSD compatibility.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IXUSR</code><dd><a name="index-S_005fIXUSR-1543"></a><!-- sys/stat.h -->
+<!-- BSD -->
+<dt><code>S_IEXEC</code><dd><a name="index-S_005fIEXEC-1544"></a>Execute (for ordinary files) or search (for directories) permission bit
+for the owner of the file.  Usually 0100.  <code>S_IEXEC</code> is an obsolete
+synonym provided for BSD compatibility.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IRWXU</code><dd><a name="index-S_005fIRWXU-1545"></a>This is equivalent to &lsquo;<samp><span class="samp">(S_IRUSR | S_IWUSR | S_IXUSR)</span></samp>&rsquo;.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IRGRP</code><dd><a name="index-S_005fIRGRP-1546"></a>Read permission bit for the group owner of the file.  Usually 040.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IWGRP</code><dd><a name="index-S_005fIWGRP-1547"></a>Write permission bit for the group owner of the file.  Usually 020.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IXGRP</code><dd><a name="index-S_005fIXGRP-1548"></a>Execute or search permission bit for the group owner of the file. 
+Usually 010.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IRWXG</code><dd><a name="index-S_005fIRWXG-1549"></a>This is equivalent to &lsquo;<samp><span class="samp">(S_IRGRP | S_IWGRP | S_IXGRP)</span></samp>&rsquo;.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IROTH</code><dd><a name="index-S_005fIROTH-1550"></a>Read permission bit for other users.  Usually 04.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IWOTH</code><dd><a name="index-S_005fIWOTH-1551"></a>Write permission bit for other users.  Usually 02.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IXOTH</code><dd><a name="index-S_005fIXOTH-1552"></a>Execute or search permission bit for other users.  Usually 01.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>S_IRWXO</code><dd><a name="index-S_005fIRWXO-1553"></a>This is equivalent to &lsquo;<samp><span class="samp">(S_IROTH | S_IWOTH | S_IXOTH)</span></samp>&rsquo;.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX -->
+     <br><dt><code>S_ISUID</code><dd><a name="index-S_005fISUID-1554"></a>This is the set-user-ID on execute bit, usually 04000. 
+See <a href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>.
+
+     <!-- sys/stat.h -->
+     <!-- POSIX -->
+     <br><dt><code>S_ISGID</code><dd><a name="index-S_005fISGID-1555"></a>This is the set-group-ID on execute bit, usually 02000. 
+See <a href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>.
+
+     <p><a name="index-sticky-bit-1556"></a><!-- sys/stat.h -->
+<!-- BSD -->
+<br><dt><code>S_ISVTX</code><dd><a name="index-S_005fISVTX-1557"></a>This is the <dfn>sticky</dfn> bit, usually 01000.
+
+     <p>For a directory it gives permission to delete a file in that directory
+only if you own that file.  Ordinarily, a user can either delete all the
+files in a directory or cannot delete any of them (based on whether the
+user has write permission for the directory).  The same restriction
+applies&mdash;you must have both write permission for the directory and own
+the file you want to delete.  The one exception is that the owner of the
+directory can delete any file in the directory, no matter who owns it
+(provided the owner has given himself write permission for the
+directory).  This is commonly used for the <samp><span class="file">/tmp</span></samp> directory, where
+anyone may create files but not delete files created by other users.
+
+     <p>Originally the sticky bit on an executable file modified the swapping
+policies of the system.  Normally, when a program terminated, its pages
+in core were immediately freed and reused.  If the sticky bit was set on
+the executable file, the system kept the pages in core for a while as if
+the program were still running.  This was advantageous for a program
+likely to be run many times in succession.  This usage is obsolete in
+modern systems.  When a program terminates, its pages always remain in
+core as long as there is no shortage of memory in the system.  When the
+program is next run, its pages will still be in core if no shortage
+arose since the last run.
+
+     <p>On some modern systems where the sticky bit has no useful meaning for an
+executable file, you cannot set the bit at all for a non-directory. 
+If you try, <code>chmod</code> fails with <code>EFTYPE</code>;
+see <a href="Setting-Permissions.html#Setting-Permissions">Setting Permissions</a>.
+
+     <p>Some systems (particularly SunOS) have yet another use for the sticky
+bit.  If the sticky bit is set on a file that is <em>not</em> executable,
+it means the opposite: never cache the pages of this file at all.  The
+main use of this is for the files on an NFS server machine which are
+used as the swap area of diskless client machines.  The idea is that the
+pages of the file will be cached in the client's memory, so it is a
+waste of the server's memory to cache them a second time.  With this
+usage the sticky bit also implies that the filesystem may fail to record
+the file's modification time onto disk reliably (the idea being that
+no-one cares for a swap file).
+
+     <p>This bit is only available on BSD systems (and those derived from
+them).  Therefore one has to use the <code>_BSD_SOURCE</code> feature select
+macro to get the definition (see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>). 
+</dl>
+
+   <p>The actual bit values of the symbols are listed in the table above
+so you can decode file mode values when debugging your programs. 
+These bit values are correct for most systems, but they are not
+guaranteed.
+
+   <p><strong>Warning:</strong> Writing explicit numbers for file permissions is bad
+practice.  Not only is it not portable, it also requires everyone who
+reads your program to remember what the bits mean.  To make your program
+clean use the symbolic names.
+
+   </body></html>
+

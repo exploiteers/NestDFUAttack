@@ -1,0 +1,181 @@
+<html lang="en">
+<head>
+<title>String Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams" title="Other Kinds of Streams">
+<link rel="next" href="Obstack-Streams.html#Obstack-Streams" title="Obstack Streams">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Obstack-Streams.html#Obstack-Streams">Obstack Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams">Other Kinds of Streams</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.21.1 String Streams</h4>
+
+<p><a name="index-stream_002c-for-I_002fO-to-a-string-1153"></a><a name="index-string-stream-1154"></a>The <code>fmemopen</code> and <code>open_memstream</code> functions allow you to do
+I/O to a string or memory buffer.  These facilities are declared in
+<samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1155"></a>
+<!-- stdio.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Function: FILE * <b>fmemopen</b> (<var>void *buf, size_t size, const char *opentype</var>)<var><a name="index-fmemopen-1156"></a></var><br>
+<blockquote><p>This function opens a stream that allows the access specified by the
+<var>opentype</var> argument, that reads from or writes to the buffer specified
+by the argument <var>buf</var>.  This array must be at least <var>size</var> bytes long.
+
+        <p>If you specify a null pointer as the <var>buf</var> argument, <code>fmemopen</code>
+dynamically allocates an array <var>size</var> bytes long (as with <code>malloc</code>;
+see <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>).  This is really only useful
+if you are going to write things to the buffer and then read them back
+in again, because you have no way of actually getting a pointer to the
+buffer (for this, try <code>open_memstream</code>, below).  The buffer is
+freed when the stream is closed.
+
+        <p>The argument <var>opentype</var> is the same as in <code>fopen</code>
+(see <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>).  If the <var>opentype</var> specifies
+append mode, then the initial file position is set to the first null
+character in the buffer.  Otherwise the initial file position is at the
+beginning of the buffer.
+
+        <p>When a stream open for writing is flushed or closed, a null character
+(zero byte) is written at the end of the buffer if it fits.  You
+should add an extra byte to the <var>size</var> argument to account for this. 
+Attempts to write more than <var>size</var> bytes to the buffer result
+in an error.
+
+        <p>For a stream open for reading, null characters (zero bytes) in the
+buffer do not count as &ldquo;end of file&rdquo;.  Read operations indicate end of
+file only when the file position advances past <var>size</var> bytes.  So, if
+you want to read characters from a null-terminated string, you should
+supply the length of the string as the <var>size</var> argument. 
+</p></blockquote></div>
+
+   <p>Here is an example of using <code>fmemopen</code> to create a stream for
+reading from a string:
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     
+     static char buffer[] = "foobar";
+     
+     int
+     main (void)
+     {
+       int ch;
+       FILE *stream;
+     
+       stream = fmemopen (buffer, strlen (buffer), "r");
+       while ((ch = fgetc (stream)) != EOF)
+         printf ("Got %c\n", ch);
+       fclose (stream);
+     
+       return 0;
+     }
+</pre>
+   <p>This program produces the following output:
+
+<pre class="smallexample">     Got f
+     Got o
+     Got o
+     Got b
+     Got a
+     Got r
+</pre>
+   <!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: FILE * <b>open_memstream</b> (<var>char **ptr, size_t *sizeloc</var>)<var><a name="index-open_005fmemstream-1157"></a></var><br>
+<blockquote><p>This function opens a stream for writing to a buffer.  The buffer is
+allocated dynamically and grown as necessary, using <code>malloc</code>. 
+After you've closed the stream, this buffer is your responsibility to
+clean up using <code>free</code> or <code>realloc</code>.  See <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>.
+
+        <p>When the stream is closed with <code>fclose</code> or flushed with
+<code>fflush</code>, the locations <var>ptr</var> and <var>sizeloc</var> are updated to
+contain the pointer to the buffer and its size.  The values thus stored
+remain valid only as long as no further output on the stream takes
+place.  If you do more output, you must flush the stream again to store
+new values before you use them again.
+
+        <p>A null character is written at the end of the buffer.  This null character
+is <em>not</em> included in the size value stored at <var>sizeloc</var>.
+
+        <p>You can move the stream's file position with <code>fseek</code> or
+<code>fseeko</code> (see <a href="File-Positioning.html#File-Positioning">File Positioning</a>).  Moving the file position past
+the end of the data already written fills the intervening space with
+zeroes. 
+</p></blockquote></div>
+
+   <p>Here is an example of using <code>open_memstream</code>:
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     
+     int
+     main (void)
+     {
+       char *bp;
+       size_t size;
+       FILE *stream;
+     
+       stream = open_memstream (&amp;bp, &amp;size);
+       fprintf (stream, "hello");
+       fflush (stream);
+       printf ("buf = `%s', size = %d\n", bp, size);
+       fprintf (stream, ", world");
+       fclose (stream);
+       printf ("buf = `%s', size = %d\n", bp, size);
+     
+       return 0;
+     }
+</pre>
+   <p>This program produces the following output:
+
+<pre class="smallexample">     buf = `hello', size = 5
+     buf = `hello, world', size = 12
+</pre>
+   <!-- @group  Invalid outside @example. -->
+   </body></html>
+

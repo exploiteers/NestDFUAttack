@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Absolute Value - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="next" href="Normalization-Functions.html#Normalization-Functions" title="Normalization Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Absolute-Value"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Normalization-Functions.html#Normalization-Functions">Normalization Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.1 Absolute Value</h4>
+
+<p><a name="index-absolute-value-functions-2403"></a>
+These functions are provided for obtaining the <dfn>absolute value</dfn> (or
+<dfn>magnitude</dfn>) of a number.  The absolute value of a real number
+<var>x</var> is <var>x</var> if <var>x</var> is positive, &minus;<var>x</var> if <var>x</var> is
+negative.  For a complex number <var>z</var>, whose real part is <var>x</var> and
+whose imaginary part is <var>y</var>, the absolute value is <code>sqrt&nbsp;(</code><var>x</var><code>*</code><var>x</var><code>&nbsp;+&nbsp;</code><var>y</var><code>*</code><var>y</var><code>)</code><!-- /@w -->.
+
+   <p><a name="index-math_002eh-2404"></a><a name="index-stdlib_002eh-2405"></a>Prototypes for <code>abs</code>, <code>labs</code> and <code>llabs</code> are in <samp><span class="file">stdlib.h</span></samp>;
+<code>imaxabs</code> is declared in <samp><span class="file">inttypes.h</span></samp>;
+<code>fabs</code>, <code>fabsf</code> and <code>fabsl</code> are declared in <samp><span class="file">math.h</span></samp>. 
+<code>cabs</code>, <code>cabsf</code> and <code>cabsl</code> are declared in <samp><span class="file">complex.h</span></samp>.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>abs</b> (<var>int number</var>)<var><a name="index-abs-2406"></a></var><br>
+<blockquote><!-- stdlib.h -->
+     <!-- ISO -->
+   &mdash; Function: long int <b>labs</b> (<var>long int number</var>)<var><a name="index-labs-2407"></a></var><br>
+<blockquote><!-- stdlib.h -->
+     <!-- ISO -->
+   &mdash; Function: long long int <b>llabs</b> (<var>long long int number</var>)<var><a name="index-llabs-2408"></a></var><br>
+<blockquote><!-- inttypes.h -->
+     <!-- ISO -->
+   &mdash; Function: intmax_t <b>imaxabs</b> (<var>intmax_t number</var>)<var><a name="index-imaxabs-2409"></a></var><br>
+<blockquote><p>These functions return the absolute value of <var>number</var>.
+
+        <p>Most computers use a two's complement integer representation, in which
+the absolute value of <code>INT_MIN</code> (the smallest possible <code>int</code>)
+cannot be represented; thus, <code>abs&nbsp;(INT_MIN)</code><!-- /@w --> is not defined.
+
+        <p><code>llabs</code> and <code>imaxdiv</code> are new to ISO&nbsp;C99<!-- /@w -->.
+
+        <p>See <a href="Integers.html#Integers">Integers</a> for a description of the <code>intmax_t</code> type.
+
+        </blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fabs</b> (<var>double number</var>)<var><a name="index-fabs-2410"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fabsf</b> (<var>float number</var>)<var><a name="index-fabsf-2411"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fabsl</b> (<var>long double number</var>)<var><a name="index-fabsl-2412"></a></var><br>
+<blockquote><p>This function returns the absolute value of the floating-point number
+<var>number</var>. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>cabs</b> (<var>complex double z</var>)<var><a name="index-cabs-2413"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>cabsf</b> (<var>complex float z</var>)<var><a name="index-cabsf-2414"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>cabsl</b> (<var>complex long double z</var>)<var><a name="index-cabsl-2415"></a></var><br>
+<blockquote><p>These functions return the absolute  value of the complex number <var>z</var>
+(see <a href="Complex-Numbers.html#Complex-Numbers">Complex Numbers</a>).  The absolute value of a complex number is:
+
+     <pre class="smallexample">          sqrt (creal (<var>z</var>) * creal (<var>z</var>) + cimag (<var>z</var>) * cimag (<var>z</var>))
+</pre>
+        <p>This function should always be used instead of the direct formula
+because it takes special care to avoid losing precision.  It may also
+take advantage of hardware support for this operation. See <code>hypot</code>
+in <a href="Exponents-and-Logarithms.html#Exponents-and-Logarithms">Exponents and Logarithms</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

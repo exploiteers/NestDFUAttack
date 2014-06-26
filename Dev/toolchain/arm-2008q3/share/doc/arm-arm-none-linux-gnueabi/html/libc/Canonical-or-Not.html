@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>Canonical or Not - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link rel="prev" href="I_002fO-Queues.html#I_002fO-Queues" title="I/O Queues">
+<link rel="next" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Canonical-or-Not"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="I_002fO-Queues.html#I_002fO-Queues">I/O Queues</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>
+<hr>
+</div>
+
+<h3 class="section">17.3 Two Styles of Input: Canonical or Not</h3>
+
+<p>POSIX systems support two basic modes of input: canonical and
+noncanonical.
+
+   <p><a name="index-canonical-input-processing-1853"></a>In <dfn>canonical input processing</dfn> mode, terminal input is processed in
+lines terminated by newline (<code>'\n'</code>), EOF, or EOL characters.  No
+input can be read until an entire line has been typed by the user, and
+the <code>read</code> function (see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>) returns at most a
+single line of input, no matter how many bytes are requested.
+
+   <p>In canonical input mode, the operating system provides input editing
+facilities: some characters are interpreted specially to perform editing
+operations within the current line of text, such as ERASE and KILL. 
+See <a href="Editing-Characters.html#Editing-Characters">Editing Characters</a>.
+
+   <p>The constants <code>_POSIX_MAX_CANON</code> and <code>MAX_CANON</code> parameterize
+the maximum number of bytes which may appear in a single line of
+canonical input.  See <a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>.  You are guaranteed a maximum
+line length of at least <code>MAX_CANON</code> bytes, but the maximum might be
+larger, and might even dynamically change size.
+
+   <p><a name="index-noncanonical-input-processing-1854"></a>In <dfn>noncanonical input processing</dfn> mode, characters are not grouped
+into lines, and ERASE and KILL processing is not performed.  The
+granularity with which bytes are read in noncanonical input mode is
+controlled by the MIN and TIME settings.  See <a href="Noncanonical-Input.html#Noncanonical-Input">Noncanonical Input</a>.
+
+   <p>Most programs use canonical input mode, because this gives the user a
+way to edit input line by line.  The usual reason to use noncanonical
+mode is when the program accepts single-character commands or provides
+its own editing facilities.
+
+   <p>The choice of canonical or noncanonical input is controlled by the
+<code>ICANON</code> flag in the <code>c_lflag</code> member of <code>struct termios</code>. 
+See <a href="Local-Modes.html#Local-Modes">Local Modes</a>.
+
+   </body></html>
+

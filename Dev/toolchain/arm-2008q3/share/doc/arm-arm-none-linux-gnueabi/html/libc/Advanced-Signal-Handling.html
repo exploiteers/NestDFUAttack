@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Advanced Signal Handling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Actions.html#Signal-Actions" title="Signal Actions">
+<link rel="prev" href="Basic-Signal-Handling.html#Basic-Signal-Handling" title="Basic Signal Handling">
+<link rel="next" href="Signal-and-Sigaction.html#Signal-and-Sigaction" title="Signal and Sigaction">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Advanced-Signal-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Signal-and-Sigaction.html#Signal-and-Sigaction">Signal and Sigaction</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Basic-Signal-Handling.html#Basic-Signal-Handling">Basic Signal Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Actions.html#Signal-Actions">Signal Actions</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.3.2 Advanced Signal Handling</h4>
+
+<p><a name="index-g_t_0040code_007bsigaction_007d-function-2917"></a>
+The <code>sigaction</code> function has the same basic effect as
+<code>signal</code>: to specify how a signal should be handled by the process. 
+However, <code>sigaction</code> offers more control, at the expense of more
+complexity.  In particular, <code>sigaction</code> allows you to specify
+additional flags to control when the signal is generated and how the
+handler is invoked.
+
+   <p>The <code>sigaction</code> function is declared in <samp><span class="file">signal.h</span></samp>. 
+<a name="index-signal_002eh-2918"></a>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct sigaction</b><var><a name="index-struct-sigaction-2919"></a></var><br>
+<blockquote><p>Structures of type <code>struct sigaction</code> are used in the
+<code>sigaction</code> function to specify all the information about how to
+handle a particular signal.  This structure contains at least the
+following members:
+
+          <dl>
+<dt><code>sighandler_t sa_handler</code><dd>This is used in the same way as the <var>action</var> argument to the
+<code>signal</code> function.  The value can be <code>SIG_DFL</code>,
+<code>SIG_IGN</code>, or a function pointer.  See <a href="Basic-Signal-Handling.html#Basic-Signal-Handling">Basic Signal Handling</a>.
+
+          <br><dt><code>sigset_t sa_mask</code><dd>This specifies a set of signals to be blocked while the handler runs. 
+Blocking is explained in <a href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>.  Note that the
+signal that was delivered is automatically blocked by default before its
+handler is started; this is true regardless of the value in
+<code>sa_mask</code>.  If you want that signal not to be blocked within its
+handler, you must write code in the handler to unblock it.
+
+          <br><dt><code>int sa_flags</code><dd>This specifies various flags which can affect the behavior of
+the signal.  These are described in more detail in <a href="Flags-for-Sigaction.html#Flags-for-Sigaction">Flags for Sigaction</a>. 
+</dl>
+        </p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigaction</b> (<var>int signum, const struct sigaction *restrict action, struct sigaction *restrict old-action</var>)<var><a name="index-sigaction-2920"></a></var><br>
+<blockquote><p>The <var>action</var> argument is used to set up a new action for the signal
+<var>signum</var>, while the <var>old-action</var> argument is used to return
+information about the action previously associated with this symbol. 
+(In other words, <var>old-action</var> has the same purpose as the
+<code>signal</code> function's return value&mdash;you can check to see what the
+old action in effect for the signal was, and restore it later if you
+want.)
+
+        <p>Either <var>action</var> or <var>old-action</var> can be a null pointer.  If
+<var>old-action</var> is a null pointer, this simply suppresses the return
+of information about the old action.  If <var>action</var> is a null pointer,
+the action associated with the signal <var>signum</var> is unchanged; this
+allows you to inquire about how a signal is being handled without changing
+that handling.
+
+        <p>The return value from <code>sigaction</code> is zero if it succeeds, and
+<code>-1</code> on failure.  The following <code>errno</code> error conditions are
+defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The <var>signum</var> argument is not valid, or you are trying to
+trap or ignore <code>SIGKILL</code> or <code>SIGSTOP</code>. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

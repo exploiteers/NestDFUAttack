@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>IOCTLs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Interrupt-Input.html#Interrupt-Input" title="Interrupt Input">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="IOCTLs"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.17 Generic I/O Control operations</h3>
+
+<p><a name="index-generic-i_002fo-control-operations-1381"></a><a name="index-IOCTLs-1382"></a>
+The GNU system can handle most input/output operations on many different
+devices and objects in terms of a few file primitives - <code>read</code>,
+<code>write</code> and <code>lseek</code>.  However, most devices also have a few
+peculiar operations which do not fit into this model. Such as:
+
+     <ul>
+<li>Changing the character font used on a terminal.
+
+     <li>Telling a magnetic tape system to rewind or fast forward.  (Since they
+cannot move in byte increments, <code>lseek</code> is inapplicable).
+
+     <li>Ejecting a disk from a drive.
+
+     <li>Playing an audio track from a CD-ROM drive.
+
+     <li>Maintaining routing tables for a network.
+
+   </ul>
+
+   <p>Although some such objects such as sockets and terminals
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a> have special functions of their own, it would
+not be practical to create functions for all these cases.
+
+   <p>Instead these minor operations, known as <dfn>IOCTL</dfn>s, are assigned code
+numbers and multiplexed through the <code>ioctl</code> function, defined in
+<code>sys/ioctl.h</code>.  The code numbers themselves are defined in many
+different headers.
+
+<!-- sys/ioctl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>ioctl</b> (<var>int filedes, int command, <small class="dots">...</small></var>)<var><a name="index-ioctl-1383"></a></var><br>
+<blockquote>
+        <p>The <code>ioctl</code> function performs the generic I/O operation
+<var>command</var> on <var>filedes</var>.
+
+        <p>A third argument is usually present, either a single number or a pointer
+to a structure.  The meaning of this argument, the returned value, and
+any error codes depends upon the command used.  Often -1 is
+returned for a failure.
+
+        </blockquote></div>
+
+   <p>On some systems, IOCTLs used by different devices share the same numbers. 
+Thus, although use of an inappropriate IOCTL <em>usually</em> only produces
+an error, you should not attempt to use device-specific IOCTLs on an
+unknown device.
+
+   <p>Most IOCTLs are OS-specific and/or only used in special system utilities,
+and are thus beyond the scope of this document.  For an example of the use
+of an IOCTL, see <a href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data">Out-of-Band Data</a>.
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Actually, the terminal-specific functions are implemented with
+IOCTLs on many platforms.</p>
+
+   <hr></div>
+
+   </body></html>
+

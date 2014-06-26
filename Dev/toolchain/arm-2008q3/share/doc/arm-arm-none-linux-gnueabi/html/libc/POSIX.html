@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>POSIX - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standards-and-Portability.html#Standards-and-Portability" title="Standards and Portability">
+<link rel="prev" href="ISO-C.html#ISO-C" title="ISO C">
+<link rel="next" href="Berkeley-Unix.html#Berkeley-Unix" title="Berkeley Unix">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="POSIX"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Berkeley-Unix.html#Berkeley-Unix">Berkeley Unix</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="ISO-C.html#ISO-C">ISO C</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standards-and-Portability.html#Standards-and-Portability">Standards and Portability</a>
+<hr>
+</div>
+
+<h4 class="subsection">1.2.2 POSIX (The Portable Operating System Interface)</h4>
+
+<p><a name="index-POSIX-5"></a><a name="index-POSIX_002e1-6"></a><a name="index-IEEE-Std-1003_002e1-7"></a><a name="index-ISO_002fIEC-9945_002d1-8"></a><a name="index-POSIX_002e2-9"></a><a name="index-IEEE-Std-1003_002e2-10"></a><a name="index-ISO_002fIEC-9945_002d2-11"></a>
+The GNU library is also compatible with the ISO <dfn>POSIX</dfn> family of
+standards, known more formally as the <dfn>Portable Operating System
+Interface for Computer Environments</dfn> (ISO/IEC 9945).  They were also
+published as ANSI/IEEE Std 1003.  POSIX is derived mostly from various
+versions of the Unix operating system.
+
+   <p>The library facilities specified by the POSIX standards are a superset
+of those required by ISO&nbsp;C<!-- /@w -->; POSIX specifies additional features for
+ISO&nbsp;C<!-- /@w --> functions, as well as specifying new additional functions.  In
+general, the additional requirements and functionality defined by the
+POSIX standards are aimed at providing lower-level support for a
+particular kind of operating system environment, rather than general
+programming language support which can run in many diverse operating
+system environments.
+
+   <p>The GNU C library implements all of the functions specified in
+<cite>ISO/IEC 9945-1:1996, the POSIX System Application Program
+Interface</cite>, commonly referred to as POSIX.1.  The primary extensions to
+the ISO&nbsp;C<!-- /@w --> facilities specified by this standard include file system
+interface primitives (see <a href="File-System-Interface.html#File-System-Interface">File System Interface</a>), device-specific
+terminal control functions (see <a href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>), and
+process control functions (see <a href="Processes.html#Processes">Processes</a>).
+
+   <p>Some facilities from <cite>ISO/IEC 9945-2:1993, the POSIX Shell and
+Utilities standard</cite> (POSIX.2) are also implemented in the GNU library. 
+These include utilities for dealing with regular expressions and other
+pattern matching facilities (see <a href="Pattern-Matching.html#Pattern-Matching">Pattern Matching</a>).
+
+<!-- Roland sez: -->
+<!-- The GNU C library as it stands conforms to 1003.2 draft 11, which -->
+<!-- specifies: -->
+<!-- Several new macros in <limits.h>. -->
+<!-- popen, pclose -->
+<!-- <regex.h> (which is not yet fully implemented-wait on this) -->
+<!-- fnmatch -->
+<!-- getopt -->
+<!-- <glob.h> -->
+<!-- <wordexp.h> (not yet implemented) -->
+<!-- confstr -->
+   </body></html>
+

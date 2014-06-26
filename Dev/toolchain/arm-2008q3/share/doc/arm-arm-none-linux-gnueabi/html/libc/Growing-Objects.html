@@ -1,0 +1,174 @@
+<html lang="en">
+<head>
+<title>Growing Objects - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Obstack-Functions.html#Obstack-Functions" title="Obstack Functions">
+<link rel="next" href="Extra-Fast-Growing.html#Extra-Fast-Growing" title="Extra Fast Growing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Growing-Objects"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Extra-Fast-Growing.html#Extra-Fast-Growing">Extra Fast Growing</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Obstack-Functions.html#Obstack-Functions">Obstack Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.6 Growing Objects</h5>
+
+<p><a name="index-growing-objects-_0028in-obstacks_0029-313"></a><a name="index-changing-the-size-of-a-block-_0028obstacks_0029-314"></a>
+Because memory in obstack chunks is used sequentially, it is possible to
+build up an object step by step, adding one or more bytes at a time to the
+end of the object.  With this technique, you do not need to know how much
+data you will put in the object until you come to the end of it.  We call
+this the technique of <dfn>growing objects</dfn>.  The special functions
+for adding data to the growing object are described in this section.
+
+   <p>You don't need to do anything special when you start to grow an object. 
+Using one of the functions to add data to the object automatically
+starts it.  However, it is necessary to say explicitly when the object is
+finished.  This is done with the function <code>obstack_finish</code>.
+
+   <p>The actual address of the object thus built up is not known until the
+object is finished.  Until then, it always remains possible that you will
+add so much data that the object must be copied into a new chunk.
+
+   <p>While the obstack is in use for a growing object, you cannot use it for
+ordinary allocation of another object.  If you try to do so, the space
+already added to the growing object will become part of the other object.
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_blank</b> (<var>struct obstack *obstack-ptr, int size</var>)<var><a name="index-obstack_005fblank-315"></a></var><br>
+<blockquote><p>The most basic function for adding to a growing object is
+<code>obstack_blank</code>, which adds space without initializing it. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_grow</b> (<var>struct obstack *obstack-ptr, void *data, int size</var>)<var><a name="index-obstack_005fgrow-316"></a></var><br>
+<blockquote><p>To add a block of initialized space, use <code>obstack_grow</code>, which is
+the growing-object analogue of <code>obstack_copy</code>.  It adds <var>size</var>
+bytes of data to the growing object, copying the contents from
+<var>data</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_grow0</b> (<var>struct obstack *obstack-ptr, void *data, int size</var>)<var><a name="index-obstack_005fgrow0-317"></a></var><br>
+<blockquote><p>This is the growing-object analogue of <code>obstack_copy0</code>.  It adds
+<var>size</var> bytes copied from <var>data</var>, followed by an additional null
+character. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_1grow</b> (<var>struct obstack *obstack-ptr, char c</var>)<var><a name="index-obstack_005f1grow-318"></a></var><br>
+<blockquote><p>To add one character at a time, use the function <code>obstack_1grow</code>. 
+It adds a single byte containing <var>c</var> to the growing object. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_ptr_grow</b> (<var>struct obstack *obstack-ptr, void *data</var>)<var><a name="index-obstack_005fptr_005fgrow-319"></a></var><br>
+<blockquote><p>Adding the value of a pointer one can use the function
+<code>obstack_ptr_grow</code>.  It adds <code>sizeof (void *)</code> bytes
+containing the value of <var>data</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_int_grow</b> (<var>struct obstack *obstack-ptr, int data</var>)<var><a name="index-obstack_005fint_005fgrow-320"></a></var><br>
+<blockquote><p>A single value of type <code>int</code> can be added by using the
+<code>obstack_int_grow</code> function.  It adds <code>sizeof (int)</code> bytes to
+the growing object and initializes them with the value of <var>data</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>obstack_finish</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005ffinish-321"></a></var><br>
+<blockquote><p>When you are finished growing the object, use the function
+<code>obstack_finish</code> to close it off and return its final address.
+
+        <p>Once you have finished the object, the obstack is available for ordinary
+allocation or for growing another object.
+
+        <p>This function can return a null pointer under the same conditions as
+<code>obstack_alloc</code> (see <a href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">Allocation in an Obstack</a>). 
+</p></blockquote></div>
+
+   <p>When you build an object by growing it, you will probably need to know
+afterward how long it became.  You need not keep track of this as you grow
+the object, because you can find out the length from the obstack just
+before finishing the object with the function <code>obstack_object_size</code>,
+declared as follows:
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>obstack_object_size</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005fobject_005fsize-322"></a></var><br>
+<blockquote><p>This function returns the current size of the growing object, in bytes. 
+Remember to call this function <em>before</em> finishing the object. 
+After it is finished, <code>obstack_object_size</code> will return zero. 
+</p></blockquote></div>
+
+   <p>If you have started growing an object and wish to cancel it, you should
+finish it and then free it, like this:
+
+<pre class="smallexample">     obstack_free (obstack_ptr, obstack_finish (obstack_ptr));
+</pre>
+   <p class="noindent">This has no effect if no object was growing.
+
+   <p><a name="index-shrinking-objects-323"></a>You can use <code>obstack_blank</code> with a negative size argument to make
+the current object smaller.  Just don't try to shrink it beyond zero
+length&mdash;there's no telling what will happen if you do that.
+
+   </body></html>
+

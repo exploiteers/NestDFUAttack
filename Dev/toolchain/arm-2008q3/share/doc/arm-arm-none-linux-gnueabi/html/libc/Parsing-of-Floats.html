@@ -1,0 +1,188 @@
+<html lang="en">
+<head>
+<title>Parsing of Floats - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-of-Numbers.html#Parsing-of-Numbers" title="Parsing of Numbers">
+<link rel="prev" href="Parsing-of-Integers.html#Parsing-of-Integers" title="Parsing of Integers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Parsing-of-Floats"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-of-Numbers.html#Parsing-of-Numbers">Parsing of Numbers</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.11.2 Parsing of Floats</h4>
+
+<p><a name="index-stdlib_002eh-2568"></a>The &lsquo;<samp><span class="samp">str</span></samp>&rsquo; functions are declared in <samp><span class="file">stdlib.h</span></samp> and those
+beginning with &lsquo;<samp><span class="samp">wcs</span></samp>&rsquo; are declared in <samp><span class="file">wchar.h</span></samp>.  One might
+wonder about the use of <code>restrict</code> in the prototypes of the
+functions in this section.  It is seemingly useless but the ISO&nbsp;C<!-- /@w -->
+standard uses it (for the functions defined there) so we have to do it
+as well.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>strtod</b> (<var>const char *restrict string, char **restrict tailptr</var>)<var><a name="index-strtod-2569"></a></var><br>
+<blockquote><p>The <code>strtod</code> (&ldquo;string-to-double&rdquo;) function converts the initial
+part of <var>string</var> to a floating-point number, which is returned as a
+value of type <code>double</code>.
+
+        <p>This function attempts to decompose <var>string</var> as follows:
+
+          <ul>
+<li>A (possibly empty) sequence of whitespace characters.  Which characters
+are whitespace is determined by the <code>isspace</code> function
+(see <a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>).  These are discarded.
+
+          <li>An optional plus or minus sign (&lsquo;<samp><span class="samp">+</span></samp>&rsquo; or &lsquo;<samp><span class="samp">-</span></samp>&rsquo;).
+
+          <li>A floating point number in decimal or hexadecimal format.  The
+decimal format is:
+               <ul>
+<li>A nonempty sequence of digits optionally containing a decimal-point
+character&mdash;normally &lsquo;<samp><span class="samp">.</span></samp>&rsquo;, but it depends on the locale
+(see <a href="General-Numeric.html#General-Numeric">General Numeric</a>).
+
+               <li>An optional exponent part, consisting of a character &lsquo;<samp><span class="samp">e</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">E</span></samp>&rsquo;, an optional sign, and a sequence of digits.
+
+          </ul>
+
+          <p>The hexadecimal format is as follows:
+               <ul>
+<li>A 0x or 0X followed by a nonempty sequence of hexadecimal digits
+optionally containing a decimal-point character&mdash;normally &lsquo;<samp><span class="samp">.</span></samp>&rsquo;, but
+it depends on the locale (see <a href="General-Numeric.html#General-Numeric">General Numeric</a>).
+
+               <li>An optional binary-exponent part, consisting of a character &lsquo;<samp><span class="samp">p</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">P</span></samp>&rsquo;, an optional sign, and a sequence of digits.
+
+          </ul>
+
+          <li>Any remaining characters in the string.  If <var>tailptr</var> is not a null
+pointer, a pointer to this tail of the string is stored in
+<code>*</code><var>tailptr</var>. 
+</ul>
+
+        <p>If the string is empty, contains only whitespace, or does not contain an
+initial substring that has the expected syntax for a floating-point
+number, no conversion is performed.  In this case, <code>strtod</code> returns
+a value of zero and the value returned in <code>*</code><var>tailptr</var> is the
+value of <var>string</var>.
+
+        <p>In a locale other than the standard <code>"C"</code> or <code>"POSIX"</code> locales,
+this function may recognize additional locale-dependent syntax.
+
+        <p>If the string has valid syntax for a floating-point number but the value
+is outside the range of a <code>double</code>, <code>strtod</code> will signal
+overflow or underflow as described in <a href="Math-Error-Reporting.html#Math-Error-Reporting">Math Error Reporting</a>.
+
+        <p><code>strtod</code> recognizes four special input strings.  The strings
+<code>"inf"</code> and <code>"infinity"</code> are converted to &amp;infin;,
+or to the largest representable value if the floating-point format
+doesn't support infinities.  You can prepend a <code>"+"</code> or <code>"-"</code>
+to specify the sign.  Case is ignored when scanning these strings.
+
+        <p>The strings <code>"nan"</code> and <code>"nan(</code><var>chars<small class="dots">...</small></var><code>)"</code> are converted
+to NaN.  Again, case is ignored.  If <var>chars<small class="dots">...</small></var> are provided, they
+are used in some unspecified fashion to select a particular
+representation of NaN (there can be several).
+
+        <p>Since zero is a valid result as well as the value returned on error, you
+should check for errors in the same way as for <code>strtol</code>, by
+examining <var>errno</var> and <var>tailptr</var>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: float <b>strtof</b> (<var>const char *string, char **tailptr</var>)<var><a name="index-strtof-2570"></a></var><br>
+<blockquote><!-- stdlib.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>strtold</b> (<var>const char *string, char **tailptr</var>)<var><a name="index-strtold-2571"></a></var><br>
+<blockquote><p>These functions are analogous to <code>strtod</code>, but return <code>float</code>
+and <code>long double</code> values respectively.  They report errors in the
+same way as <code>strtod</code>.  <code>strtof</code> can be substantially faster
+than <code>strtod</code>, but has less precision; conversely, <code>strtold</code>
+can be much slower but has more precision (on systems where <code>long
+double</code> is a separate type).
+
+        <p>These functions have been GNU extensions and are new to ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>wcstod</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr</var>)<var><a name="index-wcstod-2572"></a></var><br>
+<blockquote><!-- stdlib.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>wcstof</b> (<var>const wchar_t *string, wchar_t **tailptr</var>)<var><a name="index-wcstof-2573"></a></var><br>
+<blockquote><!-- stdlib.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>wcstold</b> (<var>const wchar_t *string, wchar_t **tailptr</var>)<var><a name="index-wcstold-2574"></a></var><br>
+<blockquote><p>The <code>wcstod</code>, <code>wcstof</code>, and <code>wcstol</code> functions are
+equivalent in nearly all aspect to the <code>strtod</code>, <code>strtof</code>, and
+<code>strtold</code> functions but it handles wide character string.
+
+        <p>The <code>wcstod</code> function was introduced in Amendment&nbsp;1<!-- /@w --> of ISO&nbsp;C90<!-- /@w -->.  The <code>wcstof</code> and <code>wcstold</code> functions were introduced in
+ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>atof</b> (<var>const char *string</var>)<var><a name="index-atof-2575"></a></var><br>
+<blockquote><p>This function is similar to the <code>strtod</code> function, except that it
+need not detect overflow and underflow errors.  The <code>atof</code> function
+is provided mostly for compatibility with existing code; using
+<code>strtod</code> is more robust. 
+</p></blockquote></div>
+
+   <p>The GNU C library also provides &lsquo;<samp><span class="samp">_l</span></samp>&rsquo; versions of these functions,
+which take an additional argument, the locale to use in conversion. 
+See <a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>.
+
+   </body></html>
+

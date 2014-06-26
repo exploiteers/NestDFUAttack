@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Comparison Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Searching-and-Sorting.html#Searching-and-Sorting" title="Searching and Sorting">
+<link rel="next" href="Array-Search-Function.html#Array-Search-Function" title="Array Search Function">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Comparison-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Array-Search-Function.html#Array-Search-Function">Array Search Function</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>
+<hr>
+</div>
+
+<h3 class="section">9.1 Defining the Comparison Function</h3>
+
+<p><a name="index-Comparison-Function-818"></a>
+In order to use the sorted array library functions, you have to describe
+how to compare the elements of the array.
+
+   <p>To do this, you supply a comparison function to compare two elements of
+the array.  The library will call this function, passing as arguments
+pointers to two array elements to be compared.  Your comparison function
+should return a value the way <code>strcmp</code> (see <a href="String_002fArray-Comparison.html#String_002fArray-Comparison">String/Array Comparison</a>) does: negative if the first argument is &ldquo;less&rdquo; than the
+second, zero if they are &ldquo;equal&rdquo;, and positive if the first argument
+is &ldquo;greater&rdquo;.
+
+   <p>Here is an example of a comparison function which works with an array of
+numbers of type <code>double</code>:
+
+<pre class="smallexample">     int
+     compare_doubles (const void *a, const void *b)
+     {
+       const double *da = (const double *) a;
+       const double *db = (const double *) b;
+     
+       return (*da &gt; *db) - (*da &lt; *db);
+     }
+</pre>
+   <p>The header file <samp><span class="file">stdlib.h</span></samp> defines a name for the data type of
+comparison functions.  This type is a GNU extension.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+   <p><a name="index-comparison_005ffn_005ft-819"></a>
+<pre class="smallexample">     int comparison_fn_t (const void *, const void *);
+</pre>
+   </body></html>
+

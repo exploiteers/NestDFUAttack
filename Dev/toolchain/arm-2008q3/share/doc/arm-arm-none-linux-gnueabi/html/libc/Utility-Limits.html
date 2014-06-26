@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Utility Limits - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Pathconf.html#Pathconf" title="Pathconf">
+<link rel="next" href="Utility-Minimums.html#Utility-Minimums" title="Utility Minimums">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Utility-Limits"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Utility-Minimums.html#Utility-Minimums">Utility Minimums</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Pathconf.html#Pathconf">Pathconf</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.10 Utility Program Capacity Limits</h3>
+
+<p>The POSIX.2 standard specifies certain system limits that you can access
+through <code>sysconf</code> that apply to utility behavior rather than the
+behavior of the library or the operating system.
+
+   <p>The GNU C library defines macros for these limits, and <code>sysconf</code>
+returns values for them if you ask; but these values convey no
+meaningful information.  They are simply the smallest values that
+POSIX.2 permits.
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>BC_BASE_MAX</b><var><a name="index-BC_005fBASE_005fMAX-3666"></a></var><br>
+<blockquote><p>The largest value of <code>obase</code> that the <code>bc</code> utility is
+guaranteed to support. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>BC_DIM_MAX</b><var><a name="index-BC_005fDIM_005fMAX-3667"></a></var><br>
+<blockquote><p>The largest number of elements in one array that the <code>bc</code> utility
+is guaranteed to support. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>BC_SCALE_MAX</b><var><a name="index-BC_005fSCALE_005fMAX-3668"></a></var><br>
+<blockquote><p>The largest value of <code>scale</code> that the <code>bc</code> utility is
+guaranteed to support. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>BC_STRING_MAX</b><var><a name="index-BC_005fSTRING_005fMAX-3669"></a></var><br>
+<blockquote><p>The largest number of characters in one string constant that the
+<code>bc</code> utility is guaranteed to support. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>COLL_WEIGHTS_MAX</b><var><a name="index-COLL_005fWEIGHTS_005fMAX-3670"></a></var><br>
+<blockquote><p>The largest number of weights that can necessarily be used in defining
+the collating sequence for a locale. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>EXPR_NEST_MAX</b><var><a name="index-EXPR_005fNEST_005fMAX-3671"></a></var><br>
+<blockquote><p>The maximum number of expressions that can be nested within parenthesis
+by the <code>expr</code> utility. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>LINE_MAX</b><var><a name="index-LINE_005fMAX-3672"></a></var><br>
+<blockquote><p>The largest text line that the text-oriented POSIX.2 utilities can
+support.  (If you are using the GNU versions of these utilities, then
+there is no actual limit except that imposed by the available virtual
+memory, but there is no way that the library can tell you this.) 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>EQUIV_CLASS_MAX</b><var><a name="index-EQUIV_005fCLASS_005fMAX-3673"></a></var><br>
+<blockquote><p>The maximum number of weights that can be assigned to an entry of the
+<code>LC_COLLATE</code> category &lsquo;<samp><span class="samp">order</span></samp>&rsquo; keyword in a locale definition. 
+The GNU C library does not presently support locale definitions. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+<title>The Lame Way to Locale Data - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locale-Information.html#Locale-Information" title="Locale Information">
+<link rel="next" href="The-Elegant-and-Fast-Way.html#The-Elegant-and-Fast-Way" title="The Elegant and Fast Way">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="The-Lame-Way-to-Locale-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-Elegant-and-Fast-Way.html#The-Elegant-and-Fast-Way">The Elegant and Fast Way</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locale-Information.html#Locale-Information">Locale Information</a>
+<hr>
+</div>
+
+<h4 class="subsection">7.6.1 <code>localeconv</code>: It is portable but <small class="dots">...</small></h4>
+
+<p>Together with the <code>setlocale</code> function the ISO&nbsp;C<!-- /@w --> people
+invented the <code>localeconv</code> function.  It is a masterpiece of poor
+design.  It is expensive to use, not extendable, and not generally
+usable as it provides access to only <code>LC_MONETARY</code> and
+<code>LC_NUMERIC</code> related information.  Nevertheless, if it is
+applicable to a given situation it should be used since it is very
+portable.  The function <code>strfmon</code> formats monetary amounts
+according to the selected locale using this information. 
+<a name="index-locale_002eh-705"></a><a name="index-monetary-value-formatting-706"></a><a name="index-numeric-value-formatting-707"></a>
+<!-- locale.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: struct lconv * <b>localeconv</b> (<var>void</var>)<var><a name="index-localeconv-708"></a></var><br>
+<blockquote><p>The <code>localeconv</code> function returns a pointer to a structure whose
+components contain information about how numeric and monetary values
+should be formatted in the current locale.
+
+        <p>You should not modify the structure or its contents.  The structure might
+be overwritten by subsequent calls to <code>localeconv</code>, or by calls to
+<code>setlocale</code>, but no other function in the library overwrites this
+value. 
+</p></blockquote></div>
+
+<!-- locale.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>struct lconv</b><var><a name="index-struct-lconv-709"></a></var><br>
+<blockquote><p><code>localeconv</code>'s return value is of this data type.  Its elements are
+described in the following subsections. 
+</p></blockquote></div>
+
+   <p>If a member of the structure <code>struct lconv</code> has type <code>char</code>,
+and the value is <code>CHAR_MAX</code>, it means that the current locale has
+no value for that parameter.
+
+<ul class="menu">
+<li><a accesskey="1" href="General-Numeric.html#General-Numeric">General Numeric</a>:              Parameters for formatting numbers and
+                                 currency amounts. 
+<li><a accesskey="2" href="Currency-Symbol.html#Currency-Symbol">Currency Symbol</a>:              How to print the symbol that identifies an
+                                 amount of money (e.g. &lsquo;<samp><span class="samp">$</span></samp>&rsquo;). 
+<li><a accesskey="3" href="Sign-of-Money-Amount.html#Sign-of-Money-Amount">Sign of Money Amount</a>:         How to print the (positive or negative) sign
+                                 for a monetary amount, if one exists. 
+</ul>
+
+   </body></html>
+

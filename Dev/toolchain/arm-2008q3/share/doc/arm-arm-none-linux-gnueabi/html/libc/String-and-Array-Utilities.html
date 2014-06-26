@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>String and Array Utilities - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Character-Handling.html#Character-Handling" title="Character Handling">
+<link rel="next" href="Character-Set-Handling.html#Character-Set-Handling" title="Character Set Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String-and-Array-Utilities"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Character-Handling.html#Character-Handling">Character Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Utilities for copying and comparing strings and arrays -->
+<h2 class="chapter">5 String and Array Utilities</h2>
+
+<p>Operations on strings (or arrays of characters) are an important part of
+many programs.  The GNU C library provides an extensive set of string
+utility functions, including functions for copying, concatenating,
+comparing, and searching strings.  Many of these functions can also
+operate on arbitrary regions of storage; for example, the <code>memcpy</code>
+function can be used to copy the contents of any kind of array.
+
+   <p>It's fairly common for beginning C programmers to &ldquo;reinvent the wheel&rdquo;
+by duplicating this functionality in their own code, but it pays to
+become familiar with the library functions and to make use of them,
+since this offers benefits in maintenance, efficiency, and portability.
+
+   <p>For instance, you could easily compare one string to another in two
+lines of C code, but if you use the built-in <code>strcmp</code> function,
+you're less likely to make a mistake.  And, since these library
+functions are typically highly optimized, your program may run faster
+too.
+
+<ul class="menu">
+<li><a accesskey="1" href="Representation-of-Strings.html#Representation-of-Strings">Representation of Strings</a>:    Introduction to basic concepts. 
+<li><a accesskey="2" href="String_002fArray-Conventions.html#String_002fArray-Conventions">String/Array Conventions</a>:     Whether to use a string function or an
+				 arbitrary array function. 
+<li><a accesskey="3" href="String-Length.html#String-Length">String Length</a>:                Determining the length of a string. 
+<li><a accesskey="4" href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>:    Functions to copy the contents of strings
+				 and arrays. 
+<li><a accesskey="5" href="String_002fArray-Comparison.html#String_002fArray-Comparison">String/Array Comparison</a>:      Functions for byte-wise and character-wise
+				 comparison. 
+<li><a accesskey="6" href="Collation-Functions.html#Collation-Functions">Collation Functions</a>:          Functions for collating strings. 
+<li><a accesskey="7" href="Search-Functions.html#Search-Functions">Search Functions</a>:             Searching for a specific element or substring. 
+<li><a accesskey="8" href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String">Finding Tokens in a String</a>:   Splitting a string into tokens by looking
+				 for delimiters. 
+<li><a accesskey="9" href="strfry.html#strfry">strfry</a>:                       Function for flash-cooking a string. 
+<li><a href="Trivial-Encryption.html#Trivial-Encryption">Trivial Encryption</a>:           Obscuring data. 
+<li><a href="Encode-Binary-Data.html#Encode-Binary-Data">Encode Binary Data</a>:           Encoding and Decoding of Binary Data. 
+<li><a href="Argz-and-Envz-Vectors.html#Argz-and-Envz-Vectors">Argz and Envz Vectors</a>:        Null-separated string vectors. 
+</ul>
+
+   </body></html>
+

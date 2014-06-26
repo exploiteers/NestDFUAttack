@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Permission for kill - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Generating-Signals.html#Generating-Signals" title="Generating Signals">
+<link rel="prev" href="Signaling-Another-Process.html#Signaling-Another-Process" title="Signaling Another Process">
+<link rel="next" href="Kill-Example.html#Kill-Example" title="Kill Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Permission-for-kill"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Kill-Example.html#Kill-Example">Kill Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signaling-Another-Process.html#Signaling-Another-Process">Signaling Another Process</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.6.3 Permission for using <code>kill</code></h4>
+
+<p>There are restrictions that prevent you from using <code>kill</code> to send
+signals to any random process.  These are intended to prevent antisocial
+behavior such as arbitrarily killing off processes belonging to another
+user.  In typical use, <code>kill</code> is used to pass signals between
+parent, child, and sibling processes, and in these situations you
+normally do have permission to send signals.  The only common exception
+is when you run a setuid program in a child process; if the program
+changes its real UID as well as its effective UID, you may not have
+permission to send a signal.  The <code>su</code> program does this.
+
+   <p>Whether a process has permission to send a signal to another process
+is determined by the user IDs of the two processes.  This concept is
+discussed in detail in <a href="Process-Persona.html#Process-Persona">Process Persona</a>.
+
+   <p>Generally, for a process to be able to send a signal to another process,
+either the sending process must belong to a privileged user (like
+&lsquo;<samp><span class="samp">root</span></samp>&rsquo;), or the real or effective user ID of the sending process
+must match the real or effective user ID of the receiving process.  If
+the receiving process has changed its effective user ID from the
+set-user-ID mode bit on its process image file, then the owner of the
+process image file is used in place of its current effective user ID. 
+In some implementations, a parent process might be able to send signals
+to a child process even if the user ID's don't match, and other
+implementations might enforce other restrictions.
+
+   <p>The <code>SIGCONT</code> signal is a special case.  It can be sent if the
+sender is part of the same session as the receiver, regardless of
+user IDs.
+
+   </body></html>
+

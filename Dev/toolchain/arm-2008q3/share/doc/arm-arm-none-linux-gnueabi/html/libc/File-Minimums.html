@@ -1,0 +1,127 @@
+<html lang="en">
+<head>
+<title>File Minimums - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Options-for-Files.html#Options-for-Files" title="Options for Files">
+<link rel="next" href="Pathconf.html#Pathconf" title="Pathconf">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Minimums"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pathconf.html#Pathconf">Pathconf</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Options-for-Files.html#Options-for-Files">Options for Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.8 Minimum Values for File System Limits</h3>
+
+<p>Here are the names for the POSIX minimum upper bounds for some of the
+above parameters.  The significance of these values is that you can
+safely push to these limits without checking whether the particular
+system you are using can go that far.  In most cases GNU systems do not
+have these strict limitations.  The actual limit should be requested if
+necessary.
+
+     <dl>
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<dt><code>_POSIX_LINK_MAX</code><dd>The most restrictive limit permitted by POSIX for the maximum value of a
+file's link count.  The value of this constant is <code>8</code>; thus, you
+can always make up to eight names for a file without running into a
+system limit.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_MAX_CANON</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+bytes in a canonical input line from a terminal device.  The value of
+this constant is <code>255</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_MAX_INPUT</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+bytes in a terminal device input queue (or typeahead buffer). 
+See <a href="Input-Modes.html#Input-Modes">Input Modes</a>.  The value of this constant is <code>255</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_NAME_MAX</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+bytes in a file name component.  The value of this constant is
+<code>14</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_PATH_MAX</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+bytes in a file name.  The value of this constant is <code>256</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_PIPE_BUF</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+bytes that can be written atomically to a pipe.  The value of this
+constant is <code>512</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>SYMLINK_MAX</code><dd>Maximum number of bytes in a symbolic link.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>POSIX_REC_INCR_XFER_SIZE</code><dd>Recommended increment for file transfer sizes between the
+<code>POSIX_REC_MIN_XFER_SIZE</code> and <code>POSIX_REC_MAX_XFER_SIZE</code>
+values.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>POSIX_REC_MAX_XFER_SIZE</code><dd>Maximum recommended file transfer size.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>POSIX_REC_MIN_XFER_SIZE</code><dd>Minimum recommended file transfer size.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>POSIX_REC_XFER_ALIGN</code><dd>Recommended file transfer buffer alignment. 
+</dl>
+
+   </body></html>
+

@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+<title>Host Definition - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Language-Support.html#Language-Support" title="Language Support">
+<link rel="next" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Host-Definition"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Language-Support.html#Language-Support">Language Support</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">9 Host Definition</h2>
+
+<p>With the advent of Autoconf, it's rarely necessary to have host
+definition machinery anymore.  The following information is provided,
+mainly, as an historical reference.
+
+<h3 class="section">9.1 Adding a New Host</h3>
+
+<p><a name="index-adding-a-new-host-173"></a><a name="index-host_002c-adding-174"></a><span class="sc">gdb</span>'s host configuration support normally happens via Autoconf. 
+New host-specific definitions should not be needed.  Older hosts
+<span class="sc">gdb</span> still use the host-specific definitions and files listed
+below, but these mostly exist for historical reasons, and will
+eventually disappear.
+
+     <dl>
+<dt><samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/</span><var>xyz</var><span class="file">.mh</span></samp><dd>This file is a Makefile fragment that once contained both host and
+native configuration information (see <a href="Native-Debugging.html#Native-Debugging">Native Debugging</a>) for the
+machine <var>xyz</var>.  The host configuration information is now handled
+by Autoconf.
+
+     <p>Host configuration information included definitions for <code>CC</code>,
+<code>SYSV_DEFINE</code>, <code>XM_CFLAGS</code>, <code>XM_ADD_FILES</code>,
+<code>XM_CLIBS</code>, <code>XM_CDEPS</code>, etc.; see <samp><span class="file">Makefile.in</span></samp>.
+
+     <p>New host-only configurations do not need this file.
+
+   </dl>
+
+   <p>(Files named <samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/xm-</span><var>xyz</var><span class="file">.h</span></samp> were once
+used to define host-specific macros, but were no longer needed and
+have all been removed.)
+
+<h4 class="subheading">Generic Host Support Files</h4>
+
+<p><a name="index-generic-host-support-175"></a>There are some &ldquo;generic&rdquo; versions of routines that can be used by
+various systems.
+
+     
+<a name="index-remote-debugging-support-176"></a>
+<a name="index-serial-line-support-177"></a>
+<dl><dt><samp><span class="file">ser-unix.c</span></samp><dd>This contains serial line support for Unix systems.  It is included by
+default on all Unix-like hosts.
+
+     <br><dt><samp><span class="file">ser-pipe.c</span></samp><dd>This contains serial pipe support for Unix systems.  It is included by
+default on all Unix-like hosts.
+
+     <br><dt><samp><span class="file">ser-mingw.c</span></samp><dd>This contains serial line support for 32-bit programs running under
+Windows using MinGW.
+
+     <br><dt><samp><span class="file">ser-go32.c</span></samp><dd>This contains serial line support for 32-bit programs running under DOS,
+using the DJGPP (a.k.a. GO32) execution environment.
+
+     <p><a name="index-TCP-remote-support-178"></a><br><dt><samp><span class="file">ser-tcp.c</span></samp><dd>This contains generic TCP support using sockets.  It is included by
+default on all Unix-like hosts and with MinGW. 
+</dl>
+
+<h3 class="section">9.2 Host Conditionals</h3>
+
+<p>When <span class="sc">gdb</span> is configured and compiled, various macros are
+defined or left undefined, to control compilation based on the
+attributes of the host system.  While formerly they could be set in
+host-specific header files, at present they can be changed only by
+setting <code>CFLAGS</code> when building, or by editing the source code.
+
+   <p>These macros and their meanings (or if the meaning is not documented
+here, then one of the source files where they are used is indicated)
+are:
+
+     <dl>
+<dt><span class="sc">gdb</span><code>INIT_FILENAME</code><a name="index-g_t_0040value_007bGDBN_007dINIT_005fFILENAME-179"></a><dd>The default name of <span class="sc">gdb</span>'s initialization file (normally
+<samp><span class="file">.gdbinit</span></samp>).
+
+     <br><dt><code>SIGWINCH_HANDLER</code><a name="index-SIGWINCH_005fHANDLER-180"></a><dd>If your host defines <code>SIGWINCH</code>, you can define this to be the name
+of a function to be called if <code>SIGWINCH</code> is received.
+
+     <br><dt><code>SIGWINCH_HANDLER_BODY</code><a name="index-SIGWINCH_005fHANDLER_005fBODY-181"></a><dd>Define this to expand into code that will define the function named by
+the expansion of <code>SIGWINCH_HANDLER</code>.
+
+     <br><dt><code>CRLF_SOURCE_FILES</code><a name="index-CRLF_005fSOURCE_005fFILES-182"></a><dd><a name="index-DOS-text-files-183"></a>Define this if host files use <code>\r\n</code> rather than <code>\n</code> as a
+line terminator.  This will cause source file listings to omit <code>\r</code>
+characters when printing and it will allow <code>\r\n</code> line endings of files
+which are &ldquo;sourced&rdquo; by gdb.  It must be possible to open files in binary
+mode using <code>O_BINARY</code> or, for fopen, <code>"rb"</code>.
+
+     <br><dt><code>DEFAULT_PROMPT</code><a name="index-DEFAULT_005fPROMPT-184"></a><dd><a name="index-prompt-185"></a>The default value of the prompt string (normally <code>"(gdb) "</code>).
+
+     <br><dt><code>DEV_TTY</code><a name="index-DEV_005fTTY-186"></a><dd><a name="index-terminal-device-187"></a>The name of the generic TTY device, defaults to <code>"/dev/tty"</code>.
+
+     <br><dt><code>FOPEN_RB</code><a name="index-FOPEN_005fRB-188"></a><dd>Define this if binary files are opened the same way as text files.
+
+     <br><dt><code>CC_HAS_LONG_LONG</code><a name="index-CC_005fHAS_005fLONG_005fLONG-189"></a><dd><a name="index-g_t_0040code_007blong-long_007d-data-type-190"></a>Define this if the host C compiler supports <code>long long</code>.  This is set
+by the <code>configure</code> script.
+
+     <br><dt><code>PRINTF_HAS_LONG_LONG</code><a name="index-PRINTF_005fHAS_005fLONG_005fLONG-191"></a><dd>Define this if the host can handle printing of long long integers via
+the printf format conversion specifier <code>ll</code>.  This is set by the
+<code>configure</code> script.
+
+     <br><dt><code>LSEEK_NOT_LINEAR</code><a name="index-LSEEK_005fNOT_005fLINEAR-192"></a><dd>Define this if <code>lseek (n)</code> does not necessarily move to byte number
+<code>n</code> in the file.  This is only used when reading source files.  It
+is normally faster to define <code>CRLF_SOURCE_FILES</code> when possible.
+
+     <br><dt><code>NORETURN</code><a name="index-NORETURN-193"></a><dd>If defined, this should be one or more tokens, such as <code>volatile</code>,
+that can be used in both the declaration and definition of functions to
+indicate that they never return.  The default is already set correctly
+if compiling with GCC.  This will almost never need to be defined.
+
+     <br><dt><code>ATTR_NORETURN</code><a name="index-ATTR_005fNORETURN-194"></a><dd>If defined, this should be one or more tokens, such as
+<code>__attribute__ ((noreturn))</code>, that can be used in the declarations
+of functions to indicate that they never return.  The default is already
+set correctly if compiling with GCC.  This will almost never need to be
+defined.
+
+     <br><dt><code>lint</code><a name="index-lint-195"></a><dd>Define this to help placate <code>lint</code> in some situations.
+
+     <br><dt><code>volatile</code><a name="index-volatile-196"></a><dd>Define this to override the defaults of <code>__volatile__</code> or
+<code>/**/</code>. 
+</dl>
+
+   </body></html>
+

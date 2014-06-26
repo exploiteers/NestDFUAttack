@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>Remembering a Signal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals" title="Checking for Pending Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Remembering-a-Signal"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals">Checking for Pending Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.7 Remembering a Signal to Act On Later</h4>
+
+<p>Instead of blocking a signal using the library facilities, you can get
+almost the same results by making the handler set a flag to be tested
+later, when you &ldquo;unblock&rdquo;.  Here is an example:
+
+<pre class="smallexample">     /* <span class="roman">If this flag is nonzero, don't handle the signal right away.</span> */
+     volatile sig_atomic_t signal_pending;
+     
+     /* <span class="roman">This is nonzero if a signal arrived and was not handled.</span> */
+     volatile sig_atomic_t defer_signal;
+     
+     void
+     handler (int signum)
+     {
+       if (defer_signal)
+         signal_pending = signum;
+       else
+         ... /* <span class="roman">``Really'' handle the signal.</span> */
+     }
+     
+     ...
+     
+     void
+     update_mumble (int frob)
+     {
+       /* <span class="roman">Prevent signals from having immediate effect.</span> */
+       defer_signal++;
+       /* <span class="roman">Now update </span><code>mumble</code><span class="roman">, without worrying about interruption.</span> */
+       mumble.a = 1;
+       mumble.b = hack ();
+       mumble.c = frob;
+       /* <span class="roman">We have updated </span><code>mumble</code><span class="roman">.  Handle any signal that came in.</span> */
+       defer_signal--;
+       if (defer_signal == 0 &amp;&amp; signal_pending != 0)
+         raise (signal_pending);
+     }
+</pre>
+   <p>Note how the particular signal that arrives is stored in
+<code>signal_pending</code>.  That way, we can handle several types of
+inconvenient signals with the same mechanism.
+
+   <p>We increment and decrement <code>defer_signal</code> so that nested critical
+sections will work properly; thus, if <code>update_mumble</code> were called
+with <code>signal_pending</code> already nonzero, signals would be deferred
+not only within <code>update_mumble</code>, but also within the caller.  This
+is also why we do not check <code>signal_pending</code> if <code>defer_signal</code>
+is still nonzero.
+
+   <p>The incrementing and decrementing of <code>defer_signal</code> each require more
+than one instruction; it is possible for a signal to happen in the
+middle.  But that does not cause any problem.  If the signal happens
+early enough to see the value from before the increment or decrement,
+that is equivalent to a signal which came before the beginning of the
+increment or decrement, which is a case that works properly.
+
+   <p>It is absolutely vital to decrement <code>defer_signal</code> before testing
+<code>signal_pending</code>, because this avoids a subtle bug.  If we did
+these things in the other order, like this,
+
+<pre class="smallexample">       if (defer_signal == 1 &amp;&amp; signal_pending != 0)
+         raise (signal_pending);
+       defer_signal--;
+</pre>
+   <p class="noindent">then a signal arriving in between the <code>if</code> statement and the decrement
+would be effectively &ldquo;lost&rdquo; for an indefinite amount of time.  The
+handler would merely set <code>defer_signal</code>, but the program having
+already tested this variable, it would not test the variable again.
+
+   <p><a name="index-timing-error-in-signal-handling-2977"></a>Bugs like these are called <dfn>timing errors</dfn>.  They are especially bad
+because they happen only rarely and are nearly impossible to reproduce. 
+You can't expect to find them with a debugger as you would find a
+reproducible bug.  So it is worth being especially careful to avoid
+them.
+
+   <p>(You would not be tempted to write the code in this order, given the use
+of <code>defer_signal</code> as a counter which must be tested along with
+<code>signal_pending</code>.  After all, testing for zero is cleaner than
+testing for one.  But if you did not use <code>defer_signal</code> as a
+counter, and gave it values of zero and one only, then either order
+might seem equally simple.  This is a further advantage of using a
+counter for <code>defer_signal</code>: it will reduce the chance you will
+write the code in the wrong order and create a subtle bug.)
+
+   </body></html>
+

@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Socket Addresses - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sockets.html#Sockets" title="Sockets">
+<link rel="prev" href="Communication-Styles.html#Communication-Styles" title="Communication Styles">
+<link rel="next" href="Interface-Naming.html#Interface-Naming" title="Interface Naming">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Socket-Addresses"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Interface-Naming.html#Interface-Naming">Interface Naming</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Communication-Styles.html#Communication-Styles">Communication Styles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sockets.html#Sockets">Sockets</a>
+<hr>
+</div>
+
+<h3 class="section">16.3 Socket Addresses</h3>
+
+<p><a name="index-address-of-socket-1650"></a><a name="index-name-of-socket-1651"></a><a name="index-binding-a-socket-address-1652"></a><a name="index-socket-address-_0028name_0029-binding-1653"></a>The name of a socket is normally called an <dfn>address</dfn>.  The
+functions and symbols for dealing with socket addresses were named
+inconsistently, sometimes using the term &ldquo;name&rdquo; and sometimes using
+&ldquo;address&rdquo;.  You can regard these terms as synonymous where sockets
+are concerned.
+
+   <p>A socket newly created with the <code>socket</code> function has no
+address.  Other processes can find it for communication only if you
+give it an address.  We call this <dfn>binding</dfn> the address to the
+socket, and the way to do it is with the <code>bind</code> function.
+
+   <p>You need be concerned with the address of a socket if other processes
+are to find it and start communicating with it.  You can specify an
+address for other sockets, but this is usually pointless; the first time
+you send data from a socket, or use it to initiate a connection, the
+system assigns an address automatically if you have not specified one.
+
+   <p>Occasionally a client needs to specify an address because the server
+discriminates based on address; for example, the rsh and rlogin
+protocols look at the client's socket address and only bypass password
+checking if it is less than <code>IPPORT_RESERVED</code> (see <a href="Ports.html#Ports">Ports</a>).
+
+   <p>The details of socket addresses vary depending on what namespace you are
+using.  See <a href="Local-Namespace.html#Local-Namespace">Local Namespace</a>, or <a href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>, for specific
+information.
+
+   <p>Regardless of the namespace, you use the same functions <code>bind</code> and
+<code>getsockname</code> to set and examine a socket's address.  These
+functions use a phony data type, <code>struct sockaddr *</code>, to accept the
+address.  In practice, the address lives in a structure of some other
+data type appropriate to the address format you are using, but you cast
+its address to <code>struct sockaddr *</code> when you pass it to
+<code>bind</code>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Address-Formats.html#Address-Formats">Address Formats</a>: 		About <code>struct sockaddr</code>. 
+<li><a accesskey="2" href="Setting-Address.html#Setting-Address">Setting Address</a>: 		Binding an address to a socket. 
+<li><a accesskey="3" href="Reading-Address.html#Reading-Address">Reading Address</a>: 		Reading the address of a socket. 
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>Installation - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Library-Summary.html#Library-Summary" title="Library Summary">
+<link rel="next" href="Maintenance.html#Maintenance" title="Maintenance">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Installation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Maintenance.html#Maintenance">Maintenance</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Library-Summary.html#Library-Summary">Library Summary</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% How to install the GNU C library -->
+<h2 class="appendix">Appendix C Installing the GNU C Library</h2>
+
+<p>Before you do anything else, you should read the file <samp><span class="file">FAQ</span></samp> located
+at the top level of the source tree.  This file answers common questions
+and describes problems you may experience with compilation and
+installation.  It is updated more frequently than this manual.
+
+   <p>Features can be added to GNU Libc via <dfn>add-on</dfn> bundles.  These are
+separate tar files, which you unpack into the top level of the source
+tree.  Then you give <code>configure</code> the &lsquo;<samp><span class="samp">--enable-add-ons</span></samp>&rsquo; option
+to activate them, and they will be compiled into the library.
+
+   <p>You will need recent versions of several GNU tools: definitely GCC and
+GNU Make, and possibly others.  See <a href="Tools-for-Compilation.html#Tools-for-Compilation">Tools for Compilation</a>, below.
+
+<ul class="menu">
+<li><a accesskey="1" href="Configuring-and-compiling.html#Configuring-and-compiling">Configuring and compiling</a>:    How to compile and test GNU libc. 
+<li><a accesskey="2" href="Running-make-install.html#Running-make-install">Running make install</a>:         How to install it once you've got it
+ compiled. 
+<li><a accesskey="3" href="Tools-for-Compilation.html#Tools-for-Compilation">Tools for Compilation</a>:        You'll need these first. 
+<li><a accesskey="4" href="Linux.html#Linux">Linux</a>:                        Specific advice for GNU/Linux systems. 
+<li><a accesskey="5" href="Reporting-Bugs.html#Reporting-Bugs">Reporting Bugs</a>:               So they'll get fixed. 
+</ul>
+
+   </body></html>
+

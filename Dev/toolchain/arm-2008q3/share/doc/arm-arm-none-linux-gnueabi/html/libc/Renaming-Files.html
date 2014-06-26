@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+<title>Renaming Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Deleting-Files.html#Deleting-Files" title="Deleting Files">
+<link rel="next" href="Creating-Directories.html#Creating-Directories" title="Creating Directories">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Renaming-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Creating-Directories.html#Creating-Directories">Creating Directories</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Deleting-Files.html#Deleting-Files">Deleting Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.7 Renaming Files</h3>
+
+<p>The <code>rename</code> function is used to change a file's name.
+
+   <p><a name="index-renaming-a-file-1482"></a><!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>rename</b> (<var>const char *oldname, const char *newname</var>)<var><a name="index-rename-1483"></a></var><br>
+<blockquote><p>The <code>rename</code> function renames the file <var>oldname</var> to
+<var>newname</var>.  The file formerly accessible under the name
+<var>oldname</var> is afterwards accessible as <var>newname</var> instead.  (If
+the file had any other names aside from <var>oldname</var>, it continues to
+have those names.)
+
+        <p>The directory containing the name <var>newname</var> must be on the same file
+system as the directory containing the name <var>oldname</var>.
+
+        <p>One special case for <code>rename</code> is when <var>oldname</var> and
+<var>newname</var> are two names for the same file.  The consistent way to
+handle this case is to delete <var>oldname</var>.  However, in this case
+POSIX requires that <code>rename</code> do nothing and report success&mdash;which
+is inconsistent.  We don't know what your operating system will do.
+
+        <p>If <var>oldname</var> is not a directory, then any existing file named
+<var>newname</var> is removed during the renaming operation.  However, if
+<var>newname</var> is the name of a directory, <code>rename</code> fails in this
+case.
+
+        <p>If <var>oldname</var> is a directory, then either <var>newname</var> must not
+exist or it must name a directory that is empty.  In the latter case,
+the existing directory named <var>newname</var> is deleted first.  The name
+<var>newname</var> must not specify a subdirectory of the directory
+<code>oldname</code> which is being renamed.
+
+        <p>One useful feature of <code>rename</code> is that the meaning of <var>newname</var>
+changes &ldquo;atomically&rdquo; from any previously existing file by that name to
+its new meaning (i.e., the file that was called <var>oldname</var>).  There is
+no instant at which <var>newname</var> is non-existent &ldquo;in between&rdquo; the old
+meaning and the new meaning.  If there is a system crash during the
+operation, it is possible for both names to still exist; but
+<var>newname</var> will always be intact if it exists at all.
+
+        <p>If <code>rename</code> fails, it returns <code>-1</code>.  In addition to the usual
+file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>One of the directories containing <var>newname</var> or <var>oldname</var>
+refuses write permission; or <var>newname</var> and <var>oldname</var> are
+directories and write permission is refused for one of them.
+
+          <br><dt><code>EBUSY</code><dd>A directory named by <var>oldname</var> or <var>newname</var> is being used by
+the system in a way that prevents the renaming from working.  This includes
+directories that are mount points for filesystems, and directories
+that are the current working directories of processes.
+
+          <br><dt><code>ENOTEMPTY</code><dt><code>EEXIST</code><dd>The directory <var>newname</var> isn't empty.  The GNU system always returns
+<code>ENOTEMPTY</code> for this, but some other systems return <code>EEXIST</code>.
+
+          <br><dt><code>EINVAL</code><dd><var>oldname</var> is a directory that contains <var>newname</var>.
+
+          <br><dt><code>EISDIR</code><dd><var>newname</var> is a directory but the <var>oldname</var> isn't.
+
+          <br><dt><code>EMLINK</code><dd>The parent directory of <var>newname</var> would have too many links
+(entries).
+
+          <br><dt><code>ENOENT</code><dd>The file <var>oldname</var> doesn't exist.
+
+          <br><dt><code>ENOSPC</code><dd>The directory that would contain <var>newname</var> has no room for another
+entry, and there is no space left in the file system to expand it.
+
+          <br><dt><code>EROFS</code><dd>The operation would involve writing to a directory on a read-only file
+system.
+
+          <br><dt><code>EXDEV</code><dd>The two file names <var>newname</var> and <var>oldname</var> are on different
+file systems. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

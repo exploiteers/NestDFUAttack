@@ -1,0 +1,364 @@
+<html lang="en">
+<head>
+<title>Parsing of Integers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-of-Numbers.html#Parsing-of-Numbers" title="Parsing of Numbers">
+<link rel="next" href="Parsing-of-Floats.html#Parsing-of-Floats" title="Parsing of Floats">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Parsing-of-Integers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Parsing-of-Floats.html#Parsing-of-Floats">Parsing of Floats</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-of-Numbers.html#Parsing-of-Numbers">Parsing of Numbers</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.11.1 Parsing of Integers</h4>
+
+<p><a name="index-stdlib_002eh-2547"></a><a name="index-wchar_002eh-2548"></a>The &lsquo;<samp><span class="samp">str</span></samp>&rsquo; functions are declared in <samp><span class="file">stdlib.h</span></samp> and those
+beginning with &lsquo;<samp><span class="samp">wcs</span></samp>&rsquo; are declared in <samp><span class="file">wchar.h</span></samp>.  One might
+wonder about the use of <code>restrict</code> in the prototypes of the
+functions in this section.  It is seemingly useless but the ISO&nbsp;C<!-- /@w -->
+standard uses it (for the functions defined there) so we have to do it
+as well.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long int <b>strtol</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtol-2549"></a></var><br>
+<blockquote><p>The <code>strtol</code> (&ldquo;string-to-long&rdquo;) function converts the initial
+part of <var>string</var> to a signed integer, which is returned as a value
+of type <code>long int</code>.
+
+        <p>This function attempts to decompose <var>string</var> as follows:
+
+          <ul>
+<li>A (possibly empty) sequence of whitespace characters.  Which characters
+are whitespace is determined by the <code>isspace</code> function
+(see <a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>).  These are discarded.
+
+          <li>An optional plus or minus sign (&lsquo;<samp><span class="samp">+</span></samp>&rsquo; or &lsquo;<samp><span class="samp">-</span></samp>&rsquo;).
+
+          <li>A nonempty sequence of digits in the radix specified by <var>base</var>.
+
+          <p>If <var>base</var> is zero, decimal radix is assumed unless the series of
+digits begins with &lsquo;<samp><span class="samp">0</span></samp>&rsquo; (specifying octal radix), or &lsquo;<samp><span class="samp">0x</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">0X</span></samp>&rsquo; (specifying hexadecimal radix); in other words, the same
+syntax used for integer constants in C.
+
+          <p>Otherwise <var>base</var> must have a value between <code>2</code> and <code>36</code>. 
+If <var>base</var> is <code>16</code>, the digits may optionally be preceded by
+&lsquo;<samp><span class="samp">0x</span></samp>&rsquo; or &lsquo;<samp><span class="samp">0X</span></samp>&rsquo;.  If base has no legal value the value returned
+is <code>0l</code> and the global variable <code>errno</code> is set to <code>EINVAL</code>.
+
+          <li>Any remaining characters in the string.  If <var>tailptr</var> is not a null
+pointer, <code>strtol</code> stores a pointer to this tail in
+<code>*</code><var>tailptr</var>. 
+</ul>
+
+        <p>If the string is empty, contains only whitespace, or does not contain an
+initial substring that has the expected syntax for an integer in the
+specified <var>base</var>, no conversion is performed.  In this case,
+<code>strtol</code> returns a value of zero and the value stored in
+<code>*</code><var>tailptr</var> is the value of <var>string</var>.
+
+        <p>In a locale other than the standard <code>"C"</code> locale, this function
+may recognize additional implementation-dependent syntax.
+
+        <p>If the string has valid syntax for an integer but the value is not
+representable because of overflow, <code>strtol</code> returns either
+<code>LONG_MAX</code> or <code>LONG_MIN</code> (see <a href="Range-of-Type.html#Range-of-Type">Range of Type</a>), as
+appropriate for the sign of the value.  It also sets <code>errno</code>
+to <code>ERANGE</code> to indicate there was overflow.
+
+        <p>You should not check for errors by examining the return value of
+<code>strtol</code>, because the string might be a valid representation of
+<code>0l</code>, <code>LONG_MAX</code>, or <code>LONG_MIN</code>.  Instead, check whether
+<var>tailptr</var> points to what you expect after the number
+(e.g. <code>'\0'</code> if the string should end after the number).  You also
+need to clear <var>errno</var> before the call and check it afterward, in
+case there was overflow.
+
+        <p>There is an example at the end of this section. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long int <b>wcstol</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstol-2550"></a></var><br>
+<blockquote><p>The <code>wcstol</code> function is equivalent to the <code>strtol</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstol</code> function was introduced in Amendment&nbsp;1<!-- /@w --> of ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: unsigned long int <b>strtoul</b> (<var>const char *retrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoul-2551"></a></var><br>
+<blockquote><p>The <code>strtoul</code> (&ldquo;string-to-unsigned-long&rdquo;) function is like
+<code>strtol</code> except it converts to an <code>unsigned long int</code> value. 
+The syntax is the same as described above for <code>strtol</code>.  The value
+returned on overflow is <code>ULONG_MAX</code> (see <a href="Range-of-Type.html#Range-of-Type">Range of Type</a>).
+
+        <p>If <var>string</var> depicts a negative number, <code>strtoul</code> acts the same
+as <var>strtol</var> but casts the result to an unsigned integer.  That means
+for example that <code>strtoul</code> on <code>"-1"</code> returns <code>ULONG_MAX</code>
+and an input more negative than <code>LONG_MIN</code> returns
+(<code>ULONG_MAX</code> + 1) / 2.
+
+        <p><code>strtoul</code> sets <var>errno</var> to <code>EINVAL</code> if <var>base</var> is out of
+range, or <code>ERANGE</code> on overflow. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: unsigned long int <b>wcstoul</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoul-2552"></a></var><br>
+<blockquote><p>The <code>wcstoul</code> function is equivalent to the <code>strtoul</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoul</code> function was introduced in Amendment&nbsp;1<!-- /@w --> of ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long long int <b>strtoll</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoll-2553"></a></var><br>
+<blockquote><p>The <code>strtoll</code> function is like <code>strtol</code> except that it returns
+a <code>long long int</code> value, and accepts numbers with a correspondingly
+larger range.
+
+        <p>If the string has valid syntax for an integer but the value is not
+representable because of overflow, <code>strtoll</code> returns either
+<code>LONG_LONG_MAX</code> or <code>LONG_LONG_MIN</code> (see <a href="Range-of-Type.html#Range-of-Type">Range of Type</a>), as
+appropriate for the sign of the value.  It also sets <code>errno</code> to
+<code>ERANGE</code> to indicate there was overflow.
+
+        <p>The <code>strtoll</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long long int <b>wcstoll</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoll-2554"></a></var><br>
+<blockquote><p>The <code>wcstoll</code> function is equivalent to the <code>strtoll</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoll</code> function was introduced in Amendment&nbsp;1<!-- /@w --> of ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long long int <b>strtoq</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoq-2555"></a></var><br>
+<blockquote><p><code>strtoq</code> (&ldquo;string-to-quad-word&rdquo;) is the BSD name for <code>strtoll</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: long long int <b>wcstoq</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoq-2556"></a></var><br>
+<blockquote><p>The <code>wcstoq</code> function is equivalent to the <code>strtoq</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoq</code> function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: unsigned long long int <b>strtoull</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoull-2557"></a></var><br>
+<blockquote><p>The <code>strtoull</code> function is related to <code>strtoll</code> the same way
+<code>strtoul</code> is related to <code>strtol</code>.
+
+        <p>The <code>strtoull</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: unsigned long long int <b>wcstoull</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoull-2558"></a></var><br>
+<blockquote><p>The <code>wcstoull</code> function is equivalent to the <code>strtoull</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoull</code> function was introduced in Amendment&nbsp;1<!-- /@w --> of ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: unsigned long long int <b>strtouq</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtouq-2559"></a></var><br>
+<blockquote><p><code>strtouq</code> is the BSD name for <code>strtoull</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: unsigned long long int <b>wcstouq</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstouq-2560"></a></var><br>
+<blockquote><p>The <code>wcstouq</code> function is equivalent to the <code>strtouq</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstouq</code> function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- inttypes.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: intmax_t <b>strtoimax</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoimax-2561"></a></var><br>
+<blockquote><p>The <code>strtoimax</code> function is like <code>strtol</code> except that it returns
+a <code>intmax_t</code> value, and accepts numbers of a corresponding range.
+
+        <p>If the string has valid syntax for an integer but the value is not
+representable because of overflow, <code>strtoimax</code> returns either
+<code>INTMAX_MAX</code> or <code>INTMAX_MIN</code> (see <a href="Integers.html#Integers">Integers</a>), as
+appropriate for the sign of the value.  It also sets <code>errno</code> to
+<code>ERANGE</code> to indicate there was overflow.
+
+        <p>See <a href="Integers.html#Integers">Integers</a> for a description of the <code>intmax_t</code> type.  The
+<code>strtoimax</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: intmax_t <b>wcstoimax</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoimax-2562"></a></var><br>
+<blockquote><p>The <code>wcstoimax</code> function is equivalent to the <code>strtoimax</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoimax</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- inttypes.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: uintmax_t <b>strtoumax</b> (<var>const char *restrict string, char **restrict tailptr, int base</var>)<var><a name="index-strtoumax-2563"></a></var><br>
+<blockquote><p>The <code>strtoumax</code> function is related to <code>strtoimax</code>
+the same way that <code>strtoul</code> is related to <code>strtol</code>.
+
+        <p>See <a href="Integers.html#Integers">Integers</a> for a description of the <code>intmax_t</code> type.  The
+<code>strtoumax</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: uintmax_t <b>wcstoumax</b> (<var>const wchar_t *restrict string, wchar_t **restrict tailptr, int base</var>)<var><a name="index-wcstoumax-2564"></a></var><br>
+<blockquote><p>The <code>wcstoumax</code> function is equivalent to the <code>strtoumax</code> function
+in nearly all aspects but handles wide character strings.
+
+        <p>The <code>wcstoumax</code> function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long int <b>atol</b> (<var>const char *string</var>)<var><a name="index-atol-2565"></a></var><br>
+<blockquote><p>This function is similar to the <code>strtol</code> function with a <var>base</var>
+argument of <code>10</code>, except that it need not detect overflow errors. 
+The <code>atol</code> function is provided mostly for compatibility with
+existing code; using <code>strtol</code> is more robust. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>atoi</b> (<var>const char *string</var>)<var><a name="index-atoi-2566"></a></var><br>
+<blockquote><p>This function is like <code>atol</code>, except that it returns an <code>int</code>. 
+The <code>atoi</code> function is also considered obsolete; use <code>strtol</code>
+instead. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long long int <b>atoll</b> (<var>const char *string</var>)<var><a name="index-atoll-2567"></a></var><br>
+<blockquote><p>This function is similar to <code>atol</code>, except it returns a <code>long
+long int</code>.
+
+        <p>The <code>atoll</code> function was introduced in ISO&nbsp;C99<!-- /@w -->.  It too is
+obsolete (despite having just been added); use <code>strtoll</code> instead. 
+</p></blockquote></div>
+
+   <p>All the functions mentioned in this section so far do not handle
+alternative representations of characters as described in the locale
+data.  Some locales specify thousands separator and the way they have to
+be used which can help to make large numbers more readable.  To read
+such numbers one has to use the <code>scanf</code> functions with the &lsquo;<samp><span class="samp">'</span></samp>&rsquo;
+flag.
+
+   <p>Here is a function which parses a string as a sequence of integers and
+returns the sum of them:
+
+<pre class="smallexample">     int
+     sum_ints_from_string (char *string)
+     {
+       int sum = 0;
+     
+       while (1) {
+         char *tail;
+         int next;
+     
+         /* <span class="roman">Skip whitespace by hand, to detect the end.</span>  */
+         while (isspace (*string)) string++;
+         if (*string == 0)
+           break;
+     
+         /* <span class="roman">There is more nonwhitespace,</span>  */
+         /* <span class="roman">so it ought to be another number.</span>  */
+         errno = 0;
+         /* <span class="roman">Parse it.</span>  */
+         next = strtol (string, &amp;tail, 0);
+         /* <span class="roman">Add it in, if not overflow.</span>  */
+         if (errno)
+           printf ("Overflow\n");
+         else
+           sum += next;
+         /* <span class="roman">Advance past it.</span>  */
+         string = tail;
+       }
+     
+       return sum;
+     }
+</pre>
+   </body></html>
+

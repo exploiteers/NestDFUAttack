@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+<title>Sign of Money Amount - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data" title="The Lame Way to Locale Data">
+<link rel="prev" href="Currency-Symbol.html#Currency-Symbol" title="Currency Symbol">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Sign-of-Money-Amount"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Currency-Symbol.html#Currency-Symbol">Currency Symbol</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">The Lame Way to Locale Data</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">7.6.1.3 Printing the Sign of a Monetary Amount</h5>
+
+<p>These members of the <code>struct lconv</code> structure specify how to print
+the sign (if any) of a monetary value.
+
+     <dl>
+<dt><code>char *positive_sign</code><dt><code>char *negative_sign</code><dd>These are strings used to indicate positive (or zero) and negative
+monetary quantities, respectively.
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, both of these members have a value of
+<code>""</code> (the empty string), meaning &ldquo;unspecified&rdquo;.
+
+     <p>The ISO standard doesn't say what to do when you find this value; we
+recommend printing <code>positive_sign</code> as you find it, even if it is
+empty.  For a negative value, print <code>negative_sign</code> as you find it
+unless both it and <code>positive_sign</code> are empty, in which case print
+&lsquo;<samp><span class="samp">-</span></samp>&rsquo; instead.  (Failing to indicate the sign at all seems rather
+unreasonable.)
+
+     <br><dt><code>char p_sign_posn</code><dt><code>char n_sign_posn</code><dt><code>char int_p_sign_posn</code><dt><code>char int_n_sign_posn</code><dd>These members are small integers that indicate how to
+position the sign for nonnegative and negative monetary quantities,
+respectively.  (The string used by the sign is what was specified with
+<code>positive_sign</code> or <code>negative_sign</code>.)  The possible values are
+as follows:
+
+          <dl>
+<dt><code>0</code><dd>The currency symbol and quantity should be surrounded by parentheses.
+
+          <br><dt><code>1</code><dd>Print the sign string before the quantity and currency symbol.
+
+          <br><dt><code>2</code><dd>Print the sign string after the quantity and currency symbol.
+
+          <br><dt><code>3</code><dd>Print the sign string right before the currency symbol.
+
+          <br><dt><code>4</code><dd>Print the sign string right after the currency symbol.
+
+          <br><dt><code>CHAR_MAX</code><dd>&ldquo;Unspecified&rdquo;.  Both members have this value in the standard
+&lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale. 
+</dl>
+
+     <p>The ISO standard doesn't say what you should do when the value is
+<code>CHAR_MAX</code>.  We recommend you print the sign after the currency
+symbol.
+
+     <p>The members with the <code>int_</code> prefix apply to the
+<code>int_curr_symbol</code> while the other two apply to
+<code>currency_symbol</code>. 
+</dl>
+
+   </body></html>
+

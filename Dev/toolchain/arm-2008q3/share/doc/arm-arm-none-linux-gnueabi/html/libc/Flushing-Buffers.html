@@ -1,0 +1,147 @@
+<html lang="en">
+<head>
+<title>Flushing Buffers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Stream-Buffering.html#Stream-Buffering" title="Stream Buffering">
+<link rel="prev" href="Buffering-Concepts.html#Buffering-Concepts" title="Buffering Concepts">
+<link rel="next" href="Controlling-Buffering.html#Controlling-Buffering" title="Controlling Buffering">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Flushing-Buffers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Controlling-Buffering.html#Controlling-Buffering">Controlling Buffering</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Buffering-Concepts.html#Buffering-Concepts">Buffering Concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Stream-Buffering.html#Stream-Buffering">Stream Buffering</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.20.2 Flushing Buffers</h4>
+
+<p><a name="index-flushing-a-stream-1134"></a><dfn>Flushing</dfn> output on a buffered stream means transmitting all
+accumulated characters to the file.  There are many circumstances when
+buffered output on a stream is flushed automatically:
+
+     <ul>
+<li>When you try to do output and the output buffer is full.
+
+     <li>When the stream is closed.  See <a href="Closing-Streams.html#Closing-Streams">Closing Streams</a>.
+
+     <li>When the program terminates by calling <code>exit</code>. 
+See <a href="Normal-Termination.html#Normal-Termination">Normal Termination</a>.
+
+     <li>When a newline is written, if the stream is line buffered.
+
+     <li>Whenever an input operation on <em>any</em> stream actually reads data
+from its file. 
+</ul>
+
+   <p>If you want to flush the buffered output at another time, call
+<code>fflush</code>, which is declared in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1135"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>fflush</b> (<var>FILE *stream</var>)<var><a name="index-fflush-1136"></a></var><br>
+<blockquote><p>This function causes any buffered output on <var>stream</var> to be delivered
+to the file.  If <var>stream</var> is a null pointer, then
+<code>fflush</code> causes buffered output on <em>all</em> open output streams
+to be flushed.
+
+        <p>This function returns <code>EOF</code> if a write error occurs, or zero
+otherwise. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>fflush_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-fflush_005funlocked-1137"></a></var><br>
+<blockquote><p>The <code>fflush_unlocked</code> function is equivalent to the <code>fflush</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+   <p>The <code>fflush</code> function can be used to flush all streams currently
+opened.  While this is useful in some situations it does often more than
+necessary since it might be done in situations when terminal input is
+required and the program wants to be sure that all output is visible on
+the terminal.  But this means that only line buffered streams have to be
+flushed.  Solaris introduced a function especially for this.  It was
+always available in the GNU C library in some form but never officially
+exported.
+
+<!-- stdio_ext.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>_flushlbf</b> (<var>void</var>)<var><a name="index-g_t_005fflushlbf-1138"></a></var><br>
+<blockquote><p>The <code>_flushlbf</code> function flushes all line buffered streams
+currently opened.
+
+        <p>This function is declared in the <samp><span class="file">stdio_ext.h</span></samp> header. 
+</p></blockquote></div>
+
+   <p><strong>Compatibility Note:</strong> Some brain-damaged operating systems have
+been known to be so thoroughly fixated on line-oriented input and output
+that flushing a line buffered stream causes a newline to be written! 
+Fortunately, this &ldquo;feature&rdquo; seems to be becoming less common.  You do
+not need to worry about this in the GNU system.
+
+   <p>In some situations it might be useful to not flush the output pending
+for a stream but instead simply forget it.  If transmission is costly
+and the output is not needed anymore this is valid reasoning.  In this
+situation a non-standard function introduced in Solaris and available in
+the GNU C library can be used.
+
+<!-- stdio_ext.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>__fpurge</b> (<var>FILE *stream</var>)<var><a name="index-g_t_005f_005ffpurge-1139"></a></var><br>
+<blockquote><p>The <code>__fpurge</code> function causes the buffer of the stream
+<var>stream</var> to be emptied.  If the stream is currently in read mode all
+input in the buffer is lost.  If the stream is in output mode the
+buffered output is not written to the device (or whatever other
+underlying storage) and the buffer the cleared.
+
+        <p>This function is declared in <samp><span class="file">stdio_ext.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

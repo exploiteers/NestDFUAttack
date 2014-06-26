@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Error in Breakpoints - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Breakpoints.html#Breakpoints" title="Breakpoints">
+<link rel="prev" href="Break-Commands.html#Break-Commands" title="Break Commands">
+<link rel="next" href="Breakpoint_002drelated-Warnings.html#Breakpoint_002drelated-Warnings" title="Breakpoint-related Warnings">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Error-in-Breakpoints"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Breakpoint_002drelated-Warnings.html#Breakpoint_002drelated-Warnings">Breakpoint-related Warnings</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Break-Commands.html#Break-Commands">Break Commands</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Breakpoints.html#Breakpoints">Breakpoints</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.1.8 &ldquo;Cannot insert breakpoints&rdquo;</h4>
+
+<!-- FIXME!! 14/6/95  Is there a real example of this?  Let's use it. -->
+<p>Under some operating systems, breakpoints cannot be used in a program if
+any other process is running that program.  In this situation,
+attempting to run or continue a program with a breakpoint causes
+<span class="sc">gdb</span> to print an error message:
+
+<pre class="smallexample">     Cannot insert breakpoints.
+     The same program may be running in another process.
+</pre>
+   <p>When this happens, you have three ways to proceed:
+
+     <ol type=1 start=1>
+<li>Remove or disable the breakpoints, then continue.
+
+     <li>Suspend <span class="sc">gdb</span>, and copy the file containing your program to a new
+name.  Resume <span class="sc">gdb</span> and use the <code>exec-file</code> command to specify
+that <span class="sc">gdb</span> should run your program under that name. 
+Then start your program again.
+
+     <li>Relink your program so that the text segment is nonsharable, using the
+linker option &lsquo;<samp><span class="samp">-N</span></samp>&rsquo;.  The operating system limitation may not apply
+to nonsharable executables.
+        </ol>
+<!-- @end ifclear -->
+
+   <p>A similar message can be printed if you request too many active
+hardware-assisted breakpoints and watchpoints:
+
+<!-- FIXME: the precise wording of this message may change; the relevant -->
+<!-- source change is not committed yet (Sep 3, 1999). -->
+<pre class="smallexample">     Stopped; cannot insert breakpoints.
+     You may have requested too many hardware breakpoints and watchpoints.
+</pre>
+   <p class="noindent">This message is printed when you attempt to resume the program, since
+only then <span class="sc">gdb</span> knows exactly how many hardware breakpoints and
+watchpoints it needs to insert.
+
+   <p>When this message is printed, you need to disable or remove some of the
+hardware-assisted breakpoints and watchpoints, and then continue.
+
+   </body></html>
+

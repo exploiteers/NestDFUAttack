@@ -1,0 +1,313 @@
+<html lang="en">
+<head>
+<title>Asynchronous Reads/Writes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO" title="Asynchronous I/O">
+<link rel="next" href="Status-of-AIO-Operations.html#Status-of-AIO-Operations" title="Status of AIO Operations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Asynchronous-Reads%2fWrites"></a>
+<a name="Asynchronous-Reads_002fWrites"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Status-of-AIO-Operations.html#Status-of-AIO-Operations">Status of AIO Operations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.10.1 Asynchronous Read and Write Operations</h4>
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>aio_read</b> (<var>struct aiocb *aiocbp</var>)<var><a name="index-aio_005fread-1291"></a></var><br>
+<blockquote><p>This function initiates an asynchronous read operation.  It
+immediately returns after the operation was enqueued or when an
+error was encountered.
+
+        <p>The first <code>aiocbp-&gt;aio_nbytes</code> bytes of the file for which
+<code>aiocbp-&gt;aio_fildes</code> is a descriptor are written to the buffer
+starting at <code>aiocbp-&gt;aio_buf</code>.  Reading starts at the absolute
+position <code>aiocbp-&gt;aio_offset</code> in the file.
+
+        <p>If prioritized I/O is supported by the platform the
+<code>aiocbp-&gt;aio_reqprio</code> value is used to adjust the priority before
+the request is actually enqueued.
+
+        <p>The calling process is notified about the termination of the read
+request according to the <code>aiocbp-&gt;aio_sigevent</code> value.
+
+        <p>When <code>aio_read</code> returns, the return value is zero if no error
+occurred that can be found before the process is enqueued.  If such an
+early error is found, the function returns -1 and sets
+<code>errno</code> to one of the following values:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>The request was not enqueued due to (temporarily) exceeded resource
+limitations. 
+<br><dt><code>ENOSYS</code><dd>The <code>aio_read</code> function is not implemented. 
+<br><dt><code>EBADF</code><dd>The <code>aiocbp-&gt;aio_fildes</code> descriptor is not valid.  This condition
+need not be recognized before enqueueing the request and so this error
+might also be signaled asynchronously. 
+<br><dt><code>EINVAL</code><dd>The <code>aiocbp-&gt;aio_offset</code> or <code>aiocbp-&gt;aio_reqpiro</code> value is
+invalid.  This condition need not be recognized before enqueueing the
+request and so this error might also be signaled asynchronously. 
+</dl>
+
+        <p>If <code>aio_read</code> returns zero, the current status of the request
+can be queried using <code>aio_error</code> and <code>aio_return</code> functions. 
+As long as the value returned by <code>aio_error</code> is <code>EINPROGRESS</code>
+the operation has not yet completed.  If <code>aio_error</code> returns zero,
+the operation successfully terminated, otherwise the value is to be
+interpreted as an error code.  If the function terminated, the result of
+the operation can be obtained using a call to <code>aio_return</code>.  The
+returned value is the same as an equivalent call to <code>read</code> would
+have returned.  Possible error codes returned by <code>aio_error</code> are:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <code>aiocbp-&gt;aio_fildes</code> descriptor is not valid. 
+<br><dt><code>ECANCELED</code><dd>The operation was canceled before the operation was finished
+(see <a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>)
+<br><dt><code>EINVAL</code><dd>The <code>aiocbp-&gt;aio_offset</code> value is invalid. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>aio_read64</code> since the LFS interface transparently
+replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>aio_read64</b> (<var>struct aiocb *aiocbp</var>)<var><a name="index-aio_005fread64-1292"></a></var><br>
+<blockquote><p>This function is similar to the <code>aio_read</code> function.  The only
+difference is that on 32&nbsp;bit<!-- /@w --> machines, the file descriptor should
+be opened in the large file mode.  Internally, <code>aio_read64</code> uses
+functionality equivalent to <code>lseek64</code> (see <a href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>) to position the file descriptor correctly for the reading,
+as opposed to <code>lseek</code> functionality used in <code>aio_read</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is available under the name <code>aio_read</code> and so transparently
+replaces the interface for small files on 32 bit machines. 
+</p></blockquote></div>
+
+   <p>To write data asynchronously to a file, there exists an equivalent pair
+of functions with a very similar interface.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>aio_write</b> (<var>struct aiocb *aiocbp</var>)<var><a name="index-aio_005fwrite-1293"></a></var><br>
+<blockquote><p>This function initiates an asynchronous write operation.  The function
+call immediately returns after the operation was enqueued or if before
+this happens an error was encountered.
+
+        <p>The first <code>aiocbp-&gt;aio_nbytes</code> bytes from the buffer starting at
+<code>aiocbp-&gt;aio_buf</code> are written to the file for which
+<code>aiocbp-&gt;aio_fildes</code> is an descriptor, starting at the absolute
+position <code>aiocbp-&gt;aio_offset</code> in the file.
+
+        <p>If prioritized I/O is supported by the platform, the
+<code>aiocbp-&gt;aio_reqprio</code> value is used to adjust the priority before
+the request is actually enqueued.
+
+        <p>The calling process is notified about the termination of the read
+request according to the <code>aiocbp-&gt;aio_sigevent</code> value.
+
+        <p>When <code>aio_write</code> returns, the return value is zero if no error
+occurred that can be found before the process is enqueued.  If such an
+early error is found the function returns -1 and sets
+<code>errno</code> to one of the following values.
+
+          <dl>
+<dt><code>EAGAIN</code><dd>The request was not enqueued due to (temporarily) exceeded resource
+limitations. 
+<br><dt><code>ENOSYS</code><dd>The <code>aio_write</code> function is not implemented. 
+<br><dt><code>EBADF</code><dd>The <code>aiocbp-&gt;aio_fildes</code> descriptor is not valid.  This condition
+may not be recognized before enqueueing the request, and so this error
+might also be signaled asynchronously. 
+<br><dt><code>EINVAL</code><dd>The <code>aiocbp-&gt;aio_offset</code> or <code>aiocbp-&gt;aio_reqprio</code> value is
+invalid.  This condition may not be recognized before enqueueing the
+request and so this error might also be signaled asynchronously. 
+</dl>
+
+        <p>In the case <code>aio_write</code> returns zero, the current status of the
+request can be queried using <code>aio_error</code> and <code>aio_return</code>
+functions.  As long as the value returned by <code>aio_error</code> is
+<code>EINPROGRESS</code> the operation has not yet completed.  If
+<code>aio_error</code> returns zero, the operation successfully terminated,
+otherwise the value is to be interpreted as an error code.  If the
+function terminated, the result of the operation can be get using a call
+to <code>aio_return</code>.  The returned value is the same as an equivalent
+call to <code>read</code> would have returned.  Possible error codes returned
+by <code>aio_error</code> are:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <code>aiocbp-&gt;aio_fildes</code> descriptor is not valid. 
+<br><dt><code>ECANCELED</code><dd>The operation was canceled before the operation was finished. 
+(see <a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>)
+<br><dt><code>EINVAL</code><dd>The <code>aiocbp-&gt;aio_offset</code> value is invalid. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is in fact <code>aio_write64</code> since the LFS interface transparently
+replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>aio_write64</b> (<var>struct aiocb *aiocbp</var>)<var><a name="index-aio_005fwrite64-1294"></a></var><br>
+<blockquote><p>This function is similar to the <code>aio_write</code> function.  The only
+difference is that on 32&nbsp;bit<!-- /@w --> machines the file descriptor should
+be opened in the large file mode.  Internally <code>aio_write64</code> uses
+functionality equivalent to <code>lseek64</code> (see <a href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>) to position the file descriptor correctly for the writing,
+as opposed to <code>lseek</code> functionality used in <code>aio_write</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is available under the name <code>aio_write</code> and so transparently
+replaces the interface for small files on 32 bit machines. 
+</p></blockquote></div>
+
+   <p>Besides these functions with the more or less traditional interface,
+POSIX.1b also defines a function which can initiate more than one
+operation at a time, and which can handle freely mixed read and write
+operations.  It is therefore similar to a combination of <code>readv</code> and
+<code>writev</code>.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>lio_listio</b> (<var>int mode, struct aiocb *const list</var>[]<var>, int nent, struct sigevent *sig</var>)<var><a name="index-lio_005flistio-1295"></a></var><br>
+<blockquote><p>The <code>lio_listio</code> function can be used to enqueue an arbitrary
+number of read and write requests at one time.  The requests can all be
+meant for the same file, all for different files or every solution in
+between.
+
+        <p><code>lio_listio</code> gets the <var>nent</var> requests from the array pointed to
+by <var>list</var>.  The operation to be performed is determined by the
+<code>aio_lio_opcode</code> member in each element of <var>list</var>.  If this
+field is <code>LIO_READ</code> a read operation is enqueued, similar to a call
+of <code>aio_read</code> for this element of the array (except that the way
+the termination is signalled is different, as we will see below).  If
+the <code>aio_lio_opcode</code> member is <code>LIO_WRITE</code> a write operation
+is enqueued.  Otherwise the <code>aio_lio_opcode</code> must be <code>LIO_NOP</code>
+in which case this element of <var>list</var> is simply ignored.  This
+&ldquo;operation&rdquo; is useful in situations where one has a fixed array of
+<code>struct aiocb</code> elements from which only a few need to be handled at
+a time.  Another situation is where the <code>lio_listio</code> call was
+canceled before all requests are processed (see <a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>) and the remaining requests have to be reissued.
+
+        <p>The other members of each element of the array pointed to by
+<code>list</code> must have values suitable for the operation as described in
+the documentation for <code>aio_read</code> and <code>aio_write</code> above.
+
+        <p>The <var>mode</var> argument determines how <code>lio_listio</code> behaves after
+having enqueued all the requests.  If <var>mode</var> is <code>LIO_WAIT</code> it
+waits until all requests terminated.  Otherwise <var>mode</var> must be
+<code>LIO_NOWAIT</code> and in this case the function returns immediately after
+having enqueued all the requests.  In this case the caller gets a
+notification of the termination of all requests according to the
+<var>sig</var> parameter.  If <var>sig</var> is <code>NULL</code> no notification is
+send.  Otherwise a signal is sent or a thread is started, just as
+described in the description for <code>aio_read</code> or <code>aio_write</code>.
+
+        <p>If <var>mode</var> is <code>LIO_WAIT</code>, the return value of <code>lio_listio</code>
+is 0 when all requests completed successfully.  Otherwise the
+function return -1 and <code>errno</code> is set accordingly.  To find
+out which request or requests failed one has to use the <code>aio_error</code>
+function on all the elements of the array <var>list</var>.
+
+        <p>In case <var>mode</var> is <code>LIO_NOWAIT</code>, the function returns 0 if
+all requests were enqueued correctly.  The current state of the requests
+can be found using <code>aio_error</code> and <code>aio_return</code> as described
+above.  If <code>lio_listio</code> returns -1 in this mode, the
+global variable <code>errno</code> is set accordingly.  If a request did not
+yet terminate, a call to <code>aio_error</code> returns <code>EINPROGRESS</code>.  If
+the value is different, the request is finished and the error value (or
+0) is returned and the result of the operation can be retrieved
+using <code>aio_return</code>.
+
+        <p>Possible values for <code>errno</code> are:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>The resources necessary to queue all the requests are not available at
+the moment.  The error status for each element of <var>list</var> must be
+checked to determine which request failed.
+
+          <p>Another reason could be that the system wide limit of AIO requests is
+exceeded.  This cannot be the case for the implementation on GNU systems
+since no arbitrary limits exist. 
+<br><dt><code>EINVAL</code><dd>The <var>mode</var> parameter is invalid or <var>nent</var> is larger than
+<code>AIO_LISTIO_MAX</code>. 
+<br><dt><code>EIO</code><dd>One or more of the request's I/O operations failed.  The error status of
+each request should be checked to determine which one failed. 
+<br><dt><code>ENOSYS</code><dd>The <code>lio_listio</code> function is not supported. 
+</dl>
+
+        <p>If the <var>mode</var> parameter is <code>LIO_NOWAIT</code> and the caller cancels
+a request, the error status for this request returned by
+<code>aio_error</code> is <code>ECANCELED</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is in fact <code>lio_listio64</code> since the LFS interface
+transparently replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>lio_listio64</b> (<var>int mode, struct aiocb *const list, int nent, struct sigevent *sig</var>)<var><a name="index-lio_005flistio64-1296"></a></var><br>
+<blockquote><p>This function is similar to the <code>lio_listio</code> function.  The only
+difference is that on 32&nbsp;bit<!-- /@w --> machines, the file descriptor should
+be opened in the large file mode.  Internally, <code>lio_listio64</code> uses
+functionality equivalent to <code>lseek64</code> (see <a href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>) to position the file descriptor correctly for the reading or
+writing, as opposed to <code>lseek</code> functionality used in
+<code>lio_listio</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is available under the name <code>lio_listio</code> and so
+transparently replaces the interface for small files on 32 bit
+machines. 
+</p></blockquote></div>
+
+   </body></html>
+

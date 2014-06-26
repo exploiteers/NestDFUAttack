@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>NSS Module Names - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="NSS-Module-Internals.html#NSS-Module-Internals" title="NSS Module Internals">
+<link rel="prev" href="NSS-Module-Internals.html#NSS-Module-Internals" title="NSS Module Internals">
+<link rel="next" href="NSS-Modules-Interface.html#NSS-Modules-Interface" title="NSS Modules Interface">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="NSS-Module-Names"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="NSS-Modules-Interface.html#NSS-Modules-Interface">NSS Modules Interface</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="NSS-Module-Internals.html#NSS-Module-Internals">NSS Module Internals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="NSS-Module-Internals.html#NSS-Module-Internals">NSS Module Internals</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.3.1 The Naming Scheme of the NSS Modules</h4>
+
+<p class="noindent">The name of each function consist of various parts:
+
+   <blockquote>
+       _nss_<var>service</var>_<var>function</var>
+</blockquote>
+
+   <p><var>service</var> of course corresponds to the name of the module this
+function is found in.<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>  The <var>function</var> part is derived
+from the interface function in the C library itself.  If the user calls
+the function <code>gethostbyname</code> and the service used is <code>files</code>
+the function
+
+<pre class="smallexample">            _nss_files_gethostbyname_r
+</pre>
+   <p class="noindent">in the module
+
+<pre class="smallexample">            libnss_files.so.2
+</pre>
+   <p class="noindent"><a name="index-reentrant-NSS-functions-3284"></a>is used.  You see, what is explained above in not the whole truth.  In
+fact the NSS modules only contain reentrant versions of the lookup
+functions.  I.e., if the user would call the <code>gethostbyname_r</code>
+function this also would end in the above function.  For all user
+interface functions the C library maps this call to a call to the
+reentrant function.  For reentrant functions this is trivial since the
+interface is (nearly) the same.  For the non-reentrant version The
+library keeps internal buffers which are used to replace the user
+supplied buffer.
+
+   <p>I.e., the reentrant functions <em>can</em> have counterparts.  No service
+module is forced to have functions for all databases and all kinds to
+access them.  If a function is not available it is simply treated as if
+the function would return <code>unavail</code>
+(see <a href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a>).
+
+   <p>The file name <samp><span class="file">libnss_files.so.2</span></samp> would be on a Solaris&nbsp;2<!-- /@w -->
+system <samp><span class="file">nss_files.so.2</span></samp>.  This is the difference mentioned above. 
+Sun's NSS modules are usable as modules which get indirectly loaded
+only.
+
+   <p>The NSS modules in the GNU C Library are prepared to be used as normal
+libraries themselves.  This is <em>not</em> true at the moment, though. 
+However,  the organization of the name space in the modules does not make it
+impossible like it is for Solaris.  Now you can see why the modules are
+still libraries.<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Now you might ask why this information is
+duplicated.  The answer is that we want to make it possible to link
+directly with these shared objects.</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> There is a second explanation: we were too
+lazy to change the Makefiles to allow the generation of shared objects
+not starting with <samp><span class="file">lib</span></samp> but don't tell this to anybody.</p>
+
+   <hr></div>
+
+   </body></html>
+

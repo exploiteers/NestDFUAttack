@@ -1,0 +1,146 @@
+<html lang="en">
+<head>
+<title>Scanning All Users - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="User-Database.html#User-Database" title="User Database">
+<link rel="prev" href="Lookup-User.html#Lookup-User" title="Lookup User">
+<link rel="next" href="Writing-a-User-Entry.html#Writing-a-User-Entry" title="Writing a User Entry">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Scanning-All-Users"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Writing-a-User-Entry.html#Writing-a-User-Entry">Writing a User Entry</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Lookup-User.html#Lookup-User">Lookup User</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="User-Database.html#User-Database">User Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.13.3 Scanning the List of All Users</h4>
+
+<p><a name="index-scanning-the-user-list-3398"></a>
+This section explains how a program can read the list of all users in
+the system, one user at a time.  The functions described here are
+declared in <samp><span class="file">pwd.h</span></samp>.
+
+   <p>You can use the <code>fgetpwent</code> function to read user entries from a
+particular file.
+
+<!-- pwd.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: struct passwd * <b>fgetpwent</b> (<var>FILE *stream</var>)<var><a name="index-fgetpwent-3399"></a></var><br>
+<blockquote><p>This function reads the next user entry from <var>stream</var> and returns a
+pointer to the entry.  The structure is statically allocated and is
+rewritten on subsequent calls to <code>fgetpwent</code>.  You must copy the
+contents of the structure if you wish to save the information.
+
+        <p>The stream must correspond to a file in the same format as the standard
+password database file. 
+</p></blockquote></div>
+
+<!-- pwd.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fgetpwent_r</b> (<var>FILE *stream, struct passwd *result_buf, char *buffer, size_t buflen, struct passwd **result</var>)<var><a name="index-fgetpwent_005fr-3400"></a></var><br>
+<blockquote><p>This function is similar to <code>fgetpwent</code> in that it reads the next
+user entry from <var>stream</var>.  But the result is returned in the
+structure pointed to by <var>result_buf</var>.  The
+first <var>buflen</var> bytes of the additional buffer pointed to by
+<var>buffer</var> are used to contain additional information, normally
+strings which are pointed to by the elements of the result structure.
+
+        <p>The stream must correspond to a file in the same format as the standard
+password database file.
+
+        <p>If the function returns zero <var>result</var> points to the structure with
+the wanted data (normally this is in <var>result_buf</var>).  If errors
+occurred the return value is nonzero and <var>result</var> contains a null
+pointer. 
+</p></blockquote></div>
+
+   <p>The way to scan all the entries in the user database is with
+<code>setpwent</code>, <code>getpwent</code>, and <code>endpwent</code>.
+
+<!-- pwd.h -->
+<!-- SVID, BSD -->
+<div class="defun">
+&mdash; Function: void <b>setpwent</b> (<var>void</var>)<var><a name="index-setpwent-3401"></a></var><br>
+<blockquote><p>This function initializes a stream which <code>getpwent</code> and
+<code>getpwent_r</code> use to read the user database. 
+</p></blockquote></div>
+
+<!-- pwd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: struct passwd * <b>getpwent</b> (<var>void</var>)<var><a name="index-getpwent-3402"></a></var><br>
+<blockquote><p>The <code>getpwent</code> function reads the next entry from the stream
+initialized by <code>setpwent</code>.  It returns a pointer to the entry.  The
+structure is statically allocated and is rewritten on subsequent calls
+to <code>getpwent</code>.  You must copy the contents of the structure if you
+wish to save the information.
+
+        <p>A null pointer is returned when no more entries are available. 
+</p></blockquote></div>
+
+<!-- pwd.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getpwent_r</b> (<var>struct passwd *result_buf, char *buffer, int buflen, struct passwd **result</var>)<var><a name="index-getpwent_005fr-3403"></a></var><br>
+<blockquote><p>This function is similar to <code>getpwent</code> in that it returns the next
+entry from the stream initialized by <code>setpwent</code>.  Like
+<code>fgetpwent_r</code>, it uses the user-supplied buffers in
+<var>result_buf</var> and <var>buffer</var> to return the information requested.
+
+        <p>The return values are the same as for <code>fgetpwent_r</code>.
+
+        </blockquote></div>
+
+<!-- pwd.h -->
+<!-- SVID, BSD -->
+<div class="defun">
+&mdash; Function: void <b>endpwent</b> (<var>void</var>)<var><a name="index-endpwent-3404"></a></var><br>
+<blockquote><p>This function closes the internal stream used by <code>getpwent</code> or
+<code>getpwent_r</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

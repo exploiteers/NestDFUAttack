@@ -1,0 +1,212 @@
+<html lang="en">
+<head>
+<title>Line Speed - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Local-Modes.html#Local-Modes" title="Local Modes">
+<link rel="next" href="Special-Characters.html#Special-Characters" title="Special Characters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Line-Speed"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Special-Characters.html#Special-Characters">Special Characters</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Local-Modes.html#Local-Modes">Local Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.8 Line Speed</h4>
+
+<p><a name="index-line-speed-1923"></a><a name="index-baud-rate-1924"></a><a name="index-terminal-line-speed-1925"></a><a name="index-terminal-line-speed-1926"></a>
+The terminal line speed tells the computer how fast to read and write
+data on the terminal.
+
+   <p>If the terminal is connected to a real serial line, the terminal speed
+you specify actually controls the line&mdash;if it doesn't match the
+terminal's own idea of the speed, communication does not work.  Real
+serial ports accept only certain standard speeds.  Also, particular
+hardware may not support even all the standard speeds.  Specifying a
+speed of zero hangs up a dialup connection and turns off modem control
+signals.
+
+   <p>If the terminal is not a real serial line (for example, if it is a
+network connection), then the line speed won't really affect data
+transmission speed, but some programs will use it to determine the
+amount of padding needed.  It's best to specify a line speed value that
+matches the actual speed of the actual terminal, but you can safely
+experiment with different values to vary the amount of padding.
+
+   <p>There are actually two line speeds for each terminal, one for input and
+one for output.  You can set them independently, but most often
+terminals use the same speed for both directions.
+
+   <p>The speed values are stored in the <code>struct termios</code> structure, but
+don't try to access them in the <code>struct termios</code> structure
+directly.  Instead, you should use the following functions to read and
+store them:
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: speed_t <b>cfgetospeed</b> (<var>const struct termios *termios-p</var>)<var><a name="index-cfgetospeed-1927"></a></var><br>
+<blockquote><p>This function returns the output line speed stored in the structure
+<code>*</code><var>termios-p</var>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: speed_t <b>cfgetispeed</b> (<var>const struct termios *termios-p</var>)<var><a name="index-cfgetispeed-1928"></a></var><br>
+<blockquote><p>This function returns the input line speed stored in the structure
+<code>*</code><var>termios-p</var>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>cfsetospeed</b> (<var>struct termios *termios-p, speed_t speed</var>)<var><a name="index-cfsetospeed-1929"></a></var><br>
+<blockquote><p>This function stores <var>speed</var> in <code>*</code><var>termios-p</var> as the output
+speed.  The normal return value is 0; a value of -1
+indicates an error.  If <var>speed</var> is not a speed, <code>cfsetospeed</code>
+returns -1. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>cfsetispeed</b> (<var>struct termios *termios-p, speed_t speed</var>)<var><a name="index-cfsetispeed-1930"></a></var><br>
+<blockquote><p>This function stores <var>speed</var> in <code>*</code><var>termios-p</var> as the input
+speed.  The normal return value is 0; a value of -1
+indicates an error.  If <var>speed</var> is not a speed, <code>cfsetospeed</code>
+returns -1. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>cfsetspeed</b> (<var>struct termios *termios-p, speed_t speed</var>)<var><a name="index-cfsetspeed-1931"></a></var><br>
+<blockquote><p>This function stores <var>speed</var> in <code>*</code><var>termios-p</var> as both the
+input and output speeds.  The normal return value is 0; a value
+of -1 indicates an error.  If <var>speed</var> is not a speed,
+<code>cfsetspeed</code> returns -1.  This function is an extension in
+4.4 BSD. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>speed_t</b><var><a name="index-speed_005ft-1932"></a></var><br>
+<blockquote><p>The <code>speed_t</code> type is an unsigned integer data type used to
+represent line speeds. 
+</p></blockquote></div>
+
+   <p>The functions <code>cfsetospeed</code> and <code>cfsetispeed</code> report errors
+only for speed values that the system simply cannot handle.  If you
+specify a speed value that is basically acceptable, then those functions
+will succeed.  But they do not check that a particular hardware device
+can actually support the specified speeds&mdash;in fact, they don't know
+which device you plan to set the speed for.  If you use <code>tcsetattr</code>
+to set the speed of a particular device to a value that it cannot
+handle, <code>tcsetattr</code> returns -1.
+
+   <p><strong>Portability note:</strong> In the GNU library, the functions above
+accept speeds measured in bits per second as input, and return speed
+values measured in bits per second.  Other libraries require speeds to
+be indicated by special codes.  For POSIX.1 portability, you must use
+one of the following symbols to represent the speed; their precise
+numeric values are system-dependent, but each name has a fixed meaning:
+<code>B110</code> stands for 110 bps, <code>B300</code> for 300 bps, and so on. 
+There is no portable way to represent any speed but these, but these are
+the only speeds that typical serial lines can support.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+   <p><a name="index-B0-1933"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B50-1934"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B75-1935"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B110-1936"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B134-1937"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B150-1938"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B200-1939"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B300-1940"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B600-1941"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B1200-1942"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B1800-1943"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B2400-1944"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B4800-1945"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B9600-1946"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B19200-1947"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+<a name="index-B38400-1948"></a><!-- termios.h -->
+<!-- GNU -->
+<a name="index-B57600-1949"></a><!-- termios.h -->
+<!-- GNU -->
+<a name="index-B115200-1950"></a><!-- termios.h -->
+<!-- GNU -->
+<a name="index-B230400-1951"></a><!-- termios.h -->
+<!-- GNU -->
+<a name="index-B460800-1952"></a>
+<pre class="smallexample">     B0  B50  B75  B110  B134  B150  B200
+     B300  B600  B1200  B1800  B2400  B4800
+     B9600  B19200  B38400  B57600  B115200
+     B230400  B460800
+</pre>
+   <p><a name="index-EXTA-1953"></a><a name="index-EXTB-1954"></a>BSD defines two additional speed symbols as aliases: <code>EXTA</code> is an
+alias for <code>B19200</code> and <code>EXTB</code> is an alias for <code>B38400</code>. 
+These aliases are obsolete.
+
+   </body></html>
+

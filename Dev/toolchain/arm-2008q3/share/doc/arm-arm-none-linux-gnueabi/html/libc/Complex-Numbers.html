@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Complex Numbers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="next" href="Operations-on-Complex.html#Operations-on-Complex" title="Operations on Complex">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Complex-Numbers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Operations-on-Complex.html#Operations-on-Complex">Operations on Complex</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.9 Complex Numbers</h3>
+
+<p><a name="index-complex_002eh-2520"></a><a name="index-complex-numbers-2521"></a>
+ISO&nbsp;C99<!-- /@w --> introduces support for complex numbers in C.  This is done
+with a new type qualifier, <code>complex</code>.  It is a keyword if and only
+if <samp><span class="file">complex.h</span></samp> has been included.  There are three complex types,
+corresponding to the three real types:  <code>float complex</code>,
+<code>double complex</code>, and <code>long double complex</code>.
+
+   <p>To construct complex numbers you need a way to indicate the imaginary
+part of a number.  There is no standard notation for an imaginary
+floating point constant.  Instead, <samp><span class="file">complex.h</span></samp> defines two macros
+that can be used to create complex numbers.
+
+<div class="defun">
+&mdash; Macro: const float complex <b>_Complex_I</b><var><a name="index-g_t_005fComplex_005fI-2522"></a></var><br>
+<blockquote><p>This macro is a representation of the complex number &ldquo;0+1i&rdquo;. 
+Multiplying a real floating-point value by <code>_Complex_I</code> gives a
+complex number whose value is purely imaginary.  You can use this to
+construct complex constants:
+
+     <pre class="smallexample">          3.0 + 4.0i = <code>3.0 + 4.0 * _Complex_I</code>
+</pre>
+        <p>Note that <code>_Complex_I * _Complex_I</code> has the value <code>-1</code>, but
+the type of that value is <code>complex</code>. 
+</p></blockquote></div>
+
+<!-- Put this back in when gcc supports _Imaginary_I.  It's too confusing. -->
+<p class="noindent"><code>_Complex_I</code> is a bit of a mouthful.  <samp><span class="file">complex.h</span></samp> also defines
+a shorter name for the same constant.
+
+<div class="defun">
+&mdash; Macro: const float complex <b>I</b><var><a name="index-I-2523"></a></var><br>
+<blockquote><p>This macro has exactly the same value as <code>_Complex_I</code>.  Most of the
+time it is preferable.  However, it causes problems if you want to use
+the identifier <code>I</code> for something else.  You can safely write
+
+     <pre class="smallexample">          #include &lt;complex.h&gt;
+          #undef I
+</pre>
+        <p class="noindent">if you need <code>I</code> for your own purposes.  (In that case we recommend
+you also define some other short name for <code>_Complex_I</code>, such as
+<code>J</code>.)
+
+        </blockquote></div>
+
+   </body></html>
+

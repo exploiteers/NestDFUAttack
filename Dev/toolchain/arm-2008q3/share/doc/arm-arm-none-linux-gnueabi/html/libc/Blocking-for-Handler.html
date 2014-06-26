@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Blocking for Handler - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Testing-for-Delivery.html#Testing-for-Delivery" title="Testing for Delivery">
+<link rel="next" href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals" title="Checking for Pending Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Blocking-for-Handler"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals">Checking for Pending Signals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Testing-for-Delivery.html#Testing-for-Delivery">Testing for Delivery</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.5 Blocking Signals for a Handler</h4>
+
+<p><a name="index-blocking-signals_002c-in-a-handler-2971"></a>
+When a signal handler is invoked, you usually want it to be able to
+finish without being interrupted by another signal.  From the moment the
+handler starts until the moment it finishes, you must block signals that
+might confuse it or corrupt its data.
+
+   <p>When a handler function is invoked on a signal, that signal is
+automatically blocked (in addition to any other signals that are already
+in the process's signal mask) during the time the handler is running. 
+If you set up a handler for <code>SIGTSTP</code>, for instance, then the
+arrival of that signal forces further <code>SIGTSTP</code> signals to wait
+during the execution of the handler.
+
+   <p>However, by default, other kinds of signals are not blocked; they can
+arrive during handler execution.
+
+   <p>The reliable way to block other kinds of signals during the execution of
+the handler is to use the <code>sa_mask</code> member of the <code>sigaction</code>
+structure.
+
+   <p>Here is an example:
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;stddef.h&gt;
+     
+     void catch_stop ();
+     
+     void
+     install_handler (void)
+     {
+       struct sigaction setup_action;
+       sigset_t block_mask;
+     
+       sigemptyset (&amp;block_mask);
+       /* <span class="roman">Block other terminal-generated signals while handler runs.</span> */
+       sigaddset (&amp;block_mask, SIGINT);
+       sigaddset (&amp;block_mask, SIGQUIT);
+       setup_action.sa_handler = catch_stop;
+       setup_action.sa_mask = block_mask;
+       setup_action.sa_flags = 0;
+       sigaction (SIGTSTP, &amp;setup_action, NULL);
+     }
+</pre>
+   <p>This is more reliable than blocking the other signals explicitly in the
+code for the handler.  If you block signals explicitly in the handler,
+you can't avoid at least a short interval at the beginning of the
+handler where they are not yet blocked.
+
+   <p>You cannot remove signals from the process's current mask using this
+mechanism.  However, you can make calls to <code>sigprocmask</code> within
+your handler to block or unblock signals as you wish.
+
+   <p>In any case, when the handler returns, the system restores the mask that
+was in place before the handler was entered.  If any signals that become
+unblocked by this restoration are pending, the process will receive
+those signals immediately, before returning to the code that was
+interrupted.
+
+   </body></html>
+

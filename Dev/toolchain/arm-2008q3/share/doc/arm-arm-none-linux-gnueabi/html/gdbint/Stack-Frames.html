@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Stack Frames - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="libgdb.html#libgdb" title="libgdb">
+<link rel="next" href="Symbol-Handling.html#Symbol-Handling" title="Symbol Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Stack-Frames"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Symbol-Handling.html#Symbol-Handling">Symbol Handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="libgdb.html#libgdb">libgdb</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">6 Stack Frames</h2>
+
+<p><a name="index-frame-105"></a><a name="index-call-stack-frame-106"></a>A frame is a construct that <span class="sc">gdb</span> uses to keep track of calling
+and called functions.
+
+   <p><a name="index-unwind-frame-107"></a><span class="sc">gdb</span>'s frame model, a fresh design, was implemented with the
+need to support <span class="sc">dwarf</span>'s Call Frame Information in mind.  In fact,
+the term &ldquo;unwind&rdquo; is taken directly from that specification. 
+Developers wishing to learn more about unwinders, are encouraged to
+read the <span class="sc">dwarf</span> specification, available from
+<a href="http://www.dwarfstd.org">http://www.dwarfstd.org</a>.
+
+   <p><a name="index-frame_005fregister_005funwind-108"></a><a name="index-get_005fframe_005fregister-109"></a><span class="sc">gdb</span>'s model is that you find a frame's registers by
+&ldquo;unwinding&rdquo; them from the next younger frame.  That is,
+&lsquo;<samp><span class="samp">get_frame_register</span></samp>&rsquo; which returns the value of a register in
+frame #1 (the next-to-youngest frame), is implemented by calling frame
+#0's <code>frame_register_unwind</code> (the youngest frame).  But then the
+obvious question is: how do you access the registers of the youngest
+frame itself?
+
+   <p><a name="index-sentinel-frame-110"></a><a name="index-get_005fframe_005ftype-111"></a><a name="index-SENTINEL_005fFRAME-112"></a>To answer this question, GDB has the <dfn>sentinel</dfn> frame, the
+&ldquo;-1st&rdquo; frame.  Unwinding registers from the sentinel frame gives you
+the current values of the youngest real frame's registers.  If <var>f</var>
+is a sentinel frame, then <code>get_frame_type (</code><var>f</var><code>) ==
+SENTINEL_FRAME</code>.
+
+<h3 class="section">6.1 Selecting an Unwinder</h3>
+
+<p><a name="index-frame_005funwind_005fprepend_005funwinder-113"></a><a name="index-frame_005funwind_005fappend_005funwinder-114"></a>The architecture registers a list of frame unwinders (<code>struct
+frame_unwind</code>), using the functions
+<code>frame_unwind_prepend_unwinder</code> and
+<code>frame_unwind_append_unwinder</code>.  Each unwinder includes a
+sniffer.  Whenever <span class="sc">gdb</span> needs to unwind a frame (to fetch the
+previous frame's registers or the current frame's ID), it calls
+registered sniffers in order to find one which recognizes the frame. 
+The first time a sniffer returns non-zero, the corresponding unwinder
+is assigned to the frame.
+
+<h3 class="section">6.2 Unwinding the Frame ID</h3>
+
+<p><a name="index-frame-ID-115"></a>
+Every frame has an associated ID, of type <code>struct frame_id</code>. 
+The ID includes the stack base and function start address for
+the frame.  The ID persists through the entire life of the frame,
+including while other called frames are running; it is used to
+locate an appropriate <code>struct frame_info</code> from the cache.
+
+   <p>Every time the inferior stops, and at various other times, the frame
+cache is flushed.  Because of this, parts of <span class="sc">gdb</span> which need
+to keep track of individual frames cannot use pointers to <code>struct
+frame_info</code>.  A frame ID provides a stable reference to a frame, even
+when the unwinder must be run again to generate a new <code>struct
+frame_info</code> for the same frame.
+
+   <p>The frame's unwinder's <code>this_id</code> method is called to find the ID. 
+Note that this is different from register unwinding, where the next
+frame's <code>prev_register</code> is called to unwind this frame's
+registers.
+
+   <p>Both stack base and function address are required to identify the
+frame, because a recursive function has the same function address for
+two consecutive frames and a leaf function may have the same stack
+address as its caller.  On some platforms, a third address is part of
+the ID to further disambiguate frames&mdash;for instance, on IA-64
+the separate register stack address is included in the ID.
+
+   <p>An invalid frame ID (<code>null_frame_id</code>) returned from the
+<code>this_id</code> method means to stop unwinding after this frame.
+
+<h3 class="section">6.3 Unwinding Registers</h3>
+
+<p>Each unwinder includes a <code>prev_register</code> method.  This method
+takes a frame, an associated cache pointer, and a register number. 
+It returns a <code>struct value *</code> describing the requested register,
+as saved by this frame.  This is the value of the register that is
+current in this frame's caller.
+
+   <p>The returned value must have the same type as the register.  It may
+have any lvalue type.  In most circumstances one of these routines
+will generate the appropriate value:
+
+     <dl>
+<dt><code>frame_unwind_got_optimized</code><dd><a name="index-frame_005funwind_005fgot_005foptimized-116"></a>This register was not saved.
+
+     <br><dt><code>frame_unwind_got_register</code><dd><a name="index-frame_005funwind_005fgot_005fregister-117"></a>This register was copied into another register in this frame.  This
+is also used for unchanged registers; they are &ldquo;copied&rdquo; into the
+same register.
+
+     <br><dt><code>frame_unwind_got_memory</code><dd><a name="index-frame_005funwind_005fgot_005fmemory-118"></a>This register was saved in memory.
+
+     <br><dt><code>frame_unwind_got_constant</code><dd><a name="index-frame_005funwind_005fgot_005fconstant-119"></a>This register was not saved, but the unwinder can compute the previous
+value some other way.
+
+     <br><dt><code>frame_unwind_got_address</code><dd><a name="index-frame_005funwind_005fgot_005faddress-120"></a>Same as <code>frame_unwind_got_constant</code>, except that the value is a target
+address.  This is frequently used for the stack pointer, which is not
+explicitly saved but has a known offset from this frame's stack
+pointer.  For architectures with a flat unified address space, this is
+generally the same as <code>frame_unwind_got_constant</code>. 
+</dl>
+
+   </body></html>
+

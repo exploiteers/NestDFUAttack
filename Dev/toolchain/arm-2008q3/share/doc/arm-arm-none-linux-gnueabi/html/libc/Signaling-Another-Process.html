@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+<title>Signaling Another Process - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Generating-Signals.html#Generating-Signals" title="Generating Signals">
+<link rel="prev" href="Signaling-Yourself.html#Signaling-Yourself" title="Signaling Yourself">
+<link rel="next" href="Permission-for-kill.html#Permission-for-kill" title="Permission for kill">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signaling-Another-Process"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Permission-for-kill.html#Permission-for-kill">Permission for kill</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signaling-Yourself.html#Signaling-Yourself">Signaling Yourself</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.6.2 Signaling Another Process</h4>
+
+<p><a name="index-killing-a-process-2950"></a>The <code>kill</code> function can be used to send a signal to another process. 
+In spite of its name, it can be used for a lot of things other than
+causing a process to terminate.  Some examples of situations where you
+might want to send signals between processes are:
+
+     <ul>
+<li>A parent process starts a child to perform a task&mdash;perhaps having the
+child running an infinite loop&mdash;and then terminates the child when the
+task is no longer needed.
+
+     <li>A process executes as part of a group, and needs to terminate or notify
+the other processes in the group when an error or other event occurs.
+
+     <li>Two processes need to synchronize while working together. 
+</ul>
+
+   <p>This section assumes that you know a little bit about how processes
+work.  For more information on this subject, see <a href="Processes.html#Processes">Processes</a>.
+
+   <p>The <code>kill</code> function is declared in <samp><span class="file">signal.h</span></samp>. 
+<a name="index-signal_002eh-2951"></a>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>kill</b> (<var>pid_t pid, int signum</var>)<var><a name="index-kill-2952"></a></var><br>
+<blockquote><p>The <code>kill</code> function sends the signal <var>signum</var> to the process
+or process group specified by <var>pid</var>.  Besides the signals listed in
+<a href="Standard-Signals.html#Standard-Signals">Standard Signals</a>, <var>signum</var> can also have a value of zero to
+check the validity of the <var>pid</var>.
+
+        <p>The <var>pid</var> specifies the process or process group to receive the
+signal:
+
+          <dl>
+<dt><var>pid</var><code> &gt; 0</code><dd>The process whose identifier is <var>pid</var>.
+
+          <br><dt><var>pid</var><code> == 0</code><dd>All processes in the same process group as the sender.
+
+          <br><dt><var>pid</var><code> &lt; -1</code><dd>The process group whose identifier is &minus;<var>pid</var>.
+
+          <br><dt><var>pid</var><code> == -1</code><dd>If the process is privileged, send the signal to all processes except
+for some special system processes.  Otherwise, send the signal to all
+processes with the same effective user ID. 
+</dl>
+
+        <p>A process can send a signal to itself with a call like <code>kill&nbsp;(getpid(),&nbsp;</code><var>signum</var><code>)</code><!-- /@w -->.  If <code>kill</code> is used by a process to send
+a signal to itself, and the signal is not blocked, then <code>kill</code>
+delivers at least one signal (which might be some other pending
+unblocked signal instead of the signal <var>signum</var>) to that process
+before it returns.
+
+        <p>The return value from <code>kill</code> is zero if the signal can be sent
+successfully.  Otherwise, no signal is sent, and a value of <code>-1</code> is
+returned.  If <var>pid</var> specifies sending a signal to several processes,
+<code>kill</code> succeeds if it can send the signal to at least one of them. 
+There's no way you can tell which of the processes got the signal
+or whether all of them did.
+
+        <p>The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The <var>signum</var> argument is an invalid or unsupported number.
+
+          <br><dt><code>EPERM</code><dd>You do not have the privilege to send a signal to the process or any of
+the processes in the process group named by <var>pid</var>.
+
+          <br><dt><code>ESRCH</code><dd>The <var>pid</var> argument does not refer to an existing process or group. 
+</dl>
+        </p></blockquote></div>
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>killpg</b> (<var>int pgid, int signum</var>)<var><a name="index-killpg-2953"></a></var><br>
+<blockquote><p>This is similar to <code>kill</code>, but sends signal <var>signum</var> to the
+process group <var>pgid</var>.  This function is provided for compatibility
+with BSD; using <code>kill</code> to do this is more portable. 
+</p></blockquote></div>
+
+   <p>As a simple example of <code>kill</code>, the call <code>kill&nbsp;(getpid&nbsp;(),&nbsp;</code><var>sig</var><code>)</code><!-- /@w --> has the same effect as <code>raise&nbsp;(</code><var>sig</var><code>)</code><!-- /@w -->.
+
+   </body></html>
+

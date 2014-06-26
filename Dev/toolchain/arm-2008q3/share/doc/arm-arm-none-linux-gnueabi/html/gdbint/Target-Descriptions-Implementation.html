@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+<title>Target Descriptions Implementation - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Descriptions.html#Target-Descriptions" title="Target Descriptions">
+<link rel="next" href="Adding-Target-Described-Register-Support.html#Adding-Target-Described-Register-Support" title="Adding Target Described Register Support">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Target-Descriptions-Implementation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Adding-Target-Described-Register-Support.html#Adding-Target-Described-Register-Support">Adding Target Described Register Support</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Descriptions.html#Target-Descriptions">Target Descriptions</a>
+<hr>
+</div>
+
+<h3 class="section">11.1 Target Descriptions Implementation</h3>
+
+<p><a name="index-target-descriptions_002c-implementation-365"></a>
+Before <span class="sc">gdb</span> connects to a new target, or runs a new program on
+an existing target, it discards any existing target description and
+reverts to a default gdbarch.  Then, after connecting, it looks for a
+new target description by calling <code>target_find_description</code>.
+
+   <p>A description may come from a user specified file (XML), the remote
+&lsquo;<samp><span class="samp">qXfer:features:read</span></samp>&rsquo; packet (also XML), or from any custom
+<code>to_read_description</code> routine in the target vector.  For instance,
+the remote target supports guessing whether a MIPS target is 32-bit or
+64-bit based on the size of the &lsquo;<samp><span class="samp">g</span></samp>&rsquo; packet.
+
+   <p>If any target description is found, <span class="sc">gdb</span> creates a new gdbarch
+incorporating the description by calling <code>gdbarch_update_p</code>.  Any
+&lsquo;<samp><span class="samp">&lt;architecture&gt;</span></samp>&rsquo; element is handled first, to determine which
+architecture's gdbarch initialization routine is called to create the
+new architecture.  Then the initialization routine is called, and has
+a chance to adjust the constructed architecture based on the contents
+of the target description.  For instance, it can recognize any
+properties set by a <code>to_read_description</code> routine.  Also
+see <a href="Adding-Target-Described-Register-Support.html#Adding-Target-Described-Register-Support">Adding Target Described Register Support</a>.
+
+   </body></html>
+

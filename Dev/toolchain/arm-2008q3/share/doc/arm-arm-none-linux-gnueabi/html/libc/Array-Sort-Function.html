@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Array Sort Function - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Searching-and-Sorting.html#Searching-and-Sorting" title="Searching and Sorting">
+<link rel="prev" href="Array-Search-Function.html#Array-Search-Function" title="Array Search Function">
+<link rel="next" href="Search_002fSort-Example.html#Search_002fSort-Example" title="Search/Sort Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Array-Sort-Function"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Search_002fSort-Example.html#Search_002fSort-Example">Search/Sort Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Array-Search-Function.html#Array-Search-Function">Array Search Function</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>
+<hr>
+</div>
+
+<h3 class="section">9.3 Array Sort Function</h3>
+
+<p><a name="index-sort-function-_0028for-arrays_0029-827"></a><a name="index-quick-sort-function-_0028for-arrays_0029-828"></a><a name="index-array-sort-function-829"></a>
+To sort an array using an arbitrary comparison function, use the
+<code>qsort</code> function.  The prototype for this function is in
+<samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-830"></a>
+<!-- stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: void <b>qsort</b> (<var>void *array, size_t count, size_t size, comparison_fn_t compare</var>)<var><a name="index-qsort-831"></a></var><br>
+<blockquote><p>The <var>qsort</var> function sorts the array <var>array</var>.  The array contains
+<var>count</var> elements, each of which is of size <var>size</var>.
+
+        <p>The <var>compare</var> function is used to perform the comparison on the
+array elements.  This function is called with two pointer arguments and
+should return an integer less than, equal to, or greater than zero
+corresponding to whether its first argument is considered less than,
+equal to, or greater than its second argument.
+
+        <p><a name="index-stable-sorting-832"></a><strong>Warning:</strong> If two objects compare as equal, their order after
+sorting is unpredictable.  That is to say, the sorting is not stable. 
+This can make a difference when the comparison considers only part of
+the elements.  Two elements with the same sort key may differ in other
+respects.
+
+        <p>If you want the effect of a stable sort, you can get this result by
+writing the comparison function so that, lacking other reason
+distinguish between two elements, it compares them by their addresses. 
+Note that doing this may make the sorting algorithm less efficient, so
+do it only if necessary.
+
+        <p>Here is a simple example of sorting an array of doubles in numerical
+order, using the comparison function defined above (see <a href="Comparison-Functions.html#Comparison-Functions">Comparison Functions</a>):
+
+     <pre class="smallexample">          {
+            double *array;
+            int size;
+            ...
+            qsort (array, size, sizeof (double), compare_doubles);
+          }
+</pre>
+        <p>The <code>qsort</code> function derives its name from the fact that it was
+originally implemented using the &ldquo;quick sort&rdquo; algorithm.
+
+        <p>The implementation of <code>qsort</code> in this library might not be an
+in-place sort and might thereby use an extra amount of memory to store
+the array. 
+</p></blockquote></div>
+
+   </body></html>
+

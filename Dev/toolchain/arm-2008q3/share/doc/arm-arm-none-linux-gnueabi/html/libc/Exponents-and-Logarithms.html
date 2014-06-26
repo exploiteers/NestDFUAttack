@@ -1,0 +1,433 @@
+<html lang="en">
+<head>
+<title>Exponents and Logarithms - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="prev" href="Inverse-Trig-Functions.html#Inverse-Trig-Functions" title="Inverse Trig Functions">
+<link rel="next" href="Hyperbolic-Functions.html#Hyperbolic-Functions" title="Hyperbolic Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Exponents-and-Logarithms"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hyperbolic-Functions.html#Hyperbolic-Functions">Hyperbolic Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Inverse-Trig-Functions.html#Inverse-Trig-Functions">Inverse Trig Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.4 Exponentiation and Logarithms</h3>
+
+<p><a name="index-exponentiation-functions-2130"></a><a name="index-power-functions-2131"></a><a name="index-logarithm-functions-2132"></a>
+<!-- math.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: double <b>exp</b> (<var>double x</var>)<var><a name="index-exp-2133"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>expf</b> (<var>float x</var>)<var><a name="index-expf-2134"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>expl</b> (<var>long double x</var>)<var><a name="index-expl-2135"></a></var><br>
+<blockquote><p>These functions compute <code>e</code> (the base of natural logarithms) raised
+to the power <var>x</var>.
+
+        <p>If the magnitude of the result is too large to be representable,
+<code>exp</code> signals overflow. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>exp2</b> (<var>double x</var>)<var><a name="index-exp2-2136"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>exp2f</b> (<var>float x</var>)<var><a name="index-exp2f-2137"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>exp2l</b> (<var>long double x</var>)<var><a name="index-exp2l-2138"></a></var><br>
+<blockquote><p>These functions compute <code>2</code> raised to the power <var>x</var>. 
+Mathematically, <code>exp2 (x)</code> is the same as <code>exp (x * log (2))</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: double <b>exp10</b> (<var>double x</var>)<var><a name="index-exp10-2139"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- GNU -->
+   &mdash; Function: float <b>exp10f</b> (<var>float x</var>)<var><a name="index-exp10f-2140"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- GNU -->
+   &mdash; Function: long double <b>exp10l</b> (<var>long double x</var>)<var><a name="index-exp10l-2141"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- GNU -->
+   &mdash; Function: double <b>pow10</b> (<var>double x</var>)<var><a name="index-pow10-2142"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- GNU -->
+   &mdash; Function: float <b>pow10f</b> (<var>float x</var>)<var><a name="index-pow10f-2143"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- GNU -->
+   &mdash; Function: long double <b>pow10l</b> (<var>long double x</var>)<var><a name="index-pow10l-2144"></a></var><br>
+<blockquote><p>These functions compute <code>10</code> raised to the power <var>x</var>. 
+Mathematically, <code>exp10 (x)</code> is the same as <code>exp (x * log (10))</code>.
+
+        <p>These functions are GNU extensions.  The name <code>exp10</code> is
+preferred, since it is analogous to <code>exp</code> and <code>exp2</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>log</b> (<var>double x</var>)<var><a name="index-log-2145"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>logf</b> (<var>float x</var>)<var><a name="index-logf-2146"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>logl</b> (<var>long double x</var>)<var><a name="index-logl-2147"></a></var><br>
+<blockquote><p>These functions compute the natural logarithm of <var>x</var>.  <code>exp (log
+(</code><var>x</var><code>))</code> equals <var>x</var>, exactly in mathematics and approximately in
+C.
+
+        <p>If <var>x</var> is negative, <code>log</code> signals a domain error.  If <var>x</var>
+is zero, it returns negative infinity; if <var>x</var> is too close to zero,
+it may signal overflow. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>log10</b> (<var>double x</var>)<var><a name="index-log10-2148"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>log10f</b> (<var>float x</var>)<var><a name="index-log10f-2149"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>log10l</b> (<var>long double x</var>)<var><a name="index-log10l-2150"></a></var><br>
+<blockquote><p>These functions return the base-10 logarithm of <var>x</var>. 
+<code>log10 (</code><var>x</var><code>)</code> equals <code>log (</code><var>x</var><code>) / log (10)</code>.
+
+        </blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>log2</b> (<var>double x</var>)<var><a name="index-log2-2151"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>log2f</b> (<var>float x</var>)<var><a name="index-log2f-2152"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>log2l</b> (<var>long double x</var>)<var><a name="index-log2l-2153"></a></var><br>
+<blockquote><p>These functions return the base-2 logarithm of <var>x</var>. 
+<code>log2 (</code><var>x</var><code>)</code> equals <code>log (</code><var>x</var><code>) / log (2)</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>logb</b> (<var>double x</var>)<var><a name="index-logb-2154"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>logbf</b> (<var>float x</var>)<var><a name="index-logbf-2155"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>logbl</b> (<var>long double x</var>)<var><a name="index-logbl-2156"></a></var><br>
+<blockquote><p>These functions extract the exponent of <var>x</var> and return it as a
+floating-point value.  If <code>FLT_RADIX</code> is two, <code>logb</code> is equal
+to <code>floor (log2 (x))</code>, except it's probably faster.
+
+        <p>If <var>x</var> is de-normalized, <code>logb</code> returns the exponent <var>x</var>
+would have if it were normalized.  If <var>x</var> is infinity (positive or
+negative), <code>logb</code> returns &amp;infin;.  If <var>x</var> is zero,
+<code>logb</code> returns &amp;infin;.  It does not signal. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>ilogb</b> (<var>double x</var>)<var><a name="index-ilogb-2157"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: int <b>ilogbf</b> (<var>float x</var>)<var><a name="index-ilogbf-2158"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: int <b>ilogbl</b> (<var>long double x</var>)<var><a name="index-ilogbl-2159"></a></var><br>
+<blockquote><p>These functions are equivalent to the corresponding <code>logb</code>
+functions except that they return signed integer values. 
+</p></blockquote></div>
+
+<p class="noindent">Since integers cannot represent infinity and NaN, <code>ilogb</code> instead
+returns an integer that can't be the exponent of a normal floating-point
+number.  <samp><span class="file">math.h</span></samp> defines constants so you can check for this.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>FP_ILOGB0</b><var><a name="index-FP_005fILOGB0-2160"></a></var><br>
+<blockquote><p><code>ilogb</code> returns this value if its argument is <code>0</code>.  The
+numeric value is either <code>INT_MIN</code> or <code>-INT_MAX</code>.
+
+        <p>This macro is defined in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>FP_ILOGBNAN</b><var><a name="index-FP_005fILOGBNAN-2161"></a></var><br>
+<blockquote><p><code>ilogb</code> returns this value if its argument is <code>NaN</code>.  The
+numeric value is either <code>INT_MIN</code> or <code>INT_MAX</code>.
+
+        <p>This macro is defined in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+   <p>These values are system specific.  They might even be the same.  The
+proper way to test the result of <code>ilogb</code> is as follows:
+
+<pre class="smallexample">     i = ilogb (f);
+     if (i == FP_ILOGB0 || i == FP_ILOGBNAN)
+       {
+         if (isnan (f))
+           {
+             /* <span class="roman">Handle NaN.</span>  */
+           }
+         else if (f  == 0.0)
+           {
+             /* <span class="roman">Handle 0.0.</span>  */
+           }
+         else
+           {
+             /* <span class="roman">Some other value with large exponent,</span>
+                <span class="roman">perhaps +Inf.</span>  */
+           }
+       }
+</pre>
+   <!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>pow</b> (<var>double base, double power</var>)<var><a name="index-pow-2162"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>powf</b> (<var>float base, float power</var>)<var><a name="index-powf-2163"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>powl</b> (<var>long double base, long double power</var>)<var><a name="index-powl-2164"></a></var><br>
+<blockquote><p>These are general exponentiation functions, returning <var>base</var> raised
+to <var>power</var>.
+
+        <p>Mathematically, <code>pow</code> would return a complex number when <var>base</var>
+is negative and <var>power</var> is not an integral value.  <code>pow</code> can't
+do that, so instead it signals a domain error. <code>pow</code> may also
+underflow or overflow the destination type. 
+</p></blockquote></div>
+
+   <p><a name="index-square-root-function-2165"></a><!-- math.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: double <b>sqrt</b> (<var>double x</var>)<var><a name="index-sqrt-2166"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>sqrtf</b> (<var>float x</var>)<var><a name="index-sqrtf-2167"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>sqrtl</b> (<var>long double x</var>)<var><a name="index-sqrtl-2168"></a></var><br>
+<blockquote><p>These functions return the nonnegative square root of <var>x</var>.
+
+        <p>If <var>x</var> is negative, <code>sqrt</code> signals a domain error. 
+Mathematically, it should return a complex number. 
+</p></blockquote></div>
+
+   <p><a name="index-cube-root-function-2169"></a><!-- math.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: double <b>cbrt</b> (<var>double x</var>)<var><a name="index-cbrt-2170"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: float <b>cbrtf</b> (<var>float x</var>)<var><a name="index-cbrtf-2171"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long double <b>cbrtl</b> (<var>long double x</var>)<var><a name="index-cbrtl-2172"></a></var><br>
+<blockquote><p>These functions return the cube root of <var>x</var>.  They cannot
+fail; every representable real value has a representable real cube root. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>hypot</b> (<var>double x, double y</var>)<var><a name="index-hypot-2173"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>hypotf</b> (<var>float x, float y</var>)<var><a name="index-hypotf-2174"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>hypotl</b> (<var>long double x, long double y</var>)<var><a name="index-hypotl-2175"></a></var><br>
+<blockquote><p>These functions return <code>sqrt (</code><var>x</var><code>*</code><var>x</var><code> +
+</code><var>y</var><code>*</code><var>y</var><code>)</code>.  This is the length of the hypotenuse of a right
+triangle with sides of length <var>x</var> and <var>y</var>, or the distance
+of the point (<var>x</var>, <var>y</var>) from the origin.  Using this function
+instead of the direct formula is wise, since the error is
+much smaller.  See also the function <code>cabs</code> in <a href="Absolute-Value.html#Absolute-Value">Absolute Value</a>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>expm1</b> (<var>double x</var>)<var><a name="index-expm1-2176"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>expm1f</b> (<var>float x</var>)<var><a name="index-expm1f-2177"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>expm1l</b> (<var>long double x</var>)<var><a name="index-expm1l-2178"></a></var><br>
+<blockquote><p>These functions return a value equivalent to <code>exp (</code><var>x</var><code>) - 1</code>. 
+They are computed in a way that is accurate even if <var>x</var> is
+near zero&mdash;a case where <code>exp (</code><var>x</var><code>) - 1</code> would be inaccurate owing
+to subtraction of two numbers that are nearly equal. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>log1p</b> (<var>double x</var>)<var><a name="index-log1p-2179"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>log1pf</b> (<var>float x</var>)<var><a name="index-log1pf-2180"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>log1pl</b> (<var>long double x</var>)<var><a name="index-log1pl-2181"></a></var><br>
+<blockquote><p>These functions returns a value equivalent to <code>log&nbsp;(1&nbsp;+&nbsp;</code><var>x</var><code>)</code><!-- /@w -->. 
+They are computed in a way that is accurate even if <var>x</var> is
+near zero. 
+</p></blockquote></div>
+
+   <p><a name="index-complex-exponentiation-functions-2182"></a><a name="index-complex-logarithm-functions-2183"></a>
+ISO&nbsp;C99<!-- /@w --> defines complex variants of some of the exponentiation and
+logarithm functions.
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>cexp</b> (<var>complex double z</var>)<var><a name="index-cexp-2184"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>cexpf</b> (<var>complex float z</var>)<var><a name="index-cexpf-2185"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>cexpl</b> (<var>complex long double z</var>)<var><a name="index-cexpl-2186"></a></var><br>
+<blockquote><p>These functions return <code>e</code> (the base of natural
+logarithms) raised to the power of <var>z</var>. 
+Mathematically, this corresponds to the value
+
+        <p>exp (z) = exp (creal (z)) * (cos (cimag (z)) + I * sin (cimag (z)))
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>clog</b> (<var>complex double z</var>)<var><a name="index-clog-2187"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>clogf</b> (<var>complex float z</var>)<var><a name="index-clogf-2188"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>clogl</b> (<var>complex long double z</var>)<var><a name="index-clogl-2189"></a></var><br>
+<blockquote><p>These functions return the natural logarithm of <var>z</var>. 
+Mathematically, this corresponds to the value
+
+        <p>log (z) = log (cabs (z)) + I * carg (z)
+
+     <p class="noindent"><code>clog</code> has a pole at 0, and will signal overflow if <var>z</var> equals
+or is very close to 0.  It is well-defined for all other values of
+<var>z</var>. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: complex double <b>clog10</b> (<var>complex double z</var>)<var><a name="index-clog10-2190"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- GNU -->
+   &mdash; Function: complex float <b>clog10f</b> (<var>complex float z</var>)<var><a name="index-clog10f-2191"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- GNU -->
+   &mdash; Function: complex long double <b>clog10l</b> (<var>complex long double z</var>)<var><a name="index-clog10l-2192"></a></var><br>
+<blockquote><p>These functions return the base 10 logarithm of the complex value
+<var>z</var>. Mathematically, this corresponds to the value
+
+        <p>log (z) = log10 (cabs (z)) + I * carg (z)
+
+        <p>These functions are GNU extensions. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>csqrt</b> (<var>complex double z</var>)<var><a name="index-csqrt-2193"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>csqrtf</b> (<var>complex float z</var>)<var><a name="index-csqrtf-2194"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>csqrtl</b> (<var>complex long double z</var>)<var><a name="index-csqrtl-2195"></a></var><br>
+<blockquote><p>These functions return the complex square root of the argument <var>z</var>.  Unlike
+the real-valued functions, they are defined for all values of <var>z</var>. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>cpow</b> (<var>complex double base, complex double power</var>)<var><a name="index-cpow-2196"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>cpowf</b> (<var>complex float base, complex float power</var>)<var><a name="index-cpowf-2197"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>cpowl</b> (<var>complex long double base, complex long double power</var>)<var><a name="index-cpowl-2198"></a></var><br>
+<blockquote><p>These functions return <var>base</var> raised to the power of
+<var>power</var>.  This is equivalent to <code>cexp&nbsp;(y&nbsp;*&nbsp;clog&nbsp;(x))</code><!-- /@w -->
+</p></blockquote></div>
+
+   </body></html>
+

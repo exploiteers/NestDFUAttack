@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Directory Entries - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Accessing-Directories.html#Accessing-Directories" title="Accessing Directories">
+<link rel="next" href="Opening-a-Directory.html#Opening-a-Directory" title="Opening a Directory">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Directory-Entries"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Opening-a-Directory.html#Opening-a-Directory">Opening a Directory</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.2.1 Format of a Directory Entry</h4>
+
+<p><a name="index-dirent_002eh-1399"></a>This section describes what you find in a single directory entry, as you
+might obtain it from a directory stream.  All the symbols are declared
+in the header file <samp><span class="file">dirent.h</span></samp>.
+
+<!-- dirent.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>struct dirent</b><var><a name="index-struct-dirent-1400"></a></var><br>
+<blockquote><p>This is a structure type used to return information about directory
+entries.  It contains the following fields:
+
+          <dl>
+<dt><code>char d_name[]</code><dd>This is the null-terminated file name component.  This is the only
+field you can count on in all POSIX systems.
+
+          <br><dt><code>ino_t d_fileno</code><dd>This is the file serial number.  For BSD compatibility, you can also
+refer to this member as <code>d_ino</code>.  In the GNU system and most POSIX
+systems, for most files this the same as the <code>st_ino</code> member that
+<code>stat</code> will return for the file.  See <a href="File-Attributes.html#File-Attributes">File Attributes</a>.
+
+          <br><dt><code>unsigned char d_namlen</code><dd>This is the length of the file name, not including the terminating null
+character.  Its type is <code>unsigned char</code> because that is the integer
+type of the appropriate size
+
+          <br><dt><code>unsigned char d_type</code><dd>This is the type of the file, possibly unknown.  The following constants
+are defined for its value:
+
+               <dl>
+<dt><code>DT_UNKNOWN</code><a name="index-DT_005fUNKNOWN-1401"></a><dd>The type is unknown.  On some systems this is the only value returned.
+
+               <br><dt><code>DT_REG</code><a name="index-DT_005fREG-1402"></a><dd>A regular file.
+
+               <br><dt><code>DT_DIR</code><a name="index-DT_005fDIR-1403"></a><dd>A directory.
+
+               <br><dt><code>DT_FIFO</code><a name="index-DT_005fFIFO-1404"></a><dd>A named pipe, or FIFO.  See <a href="FIFO-Special-Files.html#FIFO-Special-Files">FIFO Special Files</a>.
+
+               <br><dt><code>DT_SOCK</code><a name="index-DT_005fSOCK-1405"></a><dd>A local-domain socket.  <!-- !!! @xref{Local Domain}. -->
+
+               <br><dt><code>DT_CHR</code><a name="index-DT_005fCHR-1406"></a><dd>A character device.
+
+               <br><dt><code>DT_BLK</code><a name="index-DT_005fBLK-1407"></a><dd>A block device. 
+</dl>
+
+          <p>This member is a BSD extension.  The symbol <code>_DIRENT_HAVE_D_TYPE</code>
+is defined if this member is available.  On systems where it is used, it
+corresponds to the file type bits in the <code>st_mode</code> member of
+<code>struct statbuf</code>.  If the value cannot be determine the member
+value is DT_UNKNOWN.  These two macros convert between <code>d_type</code>
+values and <code>st_mode</code> values:
+
+          <!-- dirent.h -->
+          <!-- BSD -->
+          <div class="defun">
+&mdash; Function: int <b>IFTODT</b> (<var>mode_t mode</var>)<var><a name="index-IFTODT-1408"></a></var><br>
+<blockquote>      <p>This returns the <code>d_type</code> value corresponding to <var>mode</var>. 
+</p></blockquote></div>
+
+          <!-- dirent.h -->
+          <!-- BSD -->
+          <div class="defun">
+&mdash; Function: mode_t <b>DTTOIF</b> (<var>int dtype</var>)<var><a name="index-DTTOIF-1409"></a></var><br>
+<blockquote>      <p>This returns the <code>st_mode</code> value corresponding to <var>dtype</var>. 
+</p></blockquote></div>
+          </dl>
+
+        <p>This structure may contain additional members in the future.  Their
+availability is always announced in the compilation environment by a
+macro names <code>_DIRENT_HAVE_D_</code><var>xxx</var> where <var>xxx</var> is replaced
+by the name of the new member.  For instance, the member <code>d_reclen</code>
+available on some systems is announced through the macro
+<code>_DIRENT_HAVE_D_RECLEN</code>.
+
+        <p>When a file has multiple names, each name has its own directory entry. 
+The only way you can tell that the directory entries belong to a
+single file is that they have the same value for the <code>d_fileno</code>
+field.
+
+        <p>File attributes such as size, modification times etc., are part of the
+file itself, not of any particular directory entry.  See <a href="File-Attributes.html#File-Attributes">File Attributes</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

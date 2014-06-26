@@ -1,0 +1,102 @@
+/* Minimalistic stylesheet for DocBook and TexInfo documents.
+   Some elements are borrowed from the CodeSourcery web site style sheets,
+   but this is optimized for documents that are mostly text and that
+   lack menu bars and the like.  */
+
+
+/***********
+ Body style
+***********/
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+        background-color: #ffffff;
+}
+
+
+/*********
+ Headings  
+*********/
+
+h1, h2, h3, h4 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+h1  {
+	color: #111111;
+}
+
+h2 {
+	color: #222222;
+}
+
+h3, h4 {
+	color: #333333;
+}
+
+/***********
+ Hyperlinks  
+***********/
+
+a:link, a:visited {
+	color: #3333cc;
+	text-decoration: none;
+}
+
+a:link:hover, a:visited:hover {
+	text-decoration: underline;
+}
+
+
+/***********
+ Markup for specific elements
+***********/
+
+/* Use Courier for all code and samp environments. */
+code, samp {
+	font-family: "Courier New", Courier, mono;
+}
+
+/* GUI elements are marked with span instead of code environments, so
+   list those separately here.  */
+.guiicon,.guilabel,.guibutton,.guimenu,.guisubmenu,.guimenuitem {
+	font-family: "Courier New", Courier, mono;
+  }
+
+/* Ditto for type and structname.  */
+.type,.structname {
+	font-family: "Courier New", Courier, mono;
+}
+
+/* Texinfo uses @r for "normal body font", but it comes out in the markup
+   as a span with the "roman" attribute.  */
+span.roman {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* Format all pre environments with shaded boxes.  */
+pre {
+	font-family: "Courier New", Courier, mono;
+	border: 1px solid #cccccc;
+	background-color: #eeeeee;
+	margin: 20px;
+	padding: 10px;
+}
+
+/* Make horizontal rules a pretty blue color.  */
+
+hr {
+        background-color: #6699cc;
+	color: #6699cc;
+	height: 3px;
+        border: 0;
+}
+
+/* Center titles on examples and figures, since the objects are also
+   centered.  */
+
+div.example p.title, div.figure p.title {
+	text-align: center;
+}

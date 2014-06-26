@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Array Search Function - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Searching-and-Sorting.html#Searching-and-Sorting" title="Searching and Sorting">
+<link rel="prev" href="Comparison-Functions.html#Comparison-Functions" title="Comparison Functions">
+<link rel="next" href="Array-Sort-Function.html#Array-Sort-Function" title="Array Sort Function">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Array-Search-Function"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Array-Sort-Function.html#Array-Sort-Function">Array Sort Function</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Comparison-Functions.html#Comparison-Functions">Comparison Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>
+<hr>
+</div>
+
+<h3 class="section">9.2 Array Search Function</h3>
+
+<p><a name="index-search-function-_0028for-arrays_0029-820"></a><a name="index-binary-search-function-_0028for-arrays_0029-821"></a><a name="index-array-search-function-822"></a>
+Generally searching for a specific element in an array means that
+potentially all elements must be checked.  The GNU C library contains
+functions to perform linear search.  The prototypes for the following
+two functions can be found in <samp><span class="file">search.h</span></samp>.
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void * <b>lfind</b> (<var>const void *key, void *base, size_t *nmemb, size_t size, comparison_fn_t compar</var>)<var><a name="index-lfind-823"></a></var><br>
+<blockquote><p>The <code>lfind</code> function searches in the array with <code>*</code><var>nmemb</var>
+elements of <var>size</var> bytes pointed to by <var>base</var> for an element
+which matches the one pointed to by <var>key</var>.  The function pointed to
+by <var>compar</var> is used decide whether two elements match.
+
+        <p>The return value is a pointer to the matching element in the array
+starting at <var>base</var> if it is found.  If no matching element is
+available <code>NULL</code> is returned.
+
+        <p>The mean runtime of this function is <code>*</code><var>nmemb</var>/2.  This
+function should only be used if elements often get added to or deleted from
+the array in which case it might not be useful to sort the array before
+searching. 
+</p></blockquote></div>
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void * <b>lsearch</b> (<var>const void *key, void *base, size_t *nmemb, size_t size, comparison_fn_t compar</var>)<var><a name="index-lsearch-824"></a></var><br>
+<blockquote><p>The <code>lsearch</code> function is similar to the <code>lfind</code> function.  It
+searches the given array for an element and returns it if found.  The
+difference is that if no matching element is found the <code>lsearch</code>
+function adds the object pointed to by <var>key</var> (with a size of
+<var>size</var> bytes) at the end of the array and it increments the value of
+<code>*</code><var>nmemb</var> to reflect this addition.
+
+        <p>This means for the caller that if it is not sure that the array contains
+the element one is searching for the memory allocated for the array
+starting at <var>base</var> must have room for at least <var>size</var> more
+bytes.  If one is sure the element is in the array it is better to use
+<code>lfind</code> so having more room in the array is always necessary when
+calling <code>lsearch</code>. 
+</p></blockquote></div>
+
+   <p>To search a sorted array for an element matching the key, use the
+<code>bsearch</code> function.  The prototype for this function is in
+the header file <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-825"></a>
+<!-- stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: void * <b>bsearch</b> (<var>const void *key, const void *array, size_t count, size_t size, comparison_fn_t compare</var>)<var><a name="index-bsearch-826"></a></var><br>
+<blockquote><p>The <code>bsearch</code> function searches the sorted array <var>array</var> for an object
+that is equivalent to <var>key</var>.  The array contains <var>count</var> elements,
+each of which is of size <var>size</var> bytes.
+
+        <p>The <var>compare</var> function is used to perform the comparison.  This
+function is called with two pointer arguments and should return an
+integer less than, equal to, or greater than zero corresponding to
+whether its first argument is considered less than, equal to, or greater
+than its second argument.  The elements of the <var>array</var> must already
+be sorted in ascending order according to this comparison function.
+
+        <p>The return value is a pointer to the matching array element, or a null
+pointer if no match is found.  If the array contains more than one element
+that matches, the one that is returned is unspecified.
+
+        <p>This function derives its name from the fact that it is implemented
+using the binary search algorithm. 
+</p></blockquote></div>
+
+   </body></html>
+

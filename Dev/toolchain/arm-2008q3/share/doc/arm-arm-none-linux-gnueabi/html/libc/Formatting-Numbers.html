@@ -1,0 +1,238 @@
+<html lang="en">
+<head>
+<title>Formatting Numbers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locales.html#Locales" title="Locales">
+<link rel="prev" href="Locale-Information.html#Locale-Information" title="Locale Information">
+<link rel="next" href="Yes_002dor_002dNo-Questions.html#Yes_002dor_002dNo-Questions" title="Yes-or-No Questions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatting-Numbers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Yes_002dor_002dNo-Questions.html#Yes_002dor_002dNo-Questions">Yes-or-No Questions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Locale-Information.html#Locale-Information">Locale Information</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locales.html#Locales">Locales</a>
+<hr>
+</div>
+
+<h3 class="section">7.7 A dedicated function to format numbers</h3>
+
+<p>We have seen that the structure returned by <code>localeconv</code> as well as
+the values given to <code>nl_langinfo</code> allow you to retrieve the various
+pieces of locale-specific information to format numbers and monetary
+amounts.  We have also seen that the underlying rules are quite complex.
+
+   <p>Therefore the X/Open standards introduce a function which uses such
+locale information, making it easier for the user to format
+numbers according to these rules.
+
+<div class="defun">
+&mdash; Function: ssize_t <b>strfmon</b> (<var>char *s, size_t maxsize, const char *format, <small class="dots">...</small></var>)<var><a name="index-strfmon-797"></a></var><br>
+<blockquote><p>The <code>strfmon</code> function is similar to the <code>strftime</code> function
+in that it takes a buffer, its size, a format string,
+and values to write into the buffer as text in a form specified
+by the format string.  Like <code>strftime</code>, the function
+also returns the number of bytes written into the buffer.
+
+        <p>There are two differences: <code>strfmon</code> can take more than one
+argument, and, of course, the format specification is different.  Like
+<code>strftime</code>, the format string consists of normal text, which is
+output as is, and format specifiers, which are indicated by a &lsquo;<samp><span class="samp">%</span></samp>&rsquo;. 
+Immediately after the &lsquo;<samp><span class="samp">%</span></samp>&rsquo;, you can optionally specify various flags
+and formatting information before the main formatting character, in a
+similar way to <code>printf</code>:
+
+          <ul>
+<li>Immediately following the &lsquo;<samp><span class="samp">%</span></samp>&rsquo; there can be one or more of the
+following flags:
+               <dl>
+<dt>&lsquo;<samp><span class="samp">=</span><var>f</var></samp>&rsquo;<dd>The single byte character <var>f</var> is used for this field as the numeric
+fill character.  By default this character is a space character. 
+Filling with this character is only performed if a left precision
+is specified.  It is not just to fill to the given field width. 
+<br><dt>&lsquo;<samp><span class="samp">^</span></samp>&rsquo;<dd>The number is printed without grouping the digits according to the rules
+of the current locale.  By default grouping is enabled. 
+<br><dt>&lsquo;<samp><span class="samp">+</span></samp>&rsquo;, &lsquo;<samp><span class="samp">(</span></samp>&rsquo;<dd>At most one of these flags can be used.  They select which format to
+represent the sign of a currency amount.  By default, and if
+&lsquo;<samp><span class="samp">+</span></samp>&rsquo; is given, the locale equivalent of +/- is used.  If
+&lsquo;<samp><span class="samp">(</span></samp>&rsquo; is given, negative amounts are enclosed in parentheses.  The
+exact format is determined by the values of the <code>LC_MONETARY</code>
+category of the locale selected at program runtime. 
+<br><dt>&lsquo;<samp><span class="samp">!</span></samp>&rsquo;<dd>The output will not contain the currency symbol. 
+<br><dt>&lsquo;<samp><span class="samp">-</span></samp>&rsquo;<dd>The output will be formatted left-justified instead of right-justified if
+it does not fill the entire field width. 
+</dl>
+          </ul>
+
+        <p>The next part of a specification is an optional field width.  If no
+width is specified 0 is taken.  During output, the function first
+determines how much space is required.  If it requires at least as many
+characters as given by the field width, it is output using as much space
+as necessary.  Otherwise, it is extended to use the full width by
+filling with the space character.  The presence or absence of the
+&lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag determines the side at which such padding occurs.  If
+present, the spaces are added at the right making the output
+left-justified, and vice versa.
+
+        <p>So far the format looks familiar, being similar to the <code>printf</code> and
+<code>strftime</code> formats.  However, the next two optional fields
+introduce something new.  The first one is a &lsquo;<samp><span class="samp">#</span></samp>&rsquo; character followed
+by a decimal digit string.  The value of the digit string specifies the
+number of <em>digit</em> positions to the left of the decimal point (or
+equivalent).  This does <em>not</em> include the grouping character when
+the &lsquo;<samp><span class="samp">^</span></samp>&rsquo; flag is not given.  If the space needed to print the number
+does not fill the whole width, the field is padded at the left side with
+the fill character, which can be selected using the &lsquo;<samp><span class="samp">=</span></samp>&rsquo; flag and by
+default is a space.  For example, if the field width is selected as 6
+and the number is 123, the fill character is &lsquo;<samp><span class="samp">*</span></samp>&rsquo; the result
+will be &lsquo;<samp><span class="samp">***123</span></samp>&rsquo;.
+
+        <p>The second optional field starts with a &lsquo;<samp><span class="samp">.</span></samp>&rsquo; (period) and consists
+of another decimal digit string.  Its value describes the number of
+characters printed after the decimal point.  The default is selected
+from the current locale (<code>frac_digits</code>, <code>int_frac_digits</code>, see
+see <a href="General-Numeric.html#General-Numeric">General Numeric</a>).  If the exact representation needs more digits
+than given by the field width, the displayed value is rounded.  If the
+number of fractional digits is selected to be zero, no decimal point is
+printed.
+
+        <p>As a GNU extension, the <code>strfmon</code> implementation in the GNU libc
+allows an optional &lsquo;<samp><span class="samp">L</span></samp>&rsquo; next as a format modifier.  If this modifier
+is given, the argument is expected to be a <code>long double</code> instead of
+a <code>double</code> value.
+
+        <p>Finally, the last component is a format specifier.  There are three
+specifiers defined:
+
+          <dl>
+<dt>&lsquo;<samp><span class="samp">i</span></samp>&rsquo;<dd>Use the locale's rules for formatting an international currency value. 
+<br><dt>&lsquo;<samp><span class="samp">n</span></samp>&rsquo;<dd>Use the locale's rules for formatting a national currency value. 
+<br><dt>&lsquo;<samp><span class="samp">%</span></samp>&rsquo;<dd>Place a &lsquo;<samp><span class="samp">%</span></samp>&rsquo; in the output.  There must be no flag, width
+specifier or modifier given, only &lsquo;<samp><span class="samp">%%</span></samp>&rsquo; is allowed. 
+</dl>
+
+        <p>As for <code>printf</code>, the function reads the format string
+from left to right and uses the values passed to the function following
+the format string.  The values are expected to be either of type
+<code>double</code> or <code>long double</code>, depending on the presence of the
+modifier &lsquo;<samp><span class="samp">L</span></samp>&rsquo;.  The result is stored in the buffer pointed to by
+<var>s</var>.  At most <var>maxsize</var> characters are stored.
+
+        <p>The return value of the function is the number of characters stored in
+<var>s</var>, including the terminating <code>NULL</code> byte.  If the number of
+characters stored would exceed <var>maxsize</var>, the function returns
+-1 and the content of the buffer <var>s</var> is unspecified.  In this
+case <code>errno</code> is set to <code>E2BIG</code>. 
+</p></blockquote></div>
+
+   <p>A few examples should make clear how the function works.  It is
+assumed that all the following pieces of code are executed in a program
+which uses the USA locale (<code>en_US</code>).  The simplest
+form of the format is this:
+
+<pre class="smallexample">     strfmon (buf, 100, "@%n@%n@%n@", 123.45, -567.89, 12345.678);
+</pre>
+   <p class="noindent">The output produced is
+<pre class="smallexample">     "@$123.45@-$567.89@$12,345.68@"
+</pre>
+   <p>We can notice several things here.  First, the widths of the output
+numbers are different.  We have not specified a width in the format
+string, and so this is no wonder.  Second, the third number is printed
+using thousands separators.  The thousands separator for the
+<code>en_US</code> locale is a comma.  The number is also rounded. 
+.678 is rounded to .68 since the format does not specify a
+precision and the default value in the locale is 2.  Finally,
+note that the national currency symbol is printed since &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; was
+used, not &lsquo;<samp><span class="samp">i</span></samp>&rsquo;.  The next example shows how we can align the output.
+
+<pre class="smallexample">     strfmon (buf, 100, "@%=*11n@%=*11n@%=*11n@", 123.45, -567.89, 12345.678);
+</pre>
+   <p class="noindent">The output this time is:
+
+<pre class="smallexample">     "@    $123.45@   -$567.89@ $12,345.68@"
+</pre>
+   <p>Two things stand out.  Firstly, all fields have the same width (eleven
+characters) since this is the width given in the format and since no
+number required more characters to be printed.  The second important
+point is that the fill character is not used.  This is correct since the
+white space was not used to achieve a precision given by a &lsquo;<samp><span class="samp">#</span></samp>&rsquo;
+modifier, but instead to fill to the given width.  The difference
+becomes obvious if we now add a width specification.
+
+<pre class="smallexample">     strfmon (buf, 100, "@%=*11#5n@%=*11#5n@%=*11#5n@",
+              123.45, -567.89, 12345.678);
+</pre>
+   <p class="noindent">The output is
+
+<pre class="smallexample">     "@ $***123.45@-$***567.89@ $12,456.68@"
+</pre>
+   <p>Here we can see that all the currency symbols are now aligned, and that
+the space between the currency sign and the number is filled with the
+selected fill character.  Note that although the width is selected to be
+5 and 123.45 has three digits left of the decimal point,
+the space is filled with three asterisks.  This is correct since, as
+explained above, the width does not include the positions used to store
+thousands separators.  One last example should explain the remaining
+functionality.
+
+<pre class="smallexample">     strfmon (buf, 100, "@%=0(16#5.3i@%=0(16#5.3i@%=0(16#5.3i@",
+              123.45, -567.89, 12345.678);
+</pre>
+   <p class="noindent">This rather complex format string produces the following output:
+
+<pre class="smallexample">     "@ USD 000123,450 @(USD 000567.890)@ USD 12,345.678 @"
+</pre>
+   <p>The most noticeable change is the alternative way of representing
+negative numbers.  In financial circles this is often done using
+parentheses, and this is what the &lsquo;<samp><span class="samp">(</span></samp>&rsquo; flag selected.  The fill
+character is now &lsquo;<samp><span class="samp">0</span></samp>&rsquo;.  Note that this &lsquo;<samp><span class="samp">0</span></samp>&rsquo; character is not
+regarded as a numeric zero, and therefore the first and second numbers
+are not printed using a thousands separator.  Since we used the format
+specifier &lsquo;<samp><span class="samp">i</span></samp>&rsquo; instead of &lsquo;<samp><span class="samp">n</span></samp>&rsquo;, the international form of the
+currency symbol is used.  This is a four letter string, in this case
+<code>"USD "</code>.  The last point is that since the precision right of the
+decimal point is selected to be three, the first and second numbers are
+printed with an extra zero at the end and the third number is printed
+without rounding.
+
+   </body></html>
+

@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Argp Help Flags - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Help.html#Argp-Help" title="Argp Help">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Help-Flags"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Help.html#Argp-Help">Argp Help</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.10 Flags for the <code>argp_help</code> Function</h4>
+
+<p>When calling <code>argp_help</code> (see <a href="Argp-Help.html#Argp-Help">Argp Help</a>) or
+<code>argp_state_help</code> (see <a href="Argp-Helper-Functions.html#Argp-Helper-Functions">Argp Helper Functions</a>) the exact output
+is determined by the <var>flags</var> argument.  This should consist of any of
+the following flags, or'd together:
+
+     <dl>
+<dt><code>ARGP_HELP_USAGE</code><a name="index-ARGP_005fHELP_005fUSAGE-3081"></a><dd>A unix &lsquo;<samp><span class="samp">Usage:</span></samp>&rsquo; message that explicitly lists all options.
+
+     <br><dt><code>ARGP_HELP_SHORT_USAGE</code><a name="index-ARGP_005fHELP_005fSHORT_005fUSAGE-3082"></a><dd>A unix &lsquo;<samp><span class="samp">Usage:</span></samp>&rsquo; message that displays an appropriate placeholder to
+indicate where the options go; useful for showing the non-option
+argument syntax.
+
+     <br><dt><code>ARGP_HELP_SEE</code><a name="index-ARGP_005fHELP_005fSEE-3083"></a><dd>A &lsquo;<samp><span class="samp">Try ... for more help</span></samp>&rsquo; message; &lsquo;<samp><span class="samp">...</span></samp>&rsquo; contains the
+program name and &lsquo;<samp><span class="samp">--help</span></samp>&rsquo;.
+
+     <br><dt><code>ARGP_HELP_LONG</code><a name="index-ARGP_005fHELP_005fLONG-3084"></a><dd>A verbose option help message that gives each option available along
+with its documentation string.
+
+     <br><dt><code>ARGP_HELP_PRE_DOC</code><a name="index-ARGP_005fHELP_005fPRE_005fDOC-3085"></a><dd>The part of the argp parser doc string preceding the verbose option help.
+
+     <br><dt><code>ARGP_HELP_POST_DOC</code><a name="index-ARGP_005fHELP_005fPOST_005fDOC-3086"></a><dd>The part of the argp parser doc string that following the verbose option help.
+
+     <br><dt><code>ARGP_HELP_DOC</code><a name="index-ARGP_005fHELP_005fDOC-3087"></a><dd><code>(ARGP_HELP_PRE_DOC | ARGP_HELP_POST_DOC)</code>
+
+     <br><dt><code>ARGP_HELP_BUG_ADDR</code><a name="index-ARGP_005fHELP_005fBUG_005fADDR-3088"></a><dd>A message that prints where to report bugs for this program, if the
+<code>argp_program_bug_address</code> variable contains this information.
+
+     <br><dt><code>ARGP_HELP_LONG_ONLY</code><a name="index-ARGP_005fHELP_005fLONG_005fONLY-3089"></a><dd>This will modify any output to reflect the <code>ARGP_LONG_ONLY</code> mode. 
+</dl>
+
+   <p>The following flags are only understood when used with
+<code>argp_state_help</code>.  They control whether the function returns after
+printing its output, or terminates the program:
+
+     <dl>
+<dt><code>ARGP_HELP_EXIT_ERR</code><a name="index-ARGP_005fHELP_005fEXIT_005fERR-3090"></a><dd>This will terminate the program with <code>exit (argp_err_exit_status)</code>.
+
+     <br><dt><code>ARGP_HELP_EXIT_OK</code><a name="index-ARGP_005fHELP_005fEXIT_005fOK-3091"></a><dd>This will terminate the program with <code>exit (0)</code>. 
+</dl>
+
+   <p>The following flags are combinations of the basic flags for printing
+standard messages:
+
+     <dl>
+<dt><code>ARGP_HELP_STD_ERR</code><a name="index-ARGP_005fHELP_005fSTD_005fERR-3092"></a><dd>Assuming that an error message for a parsing error has printed, this
+prints a message on how to get help, and terminates the program with an
+error.
+
+     <br><dt><code>ARGP_HELP_STD_USAGE</code><a name="index-ARGP_005fHELP_005fSTD_005fUSAGE-3093"></a><dd>This prints a standard usage message and terminates the program with an
+error.  This is used when no other specific error messages are
+appropriate or available.
+
+     <br><dt><code>ARGP_HELP_STD_HELP</code><a name="index-ARGP_005fHELP_005fSTD_005fHELP-3094"></a><dd>This prints the standard response for a &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; option, and
+terminates the program successfully. 
+</dl>
+
+   </body></html>
+

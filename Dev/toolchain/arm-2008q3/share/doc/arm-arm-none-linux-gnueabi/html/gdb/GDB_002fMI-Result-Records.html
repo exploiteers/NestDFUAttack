@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+<title>GDB/MI Result Records - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="GDB_002fMI-Output-Records.html#GDB_002fMI-Output-Records" title="GDB/MI Output Records">
+<link rel="next" href="GDB_002fMI-Stream-Records.html#GDB_002fMI-Stream-Records" title="GDB/MI Stream Records">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="GDB%2fMI-Result-Records"></a>
+<a name="GDB_002fMI-Result-Records"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="GDB_002fMI-Stream-Records.html#GDB_002fMI-Stream-Records">GDB/MI Stream Records</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="GDB_002fMI-Output-Records.html#GDB_002fMI-Output-Records">GDB/MI Output Records</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.4.1 <span class="sc">gdb/mi</span> Result Records</h4>
+
+<p><a name="index-result-records-in-_0040sc_007bgdb_002fmi_007d-1475"></a><a name="index-g_t_0040sc_007bgdb_002fmi_007d_002c-result-records-1476"></a>In addition to a number of out-of-band notifications, the response to a
+<span class="sc">gdb/mi</span> command includes one of the following result indications:
+
+     
+<a name="index-g_t_005edone-1477"></a>
+<dl><dt><code>"^done" [ "," </code><var>results</var><code> ]</code><dd>The synchronous operation was successful, <var>results</var> are the return
+values.
+
+     <br><dt><code>"^running"</code><dd><a name="index-g_t_005erunning-1478"></a><!-- Is this one correct?  Should it be an out-of-band notification? -->
+The asynchronous operation was successfully started.  The target is
+running.
+
+     <br><dt><code>"^connected"</code><dd><a name="index-g_t_005econnected-1479"></a><span class="sc">gdb</span> has connected to a remote target.
+
+     <br><dt><code>"^error" "," </code><var>c-string</var><dd><a name="index-g_t_005eerror-1480"></a>The operation failed.  The <var>c-string</var> contains the corresponding
+error message.
+
+     <br><dt><code>"^exit"</code><dd><a name="index-g_t_005eexit-1481"></a><span class="sc">gdb</span> has terminated.
+
+   </dl>
+
+   </body></html>
+

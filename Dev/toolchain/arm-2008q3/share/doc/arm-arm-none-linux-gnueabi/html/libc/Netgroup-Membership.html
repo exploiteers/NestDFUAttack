@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Netgroup Membership - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Netgroup-Database.html#Netgroup-Database" title="Netgroup Database">
+<link rel="prev" href="Lookup-Netgroup.html#Lookup-Netgroup" title="Lookup Netgroup">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Netgroup-Membership"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Lookup-Netgroup.html#Lookup-Netgroup">Lookup Netgroup</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.16.3 Testing for Netgroup Membership</h4>
+
+<p>It is often not necessary to scan the whole netgroup since often the
+only interesting question is whether a given entry is part of the
+selected netgroup.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>innetgr</b> (<var>const char *netgroup, const char *host, const char *user, const char *domain</var>)<var><a name="index-innetgr-3428"></a></var><br>
+<blockquote><p>This function tests whether the triple specified by the parameters
+<var>hostp</var>, <var>userp</var>, and <var>domainp</var> is part of the netgroup
+<var>netgroup</var>.  Using this function has the advantage that
+
+          <ol type=1 start=1>
+<li>no other netgroup function can use the global netgroup state since
+internal locking is used and
+<li>the function is implemented more efficiently than successive calls
+to the other <code>set</code>/<code>get</code>/<code>endnetgrent</code> functions.
+             </ol>
+
+        <p>Any of the pointers <var>hostp</var>, <var>userp</var>, and <var>domainp</var> can be
+<code>NULL</code> which means any value is accepted in this position.  This is
+also true for the name <code>-</code> which should not match any other string
+otherwise.
+
+        <p>The return value is <code>1</code> if an entry matching the given triple is
+found in the netgroup.  The return value is <code>0</code> if the netgroup
+itself is not found, the netgroup does not contain the triple or
+internal errors occurred. 
+</p></blockquote></div>
+
+   </body></html>
+

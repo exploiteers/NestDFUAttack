@@ -1,0 +1,212 @@
+<html lang="en">
+<head>
+<title>General Time String Parsing - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-Date-and-Time.html#Parsing-Date-and-Time" title="Parsing Date and Time">
+<link rel="prev" href="Low_002dLevel-Time-String-Parsing.html#Low_002dLevel-Time-String-Parsing" title="Low-Level Time String Parsing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="General-Time-String-Parsing"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Low_002dLevel-Time-String-Parsing.html#Low_002dLevel-Time-String-Parsing">Low-Level Time String Parsing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-Date-and-Time.html#Parsing-Date-and-Time">Parsing Date and Time</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">21.4.6.2 A More User-friendly Way to Parse Times and Dates</h5>
+
+<p>The Unix standard defines another function for parsing date strings. 
+The interface is weird, but if the function happens to suit your
+application it is just fine.  It is problematic to use this function
+in multi-threaded programs or libraries, since it returns a pointer to
+a static variable, and uses a global variable and global state (an
+environment variable).
+
+<!-- time.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Variable: <b>getdate_err</b><var><a name="index-getdate_005ferr-2663"></a></var><br>
+<blockquote><p>This variable of type <code>int</code> contains the error code of the last
+unsuccessful call to <code>getdate</code>.  Defined values are:
+
+          <dl>
+<dt>1<dd>The environment variable <code>DATEMSK</code> is not defined or null. 
+<br><dt>2<dd>The template file denoted by the <code>DATEMSK</code> environment variable
+cannot be opened. 
+<br><dt>3<dd>Information about the template file cannot retrieved. 
+<br><dt>4<dd>The template file is not a regular file. 
+<br><dt>5<dd>An I/O error occurred while reading the template file. 
+<br><dt>6<dd>Not enough memory available to execute the function. 
+<br><dt>7<dd>The template file contains no matching template. 
+<br><dt>8<dd>The input date is invalid, but would match a template otherwise.  This
+includes dates like February 31st, and dates which cannot be represented
+in a <code>time_t</code> variable. 
+</dl>
+        </p></blockquote></div>
+
+<!-- time.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: struct tm * <b>getdate</b> (<var>const char *string</var>)<var><a name="index-getdate-2664"></a></var><br>
+<blockquote><p>The interface to <code>getdate</code> is the simplest possible for a function
+to parse a string and return the value.  <var>string</var> is the input
+string and the result is returned in a statically-allocated variable.
+
+        <p>The details about how the string is processed are hidden from the user. 
+In fact, they can be outside the control of the program.  Which formats
+are recognized is controlled by the file named by the environment
+variable <code>DATEMSK</code>.  This file should contain
+lines of valid format strings which could be passed to <code>strptime</code>.
+
+        <p>The <code>getdate</code> function reads these format strings one after the
+other and tries to match the input string.  The first line which
+completely matches the input string is used.
+
+        <p>Elements not initialized through the format string retain the values
+present at the time of the <code>getdate</code> function call.
+
+        <p>The formats recognized by <code>getdate</code> are the same as for
+<code>strptime</code>.  See above for an explanation.  There are only a few
+extensions to the <code>strptime</code> behavior:
+
+          <ul>
+<li>If the <code>%Z</code> format is given the broken-down time is based on the
+current time of the timezone matched, not of the current timezone of the
+runtime environment.
+
+          <p><em>Note</em>: This is not implemented (currently).  The problem is that
+timezone names are not unique.  If a fixed timezone is assumed for a
+given string (say <code>EST</code> meaning US East Coast time), then uses for
+countries other than the USA will fail.  So far we have found no good
+solution to this.
+
+          <li>If only the weekday is specified the selected day depends on the current
+date.  If the current weekday is greater or equal to the <code>tm_wday</code>
+value the current week's day is chosen, otherwise the day next week is chosen.
+
+          <li>A similar heuristic is used when only the month is given and not the
+year.  If the month is greater than or equal to the current month, then
+the current year is used.  Otherwise it wraps to next year.  The first
+day of the month is assumed if one is not explicitly specified.
+
+          <li>The current hour, minute, and second are used if the appropriate value is
+not set through the format.
+
+          <li>If no date is given tomorrow's date is used if the time is
+smaller than the current time.  Otherwise today's date is taken. 
+</ul>
+
+        <p>It should be noted that the format in the template file need not only
+contain format elements.  The following is a list of possible format
+strings (taken from the Unix standard):
+
+     <pre class="smallexample">          %m
+          %A %B %d, %Y %H:%M:%S
+          %A
+          %B
+          %m/%d/%y %I %p
+          %d,%m,%Y %H:%M
+          at %A the %dst of %B in %Y
+          run job at %I %p,%B %dnd
+          %A den %d. %B %Y %H.%M Uhr
+</pre>
+        <p>As you can see, the template list can contain very specific strings like
+<code>run job at %I %p,%B %dnd</code>.  Using the above list of templates and
+assuming the current time is Mon Sep 22 12:19:47 EDT 1986 we can obtain the
+following results for the given input.
+
+        <p><table summary=""><tr align="left"><td valign="top">Input </td><td valign="top">Match </td><td valign="top">Result
+<br></td></tr><tr align="left"><td valign="top">Mon </td><td valign="top">%a </td><td valign="top">Mon Sep 22 12:19:47 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">Sun </td><td valign="top">%a </td><td valign="top">Sun Sep 28 12:19:47 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">Fri </td><td valign="top">%a </td><td valign="top">Fri Sep 26 12:19:47 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">September </td><td valign="top">%B </td><td valign="top">Mon Sep 1 12:19:47 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">January </td><td valign="top">%B </td><td valign="top">Thu Jan 1 12:19:47 EST 1987
+<br></td></tr><tr align="left"><td valign="top">December </td><td valign="top">%B </td><td valign="top">Mon Dec 1 12:19:47 EST 1986
+<br></td></tr><tr align="left"><td valign="top">Sep Mon </td><td valign="top">%b %a </td><td valign="top">Mon Sep 1 12:19:47 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">Jan Fri </td><td valign="top">%b %a </td><td valign="top">Fri Jan 2 12:19:47 EST 1987
+<br></td></tr><tr align="left"><td valign="top">Dec Mon </td><td valign="top">%b %a </td><td valign="top">Mon Dec 1 12:19:47 EST 1986
+<br></td></tr><tr align="left"><td valign="top">Jan Wed 1989 </td><td valign="top">%b %a %Y </td><td valign="top">Wed Jan 4 12:19:47 EST 1989
+<br></td></tr><tr align="left"><td valign="top">Fri 9 </td><td valign="top">%a %H </td><td valign="top">Fri Sep 26 09:00:00 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">Feb 10:30 </td><td valign="top">%b %H:%S </td><td valign="top">Sun Feb 1 10:00:30 EST 1987
+<br></td></tr><tr align="left"><td valign="top">10:30 </td><td valign="top">%H:%M </td><td valign="top">Tue Sep 23 10:30:00 EDT 1986
+<br></td></tr><tr align="left"><td valign="top">13:30 </td><td valign="top">%H:%M </td><td valign="top">Mon Sep 22 13:30:00 EDT 1986
+        <br></td></tr></table>
+
+        <p>The return value of the function is a pointer to a static variable of
+type <code>struct&nbsp;tm</code><!-- /@w -->, or a null pointer if an error occurred.  The
+result is only valid until the next <code>getdate</code> call, making this
+function unusable in multi-threaded applications.
+
+        <p>The <code>errno</code> variable is <em>not</em> changed.  Error conditions are
+stored in the global variable <code>getdate_err</code>.  See the
+description above for a list of the possible error values.
+
+        <p><em>Warning:</em> The <code>getdate</code> function should <em>never</em> be
+used in SUID-programs.  The reason is obvious: using the
+<code>DATEMSK</code> environment variable you can get the function to open
+any arbitrary file and chances are high that with some bogus input
+(such as a binary file) the program will crash. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getdate_r</b> (<var>const char *string, struct tm *tp</var>)<var><a name="index-getdate_005fr-2665"></a></var><br>
+<blockquote><p>The <code>getdate_r</code> function is the reentrant counterpart of
+<code>getdate</code>.  It does not use the global variable <code>getdate_err</code>
+to signal an error, but instead returns an error code.  The same error
+codes as described in the <code>getdate_err</code> documentation above are
+used, with 0 meaning success.
+
+        <p>Moreover, <code>getdate_r</code> stores the broken-down time in the variable
+of type <code>struct tm</code> pointed to by the second argument, rather than
+in a static variable.
+
+        <p>This function is not defined in the Unix standard.  Nevertheless it is
+available on some other Unix systems as well.
+
+        <p>The warning against using <code>getdate</code> in SUID-programs applies to
+<code>getdate_r</code> as well. 
+</p></blockquote></div>
+
+   </body></html>
+

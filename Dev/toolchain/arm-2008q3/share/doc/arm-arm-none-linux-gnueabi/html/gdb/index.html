@@ -1,0 +1,655 @@
+<html lang="en">
+<head>
+<title>Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="../index.html#dir" title="(dir)">
+<link rel="prev" href="../index.html#dir" title="(dir)">
+<link rel="next" href="Summary.html#Summary" title="Summary">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<h1 class="settitle">Debugging with GDB</h1>
+<div class="node">
+<p>
+<a name="Top"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Summary.html#Summary">Summary</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="../index.html#dir">(dir)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Debugging with <span class="sc">gdb</span></h2>
+
+<p>This file describes <span class="sc">gdb</span>, the <span class="sc">gnu</span> symbolic debugger.
+
+   <p>This is the Ninth Edition, for <span class="sc">gdb</span>
+(Sourcery G++ Lite 2008q3-72)
+Version 6.8.50.20080821-cvs.
+
+   <p>Copyright (C) 1988-2006 Free Software Foundation, Inc.
+
+   <p>This edition of the GDB manual is dedicated to the memory of Fred
+Fish.  Fred was a long-standing contributor to GDB and to Free
+software in general.  We will miss him.
+
+<ul class="menu">
+<li><a accesskey="1" href="Summary.html#Summary">Summary</a>:                      Summary of <span class="sc">gdb</span>
+<li><a accesskey="2" href="Sample-Session.html#Sample-Session">Sample Session</a>:               A sample <span class="sc">gdb</span> session
+
+<li><a accesskey="3" href="Invocation.html#Invocation">Invocation</a>:                   Getting in and out of <span class="sc">gdb</span>
+<li><a accesskey="4" href="Commands.html#Commands">Commands</a>:                     <span class="sc">gdb</span> commands
+<li><a accesskey="5" href="Running.html#Running">Running</a>:                      Running programs under <span class="sc">gdb</span>
+<li><a accesskey="6" href="Stopping.html#Stopping">Stopping</a>:                     Stopping and continuing
+<li><a accesskey="7" href="Stack.html#Stack">Stack</a>:                        Examining the stack
+<li><a accesskey="8" href="Source.html#Source">Source</a>:                       Examining source files
+<li><a accesskey="9" href="Data.html#Data">Data</a>:                         Examining data
+<li><a href="Optimized-Code.html#Optimized-Code">Optimized Code</a>:               Debugging optimized code
+<li><a href="Macros.html#Macros">Macros</a>:                       Preprocessor Macros
+<li><a href="Tracepoints.html#Tracepoints">Tracepoints</a>:                  Debugging remote targets non-intrusively
+<li><a href="Overlays.html#Overlays">Overlays</a>:                     Debugging programs that use overlays
+
+<li><a href="Languages.html#Languages">Languages</a>:                    Using <span class="sc">gdb</span> with different languages
+
+<li><a href="Symbols.html#Symbols">Symbols</a>:                      Examining the symbol table
+<li><a href="Altering.html#Altering">Altering</a>:                     Altering execution
+<li><a href="GDB-Files.html#GDB-Files">GDB Files</a>:                    <span class="sc">gdb</span> files
+<li><a href="Targets.html#Targets">Targets</a>:                      Specifying a debugging target
+<li><a href="Remote-Debugging.html#Remote-Debugging">Remote Debugging</a>:             Debugging remote programs
+<li><a href="Configurations.html#Configurations">Configurations</a>:               Configuration-specific information
+<li><a href="Controlling-GDB.html#Controlling-GDB">Controlling GDB</a>:              Controlling <span class="sc">gdb</span>
+<li><a href="Extending-GDB.html#Extending-GDB">Extending GDB</a>:                Extending <span class="sc">gdb</span>
+<li><a href="Interpreters.html#Interpreters">Interpreters</a>: 		Command Interpreters
+<li><a href="TUI.html#TUI">TUI</a>:                          <span class="sc">gdb</span> Text User Interface
+<li><a href="Emacs.html#Emacs">Emacs</a>:                        Using <span class="sc">gdb</span> under <span class="sc">gnu</span> Emacs
+<li><a href="GDB_002fMI.html#GDB_002fMI">GDB/MI</a>:                       <span class="sc">gdb</span>'s Machine Interface. 
+<li><a href="Annotations.html#Annotations">Annotations</a>:                  <span class="sc">gdb</span>'s annotation interface.
+
+<li><a href="GDB-Bugs.html#GDB-Bugs">GDB Bugs</a>:                     Reporting bugs in <span class="sc">gdb</span>
+
+<li><a href="Command-Line-Editing.html#Command-Line-Editing">Command Line Editing</a>:         Command Line Editing
+<li><a href="Using-History-Interactively.html#Using-History-Interactively">Using History Interactively</a>:  Using History Interactively
+<li><a href="Formatting-Documentation.html#Formatting-Documentation">Formatting Documentation</a>:     How to format and print <span class="sc">gdb</span> documentation
+<li><a href="Installing-GDB.html#Installing-GDB">Installing GDB</a>:               Installing GDB
+<li><a href="Maintenance-Commands.html#Maintenance-Commands">Maintenance Commands</a>:         Maintenance Commands
+<li><a href="Remote-Protocol.html#Remote-Protocol">Remote Protocol</a>:              GDB Remote Serial Protocol
+<li><a href="Agent-Expressions.html#Agent-Expressions">Agent Expressions</a>:            The GDB Agent Expression Mechanism
+<li><a href="Target-Descriptions.html#Target-Descriptions">Target Descriptions</a>:          How targets can describe themselves to
+                                <span class="sc">gdb</span>
+<li><a href="Copying.html#Copying">Copying</a>: 			GNU General Public License says
+                                how you can copy and share GDB
+<li><a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">GNU Free Documentation License</a>:   The license for this documentation
+<li><a href="GDB-Index.html#GDB-Index">GDB Index</a>:                    Index
+</ul>
+
+<div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="index.html#Top">Debugging with <span class="sc">gdb</span></a>
+<li><a name="toc_Summary" href="Summary.html#Summary">Summary of <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Free-Software.html#Free-Software">Free Software</a>
+<li><a href="Free-Software.html#Free-Software">Free Software Needs Free Documentation</a>
+<li><a href="Contributors.html#Contributors">Contributors to <span class="sc">gdb</span></a>
+</li></ul>
+<li><a name="toc_Sample-Session" href="Sample-Session.html#Sample-Session">1 A Sample <span class="sc">gdb</span> Session</a>
+<li><a name="toc_Invocation" href="Invocation.html#Invocation">2 Getting In and Out of <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Invoking-GDB.html#Invoking-GDB">2.1 Invoking <span class="sc">gdb</span></a>
+<ul>
+<li><a href="File-Options.html#File-Options">2.1.1 Choosing Files</a>
+<li><a href="Mode-Options.html#Mode-Options">2.1.2 Choosing Modes</a>
+<li><a href="Startup.html#Startup">2.1.3 What <span class="sc">gdb</span> Does During Startup</a>
+</li></ul>
+<li><a href="Quitting-GDB.html#Quitting-GDB">2.2 Quitting <span class="sc">gdb</span></a>
+<li><a href="Shell-Commands.html#Shell-Commands">2.3 Shell Commands</a>
+<li><a href="Logging-Output.html#Logging-Output">2.4 Logging Output</a>
+</li></ul>
+<li><a name="toc_Commands" href="Commands.html#Commands">3 <span class="sc">gdb</span> Commands</a>
+<ul>
+<li><a href="Command-Syntax.html#Command-Syntax">3.1 Command Syntax</a>
+<li><a href="Completion.html#Completion">3.2 Command Completion</a>
+<li><a href="Help.html#Help">3.3 Getting Help</a>
+</li></ul>
+<li><a name="toc_Running" href="Running.html#Running">4 Running Programs Under <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Compilation.html#Compilation">4.1 Compiling for Debugging</a>
+<li><a href="Starting.html#Starting">4.2 Starting your Program</a>
+<li><a href="Arguments.html#Arguments">4.3 Your Program's Arguments</a>
+<li><a href="Environment.html#Environment">4.4 Your Program's Environment</a>
+<li><a href="Working-Directory.html#Working-Directory">4.5 Your Program's Working Directory</a>
+<li><a href="Input_002fOutput.html#Input_002fOutput">4.6 Your Program's Input and Output</a>
+<li><a href="Attach.html#Attach">4.7 Debugging an Already-running Process</a>
+<li><a href="Kill-Process.html#Kill-Process">4.8 Killing the Child Process</a>
+<li><a href="Threads.html#Threads">4.9 Debugging Programs with Multiple Threads</a>
+<li><a href="Processes.html#Processes">4.10 Debugging Programs with Multiple Processes</a>
+<li><a href="Checkpoint_002fRestart.html#Checkpoint_002fRestart">4.11 Setting a <em>Bookmark</em> to Return to Later</a>
+<ul>
+<li><a href="Checkpoint_002fRestart.html#Checkpoint_002fRestart">4.11.1 A Non-obvious Benefit of Using Checkpoints</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Stopping" href="Stopping.html#Stopping">5 Stopping and Continuing</a>
+<ul>
+<li><a href="Breakpoints.html#Breakpoints">5.1 Breakpoints, Watchpoints, and Catchpoints</a>
+<ul>
+<li><a href="Set-Breaks.html#Set-Breaks">5.1.1 Setting Breakpoints</a>
+<li><a href="Set-Watchpoints.html#Set-Watchpoints">5.1.2 Setting Watchpoints</a>
+<li><a href="Set-Catchpoints.html#Set-Catchpoints">5.1.3 Setting Catchpoints</a>
+<li><a href="Delete-Breaks.html#Delete-Breaks">5.1.4 Deleting Breakpoints</a>
+<li><a href="Disabling.html#Disabling">5.1.5 Disabling Breakpoints</a>
+<li><a href="Conditions.html#Conditions">5.1.6 Break Conditions</a>
+<li><a href="Break-Commands.html#Break-Commands">5.1.7 Breakpoint Command Lists</a>
+<li><a href="Error-in-Breakpoints.html#Error-in-Breakpoints">5.1.8 &ldquo;Cannot insert breakpoints&rdquo;</a>
+<li><a href="Breakpoint_002drelated-Warnings.html#Breakpoint_002drelated-Warnings">5.1.9 &ldquo;Breakpoint address adjusted...&rdquo;</a>
+</li></ul>
+<li><a href="Continuing-and-Stepping.html#Continuing-and-Stepping">5.2 Continuing and Stepping</a>
+<li><a href="Signals.html#Signals">5.3 Signals</a>
+<li><a href="Thread-Stops.html#Thread-Stops">5.4 Stopping and Starting Multi-thread Programs</a>
+<ul>
+<li><a href="All_002dStop-Mode.html#All_002dStop-Mode">5.4.1 All-Stop Mode</a>
+<li><a href="Non_002dStop-Mode.html#Non_002dStop-Mode">5.4.2 Non-Stop Mode</a>
+<li><a href="Background-Execution.html#Background-Execution">5.4.3 Background Execution</a>
+<li><a href="Thread_002dSpecific-Breakpoints.html#Thread_002dSpecific-Breakpoints">5.4.4 Thread-Specific Breakpoints</a>
+<li><a href="Interrupted-System-Calls.html#Interrupted-System-Calls">5.4.5 Interrupted System Calls</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Stack" href="Stack.html#Stack">6 Examining the Stack</a>
+<ul>
+<li><a href="Frames.html#Frames">6.1 Stack Frames</a>
+<li><a href="Backtrace.html#Backtrace">6.2 Backtraces</a>
+<li><a href="Selection.html#Selection">6.3 Selecting a Frame</a>
+<li><a href="Frame-Info.html#Frame-Info">6.4 Information About a Frame</a>
+</li></ul>
+<li><a name="toc_Source" href="Source.html#Source">7 Examining Source Files</a>
+<ul>
+<li><a href="List.html#List">7.1 Printing Source Lines</a>
+<li><a href="Specify-Location.html#Specify-Location">7.2 Specifying a Location</a>
+<li><a href="Edit.html#Edit">7.3 Editing Source Files</a>
+<ul>
+<li><a href="Edit.html#Edit">7.3.1 Choosing your Editor</a>
+</li></ul>
+<li><a href="Search.html#Search">7.4 Searching Source Files</a>
+<li><a href="Source-Path.html#Source-Path">7.5 Specifying Source Directories</a>
+<li><a href="Machine-Code.html#Machine-Code">7.6 Source and Machine Code</a>
+</li></ul>
+<li><a name="toc_Data" href="Data.html#Data">8 Examining Data</a>
+<ul>
+<li><a href="Expressions.html#Expressions">8.1 Expressions</a>
+<li><a href="Ambiguous-Expressions.html#Ambiguous-Expressions">8.2 Ambiguous Expressions</a>
+<li><a href="Variables.html#Variables">8.3 Program Variables</a>
+<li><a href="Arrays.html#Arrays">8.4 Artificial Arrays</a>
+<li><a href="Output-Formats.html#Output-Formats">8.5 Output Formats</a>
+<li><a href="Memory.html#Memory">8.6 Examining Memory</a>
+<li><a href="Auto-Display.html#Auto-Display">8.7 Automatic Display</a>
+<li><a href="Print-Settings.html#Print-Settings">8.8 Print Settings</a>
+<li><a href="Value-History.html#Value-History">8.9 Value History</a>
+<li><a href="Convenience-Vars.html#Convenience-Vars">8.10 Convenience Variables</a>
+<li><a href="Registers.html#Registers">8.11 Registers</a>
+<li><a href="Floating-Point-Hardware.html#Floating-Point-Hardware">8.12 Floating Point Hardware</a>
+<li><a href="Vector-Unit.html#Vector-Unit">8.13 Vector Unit</a>
+<li><a href="OS-Information.html#OS-Information">8.14 Operating System Auxiliary Information</a>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15 Memory Region Attributes</a>
+<ul>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15.1 Attributes</a>
+<ul>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15.1.1 Memory Access Mode</a>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15.1.2 Memory Access Size</a>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15.1.3 Data Cache</a>
+</li></ul>
+<li><a href="Memory-Region-Attributes.html#Memory-Region-Attributes">8.15.2 Memory Access Checking</a>
+</li></ul>
+<li><a href="Dump_002fRestore-Files.html#Dump_002fRestore-Files">8.16 Copy Between Memory and a File</a>
+<li><a href="Core-File-Generation.html#Core-File-Generation">8.17 How to Produce a Core File from Your Program</a>
+<li><a href="Character-Sets.html#Character-Sets">8.18 Character Sets</a>
+<li><a href="Caching-Remote-Data.html#Caching-Remote-Data">8.19 Caching Data of Remote Targets</a>
+<li><a href="Searching-Memory.html#Searching-Memory">8.20 Search Memory</a>
+</li></ul>
+<li><a name="toc_Optimized-Code" href="Optimized-Code.html#Optimized-Code">9 Debugging Optimized Code</a>
+<ul>
+<li><a href="Inline-Functions.html#Inline-Functions">9.1 Inline Functions</a>
+</li></ul>
+<li><a name="toc_Macros" href="Macros.html#Macros">10 C Preprocessor Macros</a>
+<li><a name="toc_Tracepoints" href="Tracepoints.html#Tracepoints">11 Tracepoints</a>
+<ul>
+<li><a href="Set-Tracepoints.html#Set-Tracepoints">11.1 Commands to Set Tracepoints</a>
+<ul>
+<li><a href="Create-and-Delete-Tracepoints.html#Create-and-Delete-Tracepoints">11.1.1 Create and Delete Tracepoints</a>
+<li><a href="Enable-and-Disable-Tracepoints.html#Enable-and-Disable-Tracepoints">11.1.2 Enable and Disable Tracepoints</a>
+<li><a href="Tracepoint-Passcounts.html#Tracepoint-Passcounts">11.1.3 Tracepoint Passcounts</a>
+<li><a href="Tracepoint-Actions.html#Tracepoint-Actions">11.1.4 Tracepoint Action Lists</a>
+<li><a href="Listing-Tracepoints.html#Listing-Tracepoints">11.1.5 Listing Tracepoints</a>
+<li><a href="Starting-and-Stopping-Trace-Experiments.html#Starting-and-Stopping-Trace-Experiments">11.1.6 Starting and Stopping Trace Experiments</a>
+</li></ul>
+<li><a href="Analyze-Collected-Data.html#Analyze-Collected-Data">11.2 Using the Collected Data</a>
+<ul>
+<li><a href="tfind.html#tfind">11.2.1 <code>tfind </code><var>n</var></a>
+<li><a href="tdump.html#tdump">11.2.2 <code>tdump</code></a>
+<li><a href="save_002dtracepoints.html#save_002dtracepoints">11.2.3 <code>save-tracepoints </code><var>filename</var></a>
+</li></ul>
+<li><a href="Tracepoint-Variables.html#Tracepoint-Variables">11.3 Convenience Variables for Tracepoints</a>
+</li></ul>
+<li><a name="toc_Overlays" href="Overlays.html#Overlays">12 Debugging Programs That Use Overlays</a>
+<ul>
+<li><a href="How-Overlays-Work.html#How-Overlays-Work">12.1 How Overlays Work</a>
+<li><a href="Overlay-Commands.html#Overlay-Commands">12.2 Overlay Commands</a>
+<li><a href="Automatic-Overlay-Debugging.html#Automatic-Overlay-Debugging">12.3 Automatic Overlay Debugging</a>
+<li><a href="Overlay-Sample-Program.html#Overlay-Sample-Program">12.4 Overlay Sample Program</a>
+</li></ul>
+<li><a name="toc_Languages" href="Languages.html#Languages">13 Using <span class="sc">gdb</span> with Different Languages</a>
+<ul>
+<li><a href="Setting.html#Setting">13.1 Switching Between Source Languages</a>
+<ul>
+<li><a href="Filenames.html#Filenames">13.1.1 List of Filename Extensions and Languages</a>
+<li><a href="Manually.html#Manually">13.1.2 Setting the Working Language</a>
+<li><a href="Automatically.html#Automatically">13.1.3 Having <span class="sc">gdb</span> Infer the Source Language</a>
+</li></ul>
+<li><a href="Show.html#Show">13.2 Displaying the Language</a>
+<li><a href="Checks.html#Checks">13.3 Type and Range Checking</a>
+<ul>
+<li><a href="Type-Checking.html#Type-Checking">13.3.1 An Overview of Type Checking</a>
+<li><a href="Range-Checking.html#Range-Checking">13.3.2 An Overview of Range Checking</a>
+</li></ul>
+<li><a href="Supported-Languages.html#Supported-Languages">13.4 Supported Languages</a>
+<ul>
+<li><a href="C.html#C">13.4.1 C and C<tt>++</tt></a>
+<ul>
+<li><a href="C-Operators.html#C-Operators">13.4.1.1 C and C<tt>++</tt> Operators</a>
+<li><a href="C-Constants.html#C-Constants">13.4.1.2 C and C<tt>++</tt> Constants</a>
+<li><a href="C-Plus-Plus-Expressions.html#C-Plus-Plus-Expressions">13.4.1.3 C<tt>++</tt> Expressions</a>
+<li><a href="C-Defaults.html#C-Defaults">13.4.1.4 C and C<tt>++</tt> Defaults</a>
+<li><a href="C-Checks.html#C-Checks">13.4.1.5 C and C<tt>++</tt> Type and Range Checks</a>
+<li><a href="Debugging-C.html#Debugging-C">13.4.1.6 <span class="sc">gdb</span> and C</a>
+<li><a href="Debugging-C-Plus-Plus.html#Debugging-C-Plus-Plus">13.4.1.7 <span class="sc">gdb</span> Features for C<tt>++</tt></a>
+<li><a href="Decimal-Floating-Point.html#Decimal-Floating-Point">13.4.1.8 Decimal Floating Point format</a>
+</li></ul>
+<li><a href="Objective_002dC.html#Objective_002dC">13.4.2 Objective-C</a>
+<ul>
+<li><a href="Method-Names-in-Commands.html#Method-Names-in-Commands">13.4.2.1 Method Names in Commands</a>
+<li><a href="The-Print-Command-with-Objective_002dC.html#The-Print-Command-with-Objective_002dC">13.4.2.2 The Print Command With Objective-C</a>
+</li></ul>
+<li><a href="Fortran.html#Fortran">13.4.3 Fortran</a>
+<ul>
+<li><a href="Fortran-Operators.html#Fortran-Operators">13.4.3.1 Fortran Operators and Expressions</a>
+<li><a href="Fortran-Defaults.html#Fortran-Defaults">13.4.3.2 Fortran Defaults</a>
+<li><a href="Special-Fortran-Commands.html#Special-Fortran-Commands">13.4.3.3 Special Fortran Commands</a>
+</li></ul>
+<li><a href="Pascal.html#Pascal">13.4.4 Pascal</a>
+<li><a href="Modula_002d2.html#Modula_002d2">13.4.5 Modula-2</a>
+<ul>
+<li><a href="M2-Operators.html#M2-Operators">13.4.5.1 Operators</a>
+<li><a href="Built_002dIn-Func_002fProc.html#Built_002dIn-Func_002fProc">13.4.5.2 Built-in Functions and Procedures</a>
+<li><a href="M2-Constants.html#M2-Constants">13.4.5.3 Constants</a>
+<li><a href="M2-Types.html#M2-Types">13.4.5.4 Modula-2 Types</a>
+<li><a href="M2-Defaults.html#M2-Defaults">13.4.5.5 Modula-2 Defaults</a>
+<li><a href="Deviations.html#Deviations">13.4.5.6 Deviations from Standard Modula-2</a>
+<li><a href="M2-Checks.html#M2-Checks">13.4.5.7 Modula-2 Type and Range Checks</a>
+<li><a href="M2-Scope.html#M2-Scope">13.4.5.8 The Scope Operators <code>::</code> and <code>.</code></a>
+<li><a href="GDB_002fM2.html#GDB_002fM2">13.4.5.9 <span class="sc">gdb</span> and Modula-2</a>
+</li></ul>
+<li><a href="Ada.html#Ada">13.4.6 Ada</a>
+<ul>
+<li><a href="Ada-Mode-Intro.html#Ada-Mode-Intro">13.4.6.1 Introduction</a>
+<li><a href="Omissions-from-Ada.html#Omissions-from-Ada">13.4.6.2 Omissions from Ada</a>
+<li><a href="Additions-to-Ada.html#Additions-to-Ada">13.4.6.3 Additions to Ada</a>
+<li><a href="Stopping-Before-Main-Program.html#Stopping-Before-Main-Program">13.4.6.4 Stopping at the Very Beginning</a>
+<li><a href="Ada-Glitches.html#Ada-Glitches">13.4.6.5 Known Peculiarities of Ada Mode</a>
+</li></ul>
+</li></ul>
+<li><a href="Unsupported-Languages.html#Unsupported-Languages">13.5 Unsupported Languages</a>
+</li></ul>
+<li><a name="toc_Symbols" href="Symbols.html#Symbols">14 Examining the Symbol Table</a>
+<li><a name="toc_Altering" href="Altering.html#Altering">15 Altering Execution</a>
+<ul>
+<li><a href="Assignment.html#Assignment">15.1 Assignment to Variables</a>
+<li><a href="Jumping.html#Jumping">15.2 Continuing at a Different Address</a>
+<li><a href="Signaling.html#Signaling">15.3 Giving your Program a Signal</a>
+<li><a href="Returning.html#Returning">15.4 Returning from a Function</a>
+<li><a href="Calling.html#Calling">15.5 Calling Program Functions</a>
+<li><a href="Patching.html#Patching">15.6 Patching Programs</a>
+</li></ul>
+<li><a name="toc_GDB-Files" href="GDB-Files.html#GDB-Files">16 <span class="sc">gdb</span> Files</a>
+<ul>
+<li><a href="Files.html#Files">16.1 Commands to Specify Files</a>
+<li><a href="Separate-Debug-Files.html#Separate-Debug-Files">16.2 Debugging Information in Separate Files</a>
+<li><a href="Symbol-Errors.html#Symbol-Errors">16.3 Errors Reading Symbol Files</a>
+</li></ul>
+<li><a name="toc_Targets" href="Targets.html#Targets">17 Specifying a Debugging Target</a>
+<ul>
+<li><a href="Active-Targets.html#Active-Targets">17.1 Active Targets</a>
+<li><a href="Target-Commands.html#Target-Commands">17.2 Commands for Managing Targets</a>
+<li><a href="Byte-Order.html#Byte-Order">17.3 Choosing Target Byte Order</a>
+</li></ul>
+<li><a name="toc_Remote-Debugging" href="Remote-Debugging.html#Remote-Debugging">18 Debugging Remote Programs</a>
+<ul>
+<li><a href="Connecting.html#Connecting">18.1 Connecting to a Remote Target</a>
+<li><a href="File-Transfer.html#File-Transfer">18.2 Sending files to a remote system</a>
+<li><a href="Server.html#Server">18.3 Using the <code>gdbserver</code> Program</a>
+<ul>
+<li><a href="Server.html#Server">18.3.1 Running <code>gdbserver</code></a>
+<ul>
+<li><a href="Server.html#Server">18.3.1.1 Attaching to a Running Program</a>
+<li><a href="Server.html#Server">18.3.1.2 Multi-Process Mode for <code>gdbserver</code></a>
+<li><a href="Server.html#Server">18.3.1.3 Other Command-Line Arguments for <code>gdbserver</code></a>
+</li></ul>
+<li><a href="Server.html#Server">18.3.2 Connecting to <code>gdbserver</code></a>
+<li><a href="Server.html#Server">18.3.3 Monitor Commands for <code>gdbserver</code></a>
+</li></ul>
+<li><a href="Remote-Configuration.html#Remote-Configuration">18.4 Remote Configuration</a>
+<li><a href="Remote-Stub.html#Remote-Stub">18.5 Implementing a Remote Stub</a>
+<ul>
+<li><a href="Stub-Contents.html#Stub-Contents">18.5.1 What the Stub Can Do for You</a>
+<li><a href="Bootstrapping.html#Bootstrapping">18.5.2 What You Must Do for the Stub</a>
+<li><a href="Debug-Session.html#Debug-Session">18.5.3 Putting it All Together</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Configurations" href="Configurations.html#Configurations">19 Configuration-Specific Information</a>
+<ul>
+<li><a href="Native.html#Native">19.1 Native</a>
+<ul>
+<li><a href="HP_002dUX.html#HP_002dUX">19.1.1 HP-UX</a>
+<li><a href="BSD-libkvm-Interface.html#BSD-libkvm-Interface">19.1.2 BSD libkvm Interface</a>
+<li><a href="SVR4-Process-Information.html#SVR4-Process-Information">19.1.3 SVR4 Process Information</a>
+<li><a href="DJGPP-Native.html#DJGPP-Native">19.1.4 Features for Debugging <span class="sc">djgpp</span> Programs</a>
+<li><a href="Cygwin-Native.html#Cygwin-Native">19.1.5 Features for Debugging MS Windows PE Executables</a>
+<ul>
+<li><a href="Non_002ddebug-DLL-Symbols.html#Non_002ddebug-DLL-Symbols">19.1.5.1 Support for DLLs without Debugging Symbols</a>
+<li><a href="Non_002ddebug-DLL-Symbols.html#Non_002ddebug-DLL-Symbols">19.1.5.2 DLL Name Prefixes</a>
+<li><a href="Non_002ddebug-DLL-Symbols.html#Non_002ddebug-DLL-Symbols">19.1.5.3 Working with Minimal Symbols</a>
+</li></ul>
+<li><a href="Hurd-Native.html#Hurd-Native">19.1.6 Commands Specific to <span class="sc">gnu</span> Hurd Systems</a>
+<li><a href="Neutrino.html#Neutrino">19.1.7 QNX Neutrino</a>
+</li></ul>
+<li><a href="Embedded-OS.html#Embedded-OS">19.2 Embedded Operating Systems</a>
+<ul>
+<li><a href="VxWorks.html#VxWorks">19.2.1 Using <span class="sc">gdb</span> with VxWorks</a>
+<ul>
+<li><a href="VxWorks-Connection.html#VxWorks-Connection">19.2.1.1 Connecting to VxWorks</a>
+<li><a href="VxWorks-Download.html#VxWorks-Download">19.2.1.2 VxWorks Download</a>
+<li><a href="VxWorks-Attach.html#VxWorks-Attach">19.2.1.3 Running Tasks</a>
+</li></ul>
+</li></ul>
+<li><a href="Embedded-Processors.html#Embedded-Processors">19.3 Embedded Processors</a>
+<ul>
+<li><a href="ARM.html#ARM">19.3.1 ARM</a>
+<li><a href="M32R_002fD.html#M32R_002fD">19.3.2 Renesas M32R/D and M32R/SDI</a>
+<li><a href="M68K.html#M68K">19.3.3 M68k</a>
+<li><a href="MIPS-Embedded.html#MIPS-Embedded">19.3.4 MIPS Embedded</a>
+<li><a href="OpenRISC-1000.html#OpenRISC-1000">19.3.5 OpenRISC 1000</a>
+<li><a href="PowerPC-Embedded.html#PowerPC-Embedded">19.3.6 PowerPC Embedded</a>
+<li><a href="PA.html#PA">19.3.7 HP PA Embedded</a>
+<li><a href="Sparclet.html#Sparclet">19.3.8 Tsqware Sparclet</a>
+<ul>
+<li><a href="Sparclet-File.html#Sparclet-File">19.3.8.1 Setting File to Debug</a>
+<li><a href="Sparclet-Connection.html#Sparclet-Connection">19.3.8.2 Connecting to Sparclet</a>
+<li><a href="Sparclet-Download.html#Sparclet-Download">19.3.8.3 Sparclet Download</a>
+<li><a href="Sparclet-Execution.html#Sparclet-Execution">19.3.8.4 Running and Debugging</a>
+</li></ul>
+<li><a href="Sparclite.html#Sparclite">19.3.9 Fujitsu Sparclite</a>
+<li><a href="Z8000.html#Z8000">19.3.10 Zilog Z8000</a>
+<li><a href="AVR.html#AVR">19.3.11 Atmel AVR</a>
+<li><a href="CRIS.html#CRIS">19.3.12 CRIS</a>
+<li><a href="Super_002dH.html#Super_002dH">19.3.13 Renesas Super-H</a>
+</li></ul>
+<li><a href="Architectures.html#Architectures">19.4 Architectures</a>
+<ul>
+<li><a href="i386.html#i386">19.4.1 x86 Architecture-specific Issues</a>
+<li><a href="A29K.html#A29K">19.4.2 A29K</a>
+<li><a href="Alpha.html#Alpha">19.4.3 Alpha</a>
+<li><a href="MIPS.html#MIPS">19.4.4 MIPS</a>
+<li><a href="HPPA.html#HPPA">19.4.5 HPPA</a>
+<li><a href="SPU.html#SPU">19.4.6 Cell Broadband Engine SPU architecture</a>
+<li><a href="PowerPC.html#PowerPC">19.4.7 PowerPC</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Controlling-GDB" href="Controlling-GDB.html#Controlling-GDB">20 Controlling <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Prompt.html#Prompt">20.1 Prompt</a>
+<li><a href="Editing.html#Editing">20.2 Command Editing</a>
+<li><a href="Command-History.html#Command-History">20.3 Command History</a>
+<li><a href="Screen-Size.html#Screen-Size">20.4 Screen Size</a>
+<li><a href="Numbers.html#Numbers">20.5 Numbers</a>
+<li><a href="ABI.html#ABI">20.6 Configuring the Current ABI</a>
+<li><a href="Messages_002fWarnings.html#Messages_002fWarnings">20.7 Optional Warnings and Messages</a>
+<li><a href="Debugging-Output.html#Debugging-Output">20.8 Optional Messages about Internal Happenings</a>
+</li></ul>
+<li><a name="toc_Extending-GDB" href="Extending-GDB.html#Extending-GDB">21 Extending <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Sequences.html#Sequences">21.1 Canned Sequences of Commands</a>
+<ul>
+<li><a href="Define.html#Define">21.1.1 User-defined Commands</a>
+<li><a href="Hooks.html#Hooks">21.1.2 User-defined Command Hooks</a>
+<li><a href="Command-Files.html#Command-Files">21.1.3 Command Files</a>
+<li><a href="Output.html#Output">21.1.4 Commands for Controlled Output</a>
+</li></ul>
+<li><a href="Python.html#Python">21.2 Scripting <span class="sc">gdb</span> using Python</a>
+<ul>
+<li><a href="Python-Commands.html#Python-Commands">21.2.1 Python Commands</a>
+<li><a href="Python-API.html#Python-API">21.2.2 Python API</a>
+<ul>
+<li><a href="Basic-Python.html#Basic-Python">21.2.2.1 Basic Python</a>
+<li><a href="Exception-Handling.html#Exception-Handling">21.2.2.2 Exception Handling</a>
+</li></ul>
+</li></ul>
+</li></ul>
+<li><a name="toc_Interpreters" href="Interpreters.html#Interpreters">22 Command Interpreters</a>
+<li><a name="toc_TUI" href="TUI.html#TUI">23 <span class="sc">gdb</span> Text User Interface</a>
+<ul>
+<li><a href="TUI-Overview.html#TUI-Overview">23.1 TUI Overview</a>
+<li><a href="TUI-Keys.html#TUI-Keys">23.2 TUI Key Bindings</a>
+<li><a href="TUI-Single-Key-Mode.html#TUI-Single-Key-Mode">23.3 TUI Single Key Mode</a>
+<li><a href="TUI-Commands.html#TUI-Commands">23.4 TUI-specific Commands</a>
+<li><a href="TUI-Configuration.html#TUI-Configuration">23.5 TUI Configuration Variables</a>
+</li></ul>
+<li><a name="toc_Emacs" href="Emacs.html#Emacs">24 Using <span class="sc">gdb</span> under <span class="sc">gnu</span> Emacs</a>
+<li><a name="toc_GDB_002fMI" href="GDB_002fMI.html#GDB_002fMI">25 The <span class="sc">gdb/mi</span> Interface</a>
+<ul>
+<li><a href="GDB_002fMI.html#GDB_002fMI">Function and Purpose</a>
+<li><a href="GDB_002fMI.html#GDB_002fMI">Notation and Terminology</a>
+<li><a href="GDB_002fMI-Command-Syntax.html#GDB_002fMI-Command-Syntax">25.1 <span class="sc">gdb/mi</span> Command Syntax</a>
+<ul>
+<li><a href="GDB_002fMI-Input-Syntax.html#GDB_002fMI-Input-Syntax">25.1.1 <span class="sc">gdb/mi</span> Input Syntax</a>
+<li><a href="GDB_002fMI-Output-Syntax.html#GDB_002fMI-Output-Syntax">25.1.2 <span class="sc">gdb/mi</span> Output Syntax</a>
+</li></ul>
+<li><a href="GDB_002fMI-Compatibility-with-CLI.html#GDB_002fMI-Compatibility-with-CLI">25.2 <span class="sc">gdb/mi</span> Compatibility with CLI</a>
+<li><a href="GDB_002fMI-Development-and-Front-Ends.html#GDB_002fMI-Development-and-Front-Ends">25.3 <span class="sc">gdb/mi</span> Development and Front Ends</a>
+<li><a href="GDB_002fMI-Output-Records.html#GDB_002fMI-Output-Records">25.4 <span class="sc">gdb/mi</span> Output Records</a>
+<ul>
+<li><a href="GDB_002fMI-Result-Records.html#GDB_002fMI-Result-Records">25.4.1 <span class="sc">gdb/mi</span> Result Records</a>
+<li><a href="GDB_002fMI-Stream-Records.html#GDB_002fMI-Stream-Records">25.4.2 <span class="sc">gdb/mi</span> Stream Records</a>
+<li><a href="GDB_002fMI-Async-Records.html#GDB_002fMI-Async-Records">25.4.3 <span class="sc">gdb/mi</span> Async Records</a>
+</li></ul>
+<li><a href="GDB_002fMI-Simple-Examples.html#GDB_002fMI-Simple-Examples">25.5 Simple Examples of <span class="sc">gdb/mi</span> Interaction</a>
+<li><a href="GDB_002fMI-Command-Description-Format.html#GDB_002fMI-Command-Description-Format">25.6 <span class="sc">gdb/mi</span> Command Description Format</a>
+<li><a href="GDB_002fMI-Breakpoint-Commands.html#GDB_002fMI-Breakpoint-Commands">25.7 <span class="sc">gdb/mi</span> Breakpoint Commands</a>
+<li><a href="GDB_002fMI-Program-Context.html#GDB_002fMI-Program-Context">25.8 <span class="sc">gdb/mi</span>  Program Context</a>
+<li><a href="GDB_002fMI-Thread-Commands.html#GDB_002fMI-Thread-Commands">25.9 <span class="sc">gdb/mi</span> Thread Commands</a>
+<li><a href="GDB_002fMI-Program-Execution.html#GDB_002fMI-Program-Execution">25.10 <span class="sc">gdb/mi</span> Program Execution</a>
+<li><a href="GDB_002fMI-Stack-Manipulation.html#GDB_002fMI-Stack-Manipulation">25.11 <span class="sc">gdb/mi</span> Stack Manipulation Commands</a>
+<li><a href="GDB_002fMI-Variable-Objects.html#GDB_002fMI-Variable-Objects">25.12 <span class="sc">gdb/mi</span> Variable Objects</a>
+<li><a href="GDB_002fMI-Data-Manipulation.html#GDB_002fMI-Data-Manipulation">25.13 <span class="sc">gdb/mi</span> Data Manipulation</a>
+<li><a href="GDB_002fMI-Tracepoint-Commands.html#GDB_002fMI-Tracepoint-Commands">25.14 <span class="sc">gdb/mi</span> Tracepoint Commands</a>
+<li><a href="GDB_002fMI-Symbol-Query.html#GDB_002fMI-Symbol-Query">25.15 <span class="sc">gdb/mi</span> Symbol Query Commands</a>
+<li><a href="GDB_002fMI-File-Commands.html#GDB_002fMI-File-Commands">25.16 <span class="sc">gdb/mi</span> File Commands</a>
+<li><a href="GDB_002fMI-Target-Manipulation.html#GDB_002fMI-Target-Manipulation">25.17 <span class="sc">gdb/mi</span> Target Manipulation Commands</a>
+<li><a href="GDB_002fMI-File-Transfer-Commands.html#GDB_002fMI-File-Transfer-Commands">25.18 <span class="sc">gdb/mi</span> File Transfer Commands</a>
+<li><a href="GDB_002fMI-Miscellaneous-Commands.html#GDB_002fMI-Miscellaneous-Commands">25.19 Miscellaneous <span class="sc">gdb/mi</span> Commands</a>
+</li></ul>
+<li><a name="toc_Annotations" href="Annotations.html#Annotations">26 <span class="sc">gdb</span> Annotations</a>
+<ul>
+<li><a href="Annotations-Overview.html#Annotations-Overview">26.1 What is an Annotation?</a>
+<li><a href="Server-Prefix.html#Server-Prefix">26.2 The Server Prefix</a>
+<li><a href="Prompting.html#Prompting">26.3 Annotation for <span class="sc">gdb</span> Input</a>
+<li><a href="Errors.html#Errors">26.4 Errors</a>
+<li><a href="Invalidation.html#Invalidation">26.5 Invalidation Notices</a>
+<li><a href="Annotations-for-Running.html#Annotations-for-Running">26.6 Running the Program</a>
+<li><a href="Source-Annotations.html#Source-Annotations">26.7 Displaying Source</a>
+</li></ul>
+<li><a name="toc_GDB-Bugs" href="GDB-Bugs.html#GDB-Bugs">27 Reporting Bugs in <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Bug-Criteria.html#Bug-Criteria">27.1 Have You Found a Bug?</a>
+<li><a href="Bug-Reporting.html#Bug-Reporting">27.2 How to Report Bugs</a>
+</li></ul>
+<li><a name="toc_Command-Line-Editing" href="Command-Line-Editing.html#Command-Line-Editing">28 Command Line Editing</a>
+<ul>
+<li><a href="Introduction-and-Notation.html#Introduction-and-Notation">28.1 Introduction to Line Editing</a>
+<li><a href="Readline-Interaction.html#Readline-Interaction">28.2 Readline Interaction</a>
+<ul>
+<li><a href="Readline-Bare-Essentials.html#Readline-Bare-Essentials">28.2.1 Readline Bare Essentials</a>
+<li><a href="Readline-Movement-Commands.html#Readline-Movement-Commands">28.2.2 Readline Movement Commands</a>
+<li><a href="Readline-Killing-Commands.html#Readline-Killing-Commands">28.2.3 Readline Killing Commands</a>
+<li><a href="Readline-Arguments.html#Readline-Arguments">28.2.4 Readline Arguments</a>
+<li><a href="Searching.html#Searching">28.2.5 Searching for Commands in the History</a>
+</li></ul>
+<li><a href="Readline-Init-File.html#Readline-Init-File">28.3 Readline Init File</a>
+<ul>
+<li><a href="Readline-Init-File-Syntax.html#Readline-Init-File-Syntax">28.3.1 Readline Init File Syntax</a>
+<li><a href="Conditional-Init-Constructs.html#Conditional-Init-Constructs">28.3.2 Conditional Init Constructs</a>
+<li><a href="Sample-Init-File.html#Sample-Init-File">28.3.3 Sample Init File</a>
+</li></ul>
+<li><a href="Bindable-Readline-Commands.html#Bindable-Readline-Commands">28.4 Bindable Readline Commands</a>
+<ul>
+<li><a href="Commands-For-Moving.html#Commands-For-Moving">28.4.1 Commands For Moving</a>
+<li><a href="Commands-For-History.html#Commands-For-History">28.4.2 Commands For Manipulating The History</a>
+<li><a href="Commands-For-Text.html#Commands-For-Text">28.4.3 Commands For Changing Text</a>
+<li><a href="Commands-For-Killing.html#Commands-For-Killing">28.4.4 Killing And Yanking</a>
+<li><a href="Numeric-Arguments.html#Numeric-Arguments">28.4.5 Specifying Numeric Arguments</a>
+<li><a href="Commands-For-Completion.html#Commands-For-Completion">28.4.6 Letting Readline Type For You</a>
+<li><a href="Keyboard-Macros.html#Keyboard-Macros">28.4.7 Keyboard Macros</a>
+<li><a href="Miscellaneous-Commands.html#Miscellaneous-Commands">28.4.8 Some Miscellaneous Commands</a>
+</li></ul>
+<li><a href="Readline-vi-Mode.html#Readline-vi-Mode">28.5 Readline vi Mode</a>
+</li></ul>
+<li><a name="toc_Using-History-Interactively" href="Using-History-Interactively.html#Using-History-Interactively">29 Using History Interactively</a>
+<ul>
+<li><a href="History-Interaction.html#History-Interaction">29.1 History Expansion</a>
+<ul>
+<li><a href="Event-Designators.html#Event-Designators">29.1.1 Event Designators</a>
+<li><a href="Word-Designators.html#Word-Designators">29.1.2 Word Designators</a>
+<li><a href="Modifiers.html#Modifiers">29.1.3 Modifiers</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Formatting-Documentation" href="Formatting-Documentation.html#Formatting-Documentation">Appendix A Formatting Documentation</a>
+<li><a name="toc_Installing-GDB" href="Installing-GDB.html#Installing-GDB">Appendix B Installing <span class="sc">gdb</span></a>
+<ul>
+<li><a href="Requirements.html#Requirements">B.1 Requirements for Building <span class="sc">gdb</span></a>
+<li><a href="Running-Configure.html#Running-Configure">B.2 Invoking the <span class="sc">gdb</span> <samp><span class="file">configure</span></samp> Script</a>
+<li><a href="Separate-Objdir.html#Separate-Objdir">B.3 Compiling <span class="sc">gdb</span> in Another Directory</a>
+<li><a href="Config-Names.html#Config-Names">B.4 Specifying Names for Hosts and Targets</a>
+<li><a href="Configure-Options.html#Configure-Options">B.5 <samp><span class="file">configure</span></samp> Options</a>
+</li></ul>
+<li><a name="toc_Maintenance-Commands" href="Maintenance-Commands.html#Maintenance-Commands">Appendix C Maintenance Commands</a>
+<li><a name="toc_Remote-Protocol" href="Remote-Protocol.html#Remote-Protocol">Appendix D <span class="sc">gdb</span> Remote Serial Protocol</a>
+<ul>
+<li><a href="Overview.html#Overview">D.1 Overview</a>
+<li><a href="Standard-Replies.html#Standard-Replies">D.2 Standard Replies</a>
+<li><a href="Packets.html#Packets">D.3 Packets</a>
+<li><a href="Stop-Reply-Packets.html#Stop-Reply-Packets">D.4 Stop Reply Packets</a>
+<li><a href="General-Query-Packets.html#General-Query-Packets">D.5 General Query Packets</a>
+<li><a href="Register-Packet-Format.html#Register-Packet-Format">D.6 Register Packet Format</a>
+<li><a href="Tracepoint-Packets.html#Tracepoint-Packets">D.7 Tracepoint Packets</a>
+<li><a href="Host-I_002fO-Packets.html#Host-I_002fO-Packets">D.8 Host I/O Packets</a>
+<li><a href="Interrupts.html#Interrupts">D.9 Interrupts</a>
+<li><a href="Packet-Acknowledgment.html#Packet-Acknowledgment">D.10 Packet Acknowledgment</a>
+<li><a href="Examples.html#Examples">D.11 Examples</a>
+<li><a href="File_002dI_002fO-Remote-Protocol-Extension.html#File_002dI_002fO-Remote-Protocol-Extension">D.12 File-I/O Remote Protocol Extension</a>
+<ul>
+<li><a href="File_002dI_002fO-Overview.html#File_002dI_002fO-Overview">D.12.1 File-I/O Overview</a>
+<li><a href="Protocol-Basics.html#Protocol-Basics">D.12.2 Protocol Basics</a>
+<li><a href="The-F-Request-Packet.html#The-F-Request-Packet">D.12.3 The <code>F</code> Request Packet</a>
+<li><a href="The-F-Reply-Packet.html#The-F-Reply-Packet">D.12.4 The <code>F</code> Reply Packet</a>
+<li><a href="The-Ctrl_002dC-Message.html#The-Ctrl_002dC-Message">D.12.5 The &lsquo;<samp><span class="samp">Ctrl-C</span></samp>&rsquo; Message</a>
+<li><a href="Console-I_002fO.html#Console-I_002fO">D.12.6 Console I/O</a>
+<li><a href="List-of-Supported-Calls.html#List-of-Supported-Calls">D.12.7 List of Supported Calls</a>
+<ul>
+<li><a href="open.html#open">open</a>
+<li><a href="close.html#close">close</a>
+<li><a href="read.html#read">read</a>
+<li><a href="write.html#write">write</a>
+<li><a href="lseek.html#lseek">lseek</a>
+<li><a href="rename.html#rename">rename</a>
+<li><a href="unlink.html#unlink">unlink</a>
+<li><a href="stat_002ffstat.html#stat_002ffstat">stat/fstat</a>
+<li><a href="gettimeofday.html#gettimeofday">gettimeofday</a>
+<li><a href="isatty.html#isatty">isatty</a>
+<li><a href="system.html#system">system</a>
+</li></ul>
+<li><a href="Protocol_002dspecific-Representation-of-Datatypes.html#Protocol_002dspecific-Representation-of-Datatypes">D.12.8 Protocol-specific Representation of Datatypes</a>
+<ul>
+<li><a href="Integral-Datatypes.html#Integral-Datatypes">Integral Datatypes</a>
+<li><a href="Pointer-Values.html#Pointer-Values">Pointer Values</a>
+<li><a href="Memory-Transfer.html#Memory-Transfer">Memory Transfer</a>
+<li><a href="struct-stat.html#struct-stat">struct stat</a>
+<li><a href="struct-timeval.html#struct-timeval">struct timeval</a>
+</li></ul>
+<li><a href="Constants.html#Constants">D.12.9 Constants</a>
+<ul>
+<li><a href="Open-Flags.html#Open-Flags">Open Flags</a>
+<li><a href="mode_005ft-Values.html#mode_005ft-Values">mode_t Values</a>
+<li><a href="Errno-Values.html#Errno-Values">Errno Values</a>
+<li><a href="Lseek-Flags.html#Lseek-Flags">Lseek Flags</a>
+<li><a href="Limits.html#Limits">Limits</a>
+</li></ul>
+<li><a href="File_002dI_002fO-Examples.html#File_002dI_002fO-Examples">D.12.10 File-I/O Examples</a>
+</li></ul>
+<li><a href="Library-List-Format.html#Library-List-Format">D.13 Library List Format</a>
+<li><a href="Memory-Map-Format.html#Memory-Map-Format">D.14 Memory Map Format</a>
+</li></ul>
+<li><a name="toc_Agent-Expressions" href="Agent-Expressions.html#Agent-Expressions">Appendix E The GDB Agent Expression Mechanism</a>
+<ul>
+<li><a href="General-Bytecode-Design.html#General-Bytecode-Design">E.1 General Bytecode Design</a>
+<li><a href="Bytecode-Descriptions.html#Bytecode-Descriptions">E.2 Bytecode Descriptions</a>
+<li><a href="Using-Agent-Expressions.html#Using-Agent-Expressions">E.3 Using Agent Expressions</a>
+<li><a href="Varying-Target-Capabilities.html#Varying-Target-Capabilities">E.4 Varying Target Capabilities</a>
+<li><a href="Tracing-on-Symmetrix.html#Tracing-on-Symmetrix">E.5 Tracing on Symmetrix</a>
+<li><a href="Rationale.html#Rationale">E.6 Rationale</a>
+</li></ul>
+<li><a name="toc_Target-Descriptions" href="Target-Descriptions.html#Target-Descriptions">Appendix F Target Descriptions</a>
+<ul>
+<li><a href="Retrieving-Descriptions.html#Retrieving-Descriptions">F.1 Retrieving Descriptions</a>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2 Target Description Format</a>
+<ul>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2.1 Inclusion</a>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2.2 Architecture</a>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2.3 Features</a>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2.4 Types</a>
+<li><a href="Target-Description-Format.html#Target-Description-Format">F.2.5 Registers</a>
+</li></ul>
+<li><a href="Predefined-Target-Types.html#Predefined-Target-Types">F.3 Predefined Target Types</a>
+<li><a href="Standard-Target-Features.html#Standard-Target-Features">F.4 Standard Target Features</a>
+<ul>
+<li><a href="ARM-Features.html#ARM-Features">F.4.1 ARM Features</a>
+<li><a href="MIPS-Features.html#MIPS-Features">F.4.2 MIPS Features</a>
+<li><a href="M68K-Features.html#M68K-Features">F.4.3 M68K Features</a>
+<li><a href="PowerPC-Features.html#PowerPC-Features">F.4.4 PowerPC Features</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Copying" href="Copying.html#Copying">Appendix G GNU GENERAL PUBLIC LICENSE</a>
+<ul>
+<li><a href="Copying.html#Copying">Preamble</a>
+<li><a href="Copying.html#Copying">How to Apply These Terms to Your New Programs</a>
+</li></ul>
+<li><a name="toc_GNU-Free-Documentation-License" href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">Appendix H GNU Free Documentation License</a>
+<ul>
+<li><a href="GNU-Free-Documentation-License.html#GNU-Free-Documentation-License">H.1 ADDENDUM: How to use this License for your documents</a>
+</li></ul>
+<li><a name="toc_GDB-Index" href="GDB-Index.html#GDB-Index">GDB Index</a>
+</li></ul>
+</div>
+
+   </body></html>
+

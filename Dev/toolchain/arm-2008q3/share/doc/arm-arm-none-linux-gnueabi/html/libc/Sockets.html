@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Sockets - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Pipes-and-FIFOs.html#Pipes-and-FIFOs" title="Pipes and FIFOs">
+<link rel="next" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Sockets"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% A more complicated IPC mechanism, with networking support -->
+<h2 class="chapter">16 Sockets</h2>
+
+<p>This chapter describes the GNU facilities for interprocess
+communication using sockets.
+
+   <p><a name="index-socket-1629"></a><a name="index-interprocess-communication_002c-with-sockets-1630"></a>A <dfn>socket</dfn> is a generalized interprocess communication channel. 
+Like a pipe, a socket is represented as a file descriptor.  Unlike pipes
+sockets support communication between unrelated processes, and even
+between processes running on different machines that communicate over a
+network.  Sockets are the primary means of communicating with other
+machines; <code>telnet</code>, <code>rlogin</code>, <code>ftp</code>, <code>talk</code> and the
+other familiar network programs use sockets.
+
+   <p>Not all operating systems support sockets.  In the GNU library, the
+header file <samp><span class="file">sys/socket.h</span></samp> exists regardless of the operating
+system, and the socket functions always exist, but if the system does
+not really support sockets these functions always fail.
+
+   <p><strong>Incomplete:</strong> We do not currently document the facilities for
+broadcast messages or for configuring Internet interfaces.  The
+reentrant functions and some newer functions that are related to IPv6
+aren't documented either so far.
+
+<ul class="menu">
+<li><a accesskey="1" href="Socket-Concepts.html#Socket-Concepts">Socket Concepts</a>: 	Basic concepts you need to know about. 
+<li><a accesskey="2" href="Communication-Styles.html#Communication-Styles">Communication Styles</a>: Stream communication, datagrams and other styles. 
+<li><a accesskey="3" href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>: 	How socket names (``addresses'') work. 
+<li><a accesskey="4" href="Interface-Naming.html#Interface-Naming">Interface Naming</a>: 	Identifying specific network interfaces. 
+<li><a accesskey="5" href="Local-Namespace.html#Local-Namespace">Local Namespace</a>: 	Details about the local namespace. 
+<li><a accesskey="6" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>: 	Details about the Internet namespace. 
+<li><a accesskey="7" href="Misc-Namespaces.html#Misc-Namespaces">Misc Namespaces</a>: 	Other namespaces not documented fully here. 
+<li><a accesskey="8" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">Open/Close Sockets</a>:   Creating sockets and destroying them. 
+<li><a accesskey="9" href="Connections.html#Connections">Connections</a>: 		Operations on sockets with connection state. 
+<li><a href="Datagrams.html#Datagrams">Datagrams</a>: 		Operations on datagram sockets. 
+<li><a href="Inetd.html#Inetd">Inetd</a>: 		Inetd is a daemon that starts servers on request. 
+			   The most convenient way to write a server
+			   is to make it work with Inetd. 
+<li><a href="Socket-Options.html#Socket-Options">Socket Options</a>: 	Miscellaneous low-level socket options. 
+<li><a href="Networks-Database.html#Networks-Database">Networks Database</a>:    Accessing the database of network names. 
+</ul>
+
+   </body></html>
+

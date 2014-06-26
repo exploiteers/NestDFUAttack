@@ -1,0 +1,673 @@
+<html lang="en">
+<head>
+<title>User Interface - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Algorithms.html#Algorithms" title="Algorithms">
+<link rel="next" href="libgdb.html#libgdb" title="libgdb">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="User-Interface"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="libgdb.html#libgdb">libgdb</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Algorithms.html#Algorithms">Algorithms</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">4 User Interface</h2>
+
+<p><span class="sc">gdb</span> has several user interfaces, of which the traditional
+command-line interface is perhaps the most familiar.
+
+<h3 class="section">4.1 Command Interpreter</h3>
+
+<p><a name="index-command-interpreter-61"></a><a name="index-CLI-62"></a>The command interpreter in <span class="sc">gdb</span> is fairly simple.  It is designed to
+allow for the set of commands to be augmented dynamically, and also
+has a recursive subcommand capability, where the first argument to
+a command may itself direct a lookup on a different command list.
+
+   <p>For instance, the &lsquo;<samp><span class="samp">set</span></samp>&rsquo; command just starts a lookup on the
+<code>setlist</code> command list, while &lsquo;<samp><span class="samp">set thread</span></samp>&rsquo; recurses
+to the <code>set_thread_cmd_list</code>.
+
+   <p><a name="index-add_005fcmd-63"></a><a name="index-add_005fcom-64"></a>To add commands in general, use <code>add_cmd</code>.  <code>add_com</code> adds to
+the main command list, and should be used for those commands.  The usual
+place to add commands is in the <code>_initialize_</code><var>xyz</var> routines at
+the ends of most source files.
+
+   <p><a name="index-add_005fsetshow_005fcmd-65"></a><a name="index-add_005fsetshow_005fcmd_005ffull-66"></a>To add paired &lsquo;<samp><span class="samp">set</span></samp>&rsquo; and &lsquo;<samp><span class="samp">show</span></samp>&rsquo; commands, use
+<code>add_setshow_cmd</code> or <code>add_setshow_cmd_full</code>.  The former is
+a slightly simpler interface which is useful when you don't need to
+further modify the new command structures, while the latter returns
+the new command structures for manipulation.
+
+   <p><a name="index-deprecating-commands-67"></a><a name="index-deprecate_005fcmd-68"></a>Before removing commands from the command set it is a good idea to
+deprecate them for some time.  Use <code>deprecate_cmd</code> on commands or
+aliases to set the deprecated flag.  <code>deprecate_cmd</code> takes a
+<code>struct cmd_list_element</code> as it's first argument.  You can use the
+return value from <code>add_com</code> or <code>add_cmd</code> to deprecate the
+command immediately after it is created.
+
+   <p>The first time a command is used the user will be warned and offered a
+replacement (if one exists). Note that the replacement string passed to
+<code>deprecate_cmd</code> should be the full name of the command, i.e., the
+entire string the user should type at the command line.
+
+<h3 class="section">4.2 UI-Independent Output&mdash;the <code>ui_out</code> Functions</h3>
+
+<!-- This section is based on the documentation written by Fernando -->
+<!-- Nasser <fnasser@redhat.com>. -->
+<p><a name="index-g_t_0040code_007bui_005fout_007d-functions-69"></a>The <code>ui_out</code> functions present an abstraction level for the
+<span class="sc">gdb</span> output code.  They hide the specifics of different user
+interfaces supported by <span class="sc">gdb</span>, and thus free the programmer
+from the need to write several versions of the same code, one each for
+every UI, to produce output.
+
+<h4 class="subsection">4.2.1 Overview and Terminology</h4>
+
+<p>In general, execution of each <span class="sc">gdb</span> command produces some sort
+of output, and can even generate an input request.
+
+   <p>Output can be generated for the following purposes:
+
+     <ul>
+<li>to display a <em>result</em> of an operation;
+
+     <li>to convey <em>info</em> or produce side-effects of a requested
+operation;
+
+     <li>to provide a <em>notification</em> of an asynchronous event (including
+progress indication of a prolonged asynchronous operation);
+
+     <li>to display <em>error messages</em> (including warnings);
+
+     <li>to show <em>debug data</em>;
+
+     <li>to <em>query</em> or prompt a user for input (a special case). 
+</ul>
+
+<p class="noindent">This section mainly concentrates on how to build result output,
+although some of it also applies to other kinds of output.
+
+   <p>Generation of output that displays the results of an operation
+involves one or more of the following:
+
+     <ul>
+<li>output of the actual data
+
+     <li>formatting the output as appropriate for console output, to make it
+easily readable by humans
+
+     <li>machine oriented formatting&ndash;a more terse formatting to allow for easy
+parsing by programs which read <span class="sc">gdb</span>'s output
+
+     <li>annotation, whose purpose is to help legacy GUIs to identify interesting
+parts in the output
+</ul>
+
+   <p>The <code>ui_out</code> routines take care of the first three aspects. 
+Annotations are provided by separate annotation routines.  Note that use
+of annotations for an interface between a GUI and <span class="sc">gdb</span> is
+deprecated.
+
+   <p>Output can be in the form of a single item, which we call a <dfn>field</dfn>;
+a <dfn>list</dfn> consisting of identical fields; a <dfn>tuple</dfn> consisting of
+non-identical fields; or a <dfn>table</dfn>, which is a tuple consisting of a
+header and a body.  In a BNF-like form:
+
+     <dl>
+<dt><code>&lt;table&gt; ==&gt;</code><dd><code>&lt;header&gt; &lt;body&gt;</code>
+<br><dt><code>&lt;header&gt; ==&gt;</code><dd><code>{ &lt;column&gt; }</code>
+<br><dt><code>&lt;column&gt; ==&gt;</code><dd><code>&lt;width&gt; &lt;alignment&gt; &lt;title&gt;</code>
+<br><dt><code>&lt;body&gt; ==&gt;</code><dd><code>{&lt;row&gt;}</code>
+</dl>
+
+<h4 class="subsection">4.2.2 General Conventions</h4>
+
+<p>Most <code>ui_out</code> routines are of type <code>void</code>, the exceptions are
+<code>ui_out_stream_new</code> (which returns a pointer to the newly created
+object) and the <code>make_cleanup</code> routines.
+
+   <p>The first parameter is always the <code>ui_out</code> vector object, a pointer
+to a <code>struct ui_out</code>.
+
+   <p>The <var>format</var> parameter is like in <code>printf</code> family of functions. 
+When it is present, there must also be a variable list of arguments
+sufficient used to satisfy the <code>%</code> specifiers in the supplied
+format.
+
+   <p>When a character string argument is not used in a <code>ui_out</code> function
+call, a <code>NULL</code> pointer has to be supplied instead.
+
+<h4 class="subsection">4.2.3 Table, Tuple and List Functions</h4>
+
+<p><a name="index-list-output-functions-70"></a><a name="index-table-output-functions-71"></a><a name="index-tuple-output-functions-72"></a>This section introduces <code>ui_out</code> routines for building lists,
+tuples and tables.  The routines to output the actual data items
+(fields) are presented in the next section.
+
+   <p>To recap: A <dfn>tuple</dfn> is a sequence of <dfn>fields</dfn>, each field
+containing information about an object; a <dfn>list</dfn> is a sequence of
+fields where each field describes an identical object.
+
+   <p>Use the <dfn>table</dfn> functions when your output consists of a list of
+rows (tuples) and the console output should include a heading.  Use this
+even when you are listing just one object but you still want the header.
+
+   <p><a name="index-nesting-level-in-_0040code_007bui_005fout_007d-functions-73"></a>Tables can not be nested.  Tuples and lists can be nested up to a
+maximum of five levels.
+
+   <p>The overall structure of the table output code is something like this:
+
+<pre class="smallexample">       ui_out_table_begin
+         ui_out_table_header
+         ...
+         ui_out_table_body
+           ui_out_tuple_begin
+             ui_out_field_*
+             ...
+           ui_out_tuple_end
+           ...
+       ui_out_table_end
+</pre>
+   <p>Here is the description of table-, tuple- and list-related <code>ui_out</code>
+functions:
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_table_begin</b> (<var>struct ui_out *uiout, int nbrofcols, int nr_rows, const char *tblid</var>)<var><a name="index-ui_005fout_005ftable_005fbegin-74"></a></var><br>
+<blockquote><p>The function <code>ui_out_table_begin</code> marks the beginning of the output
+of a table.  It should always be called before any other <code>ui_out</code>
+function for a given table.  <var>nbrofcols</var> is the number of columns in
+the table. <var>nr_rows</var> is the number of rows in the table. 
+<var>tblid</var> is an optional string identifying the table.  The string
+pointed to by <var>tblid</var> is copied by the implementation of
+<code>ui_out_table_begin</code>, so the application can free the string if it
+was <code>malloc</code>ed.
+
+        <p>The companion function <code>ui_out_table_end</code>, described below, marks
+the end of the table's output. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_table_header</b> (<var>struct ui_out *uiout, int width, enum ui_align alignment, const char *colhdr</var>)<var><a name="index-ui_005fout_005ftable_005fheader-75"></a></var><br>
+<blockquote><p><code>ui_out_table_header</code> provides the header information for a single
+table column.  You call this function several times, one each for every
+column of the table, after <code>ui_out_table_begin</code>, but before
+<code>ui_out_table_body</code>.
+
+        <p>The value of <var>width</var> gives the column width in characters.  The
+value of <var>alignment</var> is one of <code>left</code>, <code>center</code>, and
+<code>right</code>, and it specifies how to align the header: left-justify,
+center, or right-justify it.  <var>colhdr</var> points to a string that
+specifies the column header; the implementation copies that string, so
+column header strings in <code>malloc</code>ed storage can be freed after the
+call. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_table_body</b> (<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fout_005ftable_005fbody-76"></a></var><br>
+<blockquote><p>This function delimits the table header from the table body. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_table_end</b> (<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fout_005ftable_005fend-77"></a></var><br>
+<blockquote><p>This function signals the end of a table's output.  It should be called
+after the table body has been produced by the list and field output
+functions.
+
+        <p>There should be exactly one call to <code>ui_out_table_end</code> for each
+call to <code>ui_out_table_begin</code>, otherwise the <code>ui_out</code> functions
+will signal an internal error. 
+</p></blockquote></div>
+
+   <p>The output of the tuples that represent the table rows must follow the
+call to <code>ui_out_table_body</code> and precede the call to
+<code>ui_out_table_end</code>.  You build a tuple by calling
+<code>ui_out_tuple_begin</code> and <code>ui_out_tuple_end</code>, with suitable
+calls to functions which actually output fields between them.
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_tuple_begin</b> (<var>struct ui_out *uiout, const char *id</var>)<var><a name="index-ui_005fout_005ftuple_005fbegin-78"></a></var><br>
+<blockquote><p>This function marks the beginning of a tuple output.  <var>id</var> points
+to an optional string that identifies the tuple; it is copied by the
+implementation, and so strings in <code>malloc</code>ed storage can be freed
+after the call. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_tuple_end</b> (<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fout_005ftuple_005fend-79"></a></var><br>
+<blockquote><p>This function signals an end of a tuple output.  There should be exactly
+one call to <code>ui_out_tuple_end</code> for each call to
+<code>ui_out_tuple_begin</code>, otherwise an internal <span class="sc">gdb</span> error will
+be signaled. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: struct <b>cleanup</b><var> *make_cleanup_ui_out_tuple_begin_end </var>(<var>struct ui_out *uiout, const char *id</var>)<var><a name="index-cleanup-80"></a></var><br>
+<blockquote><p>This function first opens the tuple and then establishes a cleanup
+(see <a href="Coding.html#Coding">Cleanups</a>) to close the tuple.  It provides a convenient
+and correct implementation of the non-portable<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a> code sequence:
+     <pre class="smallexample">          struct cleanup *old_cleanup;
+          ui_out_tuple_begin (uiout, "...");
+          old_cleanup = make_cleanup ((void(*)(void *)) ui_out_tuple_end,
+                                      uiout);
+</pre>
+        </blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_list_begin</b> (<var>struct ui_out *uiout, const char *id</var>)<var><a name="index-ui_005fout_005flist_005fbegin-81"></a></var><br>
+<blockquote><p>This function marks the beginning of a list output.  <var>id</var> points to
+an optional string that identifies the list; it is copied by the
+implementation, and so strings in <code>malloc</code>ed storage can be freed
+after the call. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_list_end</b> (<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fout_005flist_005fend-82"></a></var><br>
+<blockquote><p>This function signals an end of a list output.  There should be exactly
+one call to <code>ui_out_list_end</code> for each call to
+<code>ui_out_list_begin</code>, otherwise an internal <span class="sc">gdb</span> error will
+be signaled. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: struct <b>cleanup</b><var> *make_cleanup_ui_out_list_begin_end </var>(<var>struct ui_out *uiout, const char *id</var>)<var><a name="index-cleanup-83"></a></var><br>
+<blockquote><p>Similar to <code>make_cleanup_ui_out_tuple_begin_end</code>, this function
+opens a list and then establishes cleanup (see <a href="Coding.html#Coding">Cleanups</a>)
+that will close the list. 
+</p></blockquote></div>
+
+<h4 class="subsection">4.2.4 Item Output Functions</h4>
+
+<p><a name="index-item-output-functions-84"></a><a name="index-field-output-functions-85"></a><a name="index-data-output-86"></a>The functions described below produce output for the actual data
+items, or fields, which contain information about the object.
+
+   <p>Choose the appropriate function accordingly to your particular needs.
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_fmt</b> (<var>struct ui_out *uiout, char *fldname, char *format, ...</var>)<var><a name="index-ui_005fout_005ffield_005ffmt-87"></a></var><br>
+<blockquote><p>This is the most general output function.  It produces the
+representation of the data in the variable-length argument list
+according to formatting specifications in <var>format</var>, a
+<code>printf</code>-like format string.  The optional argument <var>fldname</var>
+supplies the name of the field.  The data items themselves are
+supplied as additional arguments after <var>format</var>.
+
+        <p>This generic function should be used only when it is not possible to
+use one of the specialized versions (see below). 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_int</b> (<var>struct ui_out *uiout, const char *fldname, int value</var>)<var><a name="index-ui_005fout_005ffield_005fint-88"></a></var><br>
+<blockquote><p>This function outputs a value of an <code>int</code> variable.  It uses the
+<code>"%d"</code> output conversion specification.  <var>fldname</var> specifies
+the name of the field. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_fmt_int</b> (<var>struct ui_out *uiout, int width, enum ui_align alignment, const char *fldname, int value</var>)<var><a name="index-ui_005fout_005ffield_005ffmt_005fint-89"></a></var><br>
+<blockquote><p>This function outputs a value of an <code>int</code> variable.  It differs from
+<code>ui_out_field_int</code> in that the caller specifies the desired <var>width</var> and <var>alignment</var> of the output. 
+<var>fldname</var> specifies
+the name of the field. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_core_addr</b> (<var>struct ui_out *uiout, const char *fldname, CORE_ADDR address</var>)<var><a name="index-ui_005fout_005ffield_005fcore_005faddr-90"></a></var><br>
+<blockquote><p>This function outputs an address. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_string</b> (<var>struct ui_out *uiout, const char *fldname, const char *string</var>)<var><a name="index-ui_005fout_005ffield_005fstring-91"></a></var><br>
+<blockquote><p>This function outputs a string using the <code>"%s"</code> conversion
+specification. 
+</p></blockquote></div>
+
+   <p>Sometimes, there's a need to compose your output piece by piece using
+functions that operate on a stream, such as <code>value_print</code> or
+<code>fprintf_symbol_filtered</code>.  These functions accept an argument of
+the type <code>struct ui_file *</code>, a pointer to a <code>ui_file</code> object
+used to store the data stream used for the output.  When you use one
+of these functions, you need a way to pass their results stored in a
+<code>ui_file</code> object to the <code>ui_out</code> functions.  To this end,
+you first create a <code>ui_stream</code> object by calling
+<code>ui_out_stream_new</code>, pass the <code>stream</code> member of that
+<code>ui_stream</code> object to <code>value_print</code> and similar functions,
+and finally call <code>ui_out_field_stream</code> to output the field you
+constructed.  When the <code>ui_stream</code> object is no longer needed,
+you should destroy it and free its memory by calling
+<code>ui_out_stream_delete</code>.
+
+<div class="defun">
+&mdash; Function: struct <b>ui_stream</b><var> *ui_out_stream_new </var>(<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fstream-92"></a></var><br>
+<blockquote><p>This function creates a new <code>ui_stream</code> object which uses the
+same output methods as the <code>ui_out</code> object whose pointer is
+passed in <var>uiout</var>.  It returns a pointer to the newly created
+<code>ui_stream</code> object. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_stream_delete</b> (<var>struct ui_stream *streambuf</var>)<var><a name="index-ui_005fout_005fstream_005fdelete-93"></a></var><br>
+<blockquote><p>This functions destroys a <code>ui_stream</code> object specified by
+<var>streambuf</var>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_stream</b> (<var>struct ui_out *uiout, const char *fieldname, struct ui_stream *streambuf</var>)<var><a name="index-ui_005fout_005ffield_005fstream-94"></a></var><br>
+<blockquote><p>This function consumes all the data accumulated in
+<code>streambuf-&gt;stream</code> and outputs it like
+<code>ui_out_field_string</code> does.  After a call to
+<code>ui_out_field_stream</code>, the accumulated data no longer exists, but
+the stream is still valid and may be used for producing more fields. 
+</p></blockquote></div>
+
+   <p><strong>Important:</strong> If there is any chance that your code could bail
+out before completing output generation and reaching the point where
+<code>ui_out_stream_delete</code> is called, it is necessary to set up a
+cleanup, to avoid leaking memory and other resources.  Here's a
+skeleton code to do that:
+
+<pre class="smallexample">      struct ui_stream *mybuf = ui_out_stream_new (uiout);
+      struct cleanup *old = make_cleanup (ui_out_stream_delete, mybuf);
+      ...
+      do_cleanups (old);
+</pre>
+   <p>If the function already has the old cleanup chain set (for other kinds
+of cleanups), you just have to add your cleanup to it:
+
+<pre class="smallexample">       mybuf = ui_out_stream_new (uiout);
+       make_cleanup (ui_out_stream_delete, mybuf);
+</pre>
+   <p>Note that with cleanups in place, you should not call
+<code>ui_out_stream_delete</code> directly, or you would attempt to free the
+same buffer twice.
+
+<h4 class="subsection">4.2.5 Utility Output Functions</h4>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_field_skip</b> (<var>struct ui_out *uiout, const char *fldname</var>)<var><a name="index-ui_005fout_005ffield_005fskip-95"></a></var><br>
+<blockquote><p>This function skips a field in a table.  Use it if you have to leave
+an empty field without disrupting the table alignment.  The argument
+<var>fldname</var> specifies a name for the (missing) filed. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_text</b> (<var>struct ui_out *uiout, const char *string</var>)<var><a name="index-ui_005fout_005ftext-96"></a></var><br>
+<blockquote><p>This function outputs the text in <var>string</var> in a way that makes it
+easy to be read by humans.  For example, the console implementation of
+this method filters the text through a built-in pager, to prevent it
+from scrolling off the visible portion of the screen.
+
+        <p>Use this function for printing relatively long chunks of text around
+the actual field data: the text it produces is not aligned according
+to the table's format.  Use <code>ui_out_field_string</code> to output a
+string field, and use <code>ui_out_message</code>, described below, to
+output short messages. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_spaces</b> (<var>struct ui_out *uiout, int nspaces</var>)<var><a name="index-ui_005fout_005fspaces-97"></a></var><br>
+<blockquote><p>This function outputs <var>nspaces</var> spaces.  It is handy to align the
+text produced by <code>ui_out_text</code> with the rest of the table or
+list. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_message</b> (<var>struct ui_out *uiout, int verbosity, const char *format, ...</var>)<var><a name="index-ui_005fout_005fmessage-98"></a></var><br>
+<blockquote><p>This function produces a formatted message, provided that the current
+verbosity level is at least as large as given by <var>verbosity</var>.  The
+current verbosity level is specified by the user with the &lsquo;<samp><span class="samp">set
+verbositylevel</span></samp>&rsquo; command.<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_wrap_hint</b> (<var>struct ui_out *uiout, char *indent</var>)<var><a name="index-ui_005fout_005fwrap_005fhint-99"></a></var><br>
+<blockquote><p>This function gives the console output filter (a paging filter) a hint
+of where to break lines which are too long.  Ignored for all other
+output consumers.  <var>indent</var>, if non-<code>NULL</code>, is the string to
+be printed to indent the wrapped text on the next line; it must remain
+accessible until the next call to <code>ui_out_wrap_hint</code>, or until an
+explicit newline is produced by one of the other functions.  If
+<var>indent</var> is <code>NULL</code>, the wrapped text will not be indented. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>ui_out_flush</b> (<var>struct ui_out *uiout</var>)<var><a name="index-ui_005fout_005fflush-100"></a></var><br>
+<blockquote><p>This function flushes whatever output has been accumulated so far, if
+the UI buffers output. 
+</p></blockquote></div>
+
+<h4 class="subsection">4.2.6 Examples of Use of <code>ui_out</code> functions</h4>
+
+<p><a name="index-using-_0040code_007bui_005fout_007d-functions-101"></a><a name="index-g_t_0040code_007bui_005fout_007d-functions_002c-usage-examples-102"></a>This section gives some practical examples of using the <code>ui_out</code>
+functions to generalize the old console-oriented code in
+<span class="sc">gdb</span>.  The examples all come from functions defined on the
+<samp><span class="file">breakpoints.c</span></samp> file.
+
+   <p>This example, from the <code>breakpoint_1</code> function, shows how to
+produce a table.
+
+   <p>The original code was:
+
+<pre class="smallexample">      if (!found_a_breakpoint++)
+        {
+          annotate_breakpoints_headers ();
+     
+          annotate_field (0);
+          printf_filtered ("Num ");
+          annotate_field (1);
+          printf_filtered ("Type           ");
+          annotate_field (2);
+          printf_filtered ("Disp ");
+          annotate_field (3);
+          printf_filtered ("Enb ");
+          if (addressprint)
+            {
+              annotate_field (4);
+              printf_filtered ("Address    ");
+            }
+          annotate_field (5);
+          printf_filtered ("What\n");
+     
+          annotate_breakpoints_table ();
+        }
+</pre>
+   <p>Here's the new version:
+
+<pre class="smallexample">       nr_printable_breakpoints = ...;
+     
+       if (addressprint)
+         ui_out_table_begin (ui, 6, nr_printable_breakpoints, "BreakpointTable");
+       else
+         ui_out_table_begin (ui, 5, nr_printable_breakpoints, "BreakpointTable");
+     
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_breakpoints_headers ();
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_field (0);
+       ui_out_table_header (uiout, 3, ui_left, "number", "Num");		/* 1 */
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_field (1);
+       ui_out_table_header (uiout, 14, ui_left, "type", "Type");		/* 2 */
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_field (2);
+       ui_out_table_header (uiout, 4, ui_left, "disp", "Disp");		/* 3 */
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_field (3);
+       ui_out_table_header (uiout, 3, ui_left, "enabled", "Enb");	/* 4 */
+       if (addressprint)
+         {
+          if (nr_printable_breakpoints &gt; 0)
+            annotate_field (4);
+          if (gdbarch_addr_bit (current_gdbarch) &lt;= 32)
+            ui_out_table_header (uiout, 10, ui_left, "addr", "Address");/* 5 */
+          else
+            ui_out_table_header (uiout, 18, ui_left, "addr", "Address");/* 5 */
+         }
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_field (5);
+       ui_out_table_header (uiout, 40, ui_noalign, "what", "What");	/* 6 */
+       ui_out_table_body (uiout);
+       if (nr_printable_breakpoints &gt; 0)
+         annotate_breakpoints_table ();
+</pre>
+   <p>This example, from the <code>print_one_breakpoint</code> function, shows how
+to produce the actual data for the table whose structure was defined
+in the above example.  The original code was:
+
+<pre class="smallexample">        annotate_record ();
+        annotate_field (0);
+        printf_filtered ("%-3d ", b-&gt;number);
+        annotate_field (1);
+        if ((int)b-&gt;type &gt; (sizeof(bptypes)/sizeof(bptypes[0]))
+            || ((int) b-&gt;type != bptypes[(int) b-&gt;type].type))
+          internal_error ("bptypes table does not describe type #%d.",
+                          (int)b-&gt;type);
+        printf_filtered ("%-14s ", bptypes[(int)b-&gt;type].description);
+        annotate_field (2);
+        printf_filtered ("%-4s ", bpdisps[(int)b-&gt;disposition]);
+        annotate_field (3);
+        printf_filtered ("%-3c ", bpenables[(int)b-&gt;enable]);
+        ...
+</pre>
+   <p>This is the new version:
+
+<pre class="smallexample">        annotate_record ();
+        ui_out_tuple_begin (uiout, "bkpt");
+        annotate_field (0);
+        ui_out_field_int (uiout, "number", b-&gt;number);
+        annotate_field (1);
+        if (((int) b-&gt;type &gt; (sizeof (bptypes) / sizeof (bptypes[0])))
+            || ((int) b-&gt;type != bptypes[(int) b-&gt;type].type))
+          internal_error ("bptypes table does not describe type #%d.",
+                          (int) b-&gt;type);
+        ui_out_field_string (uiout, "type", bptypes[(int)b-&gt;type].description);
+        annotate_field (2);
+        ui_out_field_string (uiout, "disp", bpdisps[(int)b-&gt;disposition]);
+        annotate_field (3);
+        ui_out_field_fmt (uiout, "enabled", "%c", bpenables[(int)b-&gt;enable]);
+        ...
+</pre>
+   <p>This example, also from <code>print_one_breakpoint</code>, shows how to
+produce a complicated output field using the <code>print_expression</code>
+functions which requires a stream to be passed.  It also shows how to
+automate stream destruction with cleanups.  The original code was:
+
+<pre class="smallexample">         annotate_field (5);
+         print_expression (b-&gt;exp, gdb_stdout);
+</pre>
+   <p>The new version is:
+
+<pre class="smallexample">       struct ui_stream *stb = ui_out_stream_new (uiout);
+       struct cleanup *old_chain = make_cleanup_ui_out_stream_delete (stb);
+       ...
+       annotate_field (5);
+       print_expression (b-&gt;exp, stb-&gt;stream);
+       ui_out_field_stream (uiout, "what", local_stream);
+</pre>
+   <p>This example, also from <code>print_one_breakpoint</code>, shows how to use
+<code>ui_out_text</code> and <code>ui_out_field_string</code>.  The original code
+was:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;dll_pathname == NULL)
+         printf_filtered ("&lt;any library&gt; ");
+       else
+         printf_filtered ("library \"%s\" ", b-&gt;dll_pathname);
+</pre>
+   <p>It became:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;dll_pathname == NULL)
+         {
+           ui_out_field_string (uiout, "what", "&lt;any library&gt;");
+           ui_out_spaces (uiout, 1);
+         }
+       else
+         {
+           ui_out_text (uiout, "library \"");
+           ui_out_field_string (uiout, "what", b-&gt;dll_pathname);
+           ui_out_text (uiout, "\" ");
+         }
+</pre>
+   <p>The following example from <code>print_one_breakpoint</code> shows how to
+use <code>ui_out_field_int</code> and <code>ui_out_spaces</code>.  The original
+code was:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;forked_inferior_pid != 0)
+         printf_filtered ("process %d ", b-&gt;forked_inferior_pid);
+</pre>
+   <p>It became:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;forked_inferior_pid != 0)
+         {
+           ui_out_text (uiout, "process ");
+           ui_out_field_int (uiout, "what", b-&gt;forked_inferior_pid);
+           ui_out_spaces (uiout, 1);
+         }
+</pre>
+   <p>Here's an example of using <code>ui_out_field_string</code>.  The original
+code was:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;exec_pathname != NULL)
+         printf_filtered ("program \"%s\" ", b-&gt;exec_pathname);
+</pre>
+   <p>It became:
+
+<pre class="smallexample">       annotate_field (5);
+       if (b-&gt;exec_pathname != NULL)
+         {
+           ui_out_text (uiout, "program \"");
+           ui_out_field_string (uiout, "what", b-&gt;exec_pathname);
+           ui_out_text (uiout, "\" ");
+         }
+</pre>
+   <p>Finally, here's an example of printing an address.  The original code:
+
+<pre class="smallexample">       annotate_field (4);
+       printf_filtered ("%s ",
+             hex_string_custom ((unsigned long) b-&gt;address, 8));
+</pre>
+   <p>It became:
+
+<pre class="smallexample">       annotate_field (4);
+       ui_out_field_core_addr (uiout, "Address", b-&gt;address);
+</pre>
+   <h3 class="section">4.3 Console Printing</h3>
+
+<h3 class="section">4.4 TUI</h3>
+
+<div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> The function
+cast is not portable ISO C.</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> As of this writing (April 2001),
+setting verbosity level is not yet implemented, and is always returned
+as zero.  So calling <code>ui_out_message</code> with a <var>verbosity</var>
+argument more than zero will cause the message to never be printed.</p>
+
+   <hr></div>
+
+   </body></html>
+

@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Sigsuspend - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal" title="Waiting for a Signal">
+<link rel="prev" href="Pause-Problems.html#Pause-Problems" title="Pause Problems">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Sigsuspend"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Pause-Problems.html#Pause-Problems">Pause Problems</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.8.3 Using <code>sigsuspend</code></h4>
+
+<p>The clean and reliable way to wait for a signal to arrive is to block it
+and then use <code>sigsuspend</code>.  By using <code>sigsuspend</code> in a loop,
+you can wait for certain kinds of signals, while letting other kinds of
+signals be handled by their handlers.
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigsuspend</b> (<var>const sigset_t *set</var>)<var><a name="index-sigsuspend-2981"></a></var><br>
+<blockquote><p>This function replaces the process's signal mask with <var>set</var> and then
+suspends the process until a signal is delivered whose action is either
+to terminate the process or invoke a signal handling function.  In other
+words, the program is effectively suspended until one of the signals that
+is not a member of <var>set</var> arrives.
+
+        <p>If the process is woken up by delivery of a signal that invokes a handler
+function, and the handler function returns, then <code>sigsuspend</code> also
+returns.
+
+        <p>The mask remains <var>set</var> only as long as <code>sigsuspend</code> is waiting. 
+The function <code>sigsuspend</code> always restores the previous signal mask
+when it returns.
+
+        <p>The return value and error conditions are the same as for <code>pause</code>. 
+</p></blockquote></div>
+
+   <p>With <code>sigsuspend</code>, you can replace the <code>pause</code> or <code>sleep</code>
+loop in the previous section with something completely reliable:
+
+<pre class="smallexample">     sigset_t mask, oldmask;
+     
+     ...
+     
+     /* <span class="roman">Set up the mask of signals to temporarily block.</span> */
+     sigemptyset (&amp;mask);
+     sigaddset (&amp;mask, SIGUSR1);
+     
+     ...
+     
+     /* <span class="roman">Wait for a signal to arrive.</span> */
+     sigprocmask (SIG_BLOCK, &amp;mask, &amp;oldmask);
+     while (!usr_interrupt)
+       sigsuspend (&amp;oldmask);
+     sigprocmask (SIG_UNBLOCK, &amp;mask, NULL);
+</pre>
+   <p>This last piece of code is a little tricky.  The key point to remember
+here is that when <code>sigsuspend</code> returns, it resets the process's
+signal mask to the original value, the value from before the call to
+<code>sigsuspend</code>&mdash;in this case, the <code>SIGUSR1</code> signal is once
+again blocked.  The second call to <code>sigprocmask</code> is
+necessary to explicitly unblock this signal.
+
+   <p>One other point: you may be wondering why the <code>while</code> loop is
+necessary at all, since the program is apparently only waiting for one
+<code>SIGUSR1</code> signal.  The answer is that the mask passed to
+<code>sigsuspend</code> permits the process to be woken up by the delivery of
+other kinds of signals, as well&mdash;for example, job control signals.  If
+the process is woken up by a signal that doesn't set
+<code>usr_interrupt</code>, it just suspends itself again until the &ldquo;right&rdquo;
+kind of signal eventually arrives.
+
+   <p>This technique takes a few more lines of preparation, but that is needed
+just once for each kind of wait criterion you want to use.  The code
+that actually waits is just four lines.
+
+   </body></html>
+

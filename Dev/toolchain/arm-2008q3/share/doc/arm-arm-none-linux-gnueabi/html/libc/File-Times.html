@@ -1,0 +1,215 @@
+<html lang="en">
+<head>
+<title>File Times - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="Testing-File-Access.html#Testing-File-Access" title="Testing File Access">
+<link rel="next" href="File-Size.html#File-Size" title="File Size">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Times"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Size.html#File-Size">File Size</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Testing-File-Access.html#Testing-File-Access">Testing File Access</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.9 File Times</h4>
+
+<p><a name="index-file-access-time-1580"></a><a name="index-file-modification-time-1581"></a><a name="index-file-attribute-modification-time-1582"></a>Each file has three time stamps associated with it:  its access time,
+its modification time, and its attribute modification time.  These
+correspond to the <code>st_atime</code>, <code>st_mtime</code>, and <code>st_ctime</code>
+members of the <code>stat</code> structure; see <a href="File-Attributes.html#File-Attributes">File Attributes</a>.
+
+   <p>All of these times are represented in calendar time format, as
+<code>time_t</code> objects.  This data type is defined in <samp><span class="file">time.h</span></samp>. 
+For more information about representation and manipulation of time
+values, see <a href="Calendar-Time.html#Calendar-Time">Calendar Time</a>. 
+<a name="index-time_002eh-1583"></a>
+Reading from a file updates its access time attribute, and writing
+updates its modification time.  When a file is created, all three
+time stamps for that file are set to the current time.  In addition, the
+attribute change time and modification time fields of the directory that
+contains the new entry are updated.
+
+   <p>Adding a new name for a file with the <code>link</code> function updates the
+attribute change time field of the file being linked, and both the
+attribute change time and modification time fields of the directory
+containing the new name.  These same fields are affected if a file name
+is deleted with <code>unlink</code>, <code>remove</code> or <code>rmdir</code>.  Renaming
+a file with <code>rename</code> affects only the attribute change time and
+modification time fields of the two parent directories involved, and not
+the times for the file being renamed.
+
+   <p>Changing the attributes of a file (for example, with <code>chmod</code>)
+updates its attribute change time field.
+
+   <p>You can also change some of the time stamps of a file explicitly using
+the <code>utime</code> function&mdash;all except the attribute change time.  You
+need to include the header file <samp><span class="file">utime.h</span></samp> to use this facility. 
+<a name="index-utime_002eh-1584"></a>
+<!-- time.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct utimbuf</b><var><a name="index-struct-utimbuf-1585"></a></var><br>
+<blockquote><p>The <code>utimbuf</code> structure is used with the <code>utime</code> function to
+specify new access and modification times for a file.  It contains the
+following members:
+
+          <dl>
+<dt><code>time_t actime</code><dd>This is the access time for the file.
+
+          <br><dt><code>time_t modtime</code><dd>This is the modification time for the file. 
+</dl>
+        </p></blockquote></div>
+
+<!-- time.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>utime</b> (<var>const char *filename, const struct utimbuf *times</var>)<var><a name="index-utime-1586"></a></var><br>
+<blockquote><p>This function is used to modify the file times associated with the file
+named <var>filename</var>.
+
+        <p>If <var>times</var> is a null pointer, then the access and modification times
+of the file are set to the current time.  Otherwise, they are set to the
+values from the <code>actime</code> and <code>modtime</code> members (respectively)
+of the <code>utimbuf</code> structure pointed to by <var>times</var>.
+
+        <p>The attribute modification time for the file is set to the current time
+in either case (since changing the time stamps is itself a modification
+of the file attributes).
+
+        <p>The <code>utime</code> function returns <code>0</code> if successful and <code>-1</code>
+on failure.  In addition to the usual file name errors
+(see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following <code>errno</code> error conditions
+are defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>There is a permission problem in the case where a null pointer was
+passed as the <var>times</var> argument.  In order to update the time stamp on
+the file, you must either be the owner of the file, have write
+permission for the file, or be a privileged user.
+
+          <br><dt><code>ENOENT</code><dd>The file doesn't exist.
+
+          <br><dt><code>EPERM</code><dd>If the <var>times</var> argument is not a null pointer, you must either be
+the owner of the file or be a privileged user.
+
+          <br><dt><code>EROFS</code><dd>The file lives on a read-only file system. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Each of the three time stamps has a corresponding microsecond part,
+which extends its resolution.  These fields are called
+<code>st_atime_usec</code>, <code>st_mtime_usec</code>, and <code>st_ctime_usec</code>;
+each has a value between 0 and 999,999, which indicates the time in
+microseconds.  They correspond to the <code>tv_usec</code> field of a
+<code>timeval</code> structure; see <a href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>.
+
+   <p>The <code>utimes</code> function is like <code>utime</code>, but also lets you specify
+the fractional part of the file times.  The prototype for this function is
+in the header file <samp><span class="file">sys/time.h</span></samp>. 
+<a name="index-sys_002ftime_002eh-1587"></a>
+<!-- sys/time.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>utimes</b> (<var>const char *filename, struct timeval tvp</var><tt>[2]</tt>)<var><a name="index-utimes-1588"></a></var><br>
+<blockquote><p>This function sets the file access and modification times of the file
+<var>filename</var>.  The new file access time is specified by
+<var>tvp</var><code>[0]</code>, and the new modification time by
+<var>tvp</var><code>[1]</code>.  Similar to <code>utime</code>, if <var>tvp</var> is a null
+pointer then the access and modification times of the file are set to
+the current time.  This function comes from BSD.
+
+        <p>The return values and error conditions are the same as for the <code>utime</code>
+function. 
+</p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>lutimes</b> (<var>const char *filename, struct timeval tvp</var><tt>[2]</tt>)<var><a name="index-lutimes-1589"></a></var><br>
+<blockquote><p>This function is like <code>utimes</code>, except that it does not follow
+symbolic links.  If <var>filename</var> is the name of a symbolic link,
+<code>lutimes</code> sets the file access and modification times of the
+symbolic link special file itself (as seen by <code>lstat</code>;
+see <a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>) while <code>utimes</code> sets the file access and
+modification times of the file the symbolic link refers to.  This
+function comes from FreeBSD, and is not available on all platforms (if
+not available, it will fail with <code>ENOSYS</code>).
+
+        <p>The return values and error conditions are the same as for the <code>utime</code>
+function. 
+</p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>futimes</b> (<var>int fd, struct timeval tvp</var><tt>[2]</tt>)<var><a name="index-futimes-1590"></a></var><br>
+<blockquote><p>This function is like <code>utimes</code>, except that it takes an open file
+descriptor as an argument instead of a file name.  See <a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>.  This function comes from FreeBSD, and is not available on all
+platforms (if not available, it will fail with <code>ENOSYS</code>).
+
+        <p>Like <code>utimes</code>, <code>futimes</code> returns <code>0</code> on success and <code>-1</code>
+on failure.  The following <code>errno</code> error conditions are defined for
+<code>futimes</code>:
+
+          <dl>
+<dt><code>EACCES</code><dd>There is a permission problem in the case where a null pointer was
+passed as the <var>times</var> argument.  In order to update the time stamp on
+the file, you must either be the owner of the file, have write
+permission for the file, or be a privileged user.
+
+          <br><dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EPERM</code><dd>If the <var>times</var> argument is not a null pointer, you must either be
+the owner of the file or be a privileged user.
+
+          <br><dt><code>EROFS</code><dd>The file lives on a read-only file system. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

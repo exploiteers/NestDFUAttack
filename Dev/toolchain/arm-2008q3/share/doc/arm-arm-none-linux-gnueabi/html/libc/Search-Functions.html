@@ -1,0 +1,411 @@
+<html lang="en">
+<head>
+<title>Search Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Collation-Functions.html#Collation-Functions" title="Collation Functions">
+<link rel="next" href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String" title="Finding Tokens in a String">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Search-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String">Finding Tokens in a String</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Collation-Functions.html#Collation-Functions">Collation Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.7 Search Functions</h3>
+
+<p>This section describes library functions which perform various kinds
+of searching operations on strings and arrays.  These functions are
+declared in the header file <samp><span class="file">string.h</span></samp>. 
+<a name="index-string_002eh-541"></a><a name="index-search-functions-_0028for-strings_0029-542"></a><a name="index-string-search-functions-543"></a>
+<!-- string.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: void * <b>memchr</b> (<var>const void *block, int c, size_t size</var>)<var><a name="index-memchr-544"></a></var><br>
+<blockquote><p>This function finds the first occurrence of the byte <var>c</var> (converted
+to an <code>unsigned char</code>) in the initial <var>size</var> bytes of the
+object beginning at <var>block</var>.  The return value is a pointer to the
+located byte, or a null pointer if no match was found. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wmemchr</b> (<var>const wchar_t *block, wchar_t wc, size_t size</var>)<var><a name="index-wmemchr-545"></a></var><br>
+<blockquote><p>This function finds the first occurrence of the wide character <var>wc</var>
+in the initial <var>size</var> wide characters of the object beginning at
+<var>block</var>.  The return value is a pointer to the located wide
+character, or a null pointer if no match was found. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>rawmemchr</b> (<var>const void *block, int c</var>)<var><a name="index-rawmemchr-546"></a></var><br>
+<blockquote><p>Often the <code>memchr</code> function is used with the knowledge that the
+byte <var>c</var> is available in the memory block specified by the
+parameters.  But this means that the <var>size</var> parameter is not really
+needed and that the tests performed with it at runtime (to check whether
+the end of the block is reached) are not needed.
+
+        <p>The <code>rawmemchr</code> function exists for just this situation which is
+surprisingly frequent.  The interface is similar to <code>memchr</code> except
+that the <var>size</var> parameter is missing.  The function will look beyond
+the end of the block pointed to by <var>block</var> in case the programmer
+made an error in assuming that the byte <var>c</var> is present in the block. 
+In this case the result is unspecified.  Otherwise the return value is a
+pointer to the located byte.
+
+        <p>This function is of special interest when looking for the end of a
+string.  Since all strings are terminated by a null byte a call like
+
+     <pre class="smallexample">             rawmemchr (str, '\0')
+</pre>
+        <p class="noindent">will never go beyond the end of the string.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>memrchr</b> (<var>const void *block, int c, size_t size</var>)<var><a name="index-memrchr-547"></a></var><br>
+<blockquote><p>The function <code>memrchr</code> is like <code>memchr</code>, except that it searches
+backwards from the end of the block defined by <var>block</var> and <var>size</var>
+(instead of forwards from the front).
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>strchr</b> (<var>const char *string, int c</var>)<var><a name="index-strchr-548"></a></var><br>
+<blockquote><p>The <code>strchr</code> function finds the first occurrence of the character
+<var>c</var> (converted to a <code>char</code>) in the null-terminated string
+beginning at <var>string</var>.  The return value is a pointer to the located
+character, or a null pointer if no match was found.
+
+        <p>For example,
+     <pre class="smallexample">          strchr ("hello, world", 'l')
+              &rArr; "llo, world"
+          strchr ("hello, world", '?')
+              &rArr; NULL
+</pre>
+        <p>The terminating null character is considered to be part of the string,
+so you can use this function get a pointer to the end of a string by
+specifying a null character as the value of the <var>c</var> argument.  It
+would be better (but less portable) to use <code>strchrnul</code> in this
+case, though. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcschr</b> (<var>const wchar_t *wstring, int wc</var>)<var><a name="index-wcschr-549"></a></var><br>
+<blockquote><p>The <code>wcschr</code> function finds the first occurrence of the wide
+character <var>wc</var> in the null-terminated wide character string
+beginning at <var>wstring</var>.  The return value is a pointer to the
+located wide character, or a null pointer if no match was found.
+
+        <p>The terminating null character is considered to be part of the wide
+character string, so you can use this function get a pointer to the end
+of a wide character string by specifying a null wude character as the
+value of the <var>wc</var> argument.  It would be better (but less portable)
+to use <code>wcschrnul</code> in this case, though. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>strchrnul</b> (<var>const char *string, int c</var>)<var><a name="index-strchrnul-550"></a></var><br>
+<blockquote><p><code>strchrnul</code> is the same as <code>strchr</code> except that if it does
+not find the character, it returns a pointer to string's terminating
+null character rather than a null pointer.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcschrnul</b> (<var>const wchar_t *wstring, wchar_t wc</var>)<var><a name="index-wcschrnul-551"></a></var><br>
+<blockquote><p><code>wcschrnul</code> is the same as <code>wcschr</code> except that if it does not
+find the wide character, it returns a pointer to wide character string's
+terminating null wide character rather than a null pointer.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   <p>One useful, but unusual, use of the <code>strchr</code>
+function is when one wants to have a pointer pointing to the NUL byte
+terminating a string.  This is often written in this way:
+
+<pre class="smallexample">       s += strlen (s);
+</pre>
+   <p class="noindent">This is almost optimal but the addition operation duplicated a bit of
+the work already done in the <code>strlen</code> function.  A better solution
+is this:
+
+<pre class="smallexample">       s = strchr (s, '\0');
+</pre>
+   <p>There is no restriction on the second parameter of <code>strchr</code> so it
+could very well also be the NUL character.  Those readers thinking very
+hard about this might now point out that the <code>strchr</code> function is
+more expensive than the <code>strlen</code> function since we have two abort
+criteria.  This is right.  But in the GNU C library the implementation of
+<code>strchr</code> is optimized in a special way so that <code>strchr</code>
+actually is faster.
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>strrchr</b> (<var>const char *string, int c</var>)<var><a name="index-strrchr-552"></a></var><br>
+<blockquote><p>The function <code>strrchr</code> is like <code>strchr</code>, except that it searches
+backwards from the end of the string <var>string</var> (instead of forwards
+from the front).
+
+        <p>For example,
+     <pre class="smallexample">          strrchr ("hello, world", 'l')
+              &rArr; "ld"
+</pre>
+        </blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcsrchr</b> (<var>const wchar_t *wstring, wchar_t c</var>)<var><a name="index-wcsrchr-553"></a></var><br>
+<blockquote><p>The function <code>wcsrchr</code> is like <code>wcschr</code>, except that it searches
+backwards from the end of the string <var>wstring</var> (instead of forwards
+from the front). 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>strstr</b> (<var>const char *haystack, const char *needle</var>)<var><a name="index-strstr-554"></a></var><br>
+<blockquote><p>This is like <code>strchr</code>, except that it searches <var>haystack</var> for a
+substring <var>needle</var> rather than just a single character.  It
+returns a pointer into the string <var>haystack</var> that is the first
+character of the substring, or a null pointer if no match was found.  If
+<var>needle</var> is an empty string, the function returns <var>haystack</var>.
+
+        <p>For example,
+     <pre class="smallexample">          strstr ("hello, world", "l")
+              &rArr; "llo, world"
+          strstr ("hello, world", "wo")
+              &rArr; "world"
+</pre>
+        </blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcsstr</b> (<var>const wchar_t *haystack, const wchar_t *needle</var>)<var><a name="index-wcsstr-555"></a></var><br>
+<blockquote><p>This is like <code>wcschr</code>, except that it searches <var>haystack</var> for a
+substring <var>needle</var> rather than just a single wide character.  It
+returns a pointer into the string <var>haystack</var> that is the first wide
+character of the substring, or a null pointer if no match was found.  If
+<var>needle</var> is an empty string, the function returns <var>haystack</var>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcswcs</b> (<var>const wchar_t *haystack, const wchar_t *needle</var>)<var><a name="index-wcswcs-556"></a></var><br>
+<blockquote><p><code>wcswcs</code> is an deprecated alias for <code>wcsstr</code>.  This is the
+name originally used in the X/Open Portability Guide before the
+Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> was published. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>strcasestr</b> (<var>const char *haystack, const char *needle</var>)<var><a name="index-strcasestr-557"></a></var><br>
+<blockquote><p>This is like <code>strstr</code>, except that it ignores case in searching for
+the substring.   Like <code>strcasecmp</code>, it is locale dependent how
+uppercase and lowercase characters are related.
+
+        <p>For example,
+     <pre class="smallexample">          strcasestr ("hello, world", "L")
+              &rArr; "llo, world"
+          strcasestr ("hello, World", "wo")
+              &rArr; "World"
+</pre>
+        </blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>memmem</b> (<var>const void *haystack, size_t haystack-len,<br>const void *needle, size_t needle-len</var>)<var><a name="index-memmem-558"></a></var><br>
+<blockquote><p>This is like <code>strstr</code>, but <var>needle</var> and <var>haystack</var> are byte
+arrays rather than null-terminated strings.  <var>needle-len</var> is the
+length of <var>needle</var> and <var>haystack-len</var> is the length of
+<var>haystack</var>.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>strspn</b> (<var>const char *string, const char *skipset</var>)<var><a name="index-strspn-559"></a></var><br>
+<blockquote><p>The <code>strspn</code> (&ldquo;string span&rdquo;) function returns the length of the
+initial substring of <var>string</var> that consists entirely of characters that
+are members of the set specified by the string <var>skipset</var>.  The order
+of the characters in <var>skipset</var> is not important.
+
+        <p>For example,
+     <pre class="smallexample">          strspn ("hello, world", "abcdefghijklmnopqrstuvwxyz")
+              &rArr; 5
+</pre>
+        <p>Note that &ldquo;character&rdquo; is here used in the sense of byte.  In a string
+using a multibyte character encoding (abstract) character consisting of
+more than one byte are not treated as an entity.  Each byte is treated
+separately.  The function is not locale-dependent. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>wcsspn</b> (<var>const wchar_t *wstring, const wchar_t *skipset</var>)<var><a name="index-wcsspn-560"></a></var><br>
+<blockquote><p>The <code>wcsspn</code> (&ldquo;wide character string span&rdquo;) function returns the
+length of the initial substring of <var>wstring</var> that consists entirely
+of wide characters that are members of the set specified by the string
+<var>skipset</var>.  The order of the wide characters in <var>skipset</var> is not
+important. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>strcspn</b> (<var>const char *string, const char *stopset</var>)<var><a name="index-strcspn-561"></a></var><br>
+<blockquote><p>The <code>strcspn</code> (&ldquo;string complement span&rdquo;) function returns the length
+of the initial substring of <var>string</var> that consists entirely of characters
+that are <em>not</em> members of the set specified by the string <var>stopset</var>. 
+(In other words, it returns the offset of the first character in <var>string</var>
+that is a member of the set <var>stopset</var>.)
+
+        <p>For example,
+     <pre class="smallexample">          strcspn ("hello, world", " \t\n,.;!?")
+              &rArr; 5
+</pre>
+        <p>Note that &ldquo;character&rdquo; is here used in the sense of byte.  In a string
+using a multibyte character encoding (abstract) character consisting of
+more than one byte are not treated as an entity.  Each byte is treated
+separately.  The function is not locale-dependent. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>wcscspn</b> (<var>const wchar_t *wstring, const wchar_t *stopset</var>)<var><a name="index-wcscspn-562"></a></var><br>
+<blockquote><p>The <code>wcscspn</code> (&ldquo;wide character string complement span&rdquo;) function
+returns the length of the initial substring of <var>wstring</var> that
+consists entirely of wide characters that are <em>not</em> members of the
+set specified by the string <var>stopset</var>.  (In other words, it returns
+the offset of the first character in <var>string</var> that is a member of
+the set <var>stopset</var>.) 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>strpbrk</b> (<var>const char *string, const char *stopset</var>)<var><a name="index-strpbrk-563"></a></var><br>
+<blockquote><p>The <code>strpbrk</code> (&ldquo;string pointer break&rdquo;) function is related to
+<code>strcspn</code>, except that it returns a pointer to the first character
+in <var>string</var> that is a member of the set <var>stopset</var> instead of the
+length of the initial substring.  It returns a null pointer if no such
+character from <var>stopset</var> is found.
+
+     <!-- @group  Invalid outside the example. -->
+        <p>For example,
+
+     <pre class="smallexample">          strpbrk ("hello, world", " \t\n,.;!?")
+              &rArr; ", world"
+</pre>
+        <!-- @end group -->
+        <p>Note that &ldquo;character&rdquo; is here used in the sense of byte.  In a string
+using a multibyte character encoding (abstract) character consisting of
+more than one byte are not treated as an entity.  Each byte is treated
+separately.  The function is not locale-dependent. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcspbrk</b> (<var>const wchar_t *wstring, const wchar_t *stopset</var>)<var><a name="index-wcspbrk-564"></a></var><br>
+<blockquote><p>The <code>wcspbrk</code> (&ldquo;wide character string pointer break&rdquo;) function is
+related to <code>wcscspn</code>, except that it returns a pointer to the first
+wide character in <var>wstring</var> that is a member of the set
+<var>stopset</var> instead of the length of the initial substring.  It
+returns a null pointer if no such character from <var>stopset</var> is found. 
+</p></blockquote></div>
+
+<h4 class="subsection">5.7.1 Compatibility String Search Functions</h4>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>index</b> (<var>const char *string, int c</var>)<var><a name="index-index-565"></a></var><br>
+<blockquote><p><code>index</code> is another name for <code>strchr</code>; they are exactly the same. 
+New code should always use <code>strchr</code> since this name is defined in
+ISO&nbsp;C<!-- /@w --> while <code>index</code> is a BSD invention which never was available
+on System&nbsp;V<!-- /@w --> derived systems. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>rindex</b> (<var>const char *string, int c</var>)<var><a name="index-rindex-566"></a></var><br>
+<blockquote><p><code>rindex</code> is another name for <code>strrchr</code>; they are exactly the same. 
+New code should always use <code>strrchr</code> since this name is defined in
+ISO&nbsp;C<!-- /@w --> while <code>rindex</code> is a BSD invention which never was available
+on System&nbsp;V<!-- /@w --> derived systems. 
+</p></blockquote></div>
+
+   </body></html>
+

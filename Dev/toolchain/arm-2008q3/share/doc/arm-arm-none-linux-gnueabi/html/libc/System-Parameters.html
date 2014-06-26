@@ -1,0 +1,184 @@
+<html lang="en">
+<head>
+<title>System Parameters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Management.html#System-Management" title="System Management">
+<link rel="prev" href="Filesystem-Handling.html#Filesystem-Handling" title="Filesystem Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-Parameters"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Filesystem-Handling.html#Filesystem-Handling">Filesystem Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Management.html#System-Management">System Management</a>
+<hr>
+</div>
+
+<h3 class="section">30.4 System Parameters</h3>
+
+<p>This section describes the <code>sysctl</code> function, which gets and sets
+a variety of system parameters.
+
+   <p>The symbols used in this section are declared in the file <samp><span class="file">sysctl.h</span></samp>.
+
+<!-- sysctl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>sysctl</b> (<var>int *names, int nlen, void *oldval, size_t *oldlenp, void *newval, size_t newlen</var>)<var><a name="index-sysctl-3493"></a></var><br>
+<blockquote>
+        <p><code>sysctl</code> gets or sets a specified system parameter.  There are so
+many of these parameters that it is not practical to list them all here,
+but here are some examples:
+
+          <ul>
+<li>network domain name
+<li>paging parameters
+<li>network Address Resolution Protocol timeout time
+<li>maximum number of files that may be open
+<li>root filesystem device
+<li>when kernel was built
+</ul>
+
+        <p>The set of available parameters depends on the kernel configuration and
+can change while the system is running, particularly when you load and
+unload loadable kernel modules.
+
+        <p>The system parameters with which <code>syslog</code> is concerned are arranged
+in a hierarchical structure like a hierarchical filesystem.  To identify
+a particular parameter, you specify a path through the structure in a
+way analogous to specifying the pathname of a file.  Each component of
+the path is specified by an integer and each of these integers has a
+macro defined for it by <samp><span class="file">sysctl.h</span></samp>.  <var>names</var> is the path, in
+the form of an array of integers.  Each component of the path is one
+element of the array, in order.  <var>nlen</var> is the number of components
+in the path.
+
+        <p>For example, the first component of the path for all the paging
+parameters is the value <code>CTL_VM</code>.  For the free page thresholds, the
+second component of the path is <code>VM_FREEPG</code>.  So to get the free
+page threshold values, make <var>names</var> an array containing the two
+elements <code>CTL_VM</code> and <code>VM_FREEPG</code> and make <var>nlen</var> = 2.
+
+        <p>The format of the value of a parameter depends on the parameter. 
+Sometimes it is an integer; sometimes it is an ASCII string; sometimes
+it is an elaborate structure.  In the case of the free page thresholds
+used in the example above, the parameter value is a structure containing
+several integers.
+
+        <p>In any case, you identify a place to return the parameter's value with
+<var>oldval</var> and specify the amount of storage available at that
+location as *<var>oldlenp</var>.  *<var>oldlenp</var> does double duty because it
+is also the output location that contains the actual length of the
+returned value.
+
+        <p>If you don't want the parameter value returned, specify a null pointer
+for <var>oldval</var>.
+
+        <p>To set the parameter, specify the address and length of the new value
+as <var>newval</var> and <var>newlen</var>.  If you don't want to set the parameter,
+specify a null pointer as <var>newval</var>.
+
+        <p>If you get and set a parameter in the same <code>sysctl</code> call, the value
+returned is the value of the parameter before it was set.
+
+        <p>Each system parameter has a set of permissions similar to the
+permissions for a file (including the permissions on directories in its
+path) that determine whether you may get or set it.  For the purposes of
+these permissions, every parameter is considered to be owned by the
+superuser and Group 0 so processes with that effective uid or gid may
+have more access to system parameters.  Unlike with files, the superuser
+does not invariably have full permission to all system parameters, because
+some of them are designed not to be changed ever.
+
+        <p><code>sysctl</code> returns a zero return value if it succeeds.  Otherwise, it
+returns <code>-1</code> and sets <code>errno</code> appropriately.  Besides the
+failures that apply to all system calls, the following are the
+<code>errno</code> codes for all possible failures:
+
+          <dl>
+<dt><code>EPERM</code><dd>The process is not permitted to access one of the components of the
+path of the system parameter or is not permitted to access the system parameter
+itself in the way (read or write) that it requested. 
+<!-- There is some indication in the Linux 2.2 code that the code is trying to -->
+<!-- return EACCES here, but the EACCES value never actually makes it to the -->
+<!-- user. -->
+<br><dt><code>ENOTDIR</code><dd>There is no system parameter corresponding to <var>name</var>. 
+<br><dt><code>EFAULT</code><dd><var>oldval</var> is not null, which means the process wanted to read the parameter,
+but *<var>oldlenp</var> is zero, so there is no place to return it. 
+<br><dt><code>EINVAL</code><dd>
+               <ul>
+<li>The process attempted to set a system parameter to a value that is not valid
+for that parameter. 
+<li>The space provided for the return of the system parameter is not the right
+size for that parameter. 
+</ul>
+          <br><dt><code>ENOMEM</code><dd>This value may be returned instead of the more correct <code>EINVAL</code> in some
+cases where the space provided for the return of the system parameter is too
+small.
+
+        </dl>
+
+        </blockquote></div>
+
+   <p>If you have a Linux kernel with the <code>proc</code> filesystem, you can get
+and set most of the same parameters by reading and writing to files in
+the <code>sys</code> directory of the <code>proc</code> filesystem.  In the <code>sys</code>
+directory, the directory structure represents the hierarchical structure
+of the parameters.  E.g. you can display the free page thresholds with
+<pre class="smallexample">     cat /proc/sys/vm/freepages
+</pre>
+   <!-- In Linux, the sysctl() and /proc instances of the parameter are created -->
+<!-- together.  The proc filesystem accesses the same data structure as -->
+<!-- sysctl(), which has special fields in it for /proc.  But it is still -->
+<!-- possible to create a sysctl-only parameter. -->
+   <p>Some more traditional and more widely available, though less general,
+GNU C library functions for getting and setting some of the same system
+parameters are:
+
+     <ul>
+<li><code>getdomainname</code>, <code>setdomainname</code>
+<li><code>gethostname</code>, <code>sethostname</code> (See <a href="Host-Identification.html#Host-Identification">Host Identification</a>.) 
+<li><code>uname</code> (See <a href="Platform-Type.html#Platform-Type">Platform Type</a>.) 
+<li><code>bdflush</code>
+</ul>
+
+   </body></html>
+

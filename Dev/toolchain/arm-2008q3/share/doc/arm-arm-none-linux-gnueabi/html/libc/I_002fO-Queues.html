@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>I/O Queues - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link rel="prev" href="Is-It-a-Terminal.html#Is-It-a-Terminal" title="Is It a Terminal">
+<link rel="next" href="Canonical-or-Not.html#Canonical-or-Not" title="Canonical or Not">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="I%2fO-Queues"></a>
+<a name="I_002fO-Queues"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Is-It-a-Terminal.html#Is-It-a-Terminal">Is It a Terminal</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>
+<hr>
+</div>
+
+<h3 class="section">17.2 I/O Queues</h3>
+
+<p>Many of the remaining functions in this section refer to the input and
+output queues of a terminal device.  These queues implement a form of
+buffering <em>within the kernel</em> independent of the buffering
+implemented by I/O streams (see <a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>).
+
+   <p><a name="index-terminal-input-queue-1850"></a><a name="index-typeahead-buffer-1851"></a>The <dfn>terminal input queue</dfn> is also sometimes referred to as its
+<dfn>typeahead buffer</dfn>.  It holds the characters that have been received
+from the terminal but not yet read by any process.
+
+   <p>The size of the input queue is described by the <code>MAX_INPUT</code> and
+<code>_POSIX_MAX_INPUT</code><!-- /@w --> parameters; see <a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>.  You
+are guaranteed a queue size of at least <code>MAX_INPUT</code>, but the queue
+might be larger, and might even dynamically change size.  If input flow
+control is enabled by setting the <code>IXOFF</code> input mode bit
+(see <a href="Input-Modes.html#Input-Modes">Input Modes</a>), the terminal driver transmits STOP and START
+characters to the terminal when necessary to prevent the queue from
+overflowing.  Otherwise, input may be lost if it comes in too fast from
+the terminal.  In canonical mode, all input stays in the queue until a
+newline character is received, so the terminal input queue can fill up
+when you type a very long line.  See <a href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>.
+
+   <p><a name="index-terminal-output-queue-1852"></a>The <dfn>terminal output queue</dfn> is like the input queue, but for output;
+it contains characters that have been written by processes, but not yet
+transmitted to the terminal.  If output flow control is enabled by
+setting the <code>IXON</code> input mode bit (see <a href="Input-Modes.html#Input-Modes">Input Modes</a>), the
+terminal driver obeys START and STOP characters sent by the terminal to
+stop and restart transmission of output.
+
+   <p><dfn>Clearing</dfn> the terminal input queue means discarding any characters
+that have been received but not yet read.  Similarly, clearing the
+terminal output queue means discarding any characters that have been
+written but not yet transmitted.
+
+   </body></html>
+

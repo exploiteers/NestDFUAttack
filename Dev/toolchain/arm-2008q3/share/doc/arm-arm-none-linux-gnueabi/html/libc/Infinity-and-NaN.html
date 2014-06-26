@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Infinity and NaN - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link rel="prev" href="FP-Exceptions.html#FP-Exceptions" title="FP Exceptions">
+<link rel="next" href="Status-bit-operations.html#Status-bit-operations" title="Status bit operations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Infinity-and-NaN"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Status-bit-operations.html#Status-bit-operations">Status bit operations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="FP-Exceptions.html#FP-Exceptions">FP Exceptions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.5.2 Infinity and NaN</h4>
+
+<p><a name="index-infinity-2367"></a><a name="index-not-a-number-2368"></a><a name="index-NaN-2369"></a>
+IEEE&nbsp;754<!-- /@w --> floating point numbers can represent positive or negative
+infinity, and <dfn>NaN</dfn> (not a number).  These three values arise from
+calculations whose result is undefined or cannot be represented
+accurately.  You can also deliberately set a floating-point variable to
+any of them, which is sometimes useful.  Some examples of calculations
+that produce infinity or NaN:
+
+<pre class="smallexample">     1/0 = &amp;infin;
+     log (0) = -&amp;infin;
+     sqrt (-1) = NaN
+</pre>
+   <p>When a calculation produces any of these values, an exception also
+occurs; see <a href="FP-Exceptions.html#FP-Exceptions">FP Exceptions</a>.
+
+   <p>The basic operations and math functions all accept infinity and NaN and
+produce sensible output.  Infinities propagate through calculations as
+one would expect: for example, 2 + &amp;infin; = &amp;infin;,
+4/&amp;infin; = 0, atan (&amp;infin;) = &amp;pi;/2.  NaN, on
+the other hand, infects any calculation that involves it.  Unless the
+calculation would produce the same result no matter what real value
+replaced NaN, the result is NaN.
+
+   <p>In comparison operations, positive infinity is larger than all values
+except itself and NaN, and negative infinity is smaller than all values
+except itself and NaN.  NaN is <dfn>unordered</dfn>: it is not equal to,
+greater than, or less than anything, <em>including itself</em>. <code>x ==
+x</code> is false if the value of <code>x</code> is NaN.  You can use this to test
+whether a value is NaN or not, but the recommended way to test for NaN
+is with the <code>isnan</code> function (see <a href="Floating-Point-Classes.html#Floating-Point-Classes">Floating Point Classes</a>).  In
+addition, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, and <code>&gt;=</code> will raise an
+exception when applied to NaNs.
+
+   <p><samp><span class="file">math.h</span></samp> defines macros that allow you to explicitly set a variable
+to infinity or NaN.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: float <b>INFINITY</b><var><a name="index-INFINITY-2370"></a></var><br>
+<blockquote><p>An expression representing positive infinity.  It is equal to the value
+produced  by mathematical operations like <code>1.0 / 0.0</code>. 
+<code>-INFINITY</code> represents negative infinity.
+
+        <p>You can test whether a floating-point value is infinite by comparing it
+to this macro.  However, this is not recommended; you should use the
+<code>isfinite</code> macro instead.  See <a href="Floating-Point-Classes.html#Floating-Point-Classes">Floating Point Classes</a>.
+
+        <p>This macro was introduced in the ISO&nbsp;C99<!-- /@w --> standard. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: float <b>NAN</b><var><a name="index-NAN-2371"></a></var><br>
+<blockquote><p>An expression representing a value which is &ldquo;not a number&rdquo;.  This
+macro is a GNU extension, available only on machines that support the
+&ldquo;not a number&rdquo; value&mdash;that is to say, on all machines that support
+IEEE floating point.
+
+        <p>You can use &lsquo;<samp><span class="samp">#ifdef NAN</span></samp>&rsquo; to test whether the machine supports
+NaN.  (Of course, you must arrange for GNU extensions to be visible,
+such as by defining <code>_GNU_SOURCE</code>, and then you must include
+<samp><span class="file">math.h</span></samp>.) 
+</p></blockquote></div>
+
+   <p>IEEE&nbsp;754<!-- /@w --> also allows for another unusual value: negative zero.  This
+value is produced when you divide a positive number by negative
+infinity, or when a negative result is smaller than the limits of
+representation.  Negative zero behaves identically to zero in all
+calculations, unless you explicitly test the sign bit with
+<code>signbit</code> or <code>copysign</code>.
+
+   </body></html>
+

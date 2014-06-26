@@ -1,0 +1,185 @@
+<html lang="en">
+<head>
+<title>iconv Examples - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Generic-Charset-Conversion.html#Generic-Charset-Conversion" title="Generic Charset Conversion">
+<link rel="prev" href="Generic-Conversion-Interface.html#Generic-Conversion-Interface" title="Generic Conversion Interface">
+<link rel="next" href="Other-iconv-Implementations.html#Other-iconv-Implementations" title="Other iconv Implementations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="iconv-Examples"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Other-iconv-Implementations.html#Other-iconv-Implementations">Other iconv Implementations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Generic-Conversion-Interface.html#Generic-Conversion-Interface">Generic Conversion Interface</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Generic-Charset-Conversion.html#Generic-Charset-Conversion">Generic Charset Conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.5.2 A complete <code>iconv</code> example</h4>
+
+<p>The example below features a solution for a common problem.  Given that
+one knows the internal encoding used by the system for <code>wchar_t</code>
+strings, one often is in the position to read text from a file and store
+it in wide character buffers.  One can do this using <code>mbsrtowcs</code>,
+but then we run into the problems discussed above.
+
+<pre class="smallexample">     int
+     file2wcs (int fd, const char *charset, wchar_t *outbuf, size_t avail)
+     {
+       char inbuf[BUFSIZ];
+       size_t insize = 0;
+       char *wrptr = (char *) outbuf;
+       int result = 0;
+       iconv_t cd;
+     
+       cd = iconv_open ("WCHAR_T", charset);
+       if (cd == (iconv_t) -1)
+         {
+           /* <span class="roman">Something went wrong.</span>  */
+           if (errno == EINVAL)
+             error (0, 0, "conversion from '%s' to wchar_t not available",
+                    charset);
+           else
+             perror ("iconv_open");
+     
+           /* <span class="roman">Terminate the output string.</span>  */
+           *outbuf = L'\0';
+     
+           return -1;
+         }
+     
+       while (avail &gt; 0)
+         {
+           size_t nread;
+           size_t nconv;
+           char *inptr = inbuf;
+     
+           /* <span class="roman">Read more input.</span>  */
+           nread = read (fd, inbuf + insize, sizeof (inbuf) - insize);
+           if (nread == 0)
+             {
+               /* <span class="roman">When we come here the file is completely read.</span>
+                  <span class="roman">This still could mean there are some unused</span>
+                  <span class="roman">characters in the </span><code>inbuf</code><span class="roman">.  Put them back.</span>  */
+               if (lseek (fd, -insize, SEEK_CUR) == -1)
+                 result = -1;
+     
+               /* <span class="roman">Now write out the byte sequence to get into the</span>
+                  <span class="roman">initial state if this is necessary.</span>  */
+               iconv (cd, NULL, NULL, &amp;wrptr, &amp;avail);
+     
+               break;
+             }
+           insize += nread;
+     
+           /* <span class="roman">Do the conversion.</span>  */
+           nconv = iconv (cd, &amp;inptr, &amp;insize, &amp;wrptr, &amp;avail);
+           if (nconv == (size_t) -1)
+             {
+               /* <span class="roman">Not everything went right.  It might only be</span>
+                  <span class="roman">an unfinished byte sequence at the end of the</span>
+                  <span class="roman">buffer.  Or it is a real problem.</span>  */
+               if (errno == EINVAL)
+                 /* <span class="roman">This is harmless.  Simply move the unused</span>
+                    <span class="roman">bytes to the beginning of the buffer so that</span>
+                    <span class="roman">they can be used in the next round.</span>  */
+                 memmove (inbuf, inptr, insize);
+               else
+                 {
+                   /* <span class="roman">It is a real problem.  Maybe we ran out of</span>
+                      <span class="roman">space in the output buffer or we have invalid</span>
+                      <span class="roman">input.  In any case back the file pointer to</span>
+                      <span class="roman">the position of the last processed byte.</span>  */
+                   lseek (fd, -insize, SEEK_CUR);
+                   result = -1;
+                   break;
+                 }
+             }
+         }
+     
+       /* <span class="roman">Terminate the output string.</span>  */
+       if (avail &gt;= sizeof (wchar_t))
+         *((wchar_t *) wrptr) = L'\0';
+     
+       if (iconv_close (cd) != 0)
+         perror ("iconv_close");
+     
+       return (wchar_t *) wrptr - outbuf;
+     }
+</pre>
+   <p><a name="index-stateful-675"></a>This example shows the most important aspects of using the <code>iconv</code>
+functions.  It shows how successive calls to <code>iconv</code> can be used to
+convert large amounts of text.  The user does not have to care about
+stateful encodings as the functions take care of everything.
+
+   <p>An interesting point is the case where <code>iconv</code> returns an error and
+<code>errno</code> is set to <code>EINVAL</code>.  This is not really an error in the
+transformation.  It can happen whenever the input character set contains
+byte sequences of more than one byte for some character and texts are not
+processed in one piece.  In this case there is a chance that a multibyte
+sequence is cut.  The caller can then simply read the remainder of the
+takes and feed the offending bytes together with new character from the
+input to <code>iconv</code> and continue the work.  The internal state kept in
+the descriptor is <em>not</em> unspecified after such an event as is the
+case with the conversion functions from the ISO&nbsp;C<!-- /@w --> standard.
+
+   <p>The example also shows the problem of using wide character strings with
+<code>iconv</code>.  As explained in the description of the <code>iconv</code>
+function above, the function always takes a pointer to a <code>char</code>
+array and the available space is measured in bytes.  In the example, the
+output buffer is a wide character buffer; therefore, we use a local
+variable <var>wrptr</var> of type <code>char *</code>, which is used in the
+<code>iconv</code> calls.
+
+   <p>This looks rather innocent but can lead to problems on platforms that
+have tight restriction on alignment.  Therefore the caller of <code>iconv</code>
+has to make sure that the pointers passed are suitable for access of
+characters from the appropriate character set.  Since, in the
+above case, the input parameter to the function is a <code>wchar_t</code>
+pointer, this is the case (unless the user violates alignment when
+computing the parameter).  But in other situations, especially when
+writing generic functions where one does not know what type of character
+set one uses and, therefore, treats text as a sequence of bytes, it might
+become tricky.
+
+   </body></html>
+

@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Trivial Encryption - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="strfry.html#strfry" title="strfry">
+<link rel="next" href="Encode-Binary-Data.html#Encode-Binary-Data" title="Encode Binary Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Trivial-Encryption"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Encode-Binary-Data.html#Encode-Binary-Data">Encode Binary Data</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="strfry.html#strfry">strfry</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.10 Trivial Encryption</h3>
+
+<p><a name="index-encryption-579"></a>
+
+   <p>The <code>memfrob</code> function converts an array of data to something
+unrecognizable and back again.  It is not encryption in its usual sense
+since it is easy for someone to convert the encrypted data back to clear
+text.  The transformation is analogous to Usenet's &ldquo;Rot13&rdquo; encryption
+method for obscuring offensive jokes from sensitive eyes and such. 
+Unlike Rot13, <code>memfrob</code> works on arbitrary binary data, not just
+text. 
+<a name="index-Rot13-580"></a>
+For true encryption, See <a href="Cryptographic-Functions.html#Cryptographic-Functions">Cryptographic Functions</a>.
+
+   <p>This function is declared in <samp><span class="file">string.h</span></samp>. 
+<a name="index-string_002eh-581"></a>
+<!-- string.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Function: void * <b>memfrob</b> (<var>void *mem, size_t length</var>)<var><a name="index-memfrob-582"></a></var><br>
+<blockquote>
+        <p><code>memfrob</code> transforms (frobnicates) each byte of the data structure
+at <var>mem</var>, which is <var>length</var> bytes long, by bitwise exclusive
+oring it with binary 00101010.  It does the transformation in place and
+its return value is always <var>mem</var>.
+
+        <p>Note that <code>memfrob</code> a second time on the same data structure
+returns it to its original state.
+
+        <p>This is a good function for hiding information from someone who doesn't
+want to see it or doesn't want to see it very much.  To really prevent
+people from retrieving the information, use stronger encryption such as
+that described in See <a href="Cryptographic-Functions.html#Cryptographic-Functions">Cryptographic Functions</a>.
+
+        <p><strong>Portability Note:</strong>  This function is unique to the GNU C library.
+
+        </blockquote></div>
+
+   </body></html>
+

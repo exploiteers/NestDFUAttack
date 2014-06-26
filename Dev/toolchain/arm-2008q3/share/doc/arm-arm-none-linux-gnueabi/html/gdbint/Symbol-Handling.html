@@ -1,0 +1,428 @@
+<html lang="en">
+<head>
+<title>Symbol Handling - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Stack-Frames.html#Stack-Frames" title="Stack Frames">
+<link rel="next" href="Language-Support.html#Language-Support" title="Language Support">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Symbol-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Language-Support.html#Language-Support">Language Support</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stack-Frames.html#Stack-Frames">Stack Frames</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">7 Symbol Handling</h2>
+
+<p>Symbols are a key part of <span class="sc">gdb</span>'s operation.  Symbols include
+variables, functions, and types.
+
+   <p>Symbol information for a large program can be truly massive, and
+reading of symbol information is one of the major performance
+bottlenecks in <span class="sc">gdb</span>; it can take many minutes to process it
+all.  Studies have shown that nearly all the time spent is
+computational, rather than file reading.
+
+   <p>One of the ways for <span class="sc">gdb</span> to provide a good user experience is
+to start up quickly, taking no more than a few seconds.  It is simply
+not possible to process all of a program's debugging info in that
+time, and so we attempt to handle symbols incrementally.  For instance,
+we create <dfn>partial symbol tables</dfn> consisting of only selected
+symbols, and only expand them to full symbol tables when necessary.
+
+<h3 class="section">7.1 Symbol Reading</h3>
+
+<p><a name="index-symbol-reading-121"></a><a name="index-reading-of-symbols-122"></a><a name="index-symbol-files-123"></a><span class="sc">gdb</span> reads symbols from <dfn>symbol files</dfn>.  The usual symbol
+file is the file containing the program which <span class="sc">gdb</span> is
+debugging.  <span class="sc">gdb</span> can be directed to use a different file for
+symbols (with the &lsquo;<samp><span class="samp">symbol-file</span></samp>&rsquo; command), and it can also read
+more symbols via the &lsquo;<samp><span class="samp">add-file</span></samp>&rsquo; and &lsquo;<samp><span class="samp">load</span></samp>&rsquo; commands. In
+addition, it may bring in more symbols while loading shared
+libraries.
+
+   <p><a name="index-find_005fsym_005ffns-124"></a>Symbol files are initially opened by code in <samp><span class="file">symfile.c</span></samp> using
+the BFD library (see <a href="Support-Libraries.html#Support-Libraries">Support Libraries</a>).  BFD identifies the type
+of the file by examining its header.  <code>find_sym_fns</code> then uses
+this identification to locate a set of symbol-reading functions.
+
+   <p><a name="index-add_005fsymtab_005ffns-125"></a><a name="index-g_t_0040code_007bsym_005ffns_007d-structure-126"></a><a name="index-adding-a-symbol_002dreading-module-127"></a>Symbol-reading modules identify themselves to <span class="sc">gdb</span> by calling
+<code>add_symtab_fns</code> during their module initialization.  The argument
+to <code>add_symtab_fns</code> is a <code>struct sym_fns</code> which contains the
+name (or name prefix) of the symbol format, the length of the prefix,
+and pointers to four functions.  These functions are called at various
+times to process symbol files whose identification matches the specified
+prefix.
+
+   <p>The functions supplied by each module are:
+
+     <dl>
+<dt><var>xyz</var><code>_symfile_init(struct sym_fns *sf)</code><dd>
+<a name="index-secondary-symbol-file-128"></a>Called from <code>symbol_file_add</code> when we are about to read a new
+symbol file.  This function should clean up any internal state (possibly
+resulting from half-read previous files, for example) and prepare to
+read a new symbol file.  Note that the symbol file which we are reading
+might be a new &ldquo;main&rdquo; symbol file, or might be a secondary symbol file
+whose symbols are being added to the existing symbol table.
+
+     <p>The argument to <var>xyz</var><code>_symfile_init</code> is a newly allocated
+<code>struct sym_fns</code> whose <code>bfd</code> field contains the BFD for the
+new symbol file being read.  Its <code>private</code> field has been zeroed,
+and can be modified as desired.  Typically, a struct of private
+information will be <code>malloc</code>'d, and a pointer to it will be placed
+in the <code>private</code> field.
+
+     <p>There is no result from <var>xyz</var><code>_symfile_init</code>, but it can call
+<code>error</code> if it detects an unavoidable problem.
+
+     <br><dt><var>xyz</var><code>_new_init()</code><dd>
+Called from <code>symbol_file_add</code> when discarding existing symbols. 
+This function needs only handle the symbol-reading module's internal
+state; the symbol table data structures visible to the rest of
+<span class="sc">gdb</span> will be discarded by <code>symbol_file_add</code>.  It has no
+arguments and no result.  It may be called after
+<var>xyz</var><code>_symfile_init</code>, if a new symbol table is being read, or
+may be called alone if all symbols are simply being discarded.
+
+     <br><dt><var>xyz</var><code>_symfile_read(struct sym_fns *sf, CORE_ADDR addr, int mainline)</code><dd>
+Called from <code>symbol_file_add</code> to actually read the symbols from a
+symbol-file into a set of psymtabs or symtabs.
+
+     <p><code>sf</code> points to the <code>struct sym_fns</code> originally passed to
+<var>xyz</var><code>_sym_init</code> for possible initialization.  <code>addr</code> is
+the offset between the file's specified start address and its true
+address in memory.  <code>mainline</code> is 1 if this is the main symbol
+table being read, and 0 if a secondary symbol file (e.g., shared library
+or dynamically loaded file) is being read. 
+</dl>
+
+   <p>In addition, if a symbol-reading module creates psymtabs when
+<var>xyz</var>_symfile_read is called, these psymtabs will contain a pointer
+to a function <var>xyz</var><code>_psymtab_to_symtab</code>, which can be called
+from any point in the <span class="sc">gdb</span> symbol-handling code.
+
+     <dl>
+<dt><var>xyz</var><code>_psymtab_to_symtab (struct partial_symtab *pst)</code><dd>
+Called from <code>psymtab_to_symtab</code> (or the <code>PSYMTAB_TO_SYMTAB</code> macro) if
+the psymtab has not already been read in and had its <code>pst-&gt;symtab</code>
+pointer set.  The argument is the psymtab to be fleshed-out into a
+symtab.  Upon return, <code>pst-&gt;readin</code> should have been set to 1, and
+<code>pst-&gt;symtab</code> should contain a pointer to the new corresponding symtab, or
+zero if there were no symbols in that part of the symbol file. 
+</dl>
+
+<h3 class="section">7.2 Partial Symbol Tables</h3>
+
+<p><span class="sc">gdb</span> has three types of symbol tables:
+
+     
+<a name="index-full-symbol-table-129"></a>
+<a name="index-symtabs-130"></a>
+<ul><li>Full symbol tables (<dfn>symtabs</dfn>).  These contain the main
+information about symbols and addresses.
+
+     <p><a name="index-psymtabs-131"></a><li>Partial symbol tables (<dfn>psymtabs</dfn>).  These contain enough
+information to know when to read the corresponding part of the full
+symbol table.
+
+     <p><a name="index-minimal-symbol-table-132"></a><a name="index-minsymtabs-133"></a><li>Minimal symbol tables (<dfn>msymtabs</dfn>).  These contain information
+gleaned from non-debugging symbols. 
+</ul>
+
+   <p><a name="index-partial-symbol-table-134"></a>This section describes partial symbol tables.
+
+   <p>A psymtab is constructed by doing a very quick pass over an executable
+file's debugging information.  Small amounts of information are
+extracted&mdash;enough to identify which parts of the symbol table will
+need to be re-read and fully digested later, when the user needs the
+information.  The speed of this pass causes <span class="sc">gdb</span> to start up very
+quickly.  Later, as the detailed rereading occurs, it occurs in small
+pieces, at various times, and the delay therefrom is mostly invisible to
+the user. 
+<!-- (@xref{Symbol Reading}.) -->
+
+   <p>The symbols that show up in a file's psymtab should be, roughly, those
+visible to the debugger's user when the program is not running code from
+that file.  These include external symbols and types, static symbols and
+types, and <code>enum</code> values declared at file scope.
+
+   <p>The psymtab also contains the range of instruction addresses that the
+full symbol table would represent.
+
+   <p><a name="index-finding-a-symbol-135"></a><a name="index-symbol-lookup-136"></a>The idea is that there are only two ways for the user (or much of the
+code in the debugger) to reference a symbol:
+
+     
+<a name="index-find_005fpc_005ffunction-137"></a>
+<a name="index-find_005fpc_005fline-138"></a>
+<ul><li>By its address (e.g., execution stops at some address which is inside a
+function in this file).  The address will be noticed to be in the
+range of this psymtab, and the full symtab will be read in. 
+<code>find_pc_function</code>, <code>find_pc_line</code>, and other
+<code>find_pc_...</code> functions handle this.
+
+     <p><a name="index-lookup_005fsymbol-139"></a><li>By its name
+(e.g., the user asks to print a variable, or set a breakpoint on a
+function).  Global names and file-scope names will be found in the
+psymtab, which will cause the symtab to be pulled in.  Local names will
+have to be qualified by a global name, or a file-scope name, in which
+case we will have already read in the symtab as we evaluated the
+qualifier.  Or, a local symbol can be referenced when we are &ldquo;in&rdquo; a
+local scope, in which case the first case applies.  <code>lookup_symbol</code>
+does most of the work here. 
+</ul>
+
+   <p>The only reason that psymtabs exist is to cause a symtab to be read in
+at the right moment.  Any symbol that can be elided from a psymtab,
+while still causing that to happen, should not appear in it.  Since
+psymtabs don't have the idea of scope, you can't put local symbols in
+them anyway.  Psymtabs don't have the idea of the type of a symbol,
+either, so types need not appear, unless they will be referenced by
+name.
+
+   <p>It is a bug for <span class="sc">gdb</span> to behave one way when only a psymtab has
+been read, and another way if the corresponding symtab has been read
+in.  Such bugs are typically caused by a psymtab that does not contain
+all the visible symbols, or which has the wrong instruction address
+ranges.
+
+   <p>The psymtab for a particular section of a symbol file (objfile) could be
+thrown away after the symtab has been read in.  The symtab should always
+be searched before the psymtab, so the psymtab will never be used (in a
+bug-free environment).  Currently, psymtabs are allocated on an obstack,
+and all the psymbols themselves are allocated in a pair of large arrays
+on an obstack, so there is little to be gained by trying to free them
+unless you want to do a lot more work.
+
+<h3 class="section">7.3 Types</h3>
+
+<h4 class="unnumberedsubsec">Fundamental Types (e.g., <code>FT_VOID</code>, <code>FT_BOOLEAN</code>).</h4>
+
+<p><a name="index-fundamental-types-140"></a>These are the fundamental types that <span class="sc">gdb</span> uses internally.  Fundamental
+types from the various debugging formats (stabs, ELF, etc) are mapped
+into one of these.  They are basically a union of all fundamental types
+that <span class="sc">gdb</span> knows about for all the languages that <span class="sc">gdb</span>
+knows about.
+
+<h4 class="unnumberedsubsec">Type Codes (e.g., <code>TYPE_CODE_PTR</code>, <code>TYPE_CODE_ARRAY</code>).</h4>
+
+<p><a name="index-type-codes-141"></a>Each time <span class="sc">gdb</span> builds an internal type, it marks it with one
+of these types.  The type may be a fundamental type, such as
+<code>TYPE_CODE_INT</code>, or a derived type, such as <code>TYPE_CODE_PTR</code>
+which is a pointer to another type.  Typically, several <code>FT_*</code>
+types map to one <code>TYPE_CODE_*</code> type, and are distinguished by
+other members of the type struct, such as whether the type is signed
+or unsigned, and how many bits it uses.
+
+<h4 class="unnumberedsubsec">Builtin Types (e.g., <code>builtin_type_void</code>, <code>builtin_type_char</code>).</h4>
+
+<p>These are instances of type structs that roughly correspond to
+fundamental types and are created as global types for <span class="sc">gdb</span> to
+use for various ugly historical reasons.  We eventually want to
+eliminate these.  Note for example that <code>builtin_type_int</code>
+initialized in <samp><span class="file">gdbtypes.c</span></samp> is basically the same as a
+<code>TYPE_CODE_INT</code> type that is initialized in <samp><span class="file">c-lang.c</span></samp> for
+an <code>FT_INTEGER</code> fundamental type.  The difference is that the
+<code>builtin_type</code> is not associated with any particular objfile, and
+only one instance exists, while <samp><span class="file">c-lang.c</span></samp> builds as many
+<code>TYPE_CODE_INT</code> types as needed, with each one associated with
+some particular objfile.
+
+<h3 class="section">7.4 Object File Formats</h3>
+
+<p><a name="index-object-file-formats-142"></a>
+
+<h4 class="subsection">7.4.1 a.out</h4>
+
+<p><a name="index-g_t_0040code_007ba_002eout_007d-format-143"></a>The <code>a.out</code> format is the original file format for Unix.  It
+consists of three sections: <code>text</code>, <code>data</code>, and <code>bss</code>,
+which are for program code, initialized data, and uninitialized data,
+respectively.
+
+   <p>The <code>a.out</code> format is so simple that it doesn't have any reserved
+place for debugging information.  (Hey, the original Unix hackers used
+&lsquo;<samp><span class="samp">adb</span></samp>&rsquo;, which is a machine-language debugger!)  The only debugging
+format for <code>a.out</code> is stabs, which is encoded as a set of normal
+symbols with distinctive attributes.
+
+   <p>The basic <code>a.out</code> reader is in <samp><span class="file">dbxread.c</span></samp>.
+
+<h4 class="subsection">7.4.2 COFF</h4>
+
+<p><a name="index-COFF-format-144"></a>The COFF format was introduced with System V Release 3 (SVR3) Unix. 
+COFF files may have multiple sections, each prefixed by a header.  The
+number of sections is limited.
+
+   <p>The COFF specification includes support for debugging.  Although this
+was a step forward, the debugging information was woefully limited. 
+For instance, it was not possible to represent code that came from an
+included file.  GNU's COFF-using configs often use stabs-type info,
+encapsulated in special sections.
+
+   <p>The COFF reader is in <samp><span class="file">coffread.c</span></samp>.
+
+<h4 class="subsection">7.4.3 ECOFF</h4>
+
+<p><a name="index-ECOFF-format-145"></a>ECOFF is an extended COFF originally introduced for Mips and Alpha
+workstations.
+
+   <p>The basic ECOFF reader is in <samp><span class="file">mipsread.c</span></samp>.
+
+<h4 class="subsection">7.4.4 XCOFF</h4>
+
+<p><a name="index-XCOFF-format-146"></a>The IBM RS/6000 running AIX uses an object file format called XCOFF. 
+The COFF sections, symbols, and line numbers are used, but debugging
+symbols are <code>dbx</code>-style stabs whose strings are located in the
+<code>.debug</code> section (rather than the string table).  For more
+information, see <a href="../stabs/index.html#Top">Top</a>.
+
+   <p>The shared library scheme has a clean interface for figuring out what
+shared libraries are in use, but the catch is that everything which
+refers to addresses (symbol tables and breakpoints at least) needs to be
+relocated for both shared libraries and the main executable.  At least
+using the standard mechanism this can only be done once the program has
+been run (or the core file has been read).
+
+<h4 class="subsection">7.4.5 PE</h4>
+
+<p><a name="index-PE_002dCOFF-format-147"></a>Windows 95 and NT use the PE (<dfn>Portable Executable</dfn>) format for their
+executables.  PE is basically COFF with additional headers.
+
+   <p>While BFD includes special PE support, <span class="sc">gdb</span> needs only the basic
+COFF reader.
+
+<h4 class="subsection">7.4.6 ELF</h4>
+
+<p><a name="index-ELF-format-148"></a>The ELF format came with System V Release 4 (SVR4) Unix.  ELF is
+similar to COFF in being organized into a number of sections, but it
+removes many of COFF's limitations.  Debugging info may be either stabs
+encapsulated in ELF sections, or more commonly these days, DWARF.
+
+   <p>The basic ELF reader is in <samp><span class="file">elfread.c</span></samp>.
+
+<h4 class="subsection">7.4.7 SOM</h4>
+
+<p><a name="index-SOM-format-149"></a>SOM is HP's object file and debug format (not to be confused with IBM's
+SOM, which is a cross-language ABI).
+
+   <p>The SOM reader is in <samp><span class="file">somread.c</span></samp>.
+
+<h3 class="section">7.5 Debugging File Formats</h3>
+
+<p>This section describes characteristics of debugging information that
+are independent of the object file format.
+
+<h4 class="subsection">7.5.1 stabs</h4>
+
+<p><a name="index-stabs-debugging-info-150"></a><code>stabs</code> started out as special symbols within the <code>a.out</code>
+format.  Since then, it has been encapsulated into other file
+formats, such as COFF and ELF.
+
+   <p>While <samp><span class="file">dbxread.c</span></samp> does some of the basic stab processing,
+including for encapsulated versions, <samp><span class="file">stabsread.c</span></samp> does
+the real work.
+
+<h4 class="subsection">7.5.2 COFF</h4>
+
+<p><a name="index-COFF-debugging-info-151"></a>The basic COFF definition includes debugging information.  The level
+of support is minimal and non-extensible, and is not often used.
+
+<h4 class="subsection">7.5.3 Mips debug (Third Eye)</h4>
+
+<p><a name="index-ECOFF-debugging-info-152"></a>ECOFF includes a definition of a special debug format.
+
+   <p>The file <samp><span class="file">mdebugread.c</span></samp> implements reading for this format.
+
+<!-- mention DWARF 1 as a formerly-supported format -->
+<h4 class="subsection">7.5.4 DWARF 2</h4>
+
+<p><a name="index-DWARF-2-debugging-info-153"></a>DWARF 2 is an improved but incompatible version of DWARF 1.
+
+   <p>The DWARF 2 reader is in <samp><span class="file">dwarf2read.c</span></samp>.
+
+<h4 class="subsection">7.5.5 Compressed DWARF 2</h4>
+
+<p><a name="index-Compressed-DWARF-2-debugging-info-154"></a>Compressed DWARF 2 is not technically a separate debugging format, but
+merely DWARF 2 debug information that has been compressed.  In this
+format, every object-file section holding DWARF 2 debugging
+information is compressed and prepended with a header.  (The section
+is also typically renamed, so a section called <code>.debug_info</code> in a
+DWARF 2 binary would be called <code>.zdebug_info</code> in a compressed
+DWARF 2 binary.)  The header is 12 bytes long:
+
+     <ul>
+<li>4 bytes: the literal string &ldquo;ZLIB&rdquo;
+<li>8 bytes: the uncompressed size of the section, in big-endian byte
+order. 
+</ul>
+
+   <p>The same reader is used for both compressed an normal DWARF 2 info. 
+Section decompression is done in <code>zlib_decompress_section</code> in
+<samp><span class="file">dwarf2read.c</span></samp>.
+
+<h4 class="subsection">7.5.6 DWARF 3</h4>
+
+<p><a name="index-DWARF-3-debugging-info-155"></a>DWARF 3 is an improved version of DWARF 2.
+
+<h4 class="subsection">7.5.7 SOM</h4>
+
+<p><a name="index-SOM-debugging-info-156"></a>Like COFF, the SOM definition includes debugging information.
+
+<h3 class="section">7.6 Adding a New Symbol Reader to <span class="sc">gdb</span></h3>
+
+<p><a name="index-adding-debugging-info-reader-157"></a>If you are using an existing object file format (<code>a.out</code>, COFF, ELF, etc),
+there is probably little to be done.
+
+   <p>If you need to add a new object file format, you must first add it to
+BFD.  This is beyond the scope of this document.
+
+   <p>You must then arrange for the BFD code to provide access to the
+debugging symbols.  Generally <span class="sc">gdb</span> will have to call swapping
+routines from BFD and a few other BFD internal routines to locate the
+debugging information.  As much as possible, <span class="sc">gdb</span> should not
+depend on the BFD internal data structures.
+
+   <p>For some targets (e.g., COFF), there is a special transfer vector used
+to call swapping routines, since the external data structures on various
+platforms have different sizes and layouts.  Specialized routines that
+will only ever be implemented by one object file format may be called
+directly.  This interface should be described in a file
+<samp><span class="file">bfd/lib</span><var>xyz</var><span class="file">.h</span></samp>, which is included by <span class="sc">gdb</span>.
+
+<h3 class="section">7.7 Memory Management for Symbol Files</h3>
+
+<p>Most memory associated with a loaded symbol file is stored on
+its <code>objfile_obstack</code>.  This includes symbols, types,
+namespace data, and other information produced by the symbol readers.
+
+   <p>Because this data lives on the objfile's obstack, it is automatically
+released when the objfile is unloaded or reloaded.  Therefore one
+objfile must not reference symbol or type data from another objfile;
+they could be unloaded at different times.
+
+   <p>User convenience variables, et cetera, have associated types.  Normally
+these types live in the associated objfile.  However, when the objfile
+is unloaded, those types are deep copied to global memory, so that
+the values of the user variables and history items are not lost.
+
+   </body></html>
+

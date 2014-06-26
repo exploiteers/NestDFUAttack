@@ -1,0 +1,17 @@
+#
+#    Copyright (c) 2013 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the control and configuration file for the
+#      daemon-monitoring daemon, monit, for the DBus daemon.
+#
+#      The DBus daemon cannot effectively be restarted, so we
+#      define dummy start/stop programs and request a reboot
+#      when the daemon failure is detected.
+#
+
+check process dbus-daemon with pidfile "/var/run/dbus/pid"
+  start program = "/bin/true"
+  stop  program = "/bin/true"
+  if 1 restart within 1 cycle then exec "/sbin/reboot"

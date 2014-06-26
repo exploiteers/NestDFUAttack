@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Version</key>
+	<integer>1</integer>
+	<key>Destination</key>
+	<string>com.nestlabs.nlheartbeat</string>
+	<key>Timeout</key>
+	<integer>2500</integer>
+	<key>Services</key>
+	<array>
+		<dict>
+			<key>Name</key>
+			<string>nlclient</string>
+			<key>Source</key>
+			<string>Unsolicited</string>
+			<key>Required</key>
+			<true/>
+			<key>Destination</key>
+			<string>com.nestlabs.nlclient</string>
+			<key>Stop</key>
+			<dict>
+				<key>Arguments</key>
+				<array>
+					<string>/etc/init.d/nestlabs</string>
+					<string>kill</string>
+				</array>
+			</dict>
+			<key>Path</key>
+			<string>/</string>
+			<key>Delay</key>
+			<integer>10000</integer>
+			<key>Period</key>
+			<integer>5000</integer>
+			<key>Cycles</key>
+			<integer>8</integer>
+		</dict>
+	</array>
+</dict>
+</plist>

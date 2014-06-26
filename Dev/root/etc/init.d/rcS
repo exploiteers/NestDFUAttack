@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Copyright (c) 2010-2012 Nest Labs, Inc.
+# All rights reserved.
+#
+# Description:
+# This file implements the list of services to start on system
+# start-up.
+#
+# Source common library
+. /etc/init.d/functions
+# Start system services
+${INITDIR}/rootme
+${INITDIR}/announce start
+${INITDIR}/start
+${INITDIR}/watchdog start
+${INITDIR}/hwclock restore
+${INITDIR}/timezone check
+${INITDIR}/sysctl start

@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>File Name Errors - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Names.html#File-Names" title="File Names">
+<link rel="prev" href="File-Name-Resolution.html#File-Name-Resolution" title="File Name Resolution">
+<link rel="next" href="File-Name-Portability.html#File-Name-Portability" title="File Name Portability">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Name-Errors"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Name-Portability.html#File-Name-Portability">File Name Portability</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Name-Resolution.html#File-Name-Resolution">File Name Resolution</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Names.html#File-Names">File Names</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.2.3 File Name Errors</h4>
+
+<p><a name="index-file-name-errors-912"></a><a name="index-usual-file-name-errors-913"></a>
+Functions that accept file name arguments usually detect these
+<code>errno</code> error conditions relating to the file name syntax or
+trouble finding the named file.  These errors are referred to throughout
+this manual as the <dfn>usual file name errors</dfn>.
+
+     <dl>
+<dt><code>EACCES</code><dd>The process does not have search permission for a directory component
+of the file name.
+
+     <br><dt><code>ENAMETOOLONG</code><dd>This error is used when either the total length of a file name is
+greater than <code>PATH_MAX</code>, or when an individual file name component
+has a length greater than <code>NAME_MAX</code>.  See <a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>.
+
+     <p>In the GNU system, there is no imposed limit on overall file name
+length, but some file systems may place limits on the length of a
+component.
+
+     <br><dt><code>ENOENT</code><dd>This error is reported when a file referenced as a directory component
+in the file name doesn't exist, or when a component is a symbolic link
+whose target file does not exist.  See <a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>.
+
+     <br><dt><code>ENOTDIR</code><dd>A file that is referenced as a directory component in the file name
+exists, but it isn't a directory.
+
+     <br><dt><code>ELOOP</code><dd>Too many symbolic links were resolved while trying to look up the file
+name.  The system has an arbitrary limit on the number of symbolic links
+that may be resolved in looking up a single file name, as a primitive
+way to detect loops.  See <a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>. 
+</dl>
+
+   </body></html>
+

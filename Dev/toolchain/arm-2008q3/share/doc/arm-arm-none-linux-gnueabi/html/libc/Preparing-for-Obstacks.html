@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Preparing for Obstacks - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Creating-Obstacks.html#Creating-Obstacks" title="Creating Obstacks">
+<link rel="next" href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack" title="Allocation in an Obstack">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Preparing-for-Obstacks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">Allocation in an Obstack</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-Obstacks.html#Creating-Obstacks">Creating Obstacks</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.2 Preparing for Using Obstacks</h5>
+
+<p>Each source file in which you plan to use the obstack functions
+must include the header file <samp><span class="file">obstack.h</span></samp>, like this:
+
+<pre class="smallexample">     #include &lt;obstack.h&gt;
+</pre>
+   <p><a name="index-obstack_005fchunk_005falloc-302"></a><a name="index-obstack_005fchunk_005ffree-303"></a>Also, if the source file uses the macro <code>obstack_init</code>, it must
+declare or define two functions or macros that will be called by the
+obstack library.  One, <code>obstack_chunk_alloc</code>, is used to allocate
+the chunks of memory into which objects are packed.  The other,
+<code>obstack_chunk_free</code>, is used to return chunks when the objects in
+them are freed.  These macros should appear before any use of obstacks
+in the source file.
+
+   <p>Usually these are defined to use <code>malloc</code> via the intermediary
+<code>xmalloc</code> (see <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>).  This is done with
+the following pair of macro definitions:
+
+<pre class="smallexample">     #define obstack_chunk_alloc xmalloc
+     #define obstack_chunk_free free
+</pre>
+   <p class="noindent">Though the memory you get using obstacks really comes from <code>malloc</code>,
+using obstacks is faster because <code>malloc</code> is called less often, for
+larger blocks of memory.  See <a href="Obstack-Chunks.html#Obstack-Chunks">Obstack Chunks</a>, for full details.
+
+   <p>At run time, before the program can use a <code>struct obstack</code> object
+as an obstack, it must initialize the obstack by calling
+<code>obstack_init</code>.
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>obstack_init</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005finit-304"></a></var><br>
+<blockquote><p>Initialize obstack <var>obstack-ptr</var> for allocation of objects.  This
+function calls the obstack's <code>obstack_chunk_alloc</code> function.  If
+allocation of memory fails, the function pointed to by
+<code>obstack_alloc_failed_handler</code> is called.  The <code>obstack_init</code>
+function always returns 1 (Compatibility notice: Former versions of
+obstack returned 0 if allocation failed). 
+</p></blockquote></div>
+
+   <p>Here are two examples of how to allocate the space for an obstack and
+initialize it.  First, an obstack that is a static variable:
+
+<pre class="smallexample">     static struct obstack myobstack;
+     ...
+     obstack_init (&amp;myobstack);
+</pre>
+   <p class="noindent">Second, an obstack that is itself dynamically allocated:
+
+<pre class="smallexample">     struct obstack *myobstack_ptr
+       = (struct obstack *) xmalloc (sizeof (struct obstack));
+     
+     obstack_init (myobstack_ptr);
+</pre>
+   <!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Variable: <b>obstack_alloc_failed_handler</b><var><a name="index-obstack_005falloc_005ffailed_005fhandler-305"></a></var><br>
+<blockquote><p>The value of this variable is a pointer to a function that
+<code>obstack</code> uses when <code>obstack_chunk_alloc</code> fails to allocate
+memory.  The default action is to print a message and abort. 
+You should supply a function that either calls <code>exit</code>
+(see <a href="Program-Termination.html#Program-Termination">Program Termination</a>) or <code>longjmp</code> (see <a href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>) and doesn't return.
+
+     <pre class="smallexample">          void my_obstack_alloc_failed (void)
+          ...
+          obstack_alloc_failed_handler = &amp;my_obstack_alloc_failed;
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

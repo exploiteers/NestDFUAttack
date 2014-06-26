@@ -1,0 +1,127 @@
+<html lang="en">
+<head>
+<title>Non-reentrant String Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion" title="Non-reentrant Conversion">
+<link rel="prev" href="Non_002dreentrant-Character-Conversion.html#Non_002dreentrant-Character-Conversion" title="Non-reentrant Character Conversion">
+<link rel="next" href="Shift-State.html#Shift-State" title="Shift State">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Non-reentrant-String-Conversion"></a>
+<a name="Non_002dreentrant-String-Conversion"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Shift-State.html#Shift-State">Shift State</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dreentrant-Character-Conversion.html#Non_002dreentrant-Character-Conversion">Non-reentrant Character Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.4.2 Non-reentrant Conversion of Strings</h4>
+
+<p>For convenience the ISO&nbsp;C90<!-- /@w --> standard also defines functions to
+convert entire strings instead of single characters.  These functions
+suffer from the same problems as their reentrant counterparts from
+Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w -->; see <a href="Converting-Strings.html#Converting-Strings">Converting Strings</a>.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>mbstowcs</b> (<var>wchar_t *wstring, const char *string, size_t size</var>)<var><a name="index-mbstowcs-665"></a></var><br>
+<blockquote><p>The <code>mbstowcs</code> (&ldquo;multibyte string to wide character string&rdquo;)
+function converts the null-terminated string of multibyte characters
+<var>string</var> to an array of wide character codes, storing not more than
+<var>size</var> wide characters into the array beginning at <var>wstring</var>. 
+The terminating null character counts towards the size, so if <var>size</var>
+is less than the actual number of wide characters resulting from
+<var>string</var>, no terminating null character is stored.
+
+        <p>The conversion of characters from <var>string</var> begins in the initial
+shift state.
+
+        <p>If an invalid multibyte character sequence is found, the <code>mbstowcs</code>
+function returns a value of -1.  Otherwise, it returns the number
+of wide characters stored in the array <var>wstring</var>.  This number does
+not include the terminating null character, which is present if the
+number is less than <var>size</var>.
+
+        <p>Here is an example showing how to convert a string of multibyte
+characters, allocating enough space for the result.
+
+     <pre class="smallexample">          wchar_t *
+          mbstowcs_alloc (const char *string)
+          {
+            size_t size = strlen (string) + 1;
+            wchar_t *buf = xmalloc (size * sizeof (wchar_t));
+          
+            size = mbstowcs (buf, string, size);
+            if (size == (size_t) -1)
+              return NULL;
+            buf = xrealloc (buf, (size + 1) * sizeof (wchar_t));
+            return buf;
+          }
+</pre>
+        </blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>wcstombs</b> (<var>char *string, const wchar_t *wstring, size_t size</var>)<var><a name="index-wcstombs-666"></a></var><br>
+<blockquote><p>The <code>wcstombs</code> (&ldquo;wide character string to multibyte string&rdquo;)
+function converts the null-terminated wide character array <var>wstring</var>
+into a string containing multibyte characters, storing not more than
+<var>size</var> bytes starting at <var>string</var>, followed by a terminating
+null character if there is room.  The conversion of characters begins in
+the initial shift state.
+
+        <p>The terminating null character counts towards the size, so if <var>size</var>
+is less than or equal to the number of bytes needed in <var>wstring</var>, no
+terminating null character is stored.
+
+        <p>If a code that does not correspond to a valid multibyte character is
+found, the <code>wcstombs</code> function returns a value of -1. 
+Otherwise, the return value is the number of bytes stored in the array
+<var>string</var>.  This number does not include the terminating null character,
+which is present if the number is less than <var>size</var>. 
+</p></blockquote></div>
+
+   </body></html>
+

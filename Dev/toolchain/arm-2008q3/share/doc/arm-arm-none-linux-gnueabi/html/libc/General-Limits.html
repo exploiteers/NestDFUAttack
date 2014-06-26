@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+<title>General Limits - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="next" href="System-Options.html#System-Options" title="System Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="General-Limits"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-Options.html#System-Options">System Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.1 General Capacity Limits</h3>
+
+<p><a name="index-POSIX-capacity-limits-3494"></a><a name="index-limits_002c-POSIX-3495"></a><a name="index-capacity-limits_002c-POSIX-3496"></a>
+The POSIX.1 and POSIX.2 standards specify a number of parameters that
+describe capacity limitations of the system.  These limits can be fixed
+constants for a given operating system, or they can vary from machine to
+machine.  For example, some limit values may be configurable by the
+system administrator, either at run time or by rebuilding the kernel,
+and this should not require recompiling application programs.
+
+   <p><a name="index-limits_002eh-3497"></a>Each of the following limit parameters has a macro that is defined in
+<samp><span class="file">limits.h</span></samp> only if the system has a fixed, uniform limit for the
+parameter in question.  If the system allows different file systems or
+files to have different limits, then the macro is undefined; use
+<code>sysconf</code> to find out the limit that applies at a particular time
+on a particular machine.  See <a href="Sysconf.html#Sysconf">Sysconf</a>.
+
+   <p>Each of these parameters also has another macro, with a name starting
+with &lsquo;<samp><span class="samp">_POSIX</span></samp>&rsquo;, which gives the lowest value that the limit is
+allowed to have on <em>any</em> POSIX system.  See <a href="Minimums.html#Minimums">Minimums</a>.
+
+   <p><a name="index-limits_002c-program-argument-size-3498"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>ARG_MAX</b><var><a name="index-ARG_005fMAX-3499"></a></var><br>
+<blockquote><p>If defined, the unvarying maximum combined length of the <var>argv</var> and
+<var>environ</var> arguments that can be passed to the <code>exec</code> functions. 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-number-of-processes-3500"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>CHILD_MAX</b><var><a name="index-CHILD_005fMAX-3501"></a></var><br>
+<blockquote><p>If defined, the unvarying maximum number of processes that can exist
+with the same real user ID at any one time.  In BSD and GNU, this is
+controlled by the <code>RLIMIT_NPROC</code> resource limit; see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>. 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-number-of-open-files-3502"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>OPEN_MAX</b><var><a name="index-OPEN_005fMAX-3503"></a></var><br>
+<blockquote><p>If defined, the unvarying maximum number of files that a single process
+can have open simultaneously.  In BSD and GNU, this is controlled
+by the <code>RLIMIT_NOFILE</code> resource limit; see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>STREAM_MAX</b><var><a name="index-STREAM_005fMAX-3504"></a></var><br>
+<blockquote><p>If defined, the unvarying maximum number of streams that a single
+process can have open simultaneously.  See <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>. 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-time-zone-name-length-3505"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>TZNAME_MAX</b><var><a name="index-TZNAME_005fMAX-3506"></a></var><br>
+<blockquote><p>If defined, the unvarying maximum length of a time zone name. 
+See <a href="Time-Zone-Functions.html#Time-Zone-Functions">Time Zone Functions</a>. 
+</p></blockquote></div>
+
+   <p>These limit macros are always defined in <samp><span class="file">limits.h</span></samp>.
+
+   <p><a name="index-limits_002c-number-of-supplementary-group-IDs-3507"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>NGROUPS_MAX</b><var><a name="index-NGROUPS_005fMAX-3508"></a></var><br>
+<blockquote><p>The maximum number of supplementary group IDs that one process can have.
+
+        <p>The value of this macro is actually a lower bound for the maximum.  That
+is, you can count on being able to have that many supplementary group
+IDs, but a particular machine might let you have even more.  You can use
+<code>sysconf</code> to see whether a particular machine will let you have
+more (see <a href="Sysconf.html#Sysconf">Sysconf</a>). 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>SSIZE_MAX</b><var><a name="index-SSIZE_005fMAX-3509"></a></var><br>
+<blockquote><p>The largest value that can fit in an object of type <code>ssize_t</code>. 
+Effectively, this is the limit on the number of bytes that can be read
+or written in a single operation.
+
+        <p>This macro is defined in all POSIX systems because this limit is never
+configurable. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>RE_DUP_MAX</b><var><a name="index-RE_005fDUP_005fMAX-3510"></a></var><br>
+<blockquote><p>The largest number of repetitions you are guaranteed is allowed in the
+construct &lsquo;<samp><span class="samp">\{</span><var>min</var><span class="samp">,</span><var>max</var><span class="samp">\}</span></samp>&rsquo; in a regular expression.
+
+        <p>The value of this macro is actually a lower bound for the maximum.  That
+is, you can count on being able to have that many repetitions, but a
+particular machine might let you have even more.  You can use
+<code>sysconf</code> to see whether a particular machine will let you have
+more (see <a href="Sysconf.html#Sysconf">Sysconf</a>).  And even the value that <code>sysconf</code> tells
+you is just a lower bound&mdash;larger values might work.
+
+        <p>This macro is defined in all POSIX.2 systems, because POSIX.2 says it
+should always be defined even if there is no specific imposed limit. 
+</p></blockquote></div>
+
+   </body></html>
+

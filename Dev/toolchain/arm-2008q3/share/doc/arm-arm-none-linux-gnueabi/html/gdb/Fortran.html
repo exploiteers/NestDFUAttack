@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+<title>Fortran - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Supported-Languages.html#Supported-Languages" title="Supported Languages">
+<link rel="prev" href="Objective_002dC.html#Objective_002dC" title="Objective-C">
+<link rel="next" href="Pascal.html#Pascal" title="Pascal">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Fortran"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pascal.html#Pascal">Pascal</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Objective_002dC.html#Objective_002dC">Objective-C</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Supported-Languages.html#Supported-Languages">Supported Languages</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.4.3 Fortran</h4>
+
+<p><a name="index-Fortran_002dspecific-support-in-_0040value_007bGDBN_007d-717"></a>
+<span class="sc">gdb</span> can be used to debug programs written in Fortran, but it
+currently supports only the features of Fortran 77 language.
+
+   <p><a name="index-trailing-underscore_002c-in-Fortran-symbols-718"></a>Some Fortran compilers (<span class="sc">gnu</span> Fortran 77 and Fortran 95 compilers
+among them) append an underscore to the names of variables and
+functions.  When you debug programs compiled by those compilers, you
+will need to refer to variables and functions with a trailing
+underscore.
+
+<ul class="menu">
+<li><a accesskey="1" href="Fortran-Operators.html#Fortran-Operators">Fortran Operators</a>:            Fortran operators and expressions
+<li><a accesskey="2" href="Fortran-Defaults.html#Fortran-Defaults">Fortran Defaults</a>:             Default settings for Fortran
+<li><a accesskey="3" href="Special-Fortran-Commands.html#Special-Fortran-Commands">Special Fortran Commands</a>:     Special <span class="sc">gdb</span> commands for Fortran
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+<title>Notes on NSS Configuration File - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="NSS-Configuration-File.html#NSS-Configuration-File" title="NSS Configuration File">
+<link rel="prev" href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration" title="Actions in the NSS configuration">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Notes-on-NSS-Configuration-File"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.2.3 Notes on the NSS Configuration File</h4>
+
+<p>Finally a few more hints.  The NSS implementation is not completely
+helpless if <samp><span class="file">/etc/nsswitch.conf</span></samp> does not exist.  For
+all supported databases there is a default value so it should normally
+be possible to get the system running even if the file is corrupted or
+missing.
+
+   <p><a name="index-default-value_002c-and-NSS-3282"></a>For the <code>hosts</code> and <code>networks</code> databases the default value is
+<code>dns [!UNAVAIL=return] files</code>.  I.e., the system is prepared for
+the DNS service not to be available but if it is available the answer it
+returns is definitive.
+
+   <p>The <code>passwd</code>, <code>group</code>, and <code>shadow</code> databases are
+traditionally handled in a special way.  The appropriate files in the
+<samp><span class="file">/etc</span></samp> directory are read but if an entry with a name starting
+with a <code>+</code> character is found NIS is used.  This kind of lookup
+remains possible by using the special lookup service <code>compat</code>
+and the default value for the three databases above is
+<code>compat [NOTFOUND=return] files</code>.
+
+   <p>For all other databases the default value is
+<code>nis [NOTFOUND=return] files</code>.  This solution give the best
+chance to be correct since NIS and file based lookup is used.
+
+   <p><a name="index-optimizing-NSS-3283"></a>A second point is that the user should try to optimize the lookup
+process.  The different service have different response times. 
+A simple file look up on a local file could be fast, but if the file
+is long and the needed entry is near the end of the file this may take
+quite some time.  In this case it might be better to use the <code>db</code>
+service which allows fast local access to large data sets.
+
+   <p>Often the situation is that some global information like NIS must be
+used.  So it is unavoidable to use service entries like <code>nis</code> etc. 
+But one should avoid slow services like this if possible.
+
+   </body></html>
+

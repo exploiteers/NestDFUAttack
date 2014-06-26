@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Obstacks Data Alignment - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Status-of-an-Obstack.html#Status-of-an-Obstack" title="Status of an Obstack">
+<link rel="next" href="Obstack-Chunks.html#Obstack-Chunks" title="Obstack Chunks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Obstacks-Data-Alignment"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Obstack-Chunks.html#Obstack-Chunks">Obstack Chunks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Status-of-an-Obstack.html#Status-of-an-Obstack">Status of an Obstack</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.9 Alignment of Data in Obstacks</h5>
+
+<p><a name="index-alignment-_0028in-obstacks_0029-335"></a>
+Each obstack has an <dfn>alignment boundary</dfn>; each object allocated in
+the obstack automatically starts on an address that is a multiple of the
+specified boundary.  By default, this boundary is aligned so that
+the object can hold any type of data.
+
+   <p>To access an obstack's alignment boundary, use the macro
+<code>obstack_alignment_mask</code>, whose function prototype looks like
+this:
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>obstack_alignment_mask</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005falignment_005fmask-336"></a></var><br>
+<blockquote><p>The value is a bit mask; a bit that is 1 indicates that the corresponding
+bit in the address of an object should be 0.  The mask value should be one
+less than a power of 2; the effect is that all object addresses are
+multiples of that power of 2.  The default value of the mask is a value
+that allows aligned objects to hold any type of data: for example, if
+its value is 3, any type of data can be stored at locations whose
+addresses are multiples of 4.  A mask value of 0 means an object can start
+on any multiple of 1 (that is, no alignment is required).
+
+        <p>The expansion of the macro <code>obstack_alignment_mask</code> is an lvalue,
+so you can alter the mask by assignment.  For example, this statement:
+
+     <pre class="smallexample">          obstack_alignment_mask (obstack_ptr) = 0;
+</pre>
+        <p class="noindent">has the effect of turning off alignment processing in the specified obstack. 
+</p></blockquote></div>
+
+   <p>Note that a change in alignment mask does not take effect until
+<em>after</em> the next time an object is allocated or finished in the
+obstack.  If you are not growing an object, you can make the new
+alignment mask take effect immediately by calling <code>obstack_finish</code>. 
+This will finish a zero-length object and then do proper alignment for
+the next object.
+
+   </body></html>
+

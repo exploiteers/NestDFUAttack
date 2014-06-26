@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+<title>Search - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Source.html#Source" title="Source">
+<link rel="prev" href="Edit.html#Edit" title="Edit">
+<link rel="next" href="Source-Path.html#Source-Path" title="Source Path">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Search"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Source-Path.html#Source-Path">Source Path</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Edit.html#Edit">Edit</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Source.html#Source">Source</a>
+<hr>
+</div>
+
+<h3 class="section">7.4 Searching Source Files</h3>
+
+<p><a name="index-searching-source-files-381"></a>
+There are two commands for searching through the current source file for a
+regular expression.
+
+     
+<a name="index-search-382"></a>
+<a name="index-forward_002dsearch-383"></a>
+<dl><dt><code>forward-search </code><var>regexp</var><dt><code>search </code><var>regexp</var><dd>The command &lsquo;<samp><span class="samp">forward-search </span><var>regexp</var></samp>&rsquo; checks each line,
+starting with the one following the last line listed, for a match for
+<var>regexp</var>.  It lists the line that is found.  You can use the
+synonym &lsquo;<samp><span class="samp">search </span><var>regexp</var></samp>&rsquo; or abbreviate the command name as
+<code>fo</code>.
+
+     <p><a name="index-reverse_002dsearch-384"></a><br><dt><code>reverse-search </code><var>regexp</var><dd>The command &lsquo;<samp><span class="samp">reverse-search </span><var>regexp</var></samp>&rsquo; checks each line, starting
+with the one before the last line listed and going backward, for a match
+for <var>regexp</var>.  It lists the line that is found.  You can abbreviate
+this command as <code>rev</code>. 
+</dl>
+
+   </body></html>
+

@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+<title>Datagrams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sockets.html#Sockets" title="Sockets">
+<link rel="prev" href="Connections.html#Connections" title="Connections">
+<link rel="next" href="Inetd.html#Inetd" title="Inetd">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Datagrams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Inetd.html#Inetd">Inetd</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Connections.html#Connections">Connections</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sockets.html#Sockets">Sockets</a>
+<hr>
+</div>
+
+<h3 class="section">16.10 Datagram Socket Operations</h3>
+
+<p><a name="index-datagram-socket-1816"></a>This section describes how to use communication styles that don't use
+connections (styles <code>SOCK_DGRAM</code> and <code>SOCK_RDM</code>).  Using
+these styles, you group data into packets and each packet is an
+independent communication.  You specify the destination for each
+packet individually.
+
+   <p>Datagram packets are like letters: you send each one independently
+with its own destination address, and they may arrive in the wrong
+order or not at all.
+
+   <p>The <code>listen</code> and <code>accept</code> functions are not allowed for
+sockets using connectionless communication styles.
+
+<ul class="menu">
+<li><a accesskey="1" href="Sending-Datagrams.html#Sending-Datagrams">Sending Datagrams</a>:     Sending packets on a datagram socket. 
+<li><a accesskey="2" href="Receiving-Datagrams.html#Receiving-Datagrams">Receiving Datagrams</a>:   Receiving packets on a datagram socket. 
+<li><a accesskey="3" href="Datagram-Example.html#Datagram-Example">Datagram Example</a>:      An example program: packets sent over a
+                           datagram socket in the local namespace. 
+<li><a accesskey="4" href="Example-Receiver.html#Example-Receiver">Example Receiver</a>: 	 Another program, that receives those packets. 
+</ul>
+
+   </body></html>
+

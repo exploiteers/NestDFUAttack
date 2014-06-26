@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Other Input Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Dynamic-String-Input.html#Dynamic-String-Input" title="Dynamic String Input">
+<link rel="next" href="Formatted-Input-Functions.html#Formatted-Input-Functions" title="Formatted Input Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Other-Input-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatted-Input-Functions.html#Formatted-Input-Functions">Formatted Input Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Dynamic-String-Input.html#Dynamic-String-Input">Dynamic String Input</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.7 Other Input Conversions</h4>
+
+<p>This section describes the miscellaneous input conversions.
+
+   <p>The &lsquo;<samp><span class="samp">%p</span></samp>&rsquo; conversion is used to read a pointer value.  It recognizes
+the same syntax used by the &lsquo;<samp><span class="samp">%p</span></samp>&rsquo; output conversion for
+<code>printf</code> (see <a href="Other-Output-Conversions.html#Other-Output-Conversions">Other Output Conversions</a>); that is, a hexadecimal
+number just as the &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; conversion accepts.  The corresponding
+argument should be of type <code>void **</code>; that is, the address of a
+place to store a pointer.
+
+   <p>The resulting pointer value is not guaranteed to be valid if it was not
+originally written during the same program execution that reads it in.
+
+   <p>The &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; conversion produces the number of characters read so far
+by this call.  The corresponding argument should be of type <code>int *</code>. 
+This conversion works in the same way as the &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; conversion for
+<code>printf</code>; see <a href="Other-Output-Conversions.html#Other-Output-Conversions">Other Output Conversions</a>, for an example.
+
+   <p>The &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; conversion is the only mechanism for determining the
+success of literal matches or conversions with suppressed assignments. 
+If the &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; follows the locus of a matching failure, then no value
+is stored for it since <code>scanf</code> returns before processing the
+&lsquo;<samp><span class="samp">%n</span></samp>&rsquo;.  If you store <code>-1</code> in that argument slot before calling
+<code>scanf</code>, the presence of <code>-1</code> after <code>scanf</code> indicates an
+error occurred before the &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; was reached.
+
+   <p>Finally, the &lsquo;<samp><span class="samp">%%</span></samp>&rsquo; conversion matches a literal &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character
+in the input stream, without using an argument.  This conversion does
+not permit any flags, field width, or type modifier to be specified.
+
+   </body></html>
+

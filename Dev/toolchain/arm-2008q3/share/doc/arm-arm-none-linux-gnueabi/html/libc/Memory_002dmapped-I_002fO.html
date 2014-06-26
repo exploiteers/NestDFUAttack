@@ -1,0 +1,372 @@
+<html lang="en">
+<head>
+<title>Memory-mapped I/O - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Scatter_002dGather.html#Scatter_002dGather" title="Scatter-Gather">
+<link rel="next" href="Waiting-for-I_002fO.html#Waiting-for-I_002fO" title="Waiting for I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Memory-mapped-I%2fO"></a>
+<a name="Memory_002dmapped-I_002fO"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scatter_002dGather.html#Scatter_002dGather">Scatter-Gather</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.7 Memory-mapped I/O</h3>
+
+<p>On modern operating systems, it is possible to <dfn>mmap</dfn> (pronounced
+&ldquo;em-map&rdquo;) a file to a region of memory.  When this is done, the file can
+be accessed just like an array in the program.
+
+   <p>This is more efficient than <code>read</code> or <code>write</code>, as only the regions
+of the file that a program actually accesses are loaded.  Accesses to
+not-yet-loaded parts of the mmapped region are handled in the same way as
+swapped out pages.
+
+   <p>Since mmapped pages can be stored back to their file when physical
+memory is low, it is possible to mmap files orders of magnitude larger
+than both the physical memory <em>and</em> swap space.  The only limit is
+address space.  The theoretical limit is 4GB on a 32-bit machine -
+however, the actual limit will be smaller since some areas will be
+reserved for other purposes.  If the LFS interface is used the file size
+on 32-bit systems is not limited to 2GB (offsets are signed which
+reduces the addressable area of 4GB by half); the full 64-bit are
+available.
+
+   <p>Memory mapping only works on entire pages of memory.  Thus, addresses
+for mapping must be page-aligned, and length values will be rounded up. 
+To determine the size of a page the machine uses one should use
+
+   <p><a name="index-g_t_005fSC_005fPAGESIZE-1253"></a>
+<pre class="smallexample">     size_t page_size = (size_t) sysconf (_SC_PAGESIZE);
+</pre>
+   <p class="noindent">These functions are declared in <samp><span class="file">sys/mman.h</span></samp>.
+
+<!-- sys/mman.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: void * <b>mmap</b> (<var>void *address, size_t length,int protect, int flags, int filedes, off_t offset</var>)<var><a name="index-mmap-1254"></a></var><br>
+<blockquote>
+        <p>The <code>mmap</code> function creates a new mapping, connected to bytes
+(<var>offset</var>) to (<var>offset</var> + <var>length</var> - 1) in the file open on
+<var>filedes</var>.  A new reference for the file specified by <var>filedes</var>
+is created, which is not removed by closing the file.
+
+        <p><var>address</var> gives a preferred starting address for the mapping. 
+<code>NULL</code> expresses no preference. Any previous mapping at that
+address is automatically removed. The address you give may still be
+changed, unless you use the <code>MAP_FIXED</code> flag.
+
+        <p><a name="index-PROT_005fREAD-1255"></a><a name="index-PROT_005fWRITE-1256"></a><a name="index-PROT_005fEXEC-1257"></a><var>protect</var> contains flags that control what kind of access is
+permitted.  They include <code>PROT_READ</code>, <code>PROT_WRITE</code>, and
+<code>PROT_EXEC</code>, which permit reading, writing, and execution,
+respectively.  Inappropriate access will cause a segfault (see <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>).
+
+        <p>Note that most hardware designs cannot support write permission without
+read permission, and many do not distinguish read and execute permission. 
+Thus, you may receive wider permissions than you ask for, and mappings of
+write-only files may be denied even if you do not use <code>PROT_READ</code>.
+
+        <p><var>flags</var> contains flags that control the nature of the map. 
+One of <code>MAP_SHARED</code> or <code>MAP_PRIVATE</code> must be specified.
+
+        <p>They include:
+
+          <dl>
+<dt><code>MAP_PRIVATE</code><a name="index-MAP_005fPRIVATE-1258"></a><dd>This specifies that writes to the region should never be written back
+to the attached file.  Instead, a copy is made for the process, and the
+region will be swapped normally if memory runs low.  No other process will
+see the changes.
+
+          <p>Since private mappings effectively revert to ordinary memory
+when written to, you must have enough virtual memory for a copy of
+the entire mmapped region if you use this mode with <code>PROT_WRITE</code>.
+
+          <br><dt><code>MAP_SHARED</code><a name="index-MAP_005fSHARED-1259"></a><dd>This specifies that writes to the region will be written back to the
+file.  Changes made will be shared immediately with other processes
+mmaping the same file.
+
+          <p>Note that actual writing may take place at any time.  You need to use
+<code>msync</code>, described below, if it is important that other processes
+using conventional I/O get a consistent view of the file.
+
+          <br><dt><code>MAP_FIXED</code><a name="index-MAP_005fFIXED-1260"></a><dd>This forces the system to use the exact mapping address specified in
+<var>address</var> and fail if it can't.
+
+          <!-- One of these is official - the other is obviously an obsolete synonym -->
+          <!-- Which is which? -->
+          <br><dt><code>MAP_ANONYMOUS</code><a name="index-MAP_005fANONYMOUS-1261"></a><dt><code>MAP_ANON</code><a name="index-MAP_005fANON-1262"></a><dd>This flag tells the system to create an anonymous mapping, not connected
+to a file.  <var>filedes</var> and <var>off</var> are ignored, and the region is
+initialized with zeros.
+
+          <p>Anonymous maps are used as the basic primitive to extend the heap on some
+systems.  They are also useful to share data between multiple tasks
+without creating a file.
+
+          <p>On some systems using private anonymous mmaps is more efficient than using
+<code>malloc</code> for large blocks.  This is not an issue with the GNU C library,
+as the included <code>malloc</code> automatically uses <code>mmap</code> where appropriate.
+
+          <!-- Linux has some other MAP_ options, which I have not discussed here. -->
+          <!-- MAP_DENYWRITE, MAP_EXECUTABLE and MAP_GROWSDOWN don't seem applicable to -->
+          <!-- user programs (and I don't understand the last two). MAP_LOCKED does -->
+          <!-- not appear to be implemented. -->
+        </dl>
+
+        <p><code>mmap</code> returns the address of the new mapping, or -1 for an
+error.
+
+        <p>Possible errors include:
+
+          <dl>
+<dt><code>EINVAL</code><dd>
+Either <var>address</var> was unusable, or inconsistent <var>flags</var> were
+given.
+
+          <br><dt><code>EACCES</code><dd>
+<var>filedes</var> was not open for the type of access specified in <var>protect</var>.
+
+          <br><dt><code>ENOMEM</code><dd>
+Either there is not enough memory for the operation, or the process is
+out of address space.
+
+          <br><dt><code>ENODEV</code><dd>
+This file is of a type that doesn't support mapping.
+
+          <br><dt><code>ENOEXEC</code><dd>
+The file is on a filesystem that doesn't support mapping.
+
+          <!-- On Linux, EAGAIN will appear if the file has a conflicting mandatory lock. -->
+          <!-- However mandatory locks are not discussed in this manual. -->
+          <!-- Similarly, ETXTBSY will occur if the MAP_DENYWRITE flag (not documented -->
+          <!-- here) is used and the file is already open for writing. -->
+        </dl>
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- LFS -->
+<div class="defun">
+&mdash; Function: void * <b>mmap64</b> (<var>void *address, size_t length,int protect, int flags, int filedes, off64_t offset</var>)<var><a name="index-mmap64-1263"></a></var><br>
+<blockquote><p>The <code>mmap64</code> function is equivalent to the <code>mmap</code> function but
+the <var>offset</var> parameter is of type <code>off64_t</code>.  On 32-bit systems
+this allows the file associated with the <var>filedes</var> descriptor to be
+larger than 2GB.  <var>filedes</var> must be a descriptor returned from a
+call to <code>open64</code> or <code>fopen64</code> and <code>freopen64</code> where the
+descriptor is retrieved with <code>fileno</code>.
+
+        <p>When the sources are translated with <code>_FILE_OFFSET_BITS == 64</code> this
+function is actually available under the name <code>mmap</code>.  I.e., the
+new, extended API using 64 bit file sizes and offsets transparently
+replaces the old API. 
+</p></blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>munmap</b> (<var>void *addr, size_t length</var>)<var><a name="index-munmap-1264"></a></var><br>
+<blockquote>
+        <p><code>munmap</code> removes any memory maps from (<var>addr</var>) to (<var>addr</var> +
+<var>length</var>).  <var>length</var> should be the length of the mapping.
+
+        <p>It is safe to unmap multiple mappings in one command, or include unmapped
+space in the range.  It is also possible to unmap only part of an existing
+mapping.  However, only entire pages can be removed.  If <var>length</var> is not
+an even number of pages, it will be rounded up.
+
+        <p>It returns 0 for success and -1 for an error.
+
+        <p>One error is possible:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The memory range given was outside the user mmap range or wasn't page
+aligned.
+
+        </dl>
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>msync</b> (<var>void *address, size_t length, int flags</var>)<var><a name="index-msync-1265"></a></var><br>
+<blockquote>
+        <p>When using shared mappings, the kernel can write the file at any time
+before the mapping is removed.  To be certain data has actually been
+written to the file and will be accessible to non-memory-mapped I/O, it
+is necessary to use this function.
+
+        <p>It operates on the region <var>address</var> to (<var>address</var> + <var>length</var>). 
+It may be used on part of a mapping or multiple mappings, however the
+region given should not contain any unmapped space.
+
+        <p><var>flags</var> can contain some options:
+
+          <dl>
+<dt><code>MS_SYNC</code><a name="index-MS_005fSYNC-1266"></a><dd>
+This flag makes sure the data is actually written <em>to disk</em>. 
+Normally <code>msync</code> only makes sure that accesses to a file with
+conventional I/O reflect the recent changes.
+
+          <br><dt><code>MS_ASYNC</code><a name="index-MS_005fASYNC-1267"></a><dd>
+This tells <code>msync</code> to begin the synchronization, but not to wait for
+it to complete.
+
+          <!-- Linux also has MS_INVALIDATE, which I don't understand. -->
+        </dl>
+
+        <p><code>msync</code> returns 0 for success and -1 for
+error.  Errors include:
+
+          <dl>
+<dt><code>EINVAL</code><dd>An invalid region was given, or the <var>flags</var> were invalid.
+
+          <br><dt><code>EFAULT</code><dd>There is no existing mapping in at least part of the given region.
+
+        </dl>
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>mremap</b> (<var>void *address, size_t length, size_t new_length, int flag</var>)<var><a name="index-mremap-1268"></a></var><br>
+<blockquote>
+        <p>This function can be used to change the size of an existing memory
+area. <var>address</var> and <var>length</var> must cover a region entirely mapped
+in the same <code>mmap</code> statement. A new mapping with the same
+characteristics will be returned with the length <var>new_length</var>.
+
+        <p>One option is possible, <code>MREMAP_MAYMOVE</code>. If it is given in
+<var>flags</var>, the system may remove the existing mapping and create a new
+one of the desired length in another location.
+
+        <p>The address of the resulting mapping is returned, or -1. Possible
+error codes include:
+
+          <dl>
+<dt><code>EFAULT</code><dd>There is no existing mapping in at least part of the original region, or
+the region covers two or more distinct mappings.
+
+          <br><dt><code>EINVAL</code><dd>The address given is misaligned or inappropriate.
+
+          <br><dt><code>EAGAIN</code><dd>The region has pages locked, and if extended it would exceed the
+process's resource limit for locked pages.  See <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>.
+
+          <br><dt><code>ENOMEM</code><dd>The region is private writable, and insufficient virtual memory is
+available to extend it.  Also, this error will occur if
+<code>MREMAP_MAYMOVE</code> is not given and the extension would collide with
+another mapped region.
+
+        </dl>
+        </p></blockquote></div>
+
+   <p>This function is only available on a few systems.  Except for performing
+optional optimizations one should not rely on this function.
+
+   <p>Not all file descriptors may be mapped.  Sockets, pipes, and most devices
+only allow sequential access and do not fit into the mapping abstraction. 
+In addition, some regular files may not be mmapable, and older kernels may
+not support mapping at all.  Thus, programs using <code>mmap</code> should
+have a fallback method to use should it fail. See <a href="../standards/Mmap.html#Mmap">Mmap</a>.
+
+<!-- sys/mman.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>madvise</b> (<var>void *addr, size_t length, int advice</var>)<var><a name="index-madvise-1269"></a></var><br>
+<blockquote>
+        <p>This function can be used to provide the system with <var>advice</var> about
+the intended usage patterns of the memory region starting at <var>addr</var>
+and extending <var>length</var> bytes.
+
+        <p>The valid BSD values for <var>advice</var> are:
+
+          <dl>
+<dt><code>MADV_NORMAL</code><dd>The region should receive no further special treatment.
+
+          <br><dt><code>MADV_RANDOM</code><dd>The region will be accessed via random page references. The kernel
+should page-in the minimal number of pages for each page fault.
+
+          <br><dt><code>MADV_SEQUENTIAL</code><dd>The region will be accessed via sequential page references. This
+may cause the kernel to aggressively read-ahead, expecting further
+sequential references after any page fault within this region.
+
+          <br><dt><code>MADV_WILLNEED</code><dd>The region will be needed.  The pages within this region may
+be pre-faulted in by the kernel.
+
+          <br><dt><code>MADV_DONTNEED</code><dd>The region is no longer needed.  The kernel may free these pages,
+causing any changes to the pages to be lost, as well as swapped
+out pages to be discarded.
+
+        </dl>
+
+        <p>The POSIX names are slightly different, but with the same meanings:
+
+          <dl>
+<dt><code>POSIX_MADV_NORMAL</code><dd>This corresponds with BSD's <code>MADV_NORMAL</code>.
+
+          <br><dt><code>POSIX_MADV_RANDOM</code><dd>This corresponds with BSD's <code>MADV_RANDOM</code>.
+
+          <br><dt><code>POSIX_MADV_SEQUENTIAL</code><dd>This corresponds with BSD's <code>MADV_SEQUENTIAL</code>.
+
+          <br><dt><code>POSIX_MADV_WILLNEED</code><dd>This corresponds with BSD's <code>MADV_WILLNEED</code>.
+
+          <br><dt><code>POSIX_MADV_DONTNEED</code><dd>This corresponds with BSD's <code>MADV_DONTNEED</code>.
+
+        </dl>
+
+        <p><code>msync</code> returns 0 for success and -1 for
+error.  Errors include:
+          <dl>
+<dt><code>EINVAL</code><dd>An invalid region was given, or the <var>advice</var> was invalid.
+
+          <br><dt><code>EFAULT</code><dd>There is no existing mapping in at least part of the given region.
+
+        </dl>
+        </p></blockquote></div>
+
+   </body></html>
+

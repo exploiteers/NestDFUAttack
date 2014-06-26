@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+<title>Header Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-the-Library.html#Using-the-Library" title="Using the Library">
+<link rel="next" href="Macro-Definitions.html#Macro-Definitions" title="Macro Definitions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Header-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Macro-Definitions.html#Macro-Definitions">Macro Definitions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-the-Library.html#Using-the-Library">Using the Library</a>
+<hr>
+</div>
+
+<h4 class="subsection">1.3.1 Header Files</h4>
+
+<p><a name="index-header-files-20"></a>
+Libraries for use by C programs really consist of two parts: <dfn>header
+files</dfn> that define types and macros and declare variables and
+functions; and the actual library or <dfn>archive</dfn> that contains the
+definitions of the variables and functions.
+
+   <p>(Recall that in C, a <dfn>declaration</dfn> merely provides information that
+a function or variable exists and gives its type.  For a function
+declaration, information about the types of its arguments might be
+provided as well.  The purpose of declarations is to allow the compiler
+to correctly process references to the declared variables and functions. 
+A <dfn>definition</dfn>, on the other hand, actually allocates storage for a
+variable or says what a function does.) 
+<a name="index-definition-_0028compared-to-declaration_0029-21"></a><a name="index-declaration-_0028compared-to-definition_0029-22"></a>
+In order to use the facilities in the GNU C library, you should be sure
+that your program source files include the appropriate header files. 
+This is so that the compiler has declarations of these facilities
+available and can correctly process references to them.  Once your
+program has been compiled, the linker resolves these references to
+the actual definitions provided in the archive file.
+
+   <p>Header files are included into a program source file by the
+&lsquo;<samp><span class="samp">#include</span></samp>&rsquo; preprocessor directive.  The C language supports two
+forms of this directive; the first,
+
+<pre class="smallexample">     #include "<var>header</var>"
+</pre>
+   <p class="noindent">is typically used to include a header file <var>header</var> that you write
+yourself; this would contain definitions and declarations describing the
+interfaces between the different parts of your particular application. 
+By contrast,
+
+<pre class="smallexample">     #include &lt;file.h&gt;
+</pre>
+   <p class="noindent">is typically used to include a header file <samp><span class="file">file.h</span></samp> that contains
+definitions and declarations for a standard library.  This file would
+normally be installed in a standard place by your system administrator. 
+You should use this second form for the C library header files.
+
+   <p>Typically, &lsquo;<samp><span class="samp">#include</span></samp>&rsquo; directives are placed at the top of the C
+source file, before any other code.  If you begin your source files with
+some comments explaining what the code in the file does (a good idea),
+put the &lsquo;<samp><span class="samp">#include</span></samp>&rsquo; directives immediately afterwards, following the
+feature test macro definition (see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>).
+
+   <p>For more information about the use of header files and &lsquo;<samp><span class="samp">#include</span></samp>&rsquo;
+directives, see <a href="../cpp/Header-Files.html#Header-Files">Header Files</a>.
+
+   <p>The GNU C library provides several header files, each of which contains
+the type and macro definitions and variable and function declarations
+for a group of related facilities.  This means that your programs may
+need to include several header files, depending on exactly which
+facilities you are using.
+
+   <p>Some library header files include other library header files
+automatically.  However, as a matter of programming style, you should
+not rely on this; it is better to explicitly include all the header
+files required for the library facilities you are using.  The GNU C
+library header files have been written in such a way that it doesn't
+matter if a header file is accidentally included more than once;
+including a header file a second time has no effect.  Likewise, if your
+program needs to include multiple header files, the order in which they
+are included doesn't matter.
+
+   <p><strong>Compatibility Note:</strong> Inclusion of standard header files in any
+order and any number of times works in any ISO&nbsp;C<!-- /@w --> implementation. 
+However, this has traditionally not been the case in many older C
+implementations.
+
+   <p>Strictly speaking, you don't <em>have to</em> include a header file to use
+a function it declares; you could declare the function explicitly
+yourself, according to the specifications in this manual.  But it is
+usually better to include the header file because it may define types
+and macros that are not otherwise available and because it may define
+more efficient macro replacements for some functions.  It is also a sure
+way to have the correct declaration.
+
+   </body></html>
+

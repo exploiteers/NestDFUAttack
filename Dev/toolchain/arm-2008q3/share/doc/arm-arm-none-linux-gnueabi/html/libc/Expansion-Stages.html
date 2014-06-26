@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>Expansion Stages - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Word-Expansion.html#Word-Expansion" title="Word Expansion">
+<link rel="next" href="Calling-Wordexp.html#Calling-Wordexp" title="Calling Wordexp">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Expansion-Stages"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Calling-Wordexp.html#Calling-Wordexp">Calling Wordexp</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Word-Expansion.html#Word-Expansion">Word Expansion</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.4.1 The Stages of Word Expansion</h4>
+
+<p>When word expansion is applied to a sequence of words, it performs the
+following transformations in the order shown here:
+
+     <ol type=1 start=1>
+<li><a name="index-tilde-expansion-885"></a><dfn>Tilde expansion</dfn>: Replacement of &lsquo;<samp><span class="samp">~foo</span></samp>&rsquo; with the name of
+the home directory of &lsquo;<samp><span class="samp">foo</span></samp>&rsquo;.
+
+     <li>Next, three different transformations are applied in the same step,
+from left to right:
+
+          <ul>
+<li><a name="index-variable-substitution-886"></a><a name="index-substitution-of-variables-and-commands-887"></a><dfn>Variable substitution</dfn>: Environment variables are substituted for
+references such as &lsquo;<samp><span class="samp">$foo</span></samp>&rsquo;.
+
+          <li><a name="index-command-substitution-888"></a><dfn>Command substitution</dfn>: Constructs such as &lsquo;<samp><span class="samp">`cat&nbsp;foo`</span></samp>&rsquo;<!-- /@w --> and
+the equivalent &lsquo;<samp><span class="samp">$(cat&nbsp;foo)</span></samp>&rsquo;<!-- /@w --> are replaced with the output from
+the inner command.
+
+          <li><a name="index-arithmetic-expansion-889"></a><dfn>Arithmetic expansion</dfn>: Constructs such as &lsquo;<samp><span class="samp">$(($x-1))</span></samp>&rsquo; are
+replaced with the result of the arithmetic computation. 
+</ul>
+
+     <li><a name="index-field-splitting-890"></a><dfn>Field splitting</dfn>: subdivision of the text into <dfn>words</dfn>.
+
+     <li><a name="index-wildcard-expansion-891"></a><dfn>Wildcard expansion</dfn>: The replacement of a construct such as &lsquo;<samp><span class="samp">*.c</span></samp>&rsquo;
+with a list of &lsquo;<samp><span class="samp">.c</span></samp>&rsquo; file names.  Wildcard expansion applies to an
+entire word at a time, and replaces that word with 0 or more file names
+that are themselves words.
+
+     <li><a name="index-quote-removal-892"></a><a name="index-removal-of-quotes-893"></a><dfn>Quote removal</dfn>: The deletion of string-quotes, now that they have
+done their job by inhibiting the above transformations when appropriate.
+        </ol>
+
+   <p>For the details of these transformations, and how to write the constructs
+that use them, see <cite>The&nbsp;BASH&nbsp;Manual</cite><!-- /@w --> (to appear).
+
+   </body></html>
+

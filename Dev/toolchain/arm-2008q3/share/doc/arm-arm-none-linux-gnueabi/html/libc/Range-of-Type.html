@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+<title>Range of Type - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Data-Type-Measurements.html#Data-Type-Measurements" title="Data Type Measurements">
+<link rel="prev" href="Width-of-Type.html#Width-of-Type" title="Width of Type">
+<link rel="next" href="Floating-Type-Macros.html#Floating-Type-Macros" title="Floating Type Macros">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Range-of-Type"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating-Type-Macros.html#Floating-Type-Macros">Floating Type Macros</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Width-of-Type.html#Width-of-Type">Width of Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Data-Type-Measurements.html#Data-Type-Measurements">Data Type Measurements</a>
+<hr>
+</div>
+
+<h4 class="subsection">A.5.2 Range of an Integer Type</h4>
+
+<p><a name="index-integer-type-range-3744"></a><a name="index-range-of-integer-type-3745"></a><a name="index-limits_002c-integer-types-3746"></a>
+Suppose you need to store an integer value which can range from zero to
+one million.  Which is the smallest type you can use?  There is no
+general rule; it depends on the C compiler and target machine.  You can
+use the &lsquo;<samp><span class="samp">MIN</span></samp>&rsquo; and &lsquo;<samp><span class="samp">MAX</span></samp>&rsquo; macros in <samp><span class="file">limits.h</span></samp> to determine
+which type will work.
+
+   <p>Each signed integer type has a pair of macros which give the smallest
+and largest values that it can hold.  Each unsigned integer type has one
+such macro, for the maximum value; the minimum value is, of course,
+zero.
+
+   <p>The values of these macros are all integer constant expressions.  The
+&lsquo;<samp><span class="samp">MAX</span></samp>&rsquo; and &lsquo;<samp><span class="samp">MIN</span></samp>&rsquo; macros for <code>char</code> and <code>short&nbsp;int</code><!-- /@w --> types have values of type <code>int</code>.  The &lsquo;<samp><span class="samp">MAX</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">MIN</span></samp>&rsquo; macros for the other types have values of the same type
+described by the macro&mdash;thus, <code>ULONG_MAX</code> has type
+<code>unsigned&nbsp;long&nbsp;int</code><!-- /@w -->.
+
+<!-- Extra blank lines make it look better. -->
+     <dl>
+<!-- limits.h -->
+<!-- ISO -->
+<dt><code>SCHAR_MIN</code><a name="index-SCHAR_005fMIN-3747"></a><dd>
+This is the minimum value that can be represented by a <code>signed&nbsp;char</code><!-- /@w -->.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>SCHAR_MAX</code><a name="index-SCHAR_005fMAX-3748"></a><dd><!-- limits.h -->
+<!-- ISO -->
+<dt><code>UCHAR_MAX</code><a name="index-UCHAR_005fMAX-3749"></a><dd>
+These are the maximum values that can be represented by a
+<code>signed&nbsp;char</code><!-- /@w --> and <code>unsigned&nbsp;char</code><!-- /@w -->, respectively.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>CHAR_MIN</code><a name="index-CHAR_005fMIN-3750"></a><dd>
+This is the minimum value that can be represented by a <code>char</code>. 
+It's equal to <code>SCHAR_MIN</code> if <code>char</code> is signed, or zero
+otherwise.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>CHAR_MAX</code><a name="index-CHAR_005fMAX-3751"></a><dd>
+This is the maximum value that can be represented by a <code>char</code>. 
+It's equal to <code>SCHAR_MAX</code> if <code>char</code> is signed, or
+<code>UCHAR_MAX</code> otherwise.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>SHRT_MIN</code><a name="index-SHRT_005fMIN-3752"></a><dd>
+This is the minimum value that can be represented by a <code>signed&nbsp;short&nbsp;int</code><!-- /@w -->.  On most machines that the GNU C library runs on,
+<code>short</code> integers are 16-bit quantities.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>SHRT_MAX</code><a name="index-SHRT_005fMAX-3753"></a><dd><!-- limits.h -->
+<!-- ISO -->
+<dt><code>USHRT_MAX</code><a name="index-USHRT_005fMAX-3754"></a><dd>
+These are the maximum values that can be represented by a
+<code>signed&nbsp;short&nbsp;int</code><!-- /@w --> and <code>unsigned&nbsp;short&nbsp;int</code><!-- /@w -->,
+respectively.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>INT_MIN</code><a name="index-INT_005fMIN-3755"></a><dd>
+This is the minimum value that can be represented by a <code>signed&nbsp;int</code><!-- /@w -->.  On most machines that the GNU C system runs on, an <code>int</code> is
+a 32-bit quantity.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>INT_MAX</code><a name="index-INT_005fMAX-3756"></a><dd><!-- limits.h -->
+<!-- ISO -->
+<dt><code>UINT_MAX</code><a name="index-UINT_005fMAX-3757"></a><dd>
+These are the maximum values that can be represented by, respectively,
+the type <code>signed&nbsp;int</code><!-- /@w --> and the type <code>unsigned&nbsp;int</code><!-- /@w -->.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>LONG_MIN</code><a name="index-LONG_005fMIN-3758"></a><dd>
+This is the minimum value that can be represented by a <code>signed&nbsp;long&nbsp;int</code><!-- /@w -->.  On most machines that the GNU C system runs on, <code>long</code>
+integers are 32-bit quantities, the same size as <code>int</code>.
+
+     <!-- limits.h -->
+     <!-- ISO -->
+     <br><dt><code>LONG_MAX</code><a name="index-LONG_005fMAX-3759"></a><dd><!-- limits.h -->
+<!-- ISO -->
+<dt><code>ULONG_MAX</code><a name="index-ULONG_005fMAX-3760"></a><dd>
+These are the maximum values that can be represented by a
+<code>signed&nbsp;long&nbsp;int</code><!-- /@w --> and <code>unsigned long int</code>, respectively.
+
+     <!-- limits.h -->
+     <!-- GNU -->
+     <br><dt><code>LONG_LONG_MIN</code><a name="index-LONG_005fLONG_005fMIN-3761"></a><dd>
+This is the minimum value that can be represented by a <code>signed&nbsp;long&nbsp;long&nbsp;int</code><!-- /@w -->.  On most machines that the GNU C system runs on,
+<code>long&nbsp;long</code><!-- /@w --> integers are 64-bit quantities.
+
+     <!-- limits.h -->
+     <!-- GNU -->
+     <br><dt><code>LONG_LONG_MAX</code><a name="index-LONG_005fLONG_005fMAX-3762"></a><dd><!-- limits.h -->
+<!-- ISO -->
+<dt><code>ULONG_LONG_MAX</code><a name="index-ULONG_005fLONG_005fMAX-3763"></a><dd>
+These are the maximum values that can be represented by a <code>signed
+long long int</code> and <code>unsigned long long int</code>, respectively.
+
+     <!-- limits.h -->
+     <!-- GNU -->
+     <br><dt><code>WCHAR_MAX</code><a name="index-WCHAR_005fMAX-3764"></a><dd>
+This is the maximum value that can be represented by a <code>wchar_t</code>. 
+See <a href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>. 
+</dl>
+
+   <p>The header file <samp><span class="file">limits.h</span></samp> also defines some additional constants
+that parameterize various operating system and file system limits.  These
+constants are described in <a href="System-Configuration.html#System-Configuration">System Configuration</a>.
+
+   </body></html>
+

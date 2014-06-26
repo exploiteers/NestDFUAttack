@@ -1,0 +1,178 @@
+<html lang="en">
+<head>
+<title>Normalization Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="prev" href="Absolute-Value.html#Absolute-Value" title="Absolute Value">
+<link rel="next" href="Rounding-Functions.html#Rounding-Functions" title="Rounding Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Normalization-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Rounding-Functions.html#Rounding-Functions">Rounding Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Absolute-Value.html#Absolute-Value">Absolute Value</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.2 Normalization Functions</h4>
+
+<p><a name="index-normalization-functions-_0028floating_002dpoint_0029-2416"></a>
+The functions described in this section are primarily provided as a way
+to efficiently perform certain low-level manipulations on floating point
+numbers that are represented internally using a binary radix;
+see <a href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>.  These functions are required to
+have equivalent behavior even if the representation does not use a radix
+of 2, but of course they are unlikely to be particularly efficient in
+those cases.
+
+   <p><a name="index-math_002eh-2417"></a>All these functions are declared in <samp><span class="file">math.h</span></samp>.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>frexp</b> (<var>double value, int *exponent</var>)<var><a name="index-frexp-2418"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>frexpf</b> (<var>float value, int *exponent</var>)<var><a name="index-frexpf-2419"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>frexpl</b> (<var>long double value, int *exponent</var>)<var><a name="index-frexpl-2420"></a></var><br>
+<blockquote><p>These functions are used to split the number <var>value</var>
+into a normalized fraction and an exponent.
+
+        <p>If the argument <var>value</var> is not zero, the return value is <var>value</var>
+times a power of two, and is always in the range 1/2 (inclusive) to 1
+(exclusive).  The corresponding exponent is stored in
+<code>*</code><var>exponent</var>; the return value multiplied by 2 raised to this
+exponent equals the original number <var>value</var>.
+
+        <p>For example, <code>frexp (12.8, &amp;exponent)</code> returns <code>0.8</code> and
+stores <code>4</code> in <code>exponent</code>.
+
+        <p>If <var>value</var> is zero, then the return value is zero and
+zero is stored in <code>*</code><var>exponent</var>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>ldexp</b> (<var>double value, int exponent</var>)<var><a name="index-ldexp-2421"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>ldexpf</b> (<var>float value, int exponent</var>)<var><a name="index-ldexpf-2422"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>ldexpl</b> (<var>long double value, int exponent</var>)<var><a name="index-ldexpl-2423"></a></var><br>
+<blockquote><p>These functions return the result of multiplying the floating-point
+number <var>value</var> by 2 raised to the power <var>exponent</var>.  (It can
+be used to reassemble floating-point numbers that were taken apart
+by <code>frexp</code>.)
+
+        <p>For example, <code>ldexp (0.8, 4)</code> returns <code>12.8</code>. 
+</p></blockquote></div>
+
+   <p>The following functions, which come from BSD, provide facilities
+equivalent to those of <code>ldexp</code> and <code>frexp</code>.  See also the
+ISO&nbsp;C<!-- /@w --> function <code>logb</code> which originally also appeared in BSD.
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: double <b>scalb</b> (<var>double value, int exponent</var>)<var><a name="index-scalb-2424"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: float <b>scalbf</b> (<var>float value, int exponent</var>)<var><a name="index-scalbf-2425"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long double <b>scalbl</b> (<var>long double value, int exponent</var>)<var><a name="index-scalbl-2426"></a></var><br>
+<blockquote><p>The <code>scalb</code> function is the BSD name for <code>ldexp</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long long int <b>scalbn</b> (<var>double x, int n</var>)<var><a name="index-scalbn-2427"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>scalbnf</b> (<var>float x, int n</var>)<var><a name="index-scalbnf-2428"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>scalbnl</b> (<var>long double x, int n</var>)<var><a name="index-scalbnl-2429"></a></var><br>
+<blockquote><p><code>scalbn</code> is identical to <code>scalb</code>, except that the exponent
+<var>n</var> is an <code>int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long long int <b>scalbln</b> (<var>double x, long int n</var>)<var><a name="index-scalbln-2430"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>scalblnf</b> (<var>float x, long int n</var>)<var><a name="index-scalblnf-2431"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>scalblnl</b> (<var>long double x, long int n</var>)<var><a name="index-scalblnl-2432"></a></var><br>
+<blockquote><p><code>scalbln</code> is identical to <code>scalb</code>, except that the exponent
+<var>n</var> is a <code>long int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long long int <b>significand</b> (<var>double x</var>)<var><a name="index-significand-2433"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>significandf</b> (<var>float x</var>)<var><a name="index-significandf-2434"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long long int <b>significandl</b> (<var>long double x</var>)<var><a name="index-significandl-2435"></a></var><br>
+<blockquote><p><code>significand</code> returns the mantissa of <var>x</var> scaled to the range
+[1, 2). 
+It is equivalent to <code>scalb&nbsp;(</code><var>x</var><code>,&nbsp;(double)&nbsp;-ilogb&nbsp;(</code><var>x</var><code>))</code><!-- /@w -->.
+
+        <p>This function exists mainly for use in certain standardized tests
+of IEEE&nbsp;754<!-- /@w --> conformance. 
+</p></blockquote></div>
+
+   </body></html>
+

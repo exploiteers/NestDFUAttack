@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+<title>Streams and Cookies - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Custom-Streams.html#Custom-Streams" title="Custom Streams">
+<link rel="next" href="Hook-Functions.html#Hook-Functions" title="Hook Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Streams-and-Cookies"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hook-Functions.html#Hook-Functions">Hook Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Custom-Streams.html#Custom-Streams">Custom Streams</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">12.21.3.1 Custom Streams and Cookies</h5>
+
+<p><a name="index-cookie_002c-for-custom-stream-1161"></a>
+Inside every custom stream is a special object called the <dfn>cookie</dfn>. 
+This is an object supplied by you which records where to fetch or store
+the data read or written.  It is up to you to define a data type to use
+for the cookie.  The stream functions in the library never refer
+directly to its contents, and they don't even know what the type is;
+they record its address with type <code>void *</code>.
+
+   <p>To implement a custom stream, you must specify <em>how</em> to fetch or
+store the data in the specified place.  You do this by defining
+<dfn>hook functions</dfn> to read, write, change &ldquo;file position&rdquo;, and close
+the stream.  All four of these functions will be passed the stream's
+cookie so they can tell where to fetch or store the data.  The library
+functions don't know what's inside the cookie, but your functions will
+know.
+
+   <p>When you create a custom stream, you must specify the cookie pointer,
+and also the four hook functions stored in a structure of type
+<code>cookie_io_functions_t</code>.
+
+   <p>These facilities are declared in <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1162"></a>
+<!-- stdio.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Data Type: <b>cookie_io_functions_t</b><var><a name="index-cookie_005fio_005ffunctions_005ft-1163"></a></var><br>
+<blockquote><p>This is a structure type that holds the functions that define the
+communications protocol between the stream and its cookie.  It has
+the following members:
+
+          <dl>
+<dt><code>cookie_read_function_t *read</code><dd>This is the function that reads data from the cookie.  If the value is a
+null pointer instead of a function, then read operations on this stream
+always return <code>EOF</code>.
+
+          <br><dt><code>cookie_write_function_t *write</code><dd>This is the function that writes data to the cookie.  If the value is a
+null pointer instead of a function, then data written to the stream is
+discarded.
+
+          <br><dt><code>cookie_seek_function_t *seek</code><dd>This is the function that performs the equivalent of file positioning on
+the cookie.  If the value is a null pointer instead of a function, calls
+to <code>fseek</code> or <code>fseeko</code> on this stream can only seek to
+locations within the buffer; any attempt to seek outside the buffer will
+return an <code>ESPIPE</code> error.
+
+          <br><dt><code>cookie_close_function_t *close</code><dd>This function performs any appropriate cleanup on the cookie when
+closing the stream.  If the value is a null pointer instead of a
+function, nothing special is done to close the cookie when the stream is
+closed. 
+</dl>
+        </p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: FILE * <b>fopencookie</b> (<var>void *cookie, const char *opentype, cookie_io_functions_t io-functions</var>)<var><a name="index-fopencookie-1164"></a></var><br>
+<blockquote><p>This function actually creates the stream for communicating with the
+<var>cookie</var> using the functions in the <var>io-functions</var> argument. 
+The <var>opentype</var> argument is interpreted as for <code>fopen</code>;
+see <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>.  (But note that the &ldquo;truncate on
+open&rdquo; option is ignored.)  The new stream is fully buffered.
+
+        <p>The <code>fopencookie</code> function returns the newly created stream, or a null
+pointer in case of an error. 
+</p></blockquote></div>
+
+   </body></html>
+

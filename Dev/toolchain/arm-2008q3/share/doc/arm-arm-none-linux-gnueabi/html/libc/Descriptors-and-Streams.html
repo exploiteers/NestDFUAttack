@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Descriptors and Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="File-Position-Primitive.html#File-Position-Primitive" title="File Position Primitive">
+<link rel="next" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions" title="Stream/Descriptor Precautions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Descriptors-and-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.4 Descriptors and Streams</h3>
+
+<p><a name="index-streams_002c-and-file-descriptors-1225"></a><a name="index-converting-file-descriptor-to-stream-1226"></a><a name="index-extracting-file-descriptor-from-stream-1227"></a>
+Given an open file descriptor, you can create a stream for it with the
+<code>fdopen</code> function.  You can get the underlying file descriptor for
+an existing stream with the <code>fileno</code> function.  These functions are
+declared in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1228"></a>
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: FILE * <b>fdopen</b> (<var>int filedes, const char *opentype</var>)<var><a name="index-fdopen-1229"></a></var><br>
+<blockquote><p>The <code>fdopen</code> function returns a new stream for the file descriptor
+<var>filedes</var>.
+
+        <p>The <var>opentype</var> argument is interpreted in the same way as for the
+<code>fopen</code> function (see <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>), except that
+the &lsquo;<samp><span class="samp">b</span></samp>&rsquo; option is not permitted; this is because GNU makes no
+distinction between text and binary files.  Also, <code>"w"</code> and
+<code>"w+"</code> do not cause truncation of the file; these have an effect only
+when opening a file, and in this case the file has already been opened. 
+You must make sure that the <var>opentype</var> argument matches the actual
+mode of the open file descriptor.
+
+        <p>The return value is the new stream.  If the stream cannot be created
+(for example, if the modes for the file indicated by the file descriptor
+do not permit the access specified by the <var>opentype</var> argument), a
+null pointer is returned instead.
+
+        <p>In some other systems, <code>fdopen</code> may fail to detect that the modes
+for file descriptor do not permit the access specified by
+<code>opentype</code>.  The GNU C library always checks for this. 
+</p></blockquote></div>
+
+   <p>For an example showing the use of the <code>fdopen</code> function,
+see <a href="Creating-a-Pipe.html#Creating-a-Pipe">Creating a Pipe</a>.
+
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>fileno</b> (<var>FILE *stream</var>)<var><a name="index-fileno-1230"></a></var><br>
+<blockquote><p>This function returns the file descriptor associated with the stream
+<var>stream</var>.  If an error is detected (for example, if the <var>stream</var>
+is not valid) or if <var>stream</var> does not do I/O to a file,
+<code>fileno</code> returns -1. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fileno_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-fileno_005funlocked-1231"></a></var><br>
+<blockquote><p>The <code>fileno_unlocked</code> function is equivalent to the <code>fileno</code>
+function except that it does not implicitly lock the stream if the state
+is <code>FSETLOCKING_INTERNAL</code>.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   <p><a name="index-standard-file-descriptors-1232"></a><a name="index-file-descriptors_002c-standard-1233"></a>There are also symbolic constants defined in <samp><span class="file">unistd.h</span></samp> for the
+file descriptors belonging to the standard streams <code>stdin</code>,
+<code>stdout</code>, and <code>stderr</code>; see <a href="Standard-Streams.html#Standard-Streams">Standard Streams</a>. 
+<a name="index-unistd_002eh-1234"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+     <dl>
+<dt><code>STDIN_FILENO</code><dd><a name="index-STDIN_005fFILENO-1235"></a>This macro has value <code>0</code>, which is the file descriptor for
+standard input. 
+<a name="index-standard-input-file-descriptor-1236"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<br><dt><code>STDOUT_FILENO</code><dd><a name="index-STDOUT_005fFILENO-1237"></a>This macro has value <code>1</code>, which is the file descriptor for
+standard output. 
+<a name="index-standard-output-file-descriptor-1238"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<br><dt><code>STDERR_FILENO</code><dd><a name="index-STDERR_005fFILENO-1239"></a>This macro has value <code>2</code>, which is the file descriptor for
+standard error output. 
+</dl>
+   <a name="index-standard-error-file-descriptor-1240"></a>
+
+   </body></html>
+

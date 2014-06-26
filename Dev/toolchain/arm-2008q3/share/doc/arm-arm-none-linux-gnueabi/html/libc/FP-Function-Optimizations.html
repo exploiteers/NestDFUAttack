@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>FP Function Optimizations - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="prev" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers" title="Pseudo-Random Numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="FP-Function-Optimizations"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">Pseudo-Random Numbers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.9 Is Fast Code or Small Code preferred?</h3>
+
+<p><a name="index-Optimization-2318"></a>
+If an application uses many floating point functions it is often the case
+that the cost of the function calls themselves is not negligible. 
+Modern processors can often execute the operations themselves
+very fast, but the function call disrupts the instruction pipeline.
+
+   <p>For this reason the GNU C Library provides optimizations for many of the
+frequently-used math functions.  When GNU CC is used and the user
+activates the optimizer, several new inline functions and macros are
+defined.  These new functions and macros have the same names as the
+library functions and so are used instead of the latter.  In the case of
+inline functions the compiler will decide whether it is reasonable to
+use them, and this decision is usually correct.
+
+   <p>This means that no calls to the library functions may be necessary, and
+can increase the speed of generated code significantly.  The drawback is
+that code size will increase, and the increase is not always negligible.
+
+   <p>There are two kind of inline functions: Those that give the same result
+as the library functions and others that might not set <code>errno</code> and
+might have a reduced precision and/or argument range in comparison with
+the library functions.  The latter inline functions are only available
+if the flag <code>-ffast-math</code> is given to GNU CC.
+
+   <p>In cases where the inline functions and macros are not wanted the symbol
+<code>__NO_MATH_INLINES</code> should be defined before any system header is
+included.  This will ensure that only library functions are used.  Of
+course, it can be determined for each file in the project whether
+giving this option is preferable or not.
+
+   <p>Not all hardware implements the entire IEEE&nbsp;754<!-- /@w --> standard, and even
+if it does there may be a substantial performance penalty for using some
+of its features.  For example, enabling traps on some processors forces
+the FPU to run un-pipelined, which can more than double calculation time. 
+<!-- ***Add explanation of -lieee, -mieee. -->
+
+   </body></html>
+

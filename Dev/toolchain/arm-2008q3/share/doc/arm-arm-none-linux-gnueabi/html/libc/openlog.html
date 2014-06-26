@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+<title>openlog - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages" title="Submitting Syslog Messages">
+<link rel="next" href="syslog_003b-vsyslog.html#syslog_003b-vsyslog" title="syslog; vsyslog">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="openlog"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">syslog; vsyslog</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>
+<hr>
+</div>
+
+<h4 class="subsection">18.2.1 openlog</h4>
+
+<p>The symbols referred to in this section are declared in the file
+<samp><span class="file">syslog.h</span></samp>.
+
+<!-- syslog.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>openlog</b> (<var>const char *ident, int option, int facility</var>)<var><a name="index-openlog-2033"></a></var><br>
+<blockquote>
+        <p><code>openlog</code> opens or reopens a connection to Syslog in preparation
+for submitting messages.
+
+        <p><var>ident</var> is an arbitrary identification string which future
+<code>syslog</code> invocations will prefix to each message.  This is intended
+to identify the source of the message, and people conventionally set it
+to the name of the program that will submit the messages.
+
+        <p>If <var>ident</var> is NULL, or if <code>openlog</code> is not called, the default
+identification string used in Syslog messages will be the program name,
+taken from argv[0].
+
+        <p>Please note that the string pointer <var>ident</var> will be retained
+internally by the Syslog routines.  You must not free the memory that
+<var>ident</var> points to.  It is also dangerous to pass a reference to an
+automatic variable since leaving the scope would mean ending the
+lifetime of the variable.  If you want to change the <var>ident</var> string,
+you must call <code>openlog</code> again; overwriting the string pointed to by
+<var>ident</var> is not thread-safe.
+
+        <p>You can cause the Syslog routines to drop the reference to <var>ident</var> and
+go back to the default string (the program name taken from argv[0]), by
+calling <code>closelog</code>: See <a href="closelog.html#closelog">closelog</a>.
+
+        <p>In particular, if you are writing code for a shared library that might get
+loaded and then unloaded (e.g. a PAM module), and you use <code>openlog</code>,
+you must call <code>closelog</code> before any point where your library might
+get unloaded, as in this example:
+
+     <pre class="smallexample">          #include &lt;syslog.h&gt;
+          
+          void
+          shared_library_function (void)
+          {
+            openlog ("mylibrary", option, priority);
+          
+            syslog (LOG_INFO, "shared library has been invoked");
+          
+            closelog ();
+          }
+</pre>
+        <p>Without the call to <code>closelog</code>, future invocations of <code>syslog</code>
+by the program using the shared library may crash, if the library gets
+unloaded and the memory containing the string <code>"mylibrary"</code> becomes
+unmapped.  This is a limitation of the BSD syslog interface.
+
+        <p><code>openlog</code> may or may not open the <samp><span class="file">/dev/log</span></samp> socket, depending
+on <var>option</var>.  If it does, it tries to open it and connect it as a
+stream socket.  If that doesn't work, it tries to open it and connect it
+as a datagram socket.  The socket has the &ldquo;Close on Exec&rdquo; attribute,
+so the kernel will close it if the process performs an exec.
+
+        <p>You don't have to use <code>openlog</code>.  If you call <code>syslog</code> without
+having called <code>openlog</code>, <code>syslog</code> just opens the connection
+implicitly and uses defaults for the information in <var>ident</var> and
+<var>options</var>.
+
+        <p><var>options</var> is a bit string, with the bits as defined by the following
+single bit masks:
+
+          <dl>
+<dt><code>LOG_PERROR</code><dd>If on, <code>openlog</code> sets up the connection so that any <code>syslog</code>
+on this connection writes its message to the calling process' Standard
+Error stream in addition to submitting it to Syslog.  If off, <code>syslog</code>
+does not write the message to Standard Error.
+
+          <br><dt><code>LOG_CONS</code><dd>If on, <code>openlog</code> sets up the connection so that a <code>syslog</code> on
+this connection that fails to submit a message to Syslog writes the
+message instead to system console.  If off, <code>syslog</code> does not write
+to the system console (but of course Syslog may write messages it
+receives to the console).
+
+          <br><dt><code>LOG_PID</code><dd>When on, <code>openlog</code> sets up the connection so that a <code>syslog</code>
+on this connection inserts the calling process' Process ID (PID) into
+the message.  When off, <code>openlog</code> does not insert the PID.
+
+          <br><dt><code>LOG_NDELAY</code><dd>When on, <code>openlog</code> opens and connects the <samp><span class="file">/dev/log</span></samp> socket. 
+When off, a future <code>syslog</code> call must open and connect the socket.
+
+          <p><strong>Portability note:</strong>  In early systems, the sense of this bit was
+exactly the opposite.
+
+          <br><dt><code>LOG_ODELAY</code><dd>This bit does nothing.  It exists for backward compatibility.
+
+        </dl>
+
+        <p>If any other bit in <var>options</var> is on, the result is undefined.
+
+        <p><var>facility</var> is the default facility code for this connection.  A
+<code>syslog</code> on this connection that specifies default facility causes
+this facility to be associated with the message.  See <code>syslog</code> for
+possible values.  A value of zero means the default default, which is
+<code>LOG_USER</code>.
+
+        <p>If a Syslog connection is already open when you call <code>openlog</code>,
+<code>openlog</code> &ldquo;reopens&rdquo; the connection.  Reopening is like opening
+except that if you specify zero for the default facility code, the
+default facility code simply remains unchanged and if you specify
+LOG_NDELAY and the socket is already open and connected, <code>openlog</code>
+just leaves it that way.
+
+     <!-- There is a bug in closelog() (glibc 2.1.3) wherein it does not reset the -->
+     <!-- default log facility to LOG_USER, which means the default default log -->
+     <!-- facility could be whatever the default log facility was for a previous -->
+     <!-- Syslog connection.  I have documented what the function should be rather -->
+     <!-- than what it is because I think if anyone ever gets concerned, the code -->
+     <!-- will change. -->
+        </blockquote></div>
+
+   </body></html>
+

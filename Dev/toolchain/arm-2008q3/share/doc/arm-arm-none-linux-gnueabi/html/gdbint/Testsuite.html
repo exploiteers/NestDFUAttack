@@ -1,0 +1,189 @@
+<html lang="en">
+<head>
+<title>Testsuite - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Releasing-GDB.html#Releasing-GDB" title="Releasing GDB">
+<link rel="next" href="Hints.html#Hints" title="Hints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Testsuite"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hints.html#Hints">Hints</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Releasing-GDB.html#Releasing-GDB">Releasing GDB</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">20 Testsuite</h2>
+
+<p><a name="index-test-suite-430"></a>
+The testsuite is an important component of the <span class="sc">gdb</span> package. 
+While it is always worthwhile to encourage user testing, in practice
+this is rarely sufficient; users typically use only a small subset of
+the available commands, and it has proven all too common for a change
+to cause a significant regression that went unnoticed for some time.
+
+   <p>The <span class="sc">gdb</span> testsuite uses the DejaGNU testing framework.  The
+tests themselves are calls to various <code>Tcl</code> procs; the framework
+runs all the procs and summarizes the passes and fails.
+
+<h3 class="section">20.1 Using the Testsuite</h3>
+
+<p><a name="index-running-the-test-suite-431"></a>To run the testsuite, simply go to the <span class="sc">gdb</span> object directory (or to the
+testsuite's objdir) and type <code>make check</code>.  This just sets up some
+environment variables and invokes DejaGNU's <code>runtest</code> script.  While
+the testsuite is running, you'll get mentions of which test file is in use,
+and a mention of any unexpected passes or fails.  When the testsuite is
+finished, you'll get a summary that looks like this:
+
+<pre class="smallexample">                     === gdb Summary ===
+     
+     # of expected passes            6016
+     # of unexpected failures        58
+     # of unexpected successes       5
+     # of expected failures          183
+     # of unresolved testcases       3
+     # of untested testcases         5
+</pre>
+   <p>To run a specific test script, type:
+<pre class="example">     make check RUNTESTFLAGS='<var>tests</var>'
+</pre>
+   <p>where <var>tests</var> is a list of test script file names, separated by
+spaces.
+
+   <p>The ideal test run consists of expected passes only; however, reality
+conspires to keep us from this ideal.  Unexpected failures indicate
+real problems, whether in <span class="sc">gdb</span> or in the testsuite.  Expected
+failures are still failures, but ones which have been decided are too
+hard to deal with at the time; for instance, a test case might work
+everywhere except on AIX, and there is no prospect of the AIX case
+being fixed in the near future.  Expected failures should not be added
+lightly, since you may be masking serious bugs in <span class="sc">gdb</span>. 
+Unexpected successes are expected fails that are passing for some
+reason, while unresolved and untested cases often indicate some minor
+catastrophe, such as the compiler being unable to deal with a test
+program.
+
+   <p>When making any significant change to <span class="sc">gdb</span>, you should run the
+testsuite before and after the change, to confirm that there are no
+regressions.  Note that truly complete testing would require that you
+run the testsuite with all supported configurations and a variety of
+compilers; however this is more than really necessary.  In many cases
+testing with a single configuration is sufficient.  Other useful
+options are to test one big-endian (Sparc) and one little-endian (x86)
+host, a cross config with a builtin simulator (powerpc-eabi,
+mips-elf), or a 64-bit host (Alpha).
+
+   <p>If you add new functionality to <span class="sc">gdb</span>, please consider adding
+tests for it as well; this way future <span class="sc">gdb</span> hackers can detect
+and fix their changes that break the functionality you added. 
+Similarly, if you fix a bug that was not previously reported as a test
+failure, please add a test case for it.  Some cases are extremely
+difficult to test, such as code that handles host OS failures or bugs
+in particular versions of compilers, and it's OK not to try to write
+tests for all of those.
+
+   <p>DejaGNU supports separate build, host, and target machines.  However,
+some <span class="sc">gdb</span> test scripts do not work if the build machine and
+the host machine are not the same.  In such an environment, these scripts
+will give a result of &ldquo;UNRESOLVED&rdquo;, like this:
+
+<pre class="smallexample">     UNRESOLVED: gdb.base/example.exp: This test script does not work on a remote host.
+</pre>
+   <h3 class="section">20.2 Testsuite Organization</h3>
+
+<p><a name="index-test-suite-organization-432"></a>The testsuite is entirely contained in <samp><span class="file">gdb/testsuite</span></samp>.  While the
+testsuite includes some makefiles and configury, these are very minimal,
+and used for little besides cleaning up, since the tests themselves
+handle the compilation of the programs that <span class="sc">gdb</span> will run.  The file
+<samp><span class="file">testsuite/lib/gdb.exp</span></samp> contains common utility procs useful for
+all <span class="sc">gdb</span> tests, while the directory <samp><span class="file">testsuite/config</span></samp> contains
+configuration-specific files, typically used for special-purpose
+definitions of procs like <code>gdb_load</code> and <code>gdb_start</code>.
+
+   <p>The tests themselves are to be found in <samp><span class="file">testsuite/gdb.*</span></samp> and
+subdirectories of those.  The names of the test files must always end
+with <samp><span class="file">.exp</span></samp>.  DejaGNU collects the test files by wildcarding
+in the test directories, so both subdirectories and individual files
+get chosen and run in alphabetical order.
+
+   <p>The following table lists the main types of subdirectories and what they
+are for.  Since DejaGNU finds test files no matter where they are
+located, and since each test file sets up its own compilation and
+execution environment, this organization is simply for convenience and
+intelligibility.
+
+     <dl>
+<dt><samp><span class="file">gdb.base</span></samp><dd>This is the base testsuite.  The tests in it should apply to all
+configurations of <span class="sc">gdb</span> (but generic native-only tests may live here). 
+The test programs should be in the subset of C that is valid K&amp;R,
+ANSI/ISO, and C<tt>++</tt> (<code>#ifdef</code>s are allowed if necessary, for instance
+for prototypes).
+
+     <br><dt><samp><span class="file">gdb.</span><var>lang</var></samp><dd>Language-specific tests for any language <var>lang</var> besides C.  Examples are
+<samp><span class="file">gdb.cp</span></samp> and <samp><span class="file">gdb.java</span></samp>.
+
+     <br><dt><samp><span class="file">gdb.</span><var>platform</var></samp><dd>Non-portable tests.  The tests are specific to a specific configuration
+(host or target), such as HP-UX or eCos.  Example is <samp><span class="file">gdb.hp</span></samp>, for
+HP-UX.
+
+     <br><dt><samp><span class="file">gdb.</span><var>compiler</var></samp><dd>Tests specific to a particular compiler.  As of this writing (June
+1999), there aren't currently any groups of tests in this category that
+couldn't just as sensibly be made platform-specific, but one could
+imagine a <samp><span class="file">gdb.gcc</span></samp>, for tests of <span class="sc">gdb</span>'s handling of GCC
+extensions.
+
+     <br><dt><samp><span class="file">gdb.</span><var>subsystem</var></samp><dd>Tests that exercise a specific <span class="sc">gdb</span> subsystem in more depth.  For
+instance, <samp><span class="file">gdb.disasm</span></samp> exercises various disassemblers, while
+<samp><span class="file">gdb.stabs</span></samp> tests pathways through the stabs symbol reader. 
+</dl>
+
+<h3 class="section">20.3 Writing Tests</h3>
+
+<p><a name="index-writing-tests-433"></a>
+In many areas, the <span class="sc">gdb</span> tests are already quite comprehensive; you
+should be able to copy existing tests to handle new cases.
+
+   <p>You should try to use <code>gdb_test</code> whenever possible, since it
+includes cases to handle all the unexpected errors that might happen. 
+However, it doesn't cost anything to add new test procedures; for
+instance, <samp><span class="file">gdb.base/exprs.exp</span></samp> defines a <code>test_expr</code> that
+calls <code>gdb_test</code> multiple times.
+
+   <p>Only use <code>send_gdb</code> and <code>gdb_expect</code> when absolutely
+necessary.  Even if <span class="sc">gdb</span> has several valid responses to
+a command, you can use <code>gdb_test_multiple</code>.  Like <code>gdb_test</code>,
+<code>gdb_test_multiple</code> recognizes internal errors and unexpected
+prompts.
+
+   <p>Do not write tests which expect a literal tab character from <span class="sc">gdb</span>. 
+On some operating systems (e.g. OpenBSD) the TTY layer expands tabs to
+spaces, so by the time <span class="sc">gdb</span>'s output reaches expect the tab is gone.
+
+   <p>The source language programs do <em>not</em> need to be in a consistent
+style.  Since <span class="sc">gdb</span> is used to debug programs written in many different
+styles, it's worth having a mix of styles in the testsuite; for
+instance, some <span class="sc">gdb</span> bugs involving the display of source lines would
+never manifest themselves if the programs used GNU coding style
+uniformly.
+
+   </body></html>
+

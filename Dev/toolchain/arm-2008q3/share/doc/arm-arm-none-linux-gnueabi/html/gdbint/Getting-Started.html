@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Getting Started - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Hints.html#Hints" title="Hints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Getting-Started"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Hints.html#Hints">Hints</a>
+<hr>
+</div>
+
+<h3 class="section">21.1 Getting Started</h3>
+
+<p><span class="sc">gdb</span> is a large and complicated program, and if you first starting to
+work on it, it can be hard to know where to start.  Fortunately, if you
+know how to go about it, there are ways to figure out what is going on.
+
+   <p>This manual, the <span class="sc">gdb</span> Internals manual, has information which applies
+generally to many parts of <span class="sc">gdb</span>.
+
+   <p>Information about particular functions or data structures are located in
+comments with those functions or data structures.  If you run across a
+function or a global variable which does not have a comment correctly
+explaining what is does, this can be thought of as a bug in <span class="sc">gdb</span>; feel
+free to submit a bug report, with a suggested comment if you can figure
+out what the comment should say.  If you find a comment which is
+actually wrong, be especially sure to report that.
+
+   <p>Comments explaining the function of macros defined in host, target, or
+native dependent files can be in several places.  Sometimes they are
+repeated every place the macro is defined.  Sometimes they are where the
+macro is used.  Sometimes there is a header file which supplies a
+default definition of the macro, and the comment is there.  This manual
+also documents all the available macros. 
+<!-- (@pxref{Host Conditionals}, @pxref{Target -->
+<!-- Conditionals}, @pxref{Native Conditionals}, and @pxref{Obsolete -->
+<!-- Conditionals}) -->
+
+   <p>Start with the header files.  Once you have some idea of how
+<span class="sc">gdb</span>'s internal symbol tables are stored (see <samp><span class="file">symtab.h</span></samp>,
+<samp><span class="file">gdbtypes.h</span></samp>), you will find it much easier to understand the
+code which uses and creates those symbol tables.
+
+   <p>You may wish to process the information you are getting somehow, to
+enhance your understanding of it.  Summarize it, translate it to another
+language, add some (perhaps trivial or non-useful) feature to <span class="sc">gdb</span>, use
+the code to predict what a test case would do and write the test case
+and verify your prediction, etc.  If you are reading code and your eyes
+are starting to glaze over, this is a sign you need to use a more active
+approach.
+
+   <p>Once you have a part of <span class="sc">gdb</span> to start with, you can find more
+specifically the part you are looking for by stepping through each
+function with the <code>next</code> command.  Do not use <code>step</code> or you
+will quickly get distracted; when the function you are stepping through
+calls another function try only to get a big-picture understanding
+(perhaps using the comment at the beginning of the function being
+called) of what it does.  This way you can identify which of the
+functions being called by the function you are stepping through is the
+one which you are interested in.  You may need to examine the data
+structures generated at each stage, with reference to the comments in
+the header files explaining what the data structures are supposed to
+look like.
+
+   <p>Of course, this same technique can be used if you are just reading the
+code, rather than actually stepping through it.  The same general
+principle applies&mdash;when the code you are looking at calls something
+else, just try to understand generally what the code being called does,
+rather than worrying about all its details.
+
+   <p><a name="index-command-implementation-434"></a>A good place to start when tracking down some particular area is with
+a command which invokes that feature.  Suppose you want to know how
+single-stepping works.  As a <span class="sc">gdb</span> user, you know that the
+<code>step</code> command invokes single-stepping.  The command is invoked
+via command tables (see <samp><span class="file">command.h</span></samp>); by convention the function
+which actually performs the command is formed by taking the name of
+the command and adding &lsquo;<samp><span class="samp">_command</span></samp>&rsquo;, or in the case of an
+<code>info</code> subcommand, &lsquo;<samp><span class="samp">_info</span></samp>&rsquo;.  For example, the <code>step</code>
+command invokes the <code>step_command</code> function and the <code>info
+display</code> command invokes <code>display_info</code>.  When this convention is
+not followed, you might have to use <code>grep</code> or <kbd>M-x
+tags-search</kbd> in emacs, or run <span class="sc">gdb</span> on itself and set a
+breakpoint in <code>execute_command</code>.
+
+   <p><a name="index-g_t_0040code_007bbug_002dgdb_007d-mailing-list-435"></a>If all of the above fail, it may be appropriate to ask for information
+on <code>bug-gdb</code>.  But <em>never</em> post a generic question like &ldquo;I was
+wondering if anyone could give me some tips about understanding
+<span class="sc">gdb</span>&rdquo;&mdash;if we had some magic secret we would put it in this manual. 
+Suggestions for improving the manual are always welcome, of course.
+
+   </body></html>
+

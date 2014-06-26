@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+<title>Floating Type Macros - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Data-Type-Measurements.html#Data-Type-Measurements" title="Data Type Measurements">
+<link rel="prev" href="Range-of-Type.html#Range-of-Type" title="Range of Type">
+<link rel="next" href="Structure-Measurement.html#Structure-Measurement" title="Structure Measurement">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Floating-Type-Macros"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Structure-Measurement.html#Structure-Measurement">Structure Measurement</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Range-of-Type.html#Range-of-Type">Range of Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Data-Type-Measurements.html#Data-Type-Measurements">Data Type Measurements</a>
+<hr>
+</div>
+
+<h4 class="subsection">A.5.3 Floating Type Macros</h4>
+
+<p><a name="index-floating-type-measurements-3765"></a><a name="index-measurements-of-floating-types-3766"></a><a name="index-type-measurements_002c-floating-3767"></a><a name="index-limits_002c-floating-types-3768"></a>
+The specific representation of floating point numbers varies from
+machine to machine.  Because floating point numbers are represented
+internally as approximate quantities, algorithms for manipulating
+floating point data often need to take account of the precise details of
+the machine's floating point representation.
+
+   <p>Some of the functions in the C library itself need this information; for
+example, the algorithms for printing and reading floating point numbers
+(see <a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>) and for calculating trigonometric and
+irrational functions (see <a href="Mathematics.html#Mathematics">Mathematics</a>) use it to avoid round-off
+error and loss of accuracy.  User programs that implement numerical
+analysis techniques also often need this information in order to
+minimize or compute error bounds.
+
+   <p>The header file <samp><span class="file">float.h</span></samp> describes the format used by your
+machine.
+
+<ul class="menu">
+<li><a accesskey="1" href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>:      Definitions of terminology. 
+<li><a accesskey="2" href="Floating-Point-Parameters.html#Floating-Point-Parameters">Floating Point Parameters</a>:    Details of specific macros. 
+<li><a accesskey="3" href="IEEE-Floating-Point.html#IEEE-Floating-Point">IEEE Floating Point</a>:          The measurements for one common
+                                 representation. 
+</ul>
+
+   </body></html>
+

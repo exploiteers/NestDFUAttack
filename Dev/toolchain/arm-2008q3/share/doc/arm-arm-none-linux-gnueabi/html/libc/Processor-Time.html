@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+<title>Processor Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time" title="Processor And CPU Time">
+<link rel="prev" href="CPU-Time.html#CPU-Time" title="CPU Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Processor-Time"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="CPU-Time.html#CPU-Time">CPU Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time">Processor And CPU Time</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.3.2 Processor Time Inquiry</h4>
+
+<p>The <code>times</code> function returns information about a process'
+consumption of processor time in a <code>struct&nbsp;tms</code><!-- /@w --> object, in
+addition to the process' CPU time.  See <a href="Time-Basics.html#Time-Basics">Time Basics</a>.  You should
+include the header file <samp><span class="file">sys/times.h</span></samp> to use this facility. 
+<a name="index-processor-time-2610"></a><a name="index-CPU-time-2611"></a><a name="index-sys_002ftimes_002eh-2612"></a>
+<!-- sys/times.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct tms</b><var><a name="index-struct-tms-2613"></a></var><br>
+<blockquote><p>The <code>tms</code> structure is used to return information about process
+times.  It contains at least the following members:
+
+          <dl>
+<dt><code>clock_t tms_utime</code><dd>This is the total processor time the calling process has used in
+executing the instructions of its program.
+
+          <br><dt><code>clock_t tms_stime</code><dd>This is the processor time the system has used on behalf of the calling
+process.
+
+          <br><dt><code>clock_t tms_cutime</code><dd>This is the sum of the <code>tms_utime</code> values and the <code>tms_cutime</code>
+values of all terminated child processes of the calling process, whose
+status has been reported to the parent process by <code>wait</code> or
+<code>waitpid</code>; see <a href="Process-Completion.html#Process-Completion">Process Completion</a>.  In other words, it
+represents the total processor time used in executing the instructions
+of all the terminated child processes of the calling process, excluding
+child processes which have not yet been reported by <code>wait</code> or
+<code>waitpid</code>. 
+<a name="index-child-process-2614"></a>
+<br><dt><code>clock_t tms_cstime</code><dd>This is similar to <code>tms_cutime</code>, but represents the total processor
+time system has used on behalf of all the terminated child processes
+of the calling process. 
+</dl>
+
+        <p>All of the times are given in numbers of clock ticks.  Unlike CPU time,
+these are the actual amounts of time; not relative to any event. 
+See <a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>. 
+</p></blockquote></div>
+
+<!-- sys/times.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: clock_t <b>times</b> (<var>struct tms *buffer</var>)<var><a name="index-times-2615"></a></var><br>
+<blockquote><p>The <code>times</code> function stores the processor time information for
+the calling process in <var>buffer</var>.
+
+        <p>The return value is the calling process' CPU time (the same value you
+get from <code>clock()</code>.  <code>times</code> returns <code>(clock_t)(-1)</code> to
+indicate failure. 
+</p></blockquote></div>
+
+   <p><strong>Portability Note:</strong> The <code>clock</code> function described in
+<a href="CPU-Time.html#CPU-Time">CPU Time</a> is specified by the ISO&nbsp;C<!-- /@w --> standard.  The
+<code>times</code> function is a feature of POSIX.1.  In the GNU system, the
+CPU time is defined to be equivalent to the sum of the <code>tms_utime</code>
+and <code>tms_stime</code> fields returned by <code>times</code>.
+
+   </body></html>
+

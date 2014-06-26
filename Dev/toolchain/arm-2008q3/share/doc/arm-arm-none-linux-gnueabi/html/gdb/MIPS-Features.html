@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+<title>MIPS Features - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standard-Target-Features.html#Standard-Target-Features" title="Standard Target Features">
+<link rel="prev" href="ARM-Features.html#ARM-Features" title="ARM Features">
+<link rel="next" href="M68K-Features.html#M68K-Features" title="M68K Features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="MIPS-Features"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="M68K-Features.html#M68K-Features">M68K Features</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="ARM-Features.html#ARM-Features">ARM Features</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standard-Target-Features.html#Standard-Target-Features">Standard Target Features</a>
+<hr>
+</div>
+
+<h4 class="subsection">F.4.2 MIPS Features</h4>
+
+<p><a name="index-target-descriptions_002c-MIPS-features-1973"></a>
+The &lsquo;<samp><span class="samp">org.gnu.gdb.mips.cpu</span></samp>&rsquo; feature is required for MIPS targets. 
+It should contain registers &lsquo;<samp><span class="samp">r0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">r31</span></samp>&rsquo;, &lsquo;<samp><span class="samp">lo</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">hi</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">pc</span></samp>&rsquo;.  They may be 32-bit or 64-bit depending
+on the target.
+
+   <p>The &lsquo;<samp><span class="samp">org.gnu.gdb.mips.cp0</span></samp>&rsquo; feature is also required.  It should
+contain at least the &lsquo;<samp><span class="samp">status</span></samp>&rsquo;, &lsquo;<samp><span class="samp">badvaddr</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">cause</span></samp>&rsquo;
+registers.  They may be 32-bit or 64-bit depending on the target.
+
+   <p>The &lsquo;<samp><span class="samp">org.gnu.gdb.mips.fpu</span></samp>&rsquo; feature is currently required, though
+it may be optional in a future version of <span class="sc">gdb</span>.  It should
+contain registers &lsquo;<samp><span class="samp">f0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">f31</span></samp>&rsquo;, &lsquo;<samp><span class="samp">fcsr</span></samp>&rsquo;, and
+&lsquo;<samp><span class="samp">fir</span></samp>&rsquo;.  They may be 32-bit or 64-bit depending on the target.
+
+   <p>The &lsquo;<samp><span class="samp">org.gnu.gdb.mips.linux</span></samp>&rsquo; feature is optional.  It should
+contain a single register, &lsquo;<samp><span class="samp">restart</span></samp>&rsquo;, which is used by the
+Linux kernel to control restartable syscalls.
+
+   </body></html>
+

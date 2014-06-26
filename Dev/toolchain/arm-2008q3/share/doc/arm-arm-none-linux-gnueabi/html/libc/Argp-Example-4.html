@@ -1,0 +1,248 @@
+<html lang="en">
+<head>
+<title>Argp Example 4 - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Examples.html#Argp-Examples" title="Argp Examples">
+<link rel="prev" href="Argp-Example-3.html#Argp-Example-3" title="Argp Example 3">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Example-4"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Example-3.html#Argp-Example-3">Argp Example 3</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Examples.html#Argp-Examples">Argp Examples</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">25.3.11.4 A Program Using Multiple Combined Argp Parsers</h5>
+
+<p>This program uses the same features as example 3, but has more options,
+and presents more structure in the &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; output.  It also
+illustrates how you can `steal' the remainder of the input arguments
+past a certain point for programs that accept a list of items.  It also
+illustrates the <var>key</var> value <code>ARGP_KEY_NO_ARGS</code>, which is only
+given if no non-option arguments were supplied to the
+program.  See <a href="Argp-Special-Keys.html#Argp-Special-Keys">Argp Special Keys</a>.
+
+   <p>For structuring help output, two features are used: <em>headers</em> and a
+two part option string.  The <em>headers</em> are entries in the options
+vector.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.  The first four fields are zero.  The
+two part documentation string are in the variable <code>doc</code>, which
+allows documentation both before and after the options.  See <a href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>, the two parts of <code>doc</code> are separated by a vertical-tab
+character (<code>'\v'</code>, or <code>'\013'</code>).  By convention, the
+documentation before the options is a short string stating what the
+program does, and after any options it is longer, describing the
+behavior in more detail.  All documentation strings are automatically
+filled for output, although newlines may be included to force a line
+break at a particular point.  In addition, documentation strings are
+passed to the <code>gettext</code> function, for possible translation into the
+current locale.
+
+<pre class="smallexample">     /* <span class="roman">Argp example #4 -- a program with somewhat more complicated options</span> */
+     
+     /* <span class="roman">This program uses the same features as example 3, but has more
+        options, and somewhat more structure in the -help output.  It
+        also shows how you can `steal' the remainder of the input
+        arguments past a certain point, for programs that accept a
+        list of items.  It also shows the special argp KEY value
+        ARGP_KEY_NO_ARGS, which is only given if no non-option
+        arguments were supplied to the program.
+     
+        For structuring the help output, two features are used,
+        *headers* which are entries in the options vector with the
+        first four fields being zero, and a two part documentation
+        string (in the variable DOC), which allows documentation both
+        before and after the options; the two parts of DOC are
+        separated by a vertical-tab character ('\v', or '\013').  By
+        convention, the documentation before the options is just a
+        short string saying what the program does, and that afterwards
+        is longer, describing the behavior in more detail.  All
+        documentation strings are automatically filled for output,
+        although newlines may be included to force a line break at a
+        particular point.  All documentation strings are also passed to
+        the `gettext' function, for possible translation into the
+        current locale.</span> */
+     
+     #include &lt;stdlib.h&gt;
+     #include &lt;error.h&gt;
+     #include &lt;argp.h&gt;
+     
+     const char *argp_program_version =
+       "argp-ex4 1.0";
+     const char *argp_program_bug_address =
+       "&lt;bug-gnu-utils@prep.ai.mit.edu&gt;";
+     
+     /* <span class="roman">Program documentation.</span> */
+     static char doc[] =
+       "Argp example #4 -- a program with somewhat more complicated\
+     options\
+     \vThis part of the documentation comes *after* the options;\
+      note that the text is automatically filled, but it's possible\
+      to force a line-break, e.g.\n&lt;-- here.";
+     
+     /* <span class="roman">A description of the arguments we accept.</span> */
+     static char args_doc[] = "ARG1 [STRING...]";
+     
+     /* <span class="roman">Keys for options without short-options.</span> */
+     #define OPT_ABORT  1            /* <span class="roman">--abort</span> */
+     
+     /* <span class="roman">The options we understand.</span> */
+     static struct argp_option options[] = {
+       {"verbose",  'v', 0,       0, "Produce verbose output" },
+       {"quiet",    'q', 0,       0, "Don't produce any output" },
+       {"silent",   's', 0,       OPTION_ALIAS },
+       {"output",   'o', "FILE",  0,
+        "Output to FILE instead of standard output" },
+     
+       {0,0,0,0, "The following options should be grouped together:" },
+       {"repeat",   'r', "COUNT", OPTION_ARG_OPTIONAL,
+        "Repeat the output COUNT (default 10) times"},
+       {"abort",    OPT_ABORT, 0, 0, "Abort before showing any output"},
+     
+       { 0 }
+     };
+     
+     /* <span class="roman">Used by </span><code>main</code><span class="roman"> to communicate with </span><code>parse_opt</code><span class="roman">.</span> */
+     struct arguments
+     {
+       char *arg1;                   /* <var>arg1</var> */
+       char **strings;               /* <span class="roman">[</span><var>string</var><span class="roman">...]</span> */
+       int silent, verbose, abort;   /* <span class="roman">&lsquo;</span><samp><span class="samp">-s</span></samp><span class="roman">&rsquo;, &lsquo;</span><samp><span class="samp">-v</span></samp><span class="roman">&rsquo;, &lsquo;</span><samp><span class="samp">--abort</span></samp><span class="roman">&rsquo;</span> */
+       char *output_file;            /* <var>file</var><span class="roman"> arg to &lsquo;</span><samp><span class="samp">--output</span></samp><span class="roman">&rsquo;</span> */
+       int repeat_count;             /* <var>count</var><span class="roman"> arg to &lsquo;</span><samp><span class="samp">--repeat</span></samp><span class="roman">&rsquo;</span> */
+     };
+     
+     /* <span class="roman">Parse a single option.</span> */
+     static error_t
+     parse_opt (int key, char *arg, struct argp_state *state)
+     {
+       /* <span class="roman">Get the </span><code>input</code><span class="roman"> argument from </span><code>argp_parse</code><span class="roman">, which we
+          know is a pointer to our arguments structure.</span> */
+       struct arguments *arguments = state-&gt;input;
+     
+       switch (key)
+         {
+         case 'q': case 's':
+           arguments-&gt;silent = 1;
+           break;
+         case 'v':
+           arguments-&gt;verbose = 1;
+           break;
+         case 'o':
+           arguments-&gt;output_file = arg;
+           break;
+         case 'r':
+           arguments-&gt;repeat_count = arg ? atoi (arg) : 10;
+           break;
+         case OPT_ABORT:
+           arguments-&gt;abort = 1;
+           break;
+     
+         case ARGP_KEY_NO_ARGS:
+           argp_usage (state);
+     
+         case ARGP_KEY_ARG:
+           /* <span class="roman">Here we know that </span><code>state-&gt;arg_num == 0</code><span class="roman">, since we
+              force argument parsing to end before any more arguments can
+              get here.</span> */
+           arguments-&gt;arg1 = arg;
+     
+           /* <span class="roman">Now we consume all the rest of the arguments.
+              </span><code>state-&gt;next</code><span class="roman"> is the index in </span><code>state-&gt;argv</code><span class="roman"> of the
+              next argument to be parsed, which is the first </span><var>string</var><span class="roman">
+              we're interested in, so we can just use
+              </span><code>&amp;state-&gt;argv[state-&gt;next]</code><span class="roman"> as the value for
+              arguments-&gt;strings.
+     
+              </span><em>In addition</em><span class="roman">, by setting </span><code>state-&gt;next</code><span class="roman"> to the end
+              of the arguments, we can force argp to stop parsing here and
+              return.</span> */
+           arguments-&gt;strings = &amp;state-&gt;argv[state-&gt;next];
+           state-&gt;next = state-&gt;argc;
+     
+           break;
+     
+         default:
+           return ARGP_ERR_UNKNOWN;
+         }
+       return 0;
+     }
+     
+     /* <span class="roman">Our argp parser.</span> */
+     static struct argp argp = { options, parse_opt, args_doc, doc };
+     
+     int main (int argc, char **argv)
+     {
+       int i, j;
+       struct arguments arguments;
+     
+       /* <span class="roman">Default values.</span> */
+       arguments.silent = 0;
+       arguments.verbose = 0;
+       arguments.output_file = "-";
+       arguments.repeat_count = 1;
+       arguments.abort = 0;
+     
+       /* <span class="roman">Parse our arguments; every option seen by </span><code>parse_opt</code><span class="roman"> will be
+          reflected in </span><code>arguments</code><span class="roman">.</span> */
+       argp_parse (&amp;argp, argc, argv, 0, 0, &amp;arguments);
+     
+       if (arguments.abort)
+         error (10, 0, "ABORTED");
+     
+       for (i = 0; i &lt; arguments.repeat_count; i++)
+         {
+           printf ("ARG1 = %s\n", arguments.arg1);
+           printf ("STRINGS = ");
+           for (j = 0; arguments.strings[j]; j++)
+             printf (j == 0 ? "%s" : ", %s", arguments.strings[j]);
+           printf ("\n");
+           printf ("OUTPUT_FILE = %s\nVERBOSE = %s\nSILENT = %s\n",
+                   arguments.output_file,
+                   arguments.verbose ? "yes" : "no",
+                   arguments.silent ? "yes" : "no");
+         }
+     
+       exit (0);
+     }
+</pre>
+   </body></html>
+

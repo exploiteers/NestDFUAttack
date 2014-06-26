@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+<title>Returning - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Altering.html#Altering" title="Altering">
+<link rel="prev" href="Signaling.html#Signaling" title="Signaling">
+<link rel="next" href="Calling.html#Calling" title="Calling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Returning"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Calling.html#Calling">Calling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signaling.html#Signaling">Signaling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Altering.html#Altering">Altering</a>
+<hr>
+</div>
+
+<h3 class="section">15.4 Returning from a Function</h3>
+
+     
+<a name="index-returning-from-a-function-802"></a>
+<a name="index-return-803"></a>
+<dl><dt><code>return</code><dt><code>return </code><var>expression</var><dd>You can cancel execution of a function call with the <code>return</code>
+command.  If you give an
+<var>expression</var> argument, its value is used as the function's return
+value. 
+</dl>
+
+   <p>When you use <code>return</code>, <span class="sc">gdb</span> discards the selected stack frame
+(and all frames within it).  You can think of this as making the
+discarded frame return prematurely.  If you wish to specify a value to
+be returned, give that value as the argument to <code>return</code>.
+
+   <p>This pops the selected stack frame (see <a href="Selection.html#Selection">Selecting a Frame</a>), and any other frames inside of it, leaving its caller as the
+innermost remaining frame.  That frame becomes selected.  The
+specified value is stored in the registers used for returning values
+of functions.
+
+   <p>The <code>return</code> command does not resume execution; it leaves the
+program stopped in the state that would exist if the function had just
+returned.  In contrast, the <code>finish</code> command (see <a href="Continuing-and-Stepping.html#Continuing-and-Stepping">Continuing and Stepping</a>) resumes execution until the
+selected stack frame returns naturally.
+
+   </body></html>
+

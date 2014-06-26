@@ -1,0 +1,188 @@
+<html lang="en">
+<head>
+<title>Translation with gettext - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link rel="next" href="Locating-gettext-catalog.html#Locating-gettext-catalog" title="Locating gettext catalog">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Translation-with-gettext"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Locating-gettext-catalog.html#Locating-gettext-catalog">Locating gettext catalog</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">8.2.1.1 What has to be done to translate a message?</h5>
+
+<p>The <code>gettext</code> functions have a very simple interface.  The most
+basic function just takes the string which shall be translated as the
+argument and it returns the translation.  This is fundamentally
+different from the <code>catgets</code> approach where an extra key is
+necessary and the original string is only used for the error case.
+
+   <p>If the string which has to be translated is the only argument this of
+course means the string itself is the key.  I.e., the translation will
+be selected based on the original string.  The message catalogs must
+therefore contain the original strings plus one translation for any such
+string.  The task of the <code>gettext</code> function is it to compare the
+argument string with the available strings in the catalog and return the
+appropriate translation.  Of course this process is optimized so that
+this process is not more expensive than an access using an atomic key
+like in <code>catgets</code>.
+
+   <p>The <code>gettext</code> approach has some advantages but also some
+disadvantages.  Please see the GNU <samp><span class="file">gettext</span></samp> manual for a detailed
+discussion of the pros and cons.
+
+   <p>All the definitions and declarations for <code>gettext</code> can be found in
+the <samp><span class="file">libintl.h</span></samp> header file.  On systems where these functions are
+not part of the C library they can be found in a separate library named
+<samp><span class="file">libintl.a</span></samp> (or accordingly different for shared libraries).
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>gettext</b> (<var>const char *msgid</var>)<var><a name="index-gettext-807"></a></var><br>
+<blockquote><p>The <code>gettext</code> function searches the currently selected message
+catalogs for a string which is equal to <var>msgid</var>.  If there is such a
+string available it is returned.  Otherwise the argument string
+<var>msgid</var> is returned.
+
+        <p>Please note that all though the return value is <code>char *</code> the
+returned string must not be changed.  This broken type results from the
+history of the function and does not reflect the way the function should
+be used.
+
+        <p>Please note that above we wrote &ldquo;message catalogs&rdquo; (plural).  This is
+a specialty of the GNU implementation of these functions and we will
+say more about this when we talk about the ways message catalogs are
+selected (see <a href="Locating-gettext-catalog.html#Locating-gettext-catalog">Locating gettext catalog</a>).
+
+        <p>The <code>gettext</code> function does not modify the value of the global
+<var>errno</var> variable.  This is necessary to make it possible to write
+something like
+
+     <pre class="smallexample">            printf (gettext ("Operation failed: %m\n"));
+</pre>
+        <p>Here the <var>errno</var> value is used in the <code>printf</code> function while
+processing the <code>%m</code> format element and if the <code>gettext</code>
+function would change this value (it is called before <code>printf</code> is
+called) we would get a wrong message.
+
+        <p>So there is no easy way to detect a missing message catalog beside
+comparing the argument string with the result.  But it is normally the
+task of the user to react on missing catalogs.  The program cannot guess
+when a message catalog is really necessary since for a user who speaks
+the language the program was developed in does not need any translation. 
+</p></blockquote></div>
+
+   <p>The remaining two functions to access the message catalog add some
+functionality to select a message catalog which is not the default one. 
+This is important if parts of the program are developed independently. 
+Every part can have its own message catalog and all of them can be used
+at the same time.  The C library itself is an example: internally it
+uses the <code>gettext</code> functions but since it must not depend on a
+currently selected default message catalog it must specify all ambiguous
+information.
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>dgettext</b> (<var>const char *domainname, const char *msgid</var>)<var><a name="index-dgettext-808"></a></var><br>
+<blockquote><p>The <code>dgettext</code> functions acts just like the <code>gettext</code>
+function.  It only takes an additional first argument <var>domainname</var>
+which guides the selection of the message catalogs which are searched
+for the translation.  If the <var>domainname</var> parameter is the null
+pointer the <code>dgettext</code> function is exactly equivalent to
+<code>gettext</code> since the default value for the domain name is used.
+
+        <p>As for <code>gettext</code> the return value type is <code>char *</code> which is an
+anachronism.  The returned string must never be modified. 
+</p></blockquote></div>
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>dcgettext</b> (<var>const char *domainname, const char *msgid, int category</var>)<var><a name="index-dcgettext-809"></a></var><br>
+<blockquote><p>The <code>dcgettext</code> adds another argument to those which
+<code>dgettext</code> takes.  This argument <var>category</var> specifies the last
+piece of information needed to localize the message catalog.  I.e., the
+domain name and the locale category exactly specify which message
+catalog has to be used (relative to a given directory, see below).
+
+        <p>The <code>dgettext</code> function can be expressed in terms of
+<code>dcgettext</code> by using
+
+     <pre class="smallexample">          dcgettext (domain, string, LC_MESSAGES)
+</pre>
+        <p class="noindent">instead of
+
+     <pre class="smallexample">          dgettext (domain, string)
+</pre>
+        <p>This also shows which values are expected for the third parameter.  One
+has to use the available selectors for the categories available in
+<samp><span class="file">locale.h</span></samp>.  Normally the available values are <code>LC_CTYPE</code>,
+<code>LC_COLLATE</code>, <code>LC_MESSAGES</code>, <code>LC_MONETARY</code>,
+<code>LC_NUMERIC</code>, and <code>LC_TIME</code>.  Please note that <code>LC_ALL</code>
+must not be used and even though the names might suggest this, there is
+no relation to the environments variables of this name.
+
+        <p>The <code>dcgettext</code> function is only implemented for compatibility with
+other systems which have <code>gettext</code> functions.  There is not really
+any situation where it is necessary (or useful) to use a different value
+but <code>LC_MESSAGES</code> in for the <var>category</var> parameter.  We are
+dealing with messages here and any other choice can only be irritating.
+
+        <p>As for <code>gettext</code> the return value type is <code>char *</code> which is an
+anachronism.  The returned string must never be modified. 
+</p></blockquote></div>
+
+   <p>When using the three functions above in a program it is a frequent case
+that the <var>msgid</var> argument is a constant string.  So it is worth to
+optimize this case.  Thinking shortly about this one will realize that
+as long as no new message catalog is loaded the translation of a message
+will not change.  This optimization is actually implemented by the
+<code>gettext</code>, <code>dgettext</code> and <code>dcgettext</code> functions.
+
+   </body></html>
+

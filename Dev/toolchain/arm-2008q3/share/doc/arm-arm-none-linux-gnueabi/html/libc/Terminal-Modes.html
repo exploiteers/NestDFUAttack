@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+<title>Terminal Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link rel="prev" href="Canonical-or-Not.html#Canonical-or-Not" title="Canonical or Not">
+<link rel="next" href="BSD-Terminal-Modes.html#BSD-Terminal-Modes" title="BSD Terminal Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Terminal-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="BSD-Terminal-Modes.html#BSD-Terminal-Modes">BSD Terminal Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>
+<hr>
+</div>
+
+<h3 class="section">17.4 Terminal Modes</h3>
+
+<p><a name="index-termios_002eh-1855"></a>This section describes the various terminal attributes that control how
+input and output are done.  The functions, data structures, and symbolic
+constants are all declared in the header file <samp><span class="file">termios.h</span></samp>.
+
+   <p>Don't confuse terminal attributes with file attributes.  A device special
+file which is associated with a terminal has file attributes as described
+in <a href="File-Attributes.html#File-Attributes">File Attributes</a>.  These are unrelated to the attributes of the
+terminal device itself, which are discussed in this section.
+
+<ul class="menu">
+<li><a accesskey="1" href="Mode-Data-Types.html#Mode-Data-Types">Mode Data Types</a>:              The data type <code>struct termios</code> and
+                                 related types. 
+<li><a accesskey="2" href="Mode-Functions.html#Mode-Functions">Mode Functions</a>:               Functions to read and set the terminal
+                                 attributes. 
+<li><a accesskey="3" href="Setting-Modes.html#Setting-Modes">Setting Modes</a>:                The right way to set terminal attributes
+                                 reliably. 
+<li><a accesskey="4" href="Input-Modes.html#Input-Modes">Input Modes</a>:                  Flags controlling low-level input handling. 
+<li><a accesskey="5" href="Output-Modes.html#Output-Modes">Output Modes</a>:                 Flags controlling low-level output handling. 
+<li><a accesskey="6" href="Control-Modes.html#Control-Modes">Control Modes</a>:                Flags controlling serial port behavior. 
+<li><a accesskey="7" href="Local-Modes.html#Local-Modes">Local Modes</a>:                  Flags controlling high-level input handling. 
+<li><a accesskey="8" href="Line-Speed.html#Line-Speed">Line Speed</a>:                   How to read and set the terminal line speed. 
+<li><a accesskey="9" href="Special-Characters.html#Special-Characters">Special Characters</a>:           Characters that have special effects,
+			         and how to change them. 
+<li><a href="Noncanonical-Input.html#Noncanonical-Input">Noncanonical Input</a>:           Controlling how long to wait for input. 
+</ul>
+
+   </body></html>
+

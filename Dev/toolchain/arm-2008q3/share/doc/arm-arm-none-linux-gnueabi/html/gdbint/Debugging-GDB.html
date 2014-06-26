@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+<title>Debugging GDB - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Hints.html#Hints" title="Hints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Debugging-GDB"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Hints.html#Hints">Hints</a>
+<hr>
+</div>
+
+<h3 class="section">21.2 Debugging <span class="sc">gdb</span> with itself</h3>
+
+<p><a name="index-debugging-_0040value_007bGDBN_007d-436"></a>
+If <span class="sc">gdb</span> is limping on your machine, this is the preferred way to get it
+fully functional.  Be warned that in some ancient Unix systems, like
+Ultrix 4.2, a program can't be running in one process while it is being
+debugged in another.  Rather than typing the command <kbd>./gdb&nbsp;./gdb<!-- /@w --></kbd>, which works on Suns and such, you can copy <samp><span class="file">gdb</span></samp> to
+<samp><span class="file">gdb2</span></samp> and then type <kbd>./gdb&nbsp;./gdb2<!-- /@w --></kbd>.
+
+   <p>When you run <span class="sc">gdb</span> in the <span class="sc">gdb</span> source directory, it will read a
+<samp><span class="file">.gdbinit</span></samp> file that sets up some simple things to make debugging
+gdb easier.  The <code>info</code> command, when executed without a subcommand
+in a <span class="sc">gdb</span> being debugged by gdb, will pop you back up to the top level
+gdb.  See <samp><span class="file">.gdbinit</span></samp> for details.
+
+   <p>If you use emacs, you will probably want to do a <code>make TAGS</code> after
+you configure your distribution; this will put the machine dependent
+routines for your local machine where they will be accessed first by
+<kbd>M-.</kbd>
+
+   <p>Also, make sure that you've either compiled <span class="sc">gdb</span> with your local cc, or
+have run <code>fixincludes</code> if you are compiling with gcc.
+
+<h3 class="section">21.3 Submitting Patches</h3>
+
+<p><a name="index-submitting-patches-437"></a>Thanks for thinking of offering your changes back to the community of
+<span class="sc">gdb</span> users.  In general we like to get well designed enhancements. 
+Thanks also for checking in advance about the best way to transfer the
+changes.
+
+   <p>The <span class="sc">gdb</span> maintainers will only install &ldquo;cleanly designed&rdquo; patches. 
+This manual summarizes what we believe to be clean design for <span class="sc">gdb</span>.
+
+   <p>If the maintainers don't have time to put the patch in when it arrives,
+or if there is any question about a patch, it goes into a large queue
+with everyone else's patches and bug reports.
+
+   <p><a name="index-legal-papers-for-code-contributions-438"></a>The legal issue is that to incorporate substantial changes requires a
+copyright assignment from you and/or your employer, granting ownership
+of the changes to the Free Software Foundation.  You can get the
+standard documents for doing this by sending mail to <code>gnu@gnu.org</code>
+and asking for it.  We recommend that people write in "All programs
+owned by the Free Software Foundation" as "NAME OF PROGRAM", so that
+changes in many programs (not just <span class="sc">gdb</span>, but GAS, Emacs, GCC,
+etc) can be
+contributed with only one piece of legalese pushed through the
+bureaucracy and filed with the FSF.  We can't start merging changes until
+this paperwork is received by the FSF (their rules, which we follow
+since we maintain it for them).
+
+   <p>Technically, the easiest way to receive changes is to receive each
+feature as a small context diff or unidiff, suitable for <code>patch</code>. 
+Each message sent to me should include the changes to C code and
+header files for a single feature, plus <samp><span class="file">ChangeLog</span></samp> entries for
+each directory where files were modified, and diffs for any changes
+needed to the manuals (<samp><span class="file">gdb/doc/gdb.texinfo</span></samp> or
+<samp><span class="file">gdb/doc/gdbint.texinfo</span></samp>).  If there are a lot of changes for a
+single feature, they can be split down into multiple messages.
+
+   <p>In this way, if we read and like the feature, we can add it to the
+sources with a single patch command, do some testing, and check it in. 
+If you leave out the <samp><span class="file">ChangeLog</span></samp>, we have to write one.  If you leave
+out the doc, we have to puzzle out what needs documenting.  Etc., etc.
+
+   <p>The reason to send each change in a separate message is that we will not
+install some of the changes.  They'll be returned to you with questions
+or comments.  If we're doing our job correctly, the message back to you
+will say what you have to fix in order to make the change acceptable. 
+The reason to have separate messages for separate features is so that
+the acceptable changes can be installed while one or more changes are
+being reworked.  If multiple features are sent in a single message, we
+tend to not put in the effort to sort out the acceptable changes from
+the unacceptable, so none of the features get installed until all are
+acceptable.
+
+   <p>If this sounds painful or authoritarian, well, it is.  But we get a lot
+of bug reports and a lot of patches, and many of them don't get
+installed because we don't have the time to finish the job that the bug
+reporter or the contributor could have done.  Patches that arrive
+complete, working, and well designed, tend to get installed on the day
+they arrive.  The others go into a queue and get installed as time
+permits, which, since the maintainers have many demands to meet, may not
+be for quite some time.
+
+   <p>Please send patches directly to
+<a href="mailto:gdb-patches@sources.redhat.com">the <span class="sc">gdb</span> maintainers</a>.
+
+<h3 class="section">21.4 Build Script</h3>
+
+<p><a name="index-build-script-439"></a>
+The script <samp><span class="file">gdb_buildall.sh</span></samp> builds <span class="sc">gdb</span> with flag
+<samp><span class="option">--enable-targets=all</span></samp> set.  This builds <span class="sc">gdb</span> with all supported
+targets activated.  This helps testing <span class="sc">gdb</span> when doing changes that
+affect more than one architecture and is much faster than using
+<samp><span class="file">gdb_mbuild.sh</span></samp>.
+
+   <p>After building <span class="sc">gdb</span> the script checks which architectures are
+supported and then switches the current architecture to each of those to get
+information about the architecture.  The test results are stored in log files
+in the directory the script was called from.
+
+<!-- *-texinfo-*- -->
+<!-- This file is part of the GDB manual. -->
+<!-- Copyright (C) 2003, 2004, 2005, 2006, 2008 -->
+<!-- Free Software Foundation, Inc. -->
+<!-- See the file gdbint.texinfo for copying conditions. -->
+<!-- Also, the @deftypefun lines from this file are processed into a -->
+<!-- header file during the GDB build process.  Permission is granted -->
+<!-- to redistribute and/or modify those lines under the terms of the -->
+<!-- GNU General Public License as published by the Free Software -->
+<!-- Foundation; either version 2 of the License, or (at your option) -->
+<!-- any later version. -->
+   </body></html>
+

@@ -1,0 +1,152 @@
+#
+# (C) Copyright 2004-2006 Texas Instruments
+#
+# Some cut/paste from U-Boot README
+# (C) Copyright 2000 - 2004
+# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+#
+# See file CREDITS for list of people who contributed to this
+# project.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307 USA
+#
+
+Summary:
+========
+
+This directory contains the source code for X-Loader, an initial program
+loader for Embedded boards based on OMAP processors. X-Loader can be
+signed by Texas Instruments IFT and installed to Nand flash to achieve
+Nand booting.
+
+
+Status:
+=======
+
+The support for Texas Instruments H3 board (OMAP1710) has been implemented
+and tested. (May 2004)
+The support for Texas Instruments H4 board (OMAP2420) has been implemented
+and tested. (Nov 2004)
+The support for Texas Instruments 2430SDP board (OMAP2430) has been implemented
+and tested. (Jul 2006)
+The support for Texas Instruments 3430SDP board (OMAP3430) has been implemented
+and tested. (Dec 2006)
+
+
+Support for other OMAP boards can be added.
+ 
+  
+Directory Hierarchy:
+====================
+
+- board		Board dependent files
+- cpu		CPU specific files
+- drivers	Commonly used device drivers
+- lib		Libraries
+ 
+- cpu/arm926ejs Files specific to ARM 926 CPUs
+- cpu/arm1136 Files specific to ARM 1136 CPUs
+- cpu/omap3 Files specific to ARM CortexA8 CPU
+
+ 
+- board/omap1710h3
+		Files specific to OMAP 1710 H3 boards
+- board/omap2420h4
+		Files specific to OMAP 2420 H4 boards
+- board/omap2430sdp
+		Files specific to OMAP 2430 2430sdp boards
+- board/omap3430sdp
+		Files specific to OMAP 3420sdp boards
+
+ 
+Software Configuration:
+=======================
+
+Configuration is usually done using C preprocessor defines. Configuration
+depends on the combination of board and CPU type; all such information is
+kept in a configuration file "include/configs/<board_name>.h".
+
+Example: For a H3 module, all configuration settings are in
+"include/configs/omap1710h3.h".
+  
+For all supported boards there are ready-to-use default
+configurations available; just type "make <board_name>_config".
+
+Example: For a H3 module type:
+
+	cd x-load
+	make omap1710h3_config
+
+After a board has been configured, type "make" to build it supposing the
+needed cross tools are in your path.
+
+ 
+Image Format:
+=============
+
+X-Loader expects OS boot loader (e.g. U-Boot) in Nand flash using
+JFFS2 style ECC. 
+
+
+Prepare Booting Nand Flash:
+===========================
+
+After you have built x-load.bin for your board, you need to do the
+followings to get it into Nand flash:
+
+1. Use Texas Instruments IFT to sign x-load.bin. This results in a
+signed image called x-load.bin.ift.
+2. Use Texas Instruments FlashPrep to generate a .out file using
+FlashWriterNand and specifying 0 as nand target address.
+3. Use Texas instrumnets Code Composer Studio to run the .out file 
+which flashes x-load.bin.ift to Nand flash.
+
+Next you need to get your OS boot loader to Nand at the address your
+X-Loader expects. For the H3 example, you can use U-Boot to flash U-Boot.
+You can't use FlashWriterNand because it uses ROM code ECC style.  
+
+
+More Information
+================
+
+OMAP1710 NAND Booting Design Document has more information.
+
+Implemenation notes:
+====================
+H3, H4 support NAND flash booting
+2430sdp & 3430sdp support OneNAND booting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

@@ -1,0 +1,86 @@
+#
+#    Copyright (c) 2011-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the control and configuration file for the
+#      daemon-monitoring daemon, monit.
+#
+
+#
+# Global Section
+#
+
+# Start monit in the background (run as a daemon) and check for
+# services at 5 second intervals, delaying the first check for 15
+# seconds.
+
+set daemon 5 with start delay 15
+
+# Establish the port, bind address and access restrictions for the
+# internal HTTP daemon that supports IPC between the client and
+# daemon.
+
+set httpd port 2812 and
+  use address 127.0.0.1
+  allow 127.0.0.1
+
+# Set logging to syslog with the 'daemon' facility.
+
+set logfile syslog facility log_daemon
+
+# Set the monit PID file
+
+set pidfile /var/run/monit.pid
+
+# Set the location of monit ID file which saves the unique ID specific for a
+# given monit. The ID is generated and stored on first monit start.
+
+set idfile /var/run/monit.id
+
+# Set the location of monit state file which saves the monitoring
+# state on each cycle. If state file is stored on persistent file
+# system, monit will recover the monitoring state across reboots. If
+# it is on temporary file system, the state will be lost on reboot.
+
+set statefile /var/run/monit.state
+
+#
+# Services
+#
+
+check process connmand with pidfile "/var/run/connmand.pid"
+  start program = "/etc/init.d/connman start" with timeout 8 seconds
+  stop  program = "/etc/init.d/connman stop"
+  if mem >  3 MB for 8 cycles then restart
+
+check process wpa_supplicant with pidfile "/var/run/wpa_supplicant.pid"
+  start program = "/etc/init.d/wpasupplicant start"
+  stop  program = "/etc/init.d/wpasupplicant stop"
+
+check device root with path /
+  if changed fsflags then alert
+  if space usage > 90% then alert
+  if inode usage > 90% then alert
+
+check device system-config with path /dev/mtdblock10
+  if changed fsflags then alert
+  if space usage > 90% then alert
+  if inode usage > 90% then alert
+
+check device user-config with path /dev/mtdblock11
+  if changed fsflags then alert
+  if space usage > 90% then alert
+  if inode usage > 90% then alert
+
+check device data with path /dev/mtdblock12
+  if changed fsflags then alert
+  if space usage > 90% then alert
+  if inode usage > 90% then alert
+
+check device log with path /dev/mtdblock13
+  if changed fsflags then alert
+  if space usage > 90% then alert
+  if inode usage > 90% then alert
+
+include /etc/monit.d/*.monitrc

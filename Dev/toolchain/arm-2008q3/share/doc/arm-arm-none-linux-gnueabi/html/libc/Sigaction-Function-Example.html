@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Sigaction Function Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Actions.html#Signal-Actions" title="Signal Actions">
+<link rel="prev" href="Signal-and-Sigaction.html#Signal-and-Sigaction" title="Signal and Sigaction">
+<link rel="next" href="Flags-for-Sigaction.html#Flags-for-Sigaction" title="Flags for Sigaction">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Sigaction-Function-Example"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Flags-for-Sigaction.html#Flags-for-Sigaction">Flags for Sigaction</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signal-and-Sigaction.html#Signal-and-Sigaction">Signal and Sigaction</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Actions.html#Signal-Actions">Signal Actions</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.3.4 <code>sigaction</code> Function Example</h4>
+
+<p>In <a href="Basic-Signal-Handling.html#Basic-Signal-Handling">Basic Signal Handling</a>, we gave an example of establishing a
+simple handler for termination signals using <code>signal</code>.  Here is an
+equivalent example using <code>sigaction</code>:
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     
+     void
+     termination_handler (int signum)
+     {
+       struct temp_file *p;
+     
+       for (p = temp_file_list; p; p = p-&gt;next)
+         unlink (p-&gt;name);
+     }
+     
+     int
+     main (void)
+     {
+       ...
+       struct sigaction new_action, old_action;
+     
+       /* <span class="roman">Set up the structure to specify the new action.</span> */
+       new_action.sa_handler = termination_handler;
+       sigemptyset (&amp;new_action.sa_mask);
+       new_action.sa_flags = 0;
+     
+       sigaction (SIGINT, NULL, &amp;old_action);
+       if (old_action.sa_handler != SIG_IGN)
+         sigaction (SIGINT, &amp;new_action, NULL);
+       sigaction (SIGHUP, NULL, &amp;old_action);
+       if (old_action.sa_handler != SIG_IGN)
+         sigaction (SIGHUP, &amp;new_action, NULL);
+       sigaction (SIGTERM, NULL, &amp;old_action);
+       if (old_action.sa_handler != SIG_IGN)
+         sigaction (SIGTERM, &amp;new_action, NULL);
+       ...
+     }
+</pre>
+   <p>The program just loads the <code>new_action</code> structure with the desired
+parameters and passes it in the <code>sigaction</code> call.  The usage of
+<code>sigemptyset</code> is described later; see <a href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>.
+
+   <p>As in the example using <code>signal</code>, we avoid handling signals
+previously set to be ignored.  Here we can avoid altering the signal
+handler even momentarily, by using the feature of <code>sigaction</code> that
+lets us examine the current action without specifying a new one.
+
+   <p>Here is another example.  It retrieves information about the current
+action for <code>SIGINT</code> without changing that action.
+
+<pre class="smallexample">     struct sigaction query_action;
+     
+     if (sigaction (SIGINT, NULL, &amp;query_action) &lt; 0)
+       /* <code>sigaction</code><span class="roman"> returns -1 in case of error.</span> */
+     else if (query_action.sa_handler == SIG_DFL)
+       /* <code>SIGINT</code><span class="roman"> is handled in the default, fatal manner.</span> */
+     else if (query_action.sa_handler == SIG_IGN)
+       /* <code>SIGINT</code><span class="roman"> is ignored.</span> */
+     else
+       /* <span class="roman">A programmer-defined signal handler is in effect.</span> */
+</pre>
+   </body></html>
+

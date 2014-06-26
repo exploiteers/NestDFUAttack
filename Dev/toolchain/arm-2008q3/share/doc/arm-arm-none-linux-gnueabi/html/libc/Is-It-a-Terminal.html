@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Is It a Terminal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link rel="next" href="I_002fO-Queues.html#I_002fO-Queues" title="I/O Queues">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Is-It-a-Terminal"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="I_002fO-Queues.html#I_002fO-Queues">I/O Queues</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>
+<hr>
+</div>
+
+<h3 class="section">17.1 Identifying Terminals</h3>
+
+<p><a name="index-terminal-identification-1844"></a><a name="index-identifying-terminals-1845"></a>
+The functions described in this chapter only work on files that
+correspond to terminal devices.  You can find out whether a file
+descriptor is associated with a terminal by using the <code>isatty</code>
+function.
+
+   <p><a name="index-unistd_002eh-1846"></a>Prototypes for the functions in this section are declared in the header
+file <samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>isatty</b> (<var>int filedes</var>)<var><a name="index-isatty-1847"></a></var><br>
+<blockquote><p>This function returns <code>1</code> if <var>filedes</var> is a file descriptor
+associated with an open terminal device, and 0 otherwise. 
+</p></blockquote></div>
+
+   <p>If a file descriptor is associated with a terminal, you can get its
+associated file name using the <code>ttyname</code> function.  See also the
+<code>ctermid</code> function, described in <a href="Identifying-the-Terminal.html#Identifying-the-Terminal">Identifying the Terminal</a>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: char * <b>ttyname</b> (<var>int filedes</var>)<var><a name="index-ttyname-1848"></a></var><br>
+<blockquote><p>If the file descriptor <var>filedes</var> is associated with a terminal
+device, the <code>ttyname</code> function returns a pointer to a
+statically-allocated, null-terminated string containing the file name of
+the terminal file.  The value is a null pointer if the file descriptor
+isn't associated with a terminal, or the file name cannot be determined. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>ttyname_r</b> (<var>int filedes, char *buf, size_t len</var>)<var><a name="index-ttyname_005fr-1849"></a></var><br>
+<blockquote><p>The <code>ttyname_r</code> function is similar to the <code>ttyname</code> function
+except that it places its result into the user-specified buffer starting
+at <var>buf</var> with length <var>len</var>.
+
+        <p>The normal return value from <code>ttyname_r</code> is 0.  Otherwise an
+error number is returned to indicate the error.  The following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal.
+
+          <br><dt><code>ERANGE</code><dd>The buffer length <var>len</var> is too small to store the string to be
+returned. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

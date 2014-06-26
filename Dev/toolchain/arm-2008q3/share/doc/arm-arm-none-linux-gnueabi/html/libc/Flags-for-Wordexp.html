@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>Flags for Wordexp - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Word-Expansion.html#Word-Expansion" title="Word Expansion">
+<link rel="prev" href="Calling-Wordexp.html#Calling-Wordexp" title="Calling Wordexp">
+<link rel="next" href="Wordexp-Example.html#Wordexp-Example" title="Wordexp Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Flags-for-Wordexp"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Wordexp-Example.html#Wordexp-Example">Wordexp Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Calling-Wordexp.html#Calling-Wordexp">Calling Wordexp</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Word-Expansion.html#Word-Expansion">Word Expansion</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.4.3 Flags for Word Expansion</h4>
+
+<p>This section describes the flags that you can specify in the
+<var>flags</var> argument to <code>wordexp</code>.  Choose the flags you want,
+and combine them with the C operator <code>|</code>.
+
+     <dl>
+<!-- wordexp.h -->
+<!-- POSIX.2 -->
+<dt><code>WRDE_APPEND</code><dd>Append the words from this expansion to the vector of words produced by
+previous calls to <code>wordexp</code>.  This way you can effectively expand
+several words as if they were concatenated with spaces between them.
+
+     <p>In order for appending to work, you must not modify the contents of the
+word vector structure between calls to <code>wordexp</code>.  And, if you set
+<code>WRDE_DOOFFS</code> in the first call to <code>wordexp</code>, you must also
+set it when you append to the results.
+
+     <!-- wordexp.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>WRDE_DOOFFS</code><dd>Leave blank slots at the beginning of the vector of words. 
+The <code>we_offs</code> field says how many slots to leave. 
+The blank slots contain null pointers.
+
+     <!-- wordexp.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>WRDE_NOCMD</code><dd>Don't do command substitution; if the input requests command substitution,
+report an error.
+
+     <!-- wordexp.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>WRDE_REUSE</code><dd>Reuse a word vector made by a previous call to <code>wordexp</code>. 
+Instead of allocating a new vector of words, this call to <code>wordexp</code>
+will use the vector that already exists (making it larger if necessary).
+
+     <p>Note that the vector may move, so it is not safe to save an old pointer
+and use it again after calling <code>wordexp</code>.  You must fetch
+<code>we_pathv</code> anew after each call.
+
+     <!-- wordexp.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>WRDE_SHOWERR</code><dd>Do show any error messages printed by commands run by command substitution. 
+More precisely, allow these commands to inherit the standard error output
+stream of the current process.  By default, <code>wordexp</code> gives these
+commands a standard error stream that discards all output.
+
+     <!-- wordexp.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>WRDE_UNDEF</code><dd>If the input refers to a shell variable that is not defined, report an
+error. 
+</dl>
+
+   </body></html>
+

@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Listening - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="prev" href="Connecting.html#Connecting" title="Connecting">
+<link rel="next" href="Accepting-Connections.html#Accepting-Connections" title="Accepting Connections">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Listening"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Accepting-Connections.html#Accepting-Connections">Accepting Connections</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Connecting.html#Connecting">Connecting</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.2 Listening for Connections</h4>
+
+<p><a name="index-listening-_0028sockets_0029-1795"></a><a name="index-sockets_002c-server-actions-1796"></a><a name="index-sockets_002c-listening-1797"></a>
+Now let us consider what the server process must do to accept
+connections on a socket.  First it must use the <code>listen</code> function
+to enable connection requests on the socket, and then accept each
+incoming connection with a call to <code>accept</code> (see <a href="Accepting-Connections.html#Accepting-Connections">Accepting Connections</a>).  Once connection requests are enabled on a server socket,
+the <code>select</code> function reports when the socket has a connection
+ready to be accepted (see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>).
+
+   <p>The <code>listen</code> function is not allowed for sockets using
+connectionless communication styles.
+
+   <p>You can write a network server that does not even start running until a
+connection to it is requested.  See <a href="Inetd-Servers.html#Inetd-Servers">Inetd Servers</a>.
+
+   <p>In the Internet namespace, there are no special protection mechanisms
+for controlling access to a port; any process on any machine
+can make a connection to your server.  If you want to restrict access to
+your server, make it examine the addresses associated with connection
+requests or implement some other handshaking or identification
+protocol.
+
+   <p>In the local namespace, the ordinary file protection bits control who has
+access to connect to the socket.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>listen</b> (<var>int socket, int n</var>)<var><a name="index-listen-1798"></a></var><br>
+<blockquote><p>The <code>listen</code> function enables the socket <var>socket</var> to accept
+connections, thus making it a server socket.
+
+        <p>The argument <var>n</var> specifies the length of the queue for pending
+connections.  When the queue fills, new clients attempting to connect
+fail with <code>ECONNREFUSED</code> until the server calls <code>accept</code> to
+accept a connection from the queue.
+
+        <p>The <code>listen</code> function returns <code>0</code> on success and <code>-1</code>
+on failure.  The following <code>errno</code> error conditions are defined
+for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The argument <var>socket</var> is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The argument <var>socket</var> is not a socket.
+
+          <br><dt><code>EOPNOTSUPP</code><dd>The socket <var>socket</var> does not support this operation. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

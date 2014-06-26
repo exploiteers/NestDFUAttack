@@ -1,0 +1,160 @@
+<html lang="en">
+<head>
+<title>Memory Concepts - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory.html#Memory" title="Memory">
+<link rel="next" href="Memory-Allocation.html#Memory-Allocation" title="Memory Allocation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Memory-Concepts"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory.html#Memory">Memory</a>
+<hr>
+</div>
+
+<h3 class="section">3.1 Process Memory Concepts</h3>
+
+<p>One of the most basic resources a process has available to it is memory. 
+There are a lot of different ways systems organize memory, but in a
+typical one, each process has one linear virtual address space, with
+addresses running from zero to some huge maximum.  It need not be
+contiguous; i.e., not all of these addresses actually can be used to
+store data.
+
+   <p>The virtual memory is divided into pages (4 kilobytes is typical). 
+Backing each page of virtual memory is a page of real memory (called a
+<dfn>frame</dfn>) or some secondary storage, usually disk space.  The disk
+space might be swap space or just some ordinary disk file.  Actually, a
+page of all zeroes sometimes has nothing at all backing it &ndash; there's
+just a flag saying it is all zeroes. 
+<a name="index-page-frame-232"></a><a name="index-frame_002c-real-memory-233"></a><a name="index-swap-space-234"></a><a name="index-page_002c-virtual-memory-235"></a>
+The same frame of real memory or backing store can back multiple virtual
+pages belonging to multiple processes.  This is normally the case, for
+example, with virtual memory occupied by GNU C library code.  The same
+real memory frame containing the <code>printf</code> function backs a virtual
+memory page in each of the existing processes that has a <code>printf</code>
+call in its program.
+
+   <p>In order for a program to access any part of a virtual page, the page
+must at that moment be backed by (&ldquo;connected to&rdquo;) a real frame.  But
+because there is usually a lot more virtual memory than real memory, the
+pages must move back and forth between real memory and backing store
+regularly, coming into real memory when a process needs to access them
+and then retreating to backing store when not needed anymore.  This
+movement is called <dfn>paging</dfn>.
+
+   <p>When a program attempts to access a page which is not at that moment
+backed by real memory, this is known as a <dfn>page fault</dfn>.  When a page
+fault occurs, the kernel suspends the process, places the page into a
+real page frame (this is called &ldquo;paging in&rdquo; or &ldquo;faulting in&rdquo;), then
+resumes the process so that from the process' point of view, the page
+was in real memory all along.  In fact, to the process, all pages always
+seem to be in real memory.  Except for one thing: the elapsed execution
+time of an instruction that would normally be a few nanoseconds is
+suddenly much, much, longer (because the kernel normally has to do I/O
+to complete the page-in).  For programs sensitive to that, the functions
+described in <a href="Locking-Pages.html#Locking-Pages">Locking Pages</a> can control it. 
+<a name="index-page-fault-236"></a><a name="index-paging-237"></a>
+Within each virtual address space, a process has to keep track of what
+is at which addresses, and that process is called memory allocation. 
+Allocation usually brings to mind meting out scarce resources, but in
+the case of virtual memory, that's not a major goal, because there is
+generally much more of it than anyone needs.  Memory allocation within a
+process is mainly just a matter of making sure that the same byte of
+memory isn't used to store two different things.
+
+   <p>Processes allocate memory in two major ways: by exec and
+programmatically.  Actually, forking is a third way, but it's not very
+interesting.  See <a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>.
+
+   <p>Exec is the operation of creating a virtual address space for a process,
+loading its basic program into it, and executing the program.  It is
+done by the &ldquo;exec&rdquo; family of functions (e.g. <code>execl</code>).  The
+operation takes a program file (an executable), it allocates space to
+load all the data in the executable, loads it, and transfers control to
+it.  That data is most notably the instructions of the program (the
+<dfn>text</dfn>), but also literals and constants in the program and even
+some variables: C variables with the static storage class (see <a href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">Memory Allocation and C</a>). 
+<a name="index-executable-238"></a><a name="index-literals-239"></a><a name="index-constants-240"></a>
+Once that program begins to execute, it uses programmatic allocation to
+gain additional memory.  In a C program with the GNU C library, there
+are two kinds of programmatic allocation: automatic and dynamic. 
+See <a href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">Memory Allocation and C</a>.
+
+   <p>Memory-mapped I/O is another form of dynamic virtual memory allocation. 
+Mapping memory to a file means declaring that the contents of certain
+range of a process' addresses shall be identical to the contents of a
+specified regular file.  The system makes the virtual memory initially
+contain the contents of the file, and if you modify the memory, the
+system writes the same modification to the file.  Note that due to the
+magic of virtual memory and page faults, there is no reason for the
+system to do I/O to read the file, or allocate real memory for its
+contents, until the program accesses the virtual memory. 
+See <a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>. 
+<a name="index-memory-mapped-I_002fO-241"></a><a name="index-memory-mapped-file-242"></a><a name="index-files_002c-accessing-243"></a>
+Just as it programmatically allocates memory, the program can
+programmatically deallocate (<dfn>free</dfn>) it.  You can't free the memory
+that was allocated by exec.  When the program exits or execs, you might
+say that all its memory gets freed, but since in both cases the address
+space ceases to exist, the point is really moot.  See <a href="Program-Termination.html#Program-Termination">Program Termination</a>. 
+<a name="index-execing-a-program-244"></a><a name="index-freeing-memory-245"></a><a name="index-exiting-a-program-246"></a>
+A process' virtual address space is divided into segments.  A segment is
+a contiguous range of virtual addresses.  Three important segments are:
+
+     <ul>
+<li>
+The <dfn>text segment</dfn> contains a program's instructions and literals and
+static constants.  It is allocated by exec and stays the same size for
+the life of the virtual address space.
+
+     <li>The <dfn>data segment</dfn> is working storage for the program.  It can be
+preallocated and preloaded by exec and the process can extend or shrink
+it by calling functions as described in See <a href="Resizing-the-Data-Segment.html#Resizing-the-Data-Segment">Resizing the Data Segment</a>.  Its lower end is fixed.
+
+     <li>The <dfn>stack segment</dfn> contains a program stack.  It grows as the stack
+grows, but doesn't shrink when the stack shrinks.
+
+   </ul>
+
+   </body></html>
+

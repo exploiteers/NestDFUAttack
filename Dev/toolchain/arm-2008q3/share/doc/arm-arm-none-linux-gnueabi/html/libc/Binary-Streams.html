@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+<title>Binary Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Error-Recovery.html#Error-Recovery" title="Error Recovery">
+<link rel="next" href="File-Positioning.html#File-Positioning" title="File Positioning">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Binary-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Positioning.html#File-Positioning">File Positioning</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Error-Recovery.html#Error-Recovery">Error Recovery</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.17 Text and Binary Streams</h3>
+
+<p>The GNU system and other POSIX-compatible operating systems organize all
+files as uniform sequences of characters.  However, some other systems
+make a distinction between files containing text and files containing
+binary data, and the input and output facilities of ISO&nbsp;C<!-- /@w --> provide for
+this distinction.  This section tells you how to write programs portable
+to such systems.
+
+   <p><a name="index-text-stream-1103"></a><a name="index-binary-stream-1104"></a>When you open a stream, you can specify either a <dfn>text stream</dfn> or a
+<dfn>binary stream</dfn>.  You indicate that you want a binary stream by
+specifying the &lsquo;<samp><span class="samp">b</span></samp>&rsquo; modifier in the <var>opentype</var> argument to
+<code>fopen</code>; see <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>.  Without this
+option, <code>fopen</code> opens the file as a text stream.
+
+   <p>Text and binary streams differ in several ways:
+
+     <ul>
+<li>The data read from a text stream is divided into <dfn>lines</dfn> which are
+terminated by newline (<code>'\n'</code>) characters, while a binary stream is
+simply a long series of characters.  A text stream might on some systems
+fail to handle lines more than 254 characters long (including the
+terminating newline character). 
+<a name="index-lines-_0028in-a-text-file_0029-1105"></a>
+<li>On some systems, text files can contain only printing characters,
+horizontal tab characters, and newlines, and so text streams may not
+support other characters.  However, binary streams can handle any
+character value.
+
+     <li>Space characters that are written immediately preceding a newline
+character in a text stream may disappear when the file is read in again.
+
+     <li>More generally, there need not be a one-to-one mapping between
+characters that are read from or written to a text stream, and the
+characters in the actual file. 
+</ul>
+
+   <p>Since a binary stream is always more capable and more predictable than a
+text stream, you might wonder what purpose text streams serve.  Why not
+simply always use binary streams?  The answer is that on these operating
+systems, text and binary streams use different file formats, and the
+only way to read or write &ldquo;an ordinary file of text&rdquo; that can work
+with other text-oriented programs is through a text stream.
+
+   <p>In the GNU library, and on all POSIX systems, there is no difference
+between text streams and binary streams.  When you open a stream, you
+get the same kind of stream regardless of whether you ask for binary. 
+This stream can handle any file content, and has none of the
+restrictions that text streams sometimes have.
+
+   </body></html>
+

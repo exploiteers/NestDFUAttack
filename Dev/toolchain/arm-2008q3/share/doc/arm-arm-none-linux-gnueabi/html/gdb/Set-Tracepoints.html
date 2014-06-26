@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>Set Tracepoints - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tracepoints.html#Tracepoints" title="Tracepoints">
+<link rel="next" href="Analyze-Collected-Data.html#Analyze-Collected-Data" title="Analyze Collected Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Set-Tracepoints"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Analyze-Collected-Data.html#Analyze-Collected-Data">Analyze Collected Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tracepoints.html#Tracepoints">Tracepoints</a>
+<hr>
+</div>
+
+<h3 class="section">11.1 Commands to Set Tracepoints</h3>
+
+<p>Before running such a <dfn>trace experiment</dfn>, an arbitrary number of
+tracepoints can be set.  Like a breakpoint (see <a href="Set-Breaks.html#Set-Breaks">Set Breaks</a>), a
+tracepoint has a number assigned to it by <span class="sc">gdb</span>.  Like with
+breakpoints, tracepoint numbers are successive integers starting from
+one.  Many of the commands associated with tracepoints take the
+tracepoint number as their argument, to identify which tracepoint to
+work on.
+
+   <p>For each tracepoint, you can specify, in advance, some arbitrary set
+of data that you want the target to collect in the trace buffer when
+it hits that tracepoint.  The collected data can include registers,
+local variables, or global data.  Later, you can use <span class="sc">gdb</span>
+commands to examine the values these data had at the time the
+tracepoint was hit.
+
+   <p>This section describes commands to set tracepoints and associated
+conditions and actions.
+
+<ul class="menu">
+<li><a accesskey="1" href="Create-and-Delete-Tracepoints.html#Create-and-Delete-Tracepoints">Create and Delete Tracepoints</a>
+<li><a accesskey="2" href="Enable-and-Disable-Tracepoints.html#Enable-and-Disable-Tracepoints">Enable and Disable Tracepoints</a>
+<li><a accesskey="3" href="Tracepoint-Passcounts.html#Tracepoint-Passcounts">Tracepoint Passcounts</a>
+<li><a accesskey="4" href="Tracepoint-Actions.html#Tracepoint-Actions">Tracepoint Actions</a>
+<li><a accesskey="5" href="Listing-Tracepoints.html#Listing-Tracepoints">Listing Tracepoints</a>
+<li><a accesskey="6" href="Starting-and-Stopping-Trace-Experiments.html#Starting-and-Stopping-Trace-Experiments">Starting and Stopping Trace Experiments</a>
+</ul>
+
+   </body></html>
+

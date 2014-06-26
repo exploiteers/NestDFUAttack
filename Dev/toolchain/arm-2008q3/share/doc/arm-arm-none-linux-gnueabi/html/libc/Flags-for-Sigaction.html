@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>Flags for Sigaction - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Actions.html#Signal-Actions" title="Signal Actions">
+<link rel="prev" href="Sigaction-Function-Example.html#Sigaction-Function-Example" title="Sigaction Function Example">
+<link rel="next" href="Initial-Signal-Actions.html#Initial-Signal-Actions" title="Initial Signal Actions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Flags-for-Sigaction"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Initial-Signal-Actions.html#Initial-Signal-Actions">Initial Signal Actions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sigaction-Function-Example.html#Sigaction-Function-Example">Sigaction Function Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Actions.html#Signal-Actions">Signal Actions</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.3.5 Flags for <code>sigaction</code></h4>
+
+<p><a name="index-signal-flags-2921"></a><a name="index-flags-for-_0040code_007bsigaction_007d-2922"></a><a name="index-g_t_0040code_007bsigaction_007d-flags-2923"></a>
+The <code>sa_flags</code> member of the <code>sigaction</code> structure is a
+catch-all for special features.  Most of the time, <code>SA_RESTART</code> is
+a good value to use for this field.
+
+   <p>The value of <code>sa_flags</code> is interpreted as a bit mask.  Thus, you
+should choose the flags you want to set, <span class="sc">or</span> those flags together,
+and store the result in the <code>sa_flags</code> member of your
+<code>sigaction</code> structure.
+
+   <p>Each signal number has its own set of flags.  Each call to
+<code>sigaction</code> affects one particular signal number, and the flags
+that you specify apply only to that particular signal.
+
+   <p>In the GNU C library, establishing a handler with <code>signal</code> sets all
+the flags to zero except for <code>SA_RESTART</code>, whose value depends on
+the settings you have made with <code>siginterrupt</code>.  See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>, to see what this is about.
+
+   <p><a name="index-signal_002eh-2924"></a>These macros are defined in the header file <samp><span class="file">signal.h</span></samp>.
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>SA_NOCLDSTOP</b><var><a name="index-SA_005fNOCLDSTOP-2925"></a></var><br>
+<blockquote><p>This flag is meaningful only for the <code>SIGCHLD</code> signal.  When the
+flag is set, the system delivers the signal for a terminated child
+process but not for one that is stopped.  By default, <code>SIGCHLD</code> is
+delivered for both terminated children and stopped children.
+
+        <p>Setting this flag for a signal other than <code>SIGCHLD</code> has no effect. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>SA_ONSTACK</b><var><a name="index-SA_005fONSTACK-2926"></a></var><br>
+<blockquote><p>If this flag is set for a particular signal number, the system uses the
+signal stack when delivering that kind of signal.  See <a href="Signal-Stack.html#Signal-Stack">Signal Stack</a>. 
+If a signal with this flag arrives and you have not set a signal stack,
+the system terminates the program with <code>SIGILL</code>. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>SA_RESTART</b><var><a name="index-SA_005fRESTART-2927"></a></var><br>
+<blockquote><p>This flag controls what happens when a signal is delivered during
+certain primitives (such as <code>open</code>, <code>read</code> or <code>write</code>),
+and the signal handler returns normally.  There are two alternatives:
+the library function can resume, or it can return failure with error
+code <code>EINTR</code>.
+
+        <p>The choice is controlled by the <code>SA_RESTART</code> flag for the
+particular kind of signal that was delivered.  If the flag is set,
+returning from a handler resumes the library function.  If the flag is
+clear, returning from a handler makes the function fail. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,1127 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Sourcery G++ Lite Release Notes</title><link rel="stylesheet" href="cs.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Sourcery G++ Lite"><link rel="up" href="chap-release.html" title="Chapter 3. Sourcery G++ Lite for ARM GNU/Linux"><link rel="prev" href="ch03s02.html" title="Using Sourcery G++ Lite for ARM GNU/Linux"><link rel="next" href="chap-installation.html" title="Chapter 4. Installation and Configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Sourcery G++ Lite Release Notes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Sourcery G++ Lite for ARM GNU/Linux</th><td width="20%" align="right"> <a accesskey="n" href="chap-installation.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id298864"></a>Sourcery G++ Lite Release Notes</h2></div></div></div><p>
+      This section documents Sourcery G++ Lite changes for each released revision.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id298879"></a>Changes in Sourcery G++ Lite 2008q3-72</h3></div></div></div><p><b>Bug fix for assembly listing. </b>
+	  A bug that caused the assembler to produce corrupted
+	  listings (via the <code class="option">-a</code> option) on Windows
+	  hosts has been fixed.
+        </p><p><b>Optimizer bug fix. </b>
+          A bug that caused an <code class="literal">unrecognizable insn</code>
+          internal compiler error when compiling at optimization levels
+          above <code class="option">-O0</code> has been fixed.
+        </p><p><b>VFP compiler fix. </b>
+	  A compiler bug that resulted in
+	  <code class="literal">internal compiler error: output_operand: invalid expression as operand</code>
+	  when generating VFP code has been fixed.
+        </p><p><b>GDB display of source. </b>
+	  A bug has been fixed that prevented GDB from locating debug
+	  information in some cases.  The debugger failed to display
+	  source code for or step into the affected functions.
+	</p><p><b>Bug fix for <code class="filename">libSegFault.so</code>. </b>
+	  Binaries linked with <code class="filename">libSegFault.so</code> now
+	  produce a correct backtrace when a segmentation fault
+	  occurs.  Formerly, the location of the fault was shown
+	  incorrectly.
+	</p><p><b>GDB segment warning. </b>
+	  Some compilers produce binaries including uninitialized data
+	  regions, such as the stack and heap.  GDB incorrectly
+	  displayed the warning <code class="literal">Loadable segment
+	  "<em class="replaceable"><code>name</code></em>" outside of ELF
+	  segments</code> for such binaries; the warning has now
+	  been fixed.
+        </p><p><b>Misaligned NEON memory accesses. </b>
+	  A bug has been fixed that caused the compiler to use aligned
+	  NEON load/store instructions to access misaligned data when
+	  autovectorizing certain loops.  The bug affected code compiled
+	  with <code class="option">-mfpu=neon</code> and loop vectorization enabled
+	  with <code class="option">-O3</code> or <code class="option">-ftree-vectorize</code>.
+	</p><p><b>Sprite crash on error. </b>
+          A bug has been fixed which sometimes caused the Sourcery G++ Debug
+	  Sprite to crash when it attempted to send an error message to
+	  GDB.
+        </p><p><b>Persistent remote server connections. </b>
+	  A GDB bug has been fixed that caused the <span><strong class="command">target
+	  extended-remote</strong></span> command to fail to tell the
+	  remote server to make the connection persistent across
+	  program invocations.
+	</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id299114"></a>Changes in Sourcery G++ Lite 2008q3-41</h3></div></div></div><p><b>Definition of <span class="type">va_list</span>. </b>
+          In order to conform to the ABI for the ARM Architecture, the
+	  definition of the type of <span class="type">va_list</span> (defined in
+	  <code class="filename">stdarg.h</code>) has been
+	  changed.  This change impacts only the mangled names of C++
+	  entities.  For example, the mangled name of a C++ function
+	  taking an argument of type <span class="type">va_list</span>, or
+	  <span class="type">va_list *</span>, or another type involving
+	  <span class="type">va_list</span> has changed.  Since this is an
+	  incompatible change, you must recompile and relink any
+	  modules defining or using affected
+	  <span class="type">va_list</span>-typed entities.
+        </p><p><b>Thumb-2 assembler fixes. </b>
+	  The Thumb-2 encodings of <code class="code">QADD</code>,
+	  <code class="code">QDADD</code>, <code class="code">QSUB</code>, and
+	  <code class="code">QDSUB</code> have been corrected.  Previous versions
+	  of the assembler generated incorrect object files for these
+	  instructions.  The assembler now accepts the
+	  <code class="code">ORN</code>, <code class="code">QASX</code>, <code class="code">QSAX</code>,
+	  <code class="code">RRX</code>, <code class="code">SHASX</code>, <code class="code">SHSAX</code>,
+	  <code class="code">SSAX</code>, <code class="code">USAX</code>, <code class="code">UHASX</code>,
+	  <code class="code">UQSAX</code>, and <code class="code">USAX</code> mnemonics.  The
+	  assembler now detects and issues errors for invalid uses of
+	  register 13 (the stack pointer) and register 15 (the program
+	  counter) in many instructions.
+        </p><p><b>Printing casted values in GDB. </b>
+	  A GDB bug that caused incorrect output for expressions
+	  containing casts, such as in the
+	  <code class="literal">print *(Type *)ptr</code> command, has been fixed.
+	</p><p><b>Bug fix for objcopy/strip. </b>
+          An objcopy bug that corrupted COMDAT groups when creating new
+	  binaries has been fixed.  This bug also affected
+	  <span><strong class="command">strip -g</strong></span>.
+        </p><p><b>
+	  Improved support for debugging <span class="trademark">
+	  RealView</span>® objects
+	. </b>
+	  GDB support for programs compiled by the ARM <span class="trademark">RealView</span>® compiler has been
+	  improved.
+	</p><p><b>Binutils support for DWARF Version 3. </b>
+	  The <span><strong class="command">addr2line</strong></span> command now supports
+	  binaries containing DWARF 3 debugging information.  The
+	  <span><strong class="command">ld</strong></span> command can display error messages
+	  with source locations for input files containing DWARF 3
+	  debugging information.
+	</p><p><b>NEON improvements. </b>
+          Several improvements and bug fixes have been made to the
+          NEON Advanced SIMD Extension support in GCC.  A problem that
+          caused the autovectorizer to fail in some circumstances has
+          been fixed.  Also, many of the intrinsics available via the
+          <code class="filename">arm_neon.h</code> header file
+          now have improved error checking for out-of-bounds arguments,
+          and the <code class="code">vget_lane</code> intrinsics that return signed
+          values now produce improved code.
+        </p><p><b>NEON compiler fix. </b>
+	  A compiler bug that resulted in incorrect NEON code being
+	  generated has been fixed.  Typically the incorrect code
+	  occurred when NEON intrinsics were used inside small
+	  <code class="code">if</code> statements.
+        </p><p><b>Connecting to the target using a pipe. </b>
+	  A bug in GDB's
+	  <span><strong class="command">target remote | <em class="replaceable"><code>program</code></em></strong></span>
+	  command has been fixed.  When launching the specified
+	  <em class="replaceable"><code>program</code></em> failed, the bug caused
+	  GDB to crash, hang, or give a message
+	  <code class="literal">Error: No Error</code>.
+	  
+	  
+	</p><p><b>Mixed-case NEON register aliases. </b>
+	  An assembler bug that prevented NEON register aliases from being
+	  created with mixed-case names using the <code class="code">.dn</code> and
+	  <code class="code">.qn</code> directives has been fixed.  Previously only
+	  aliases created with all-lowercase or all-uppercase names
+	  worked correctly.
+	</p><p><b>Janus 2CC support. </b>
+          GCC now includes a work-around for a hardware bug in Avalent
+	  Janus 2CC cores.  To compile and link for these cores, use
+	  the <code class="option">-mfix-janus-2cc</code> compiler option.  If
+	  you are using the linker directly use the
+          <code class="option">--fix-janus-2cc</code> linker option.
+        </p><p><b>ARM exception handling bug fix. </b>
+	  A bug in the runtime library has been fixed that formerly
+	  caused throwing an unexpected exception in C++ to crash
+	  instead of calling the unexpected exception handler.  The
+	  bug only affected C++ code compiled by non-GNU compilers
+	  such as ARM <span class="trademark">RealView</span>®.
+	</p><p><b>Mangling of NEON type names. </b>
+	  A bug in the algorithm used by the C++ compiler for mangling
+	  the names of NEON types, such as <span class="type">int8x16_t</span>, has
+	  been fixed.  These mangled names are used internally in
+	  object files to encode type information in addition to the
+	  programmer-visible names of the C++ variables and functions.
+	  The new mangled name encoding is more compact and conforms
+	  to the ARM C++ ABI.
+        </p><p><b>Errors after loading the debugged program. </b>
+          An intermittent GDB bug has been fixed.  The bug could cause
+	  a GDB internal error
+	  
+	  after the <span><strong class="command">load</strong></span> command.
+        </p><p><b>Half-precision floating point. </b>
+          Sourcery G++ now includes support for half-precision floating point
+          via the <span class="type">__fp16</span> type in C and C++.  The compiler can
+          generate code using either hardware support or library routines.
+          
+          For more information, see <a href="ch03s02.html#sec-arm-fp16" title="Half-Precision Floating Point">the section called &#8220;Half-Precision Floating Point&#8221;</a>.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id299587"></a>Changes in Sourcery G++ Lite 2008q3-13</h3></div></div></div><p><b>GDB update. </b>
+	  The included version of GDB has been updated to
+	  6.8.50.20080821.  This update adds numerous bug fixes and
+	  new features, including support for decimal floating point,
+	  <span>improved Thumb mode
+	  support,</span> the new <span><strong class="command">find</strong></span> command to
+	  search memory, the new <code class="option">/m</code> (mixed
+	  source and assembly) option to the
+	  <span><strong class="command">disassemble</strong></span> command, and the new
+	  <span><strong class="command">macro define</strong></span> command to define C
+	  preprocessor macros interactively.
+        </p><p><b>Uppercase operands to IT instructions. </b>
+	  The assembler now accepts both uppercase and lowercase operands
+	  for the <code class="code">IT</code> family of instructions.
+        </p><p><b>NEON autovectorizer fix. </b>
+	  A compiler bug that caused generation of bad <code class="code">VLD1</code>
+	  instructions has been fixed. The bug affected code compiled with
+	  <code class="option">-mfpu=neon -ftree-vectorize</code>.
+        </p><p><b>Remote debugging improvements. </b>
+	  The <span><strong class="command">gdbserver</strong></span> utility now supports a more
+	  efficient communications protocol that can reduce latency during
+	  remote debugging.  The protocol optimizations are enabled
+	  automatically when <span><strong class="command">gdbserver</strong></span> operates over
+	  a TCP connection.  Refer to the GDB manual for more information.
+        </p><p><b>Output files removed on error. </b>
+	  When GCC encounters an error, it now consistently removes
+	  any incomplete output files that it may have created.
+        </p><p><b>ARMv7 offset out of range errors. </b>
+	  An assembler bug that resulted in
+	  <code class="literal">offset out of range</code> errors when compiling for
+	  ARMv7 processors has been fixed.
+        </p><p><b>Thumb-2 <code class="code">MUL</code> encoding. </b>
+          In Thumb-2 mode, the assembler now encodes <code class="code">MUL</code>
+          as a 16-bit instruction (rather than as a 32-bit
+          instruction) when possible.  This fix results in smaller
+	  code, with no loss of performance.
+        </p><p><b>ARM C++ ABI utility functions. </b>
+          Vector utility functions required by the ARM C++ ABI no
+          longer crash when passed null pointers.  The affected
+          functions are <code class="function">__aeabi_vec_dtor_cookie</code>,
+          <code class="function">__aeabi_vec_delete</code>,
+          <code class="function">__aeabi_vec_delete3</code>, and
+          <code class="function">__aeabi_vec_delete3_nodtor</code>.  
+          <span>
+	   In addition, on GNU/Linux systems, the ARM C++ ABI utility
+	   functions are now exported from the
+	   <code class="filename">libstdc++.so</code> shared library.  
+          </span>
+	  These functions are not intended for use by application
+	  programmers; they are only called by compiler-generated
+	  code.  They are not presently used by the GNU C++ compiler,
+	  but are used by some other compilers, including ARM's
+	  <span class="trademark">RealView</span>®
+	  compiler.
+        </p><p><b>GCC version 4.3.2. </b>
+          Sourcery G++ Lite for ARM GNU/Linux is now based on GCC version 4.3.2.
+          For more information about changes from GCC version 4.2 that was
+          included in previous releases, see
+          <code class="uri">http://gcc.gnu.org/gcc-4.3/changes.html</code>.
+        </p><p><b>Smaller Thumb-2 code. </b>
+          When optimizing for size (i.e., when <code class="option">-Os</code> is
+	  in use), GCC now generates the 16-bit <code class="code">MULS</code>
+	  Thumb-2 multiply instruction instead of the 32-bit
+	  <code class="code">MUL</code> instruction.
+        </p><p><b>Thumb-2 <code class="code">RBIT</code> encoding. </b>
+	  An assembler bug that resulted in incorrect encoding of the
+	  Thumb-2 <code class="code">RBIT</code> instruction has been fixed.
+        </p><p><b>Sprite communication improvements. </b>
+	  The Sourcery G++ Debug Sprite now uses a more efficient protocol
+	  for communicating with GDB.  This can result in less latency
+	  when debugging, especially when running the Sprite on a remote
+	  machine over a network connection.
+        </p><p><b>Marvell Feroceon compiler bug fix. </b>
+	  A bug that caused an internal compiler error when optimizing
+	  for Marvell Feroceon CPUs has been fixed.
+        </p><p><b>Misaligned accesses to packed structures fix. </b>
+          A bug that caused GCC to generate misaligned accesses to
+          packed structures has been fixed.  
+        </p><p><b>Bug fix for objdump on Windows. </b>
+          An objdump bug that caused the <code class="option">-S</code> option
+          not to work on Windows in some cases has been fixed.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id300307"></a>Changes in Sourcery G++ Lite 2008q1-126</h3></div></div></div><p><b>Disassembler bug fix. </b>
+        A bug in the disassembler has been fixed that formerly caused
+        <span><strong class="command">objdump</strong></span> to crash when processing raw binary
+        files, or other executables with an empty symbol table.
+       </p><p><b>NEON assembler symbols. </b>
+	  An assembler bug that caused spurious undefined symbols to be
+	  generated has been fixed.  The <code class="code">mov d0, d1</code> instruction
+	  would incorrectly cause an undefined symbol <code class="literal">d1</code>
+	  to be created.
+        </p><p><b>Profiling bug fix. </b>
+	  A bug that caused incorrect behavior and crashes when running code
+	  compiled for <span><strong class="command">gprof</strong></span> profiling
+	  (<code class="option">-pg</code>) has been fixed.
+        </p><p><b>GDB <span><strong class="command">info registers</strong></span> crash fix. </b>
+          Executing <span><strong class="command">info registers</strong></span> after
+          executing <span><strong class="command">flushregs</strong></span> no longer crashes GDB.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id300446"></a>Changes in Sourcery G++ Lite 2008q1-102</h3></div></div></div><p><b>GDB and <span><strong class="keycap">Ctrl</strong></span>-<span><strong class="keycap">C</strong></span> on Windows
+	. </b>
+	  GDB no longer crashes when you press
+	  <span><strong class="keycap">Ctrl</strong></span>-<span><strong class="keycap">C</strong></span>
+	  twice during remote debugging to give up waiting for the target.
+        </p><p><b>ARM Cortex-A9 processor support. </b>
+	  The compiler can now generate code optimized for the
+	  ARM Cortex-A9 processor.  This is enabled by the 
+	  the <code class="option">-mcpu=cortex-a9</code> command-line option.
+        </p><p><b>MOVW and MOVT relocations. </b>
+	  A linker error that resulted in incorrect offsets when processing
+	  relocations on <code class="code">MOVW</code> and <code class="code">MOVT</code> instructions
+	  referencing mergeable string sections has been fixed.
+        </p><p><b>Improved argument-passing code. </b>
+          The compiler can now generate more efficient code for
+	  certain functions whose arguments must be sign-extended
+	  to conform with language or ABI conventions.
+	  The required conversion was formerly being performed both 
+          in the called function and at all call sites; now the redundant
+	  conversion has been eliminated for functions that can only be 
+          called within the compilation unit where they are defined.
+        </p><p><b>Multi-process mode for <span><strong class="command">gdbserver</strong></span>. </b>
+	  The <span><strong class="command">gdbserver</strong></span> utility has a new command-line option,
+	  <code class="option">--multi</code>, that allows you to use it to debug multiple
+	  program instances.  Refer to the Debugger manual for more information.
+	</p><p><b>GDB <code class="code">qOffsets</code> crash fix. </b>
+	  GDB no longer crashes when a remote stub provides load
+	  offsets for an unlinked object file.
+        </p><p><b>Linker error allocating ELF segments. </b>
+          A bug where the linker produces an incorrect error message
+          with segments at the top of the address space has been fixed.
+        </p><p><b>GCC stack size limit increased. </b>
+          On Windows hosts, the maximum stack size for the GCC
+          executable has been increased.  This means that more complex
+          programs can be compiled.
+        </p><p><b>Stack overflows in <code class="function">printf</code>. </b>
+          Some stack overflows in <code class="function">printf</code>-family
+          functions have been fixed.  These overflows occurred with
+          format strings with very large precision values such as
+          <code class="code">%1.300000000s</code>, and with some invalid format
+          strings.
+        </p><p><b>Invalid object file after strip. </b>
+	 A bug in the assembler has been fixed that formerly caused
+	 <code class="literal">.set <em class="replaceable"><code>symbol</code></em>
+	 <em class="replaceable"><code>expression</code></em></code>
+	 constructs to emit <em class="replaceable"><code>symbol</code></em> in the
+	 wrong section.  This in turn caused inconsistent behavior
+	 after stripping the symbol table. 
+        </p><p><b>GCC update. </b>
+	  The GCC package has been updated to version 4.2.3.  This version
+	  includes numerous bug fixes since GCC 4.2.
+	</p><p><b>License checking on Linux. </b>
+          Sourcery G++'s license-checking logic now includes a workaround 
+          for a kernel bug present in some versions of Linux.  This bug 
+          formerly caused failures with an error message from the 
+          <code class="literal">cs-license</code> component.
+        </p><p><b>Cortex-R4F and VFPv3-D16. </b>
+	  Sourcery G++ now supports the ARM Cortex-R4F CPU
+	  and the VFPv3-D16 floating-point coprocessor.  These can
+	  be selected with <code class="option">-mcpu=cortex-r4f</code> and
+	  <code class="option">-mfpu=vfpv3-d16</code>, respectively.
+        </p><p><b>Overlapping operands for long multiply instructions. </b>
+	  An incorrect assembler warning has been removed in the case of
+	  overlapping source and destination operands for
+	  <code class="code">UMULL</code>, <code class="code">SMULL</code>, <code class="code">UMLAL</code>
+	  and <code class="code">SMLAL</code> instructions on ARMv6 processors.
+        </p><p><b>Size optimization bug. </b>
+	  A code generation bug that caused corruption of function
+	  arguments when compiling with <code class="option">-Os</code> has been
+	  fixed.  The corruption occurred as part of the sibling call
+	  optimization.
+        </p><p><b>C++ library ABI fix. </b>
+          GCC 4.2.1's <code class="code">std::type_info</code> was not fully
+          compatible with earlier versions.  The ordering of four
+          virtual functions has been fixed in this update.
+	</p><p><b>Improved gdbserver thread support. </b>
+	  The GNU/Linux remote debug agent,
+	  <span><strong class="command">gdbserver</strong></span>, no longer fails when two
+	  threads call <code class="function">pthread_create</code> at the same
+	  time.  It also supports limited thread debugging when
+	  symbols for <code class="filename">libpthread.so</code> are not
+	  available.
+	</p><p><b>GDB support for user-defined prefixed commands. </b>
+	  The GDB <span><strong class="command">define</strong></span> and
+	  <span><strong class="command">document</strong></span> commands, which allow you to
+	  add new commands to the GDB command-line interface, now
+	  support creating commands within an existing prefix
+	  such as <span><strong class="command">target</strong></span>.  Hooks for prefixed
+	  commands are also supported.  Refer to the Debugger manual
+	  for more information.
+	</p><p><b>GDB update. </b>
+	  The included version of GDB has been updated to
+          6.7.20080107.  This update includes numerous bug fixes.
+        </p><p><b>UNC pathname bug fix. </b>
+          A bug has been fixed that caused linker errors on Windows
+          hosts when running a Sourcery G++ toolchain installed in a UNC
+          path
+          (<code class="filename">\\<em class="replaceable"><code>host</code></em>\<em class="replaceable"><code>directory</code></em></code>).
+        </p><p><b>Linker crash on invalid input files. </b>
+          Some older versions of GCC generated object files with
+          invalid mergeable string sections when compiling with
+          <code class="option">-fmerge-all-constants</code>.  This bug was fixed
+          in Sourcery G++ as of version 4.1-43.  However, since system
+          libraries included with some GNU/Linux distributions were
+          affected by this bug, the linker has now been changed to
+          accept object files with such invalid sections, rather than
+          crash or produce an error message.
+        </p><p><b>GDB search path bug fix. </b>
+	  A bug in GDB has been fixed that formerly resulted in an internal
+	  error when setting <code class="varname">solib-search-path</code> or
+	  <code class="varname">solib-absolute-prefix</code> after establishing a
+	  connection to a remote target.
+        </p><p><b>Binutils update. </b>
+	  The binutils package has been updated to version
+	  2.18.50.20080215 from the FSF trunk.  This update includes
+	  numerous bug fixes.
+        </p><p><b>Race fixes in <code class="function">setuid</code>. </b>
+	  Several bugs in multi-threaded <code class="function">setuid</code>
+	  have been fixed.  The bugs led to threads with incorrect
+	  privileges and hangs at thread exit.  The
+	  <code class="function">setgid</code>, <code class="function">seteuid</code>,
+	  <code class="function">setegid</code>, <code class="function">setreuid</code>,
+	  <code class="function">setregid</code>,
+	  <code class="function">setresuid</code>, and
+	  <code class="function">setresgid</code> functions were also affected.
+        </p><p><b><span><strong class="command">gdbserver</strong></span> support for execution wrappers. </b>
+	  <span><strong class="command">gdbserver</strong></span> has a new command-line option,
+	  <code class="option">--wrapper</code>, which specifies a wrapper for any
+	  programs run by <span><strong class="command">gdbserver</strong></span>.  The specified wrapper can
+	  prepare the system and environment for the new program.
+        </p><p><b>Read-only variables. </b>
+         The C++ compiler now places variables whose types are
+         instantiations of template classes in a read-only data
+         section if they are declared <code class="code">const</code> and
+         initialized with a constant value.  This changes reduces the
+         RAM usage of affected applications.
+        </p><p><b>CodeSourcery Common Startup Code Sequence. </b>
+          Support for CS3, a unified startup scheme is included.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id301187"></a>Changes in Sourcery G++ Lite 2007q3-51</h3></div></div></div><p><b>Volatile postincrement and postdecrement bug fix. </b>
+          A code generation bug that caused postincrement or
+          postdecrement of a volatile object to reread the modified
+          value from that object in some contexts has been fixed.  The
+          bug affected code performing a comparison of the
+          postincrement or postdecrement expression with a constant,
+          or that was optimized to comparison with a constant.
+        </p><p><b>Support for debugging with FlashPro3. </b>
+          Support has been added for debugging with the Actel FlashPro3 JTAG
+	  device on Windows hosts.  This works only with Actel Cortex-M1 FPGAs.
+        </p><p><b>C++ class debug information. </b>
+          The flag <code class="option">-femit-class-debug-always</code> 
+          is now disabled by default. The flag produces 
+          duplicate C++ class debug information as a 
+          work-around for older debuggers. 
+        </p><p><b>Improved breakpoints in constructors and template functions. </b>
+          GDB now supports breakpoints on source code locations 
+          that have several code addresses associated with them.
+          Setting a breakpoint on a constructor automatically associates
+          the breakpoint with all constructor bodies generated by GCC.  
+          If you set a breakpoint on a line of a templated function, GDB
+          breaks at the indicated line in all instantiations of the
+          templated function. 
+        </p><p><b>GDB <span><strong class="command">printf</strong></span> %p. </b>
+          GDB's <span><strong class="command">printf</strong></span> command now supports the
+	  <code class="literal">"%p"</code> format specifier.
+        </p><p><b>Widening multiply instructions for ARMv6 and later. </b>
+          GCC now makes use of the 32-to-64-bit widening multiply instructions
+          (<code class="code">umull</code>, <code class="code">smull</code>, <code class="code">umlal</code>, and
+          <code class="code">smlal</code>) when generating code for ARMv6 and later.
+          A bug had caused these instructions to be used for ARMv3 to
+          ARMv5 only.
+        </p><p><b>GDB update. </b>
+          The included version of GDB has been updated to
+          6.6.20070821.  This update includes numerous bug fixes.
+        </p><p><b>Assembler code file name suffixes. </b>
+          GCC now recognizes <code class="filename">.sx</code> as well as
+          <code class="filename">.S</code> as a file name suffix indicating
+          assembler code which must be preprocessed.  
+          The alternate suffix may be useful in conjunction with other
+          program development tools on Windows that do not distinguish
+          case on filenames and treat <code class="filename">.S</code> the same
+          as <code class="filename">.s</code>, which GCC uses to indicate assembler
+          code without preprocessing.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id301402"></a>Changes in Sourcery G++ Lite 2007q3-33</h3></div></div></div><p><b>Preprocessing assembly code. </b>
+          The compiler driver passes <code class="option">-I</code> options to the
+          assembler, so that <code class="code">#include</code> directives
+          (processed by the preprocessor) and <code class="code">.include</code>
+          directives (processed by the assembler) use the same search
+          path.
+        </p><p><b>Dynamically-initialized <code class="code">const</code> variables. </b>
+          Dynamically-initialized namespace-scope C++ variables are no
+	  longer placed in read-only data sections, even when marked
+	  <code class="code">const</code>.  These variables must be modified at
+	  startup, so they cannot be placed in ROM, even though their
+	  values cannot change once initialized.
+        </p><p><b>Register allocation bug fix. </b>
+	  A register allocation bug has been fixed.  Under rare 
+	  circumstances, the bug caused incorrect code generation.
+        </p><p><b>iWMMXt bug fix. </b>
+          A GCC bug affecting code generation for iWMMXt processors
+          has been fixed.  The bug caused internal compiler errors
+          when compiling some functions with large stack frames.
+        </p><p><b>NEON coprocessor system registers. </b>
+	  The assembler now accepts the <code class="literal">MVFR0</code> and
+	  <code class="literal">MVFR1</code> coprocessor registers in
+	  <code class="code">fmrx</code> and <code class="code">fmxr</code> instructions.
+        </p><p><b>Disabling diagnostics for use of system header and
+        library directories. </b>
+          The warnings for use of options such as
+          <code class="option">-I/usr/include</code> when cross compiling can be
+          disabled with a new option
+          <code class="option">-Wno-poison-system-directories</code>.  This
+          option is intended for use in chroot environments when such
+          directories contain the correct headers and libraries for
+          the target system rather than the host.
+        </p><p><b>Default linker script. </b>
+	  GCC no longer uses the simulator linker script by default.
+	  To avoid a link failure, you must specify a linker script
+	  explicitly with the <code class="option">-T</code> command-line option,
+	  or via the <span class="guisubmenu">Properties</span> item on the
+	  <span class="guimenu">Project</span> menu in the Sourcery G++ IDE.
+        </p><p><b>Debugging of statically-linked threaded programs. </b>
+          GDB and EGLIBC now support thread debugging when using GCC's
+          <code class="option">-static</code> option.  Existing statically-linked
+          programs must be relinked after upgrading EGLIBC for this
+          fix.
+        </p><p><b>Thumb-2 doubleword writeback addressing modes. </b>
+	  An assembler bug that caused writeback addressing modes for
+	  <code class="literal">ldrd</code> and <code class="literal">strd</code> to be
+	  incorrectly encoded has been fixed.
+        </p><p><b>Stricter check for anonymous unions. </b>
+          G++ now issues an error about invalid code that uses the
+	  same name for a member of an anonymous union and an entity
+	  in the surrounding namespace.  For example, you will now
+	  get an error about code like:
+	  </p><div class="informalexample"><pre class="programlisting">int i;
+static union { int i; };</pre></div><p>
+	  because both the global variable and the anonymous union
+	  member are named <code class="literal">i</code>.  To make this code
+	  valid you must change one of the declarations to use a
+	  different name.
+        </p><p><b>GCC update. </b>
+	  The GCC package has been updated to version 4.2.1.  This version
+	  includes numerous bug fixes since GCC 4.2.
+	</p><p><b>Smaller code for C++ destructors. </b>
+          G++ now generates more compact code to handle the
+	  destruction of C++ objects declared at namespace scope or
+	  declared within a function scope using the
+	  <code class="code">static</code> keyword.
+        </p><p><b>Robustness on Microsoft Windows. </b>
+          Defects that sometimes caused GDB to become non-responsive
+          on Microsoft Windows have been eliminated.
+        </p><p><b>Debug information for thread-local variables. </b>
+          GCC now generates accurate debug information for
+          thread-local variables.
+        </p><p><b>Binutils update. </b>
+          The binutils package has been updated to the 2007-08-19
+	  version of the pre-2.18 FSF trunk.  This contains many
+	  new improvements and bug fixes.  For more information,
+	  refer to the manuals for the individual utilities, and
+	  to the binutils web site at
+	  <code class="uri">http://www.gnu.org/software/binutils/</code>.
+        </p><p><b>Debugging information fix. </b>
+          GCC no longer generates invalid debugging information for
+          sections with no contents.  The invalid debugging
+          information caused the GNU/Linux prelinker to crash.
+        </p><p><b>Calls to undefined weak symbols. </b>
+	  The linker now implements semantics that comply to the ARM EABI for
+	  <code class="literal">R_ARM_CALL</code> and <code class="literal">T_ARM_THM_CALL</code>
+	  relocations against undefined weak symbols.  These now result
+	  in a jump to the next instruction.
+        </p><p><b>Thread synchronization no longer uses <code class="code">swp</code>. </b>
+          All of the thread synchronization functions (such as
+          <code class="function">pthread_mutex_lock</code>) have been changed to
+	  avoid using the <code class="code">swp</code> instruction.  This instruction
+	  is deprecated in ARM V6 and executes very slowly on recent CPUs.
+	  Instead, the synchronization functions now use kernel-provided
+	  instruction sequences that are optimal for the processor in use.
+        </p><p><b>Thumb-2 shift instruction aliases. </b>
+	  The assembler now accepts <code class="literal">mov</code> with shifted
+	  operands as an alias for Thumb-2 shift instructions.
+	  For example <code class="code">mov r0, r1, lsl r2</code> is encoded as
+	  <code class="code">lsl r0, r1, r2</code>.
+        </p><p><b>Thumb-2 branches to shared libraries. </b>
+	  The linker can now generate PLT stubs for
+	  <code class="literal">R_ARM_THM_JUMP24</code> and
+	  <code class="literal">R_ARM_THM_JUMP19</code> relocations.
+	  This occurs when Thumb-2 branch instructions refer to
+	  symbols imported from shared libraries.
+        </p><p><b>Inlined function debugging fix. </b>
+	  GDB now backtraces correctly when stopped at the first
+	  instruction of an inlined function.  Earlier versions would
+	  sometimes encounter internal errors in this situation.
+        </p><p><b>Assembler skipping <code class="literal">\</code> characters. </b>
+          A bug is fixed where the assembler would skip <code class="literal">\</code>
+          characters when they appeared at certain positions in the
+          input file.  This bug primarily affected assembler macros.
+        </p><p><b>Improved diagnostics for region overflow. </b>
+          The linker will now give more helpful diagnostics when
+	  the object files being linked are too big for one of the
+	  memory regions defined in the linker script.
+        </p><p><b>EABI object attribute merging. </b>
+          The linker now properly merges EABI object attributes into
+          its output file.
+        </p><p><b>Thumb-2 exception return instructions. </b>
+	  An assembler bug that caused <code class="code">subs pc, lr, #const</code> and
+	  <code class="code">movs pc, lr</code> to be incorrectly encoded has been fixed.
+        </p><p><b>Tag_ABI_PCS_wchar_t object attributes. </b>
+	  Objects generated with <code class="option">-fshort-wchar</code> are
+	  now given the correct <code class="literal">Tag_ABI_PCS_wchar_t</code>
+	  EABI object attribute annotations.
+        </p><p><b>Spurious compiler warnings eliminated. </b>
+          GCC no longer emits warnings when linker-specific
+          command-line options are provided in combination with modes
+          that do not perform linking, such as with the
+          <code class="option">-c</code> flag.
+        </p><p><b>Debugging of inlined functions. </b>
+	  GDB now supports inlined functions.  GDB can include inlined
+	  functions in the stack trace; display inlined functions' arguments
+	  and local variables; and step into, over, and out of inlined
+	  functions.
+        </p><p><b>Uppercase special register names. </b>
+	  The assembler now accepts both uppercase and lowercase
+	  special register names when assembling <code class="literal">msr</code>
+	  and <code class="literal">mrs</code> instructions for the Microcontroller
+	  profile of the ARM Architecture.
+        </p><p><b>Debugger access to out-of-bounds memory. </b>
+          GDB turns on <code class="code">inaccessible-by-default</code> by
+          default, disallowing access to memory outside the regions
+          specified in a board configuration.
+        </p><p><b>Call shortening bug fix. </b>
+	  GCC no longer overrides <code class="code">__attribute__((long_call))</code> on
+	  calls to locally-defined functions when the function is weak,
+	  or when it is in a different section from the caller.
+        </p><p><b>Binutils update. </b>
+	  The binutils package has been updated from 
+	  version 2.17 to the pre-2.18 FSF trunk.  This is a significant
+	  update with many improvements and bug fixes.
+        </p><p>
+	Changes to the assembler (<span><strong class="command">as</strong></span>) include:
+        </p><div class="itemizedlist"><ul type="disc"><li>
+            On MIPS targets, support for additional processors
+            and the SmartMIPS and DSP Release 2 extensions has been added.
+          </li></ul></div><p>
+      </p><p>
+	New linker (<span><strong class="command">ld</strong></span>) features include:
+        </p><div class="itemizedlist"><ul type="disc"><li>
+            A new command-line option <code class="option">--default-script</code>
+            has been added to give more precise control over linker script
+            processing.
+          </li><li>
+            There are new command-line options
+            <code class="option">-Bsymbolic-functions</code>,
+            <code class="option">--dynamic-list</code>,
+            <code class="option">--dynamic-list-cpp-new</code>, and
+            <code class="option">--dynamic-list-data</code> to control symbols
+            that should be dynamically linked.
+          </li><li>
+            The new <code class="option">--print-gc-sections</code> option lists
+            sections removed by garbage collection.
+          </li></ul></div><p>
+      </p><p>
+	Other changes include:
+        </p><div class="itemizedlist"><ul type="disc"><li>
+            The <span><strong class="command">objcopy</strong></span> utility has a new
+            <code class="option">--extract-symbol</code> option to extract only
+            symbol table information from the input file.
+          </li><li>
+            The <span><strong class="command">gprof</strong></span> utility now allows input files
+            to have histogram records for several memory ranges, provided
+            those ranges are disjoint.
+          </li></ul></div><p>
+      </p><p>
+	For more information, refer to the manuals for the individual
+        utilities, and the binutils web site at
+        <code class="uri">http://www.gnu.org/software/binutils/</code>.
+      </p><p><b>GDB update. </b>
+          The included version of GDB has been updated to
+          6.6.50.20070620.  This update includes numerous bug fixes.
+        </p><p><b>Thread cancellation bug fix. </b>
+          A bug in EGLIBC causing thread cancellation to fail when
+          running under Linux kernels 2.6.18 and later has been fixed.
+        </p><p><b>Forced alignment of array variables. </b>
+	  A new option <code class="option">-falign-arrays</code> has been added to
+	  the compiler.  Specifying this option sets the minimum alignment
+	  for array variables to be the largest power of two less than or
+	  equal to their total storage size, or the biggest alignment used
+	  on the machine, whichever is smaller.  This option may be helpful
+	  when compiling legacy code that uses type punning on arrays that
+	  does not strictly conform to the C standard.
+	</p><p><b>ARM EABI compliance. </b>
+	 Objects produced by Sourcery G++ are now marked as ARM ELF 
+	 version 5 rather than ARM ELF version 4.  This reflects 
+	 compliance with recent revisions of the ARM EABI.
+	 Sourcery G++ still accepts objects marked with version 4.
+	</p><p><b>Smaller C++ applications. </b>
+          The C++ runtime library has been modified so that using
+          namespace-scope objects with destructors does not pull in
+          unnecessary support functions.  Therefore, statically linked
+          C++ applications compiled with
+          <code class="option">-fno-exceptions</code> are substantially smaller.
+        </p><p><b>ARMv6-M floating-point bug fix. </b>
+          A bug affecting conversion of wider floating-point types to
+          subnormal <span class="type">float</span> values on ARMv6-M processors
+          has been fixed.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id302390"></a>Changes in Sourcery G++ Lite 2007q1-21</h3></div></div></div><p><b>NEON coprocessor system registers. </b>
+	  The assembler now accepts the <code class="literal">MVFR0</code> and
+	  <code class="literal">MVFR1</code> coprocessor registers in
+	  <code class="code">fmrx</code> and <code class="code">fmxr</code> instructions.
+        </p><p><b>Disabling diagnostics for use of system header and
+        library directories. </b>
+          The warnings for use of options such as
+          <code class="option">-I/usr/include</code> when cross compiling can be
+          disabled with a new option
+          <code class="option">-Wno-poison-system-directories</code>.  This
+          option is intended for use in chroot environments when such
+          directories contain the correct headers and libraries for
+          the target system rather than the host.
+        </p><p><b>Thumb-2 doubleword writeback addressing modes. </b>
+	  An assembler bug that caused writeback addressing modes for
+	  <code class="literal">ldrd</code> and <code class="literal">strd</code> to be
+	  incorrectly encoded has been fixed.
+        </p><p><b>Thumb-2 shift instruction aliases. </b>
+	  The assembler now accepts <code class="literal">mov</code> with shifted
+	  operands as an alias for Thumb-2 shift instructions.
+	  For example <code class="code">mov r0, r1, lsl r2</code> is encoded as
+	  <code class="code">lsl r0, r1, r2</code>.
+        </p><p><b>Thumb-2 branches to shared libraries. </b>
+	  The linker can now generate PLT stubs for
+	  <code class="literal">R_ARM_THM_JUMP24</code> and
+	  <code class="literal">R_ARM_THM_JUMP19</code> relocations.
+	  This occurs when Thumb-2 branch instructions refer to
+	  symbols imported from shared libraries.
+        </p><p><b>EABI object attribute merging. </b>
+          The linker now properly merges EABI object attributes into
+          its output file.
+        </p><p><b>Thumb-2 exception return instructions. </b>
+	  An assembler bug that caused <code class="code">subs pc, lr, #const</code> and
+	  <code class="code">movs pc, lr</code> to be incorrectly encoded has been fixed.
+        </p><p><b>Tag_ABI_PCS_wchar_t object attributes. </b>
+	  Objects generated with <code class="option">-fshort-wchar</code> are
+	  now given the correct <code class="literal">Tag_ABI_PCS_wchar_t</code>
+	  EABI object attribute annotations.
+        </p><p><b>Uppercase special register names. </b>
+	  The assembler now accepts both uppercase and lowercase
+	  special register names when assembling <code class="literal">msr</code>
+	  and <code class="literal">mrs</code> instructions for the Microcontroller
+	  profile of the ARM Architecture.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id302646"></a>Changes in Sourcery G++ Lite 2007q1-10</h3></div></div></div><p><b>Disassembly of overlapping sections. </b>
+	  A bug in the disassembler that caused code to be displayed 
+	  as data (and vice-versa) in files with overlapping sections has 
+	  been fixed.  This mainly affects the <span><strong class="command">objdump</strong></span> 
+	  utility.
+        </p><p><b>Installer hangs while refreshing environment. </b>
+          The Sourcery G++ installer for Microsoft Windows
+          now updates the <code class="envar">PATH</code> environment 
+          variable without waiting for open applications to 
+          acknowledge the update. This change prevents open 
+          applications from blocking the installer's progress.
+        </p><p><b>Improved assembler diagnostics for 8-bit offsets. </b>
+          The assembler now correctly diagnoses out-of-range offsets to
+	  instructions such as <code class="literal">LDRD</code> as 8-bit rather
+	  than half-word offsets.
+        </p><p><b>Less disk space required for installation. </b>
+          Sourcery G++ Lite packages are smaller because multiple copies of files
+          have been replaced with hard and/or symbolic links when possible.
+          Both the size of the installer images and the amount of disk space
+          required for an installed package have been reduced.
+        </p><p><b>Thumb register corruption fix. </b>
+	  A bug in the compiler that could cause register corruption in
+	  Thumb mode has been fixed.  The compiler was formerly emitting
+	  code to restore registers on function return that was not
+	  interrupt safe.
+        </p><p><b>__aeabi_lcmp. </b>
+	  An error in the libgcc implementation of
+	  <code class="function">__aeabi_lcmp</code> that caused
+	  incorrect results to be returned has been fixed.  This is a support
+	  routine defined by the ARM EABI.  GCC does not normally use this
+	  routine directly, however it may be used by third-party code.
+        </p><p><b>The <code class="literal">\@</code> assembler pseudo-variable. </b>
+	  A bug in the assembler that caused uses of the <code class="literal">\@</code>
+	  pseudo-variable to be mis-parsed as comments has been fixed.
+        </p><p><b>Crash when generating vector code. </b>
+	  A bug that sometimes caused the compiler to crash when invoked with 
+	  the <code class="option">-ftree-vectorize</code> option has been fixed.
+        </p><p><b>Propagation of Thumb symbol attributes. </b>
+          Symbols referring to Thumb functions on ARM targets now
+	  have their Thumb attribute correctly propagated to any aliases
+	  defined with <code class="literal">.set</code> or <code class="literal">.symver</code>. 
+        </p><p><b>Linking of non-ELF images. </b>
+          A linker bug that could cause a crash when linking non-ELF
+	  objects for ARM targets has been fixed.
+        </p><p><b>Invalid load instructions. </b>
+	  A bug in the compiler which caused it to generate invalid
+	  assembly (e.g. <code class="literal">ldrd r0, [#0, r2]</code>)
+	  has been fixed.
+        </p><p><b>VFPv3/NEON debug information. </b>
+	  A bug in the compiler which caused it to generate incorrect debug
+	  information for code using VFPv3/NEON registers has been fixed.
+	  The debugger is now able unable to locate and display
+	  values held in these registers.
+        </p><p><b>ARMv6-M system instructions. </b>
+	  An assembler bug that caused some ARMv6-M system instructions to
+	  be incorrectly rejected has been fixed.  The affected instructions
+	  are <code class="literal">msr</code>, <code class="literal">mrs</code>,
+	  <code class="literal">yield</code>, <code class="literal">wfi</code>,
+	  <code class="literal">wfe</code> and <code class="literal">sev</code>.
+        </p><p><b>Assembly of Thumb-2 load/store multiple instructions. </b>
+	  The Thumb-2 <code class="literal">ldm</code> and <code class="literal">stm</code>
+	  assembly mnemonics are now assembled to <code class="literal">ldr</code>
+	  and <code class="literal">str</code> instructions when a single register is
+	  transferred, as specified in the Thumb-2 Architecture Supplement.
+        </p><p><b>Conditional Thumb-2 branch instructions. </b>
+	  A linker bug that could cause objects involving conditional
+	  Thumb-2 branch instructions to be incorrectly rejected has
+	  been fixed.
+        </p><p><b>Alignment bug fix. </b>
+          A bug has been fixed that formerly caused incorrect code to be
+          generated in some situations for copying structure arguments
+          being passed by value.  The incorrect code caused alignment 
+          errors on stack accesses on some targets.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id303050"></a>Changes in Sourcery G++ Lite 2007q1-3</h3></div></div></div><p><b>Thumb-2 runtime libraries. </b>
+	  Sourcery G++ now includes runtime libraries built as Thumb-2 code
+	  for use on ARMv7 systems.  These can be found in the
+	  <code class="filename">libc/thumb2/</code> directory.
+        </p><p><b>Marvell Feroceon support. </b>
+          Sourcery G++ Lite now generates code optimized for Marvell Feroceon CPUs
+          when the <code class="option">mcpu=marvell-f</code> option is specified.  
+          This option also selects runtime libraries optimized for 
+          this processor.
+        </p><p><b>Assembly of SRS instructions. </b>
+	  An assembler bug that resulted in incorrect encoding of the
+	  Thumb-2 <code class="literal">SRS</code> instruction has been fixed.
+	  In addition the assembler supports explicit specification of
+	  the base register, as accepted by other ARM toolchains.
+        </p><p><b>VFP disassembly crash. </b>
+	  A bug that caused crashes when disassembling some forms of the VFP
+	  <code class="literal">fmrx</code> and <code class="literal">fmxr</code> instructions
+	  has been fixed.
+        </p><p><b>Improved debugging for optimized code. </b>
+          GDB's ability to print and change variables' values in
+          optimized code is improved.  GDB now tracks variable scopes
+          more accurately, making better use of the detailed debugging
+          information produced by Sourcery G++ compilers.
+        </p><p><b>Improved handling of Windows paths in GDB. </b>
+          GDB now properly recognizes the names of source files that
+          were passed to the compiler using an absolute path on
+          Windows.  You may refer to the file either by its base
+          name (without any leading directory components), by the
+          exact path passed to the compiler, or by its absolute
+          path.
+        </p><p><b>ARM Cortex-R4 performance improvements. </b>
+	  Sourcery G++ Lite now generates faster code when compiling for the
+	  ARM Cortex-R4 processor by scheduling instructions for the
+	  processor's pipelines.  To generate code
+	  for this processor, use the <code class="option">-mcpu=cortex-r4</code>
+	  command-line option.
+        </p><p><b>GDB update. </b>
+          The included version of GDB has been updated to
+          6.6.50.20070228.  This update includes numerous bug fixes
+          and improved support for C++ pointers to members.
+        </p><p><b>Assembling Thumb store-multiple instructions. </b>
+          The assembler now issues an error message instead of crashing on
+          load/store multiple instructions that incorrectly use Thumb-2
+          addressing modes (e.g., <code class="literal">ldmdb</code>) in legacy Thumb
+          syntax mode.  If you want to use these address modes, you should use
+          unified syntax mode instead.
+        </p><p><b>ARM Cortex-A8 performance improvements. </b>
+	  Sourcery G++ Lite now generates faster code when compiling for the
+	  ARM Cortex-A8 processor by scheduling instructions for the
+	  processor's dual-issue pipelines.  To generate code
+	  for this processor, use the <code class="option">-mcpu=cortex-a8</code>
+	  command-line option.
+        </p><p><b>GCC version 4.2. </b>
+          Sourcery G++ Lite for ARM GNU/Linux is now based on GCC version 4.2.
+	  For more information about changes from GCC version 4.1 that was
+          included in previous releases, see
+          <code class="uri">http://gcc.gnu.org/gcc-4.2/changes.html</code>.
+        </p><p><b>Fix --gc-sections and C++ exceptions. </b>
+	  A bug in the <code class="option">--gc-sections</code> linker option has been
+	  fixed.  Previously this would incorrectly remove unwinding tables,
+	  breaking C++ applications that use exceptions.
+        </p><p><b>Symbols defined in linker scripts. </b> A bug is fixed that caused the linker to crash in some
+          circumstances when a linker script defined a symbol in an output
+          section.  Typically usage is where the script contained a
+          <code class="literal">__DATA_LOAD = LOADADDR(.data)</code> statement in the
+          <code class="literal">.data</code> section.  </p><p><b>ARM NEON store intrinsics bug fix. </b>
+          A compiler bug that incorrectly caused calls to ARM NEON
+          store intrinsics (such as <code class="literal">vst1_u8</code>) to be
+          optimized away has been fixed.
+        </p><p><b>Improvements to ARM NEON support. </b>
+          The ARM NEON support in GCC has been enhanced to comply with
+          new rules for containerized vector types specified in the
+          ARM procedure call standard.  Additionally, the compiler now
+          rejects implicit conversions between NEON polynomial vector
+          types and NEON integer vector types of the same layout.
+        </p><p><b>Complex numbers bug fix. </b>
+          A bug that could lead to incorrect code generation for code
+          using complex numbers has been fixed.
+        </p><p><b>Use of system header and library directories diagnosed. </b>
+          The compiler and linker now diagnose the incorrect use of
+          native system header and library directories for
+          cross-compilation.  This typically arises from options such
+          as <code class="option">-I/usr/X11R6/include</code> hard-coded in build
+          scripts written without a view to cross-compilation.
+        </p><p><b>Initialization priorities. </b>
+          The <code class="code">constructor</code> and
+	  <code class="code">destructor</code> function attributes now accept
+	  an optional priority argument.  Constructors with small
+	  priorities are run before those with larger priorities; the
+	  opposite is true for destructors.  For example:
+	  </p><div class="informalexample"><pre class="programlisting">void f __attribute__((constructor(500)));
+void f() {
+  /* Perform initialization.  */
+}</pre></div><p>
+	  defines a function <code class="function">f</code> with priority
+	  500.  This function will be run before constructors with
+	  larger priorities.  Constructor and destructors with no
+	  explicit priority argument have priority 65535, the maximum
+	  permitted value.
+        </p><p><b>Thumb-2 IT block code generation error fixed. </b>
+	  A bug in Thumb-2 code generation has been fixed.  This bug would
+	  result in missing IT instructions, causing the assembler to
+	  reject the code.
+        </p><p><b>iWMMXt compiler errors. </b>
+	  A compiler bug that caused invalid assembly when generating
+	  iWMMXt code has been fixed.
+        </p><p><b>Thumb-2 stack decrement misassembly. </b>
+	  An assembler bug that resulted in incorrect encoding of the
+	  32-bit Thumb-2 form of the <code class="literal">sub sp, sp, #const</code>
+	  instruction has been fixed.  Previously this was misassembled as
+	  <code class="literal">subs</code>.
+        </p><p><b>Naked functions. </b>
+          Functions marked with <code class="code">__attribute__((naked))</code>
+          no longer contain prologue and epilogue code.
+          Please refer to the GCC manual for the proper use of this
+          attribute.
+        </p><p><b>Destructor execution order. </b>
+          Prioritized destructors (whether specified with the
+          <code class="code">destructor</code> function attribute in C or the
+          <code class="code">init_priority</code> variable attribute in C++)
+          are now executed in the correct order.  Previous releases
+          ran the destructors in an indeterminate order.
+        </p><p><b>Fix addr2line defect. </b>
+          The binary utility <span><strong class="command">addr2line</strong></span> now
+	  operates correctly on 64-bit targets with DWARF2
+	  debug information.
+        </p><p><b>Thumb-2 assembler infinite loop. </b>
+          An assembler bug that would cause it to enter an infinite loop
+	  when processing some Thumb-2 assembly has been fixed.
+        </p><p><b>Assembler warnings about overlapping multiplication operands. </b>
+          The assembler no longer warns about overlapping <code class="literal">Rd</code>
+	  and <code class="literal">Rm</code> operands when assembling
+          <code class="literal">mul</code> and <code class="literal">mla</code> instructions
+	  for the ARM architecture version six or above.
+        </p><p><b>Improve handling of corrupt debug information. </b>
+	  The binary utility <span><strong class="command">readelf</strong></span> now
+	  copes more gracefully with corrupted DWARF 2 information.
+        </p><p><b>Smaller C++ programs. </b>
+          Rarely-used functions in the C++ runtime library have been
+          isolated into separate object files so that they will not be
+          included unless needed.  As a result, most statically
+          linked C++ programs are smaller.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304421"></a>Changes in Sourcery G++ Lite 4.1-37</h3></div></div></div><p><b>Preserve volatile accesses. </b>
+          Reads from volatile memory are no longer incorrectly 
+          optimized away at higher optimization levels.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304439"></a>Changes in Sourcery G++ Lite 4.1-34</h3></div></div></div><p><b>Implicit conversions between generic vector types. </b>
+          Implicit conversions between generic vector types are now
+          only permitted when the two vectors in question have the same number
+          of elements and compatible element types.  (Note that the restriction
+          involves <span class="emphasis"><em>compatible</em></span> element types, not
+          implicitly-convertible element types: thus, a vector type with element
+          type <code class="code">int</code> may not be implicitly converted to a vector
+          type with element type <code class="code">unsigned int</code>.)
+          This restriction, which is in line with specifications for SIMD
+          architectures such as AltiVec, may be relaxed using the
+          flag <code class="option">-flax-vector-conversions</code>.
+          This flag is intended only as a compatibility measure and should not
+          be used for new code.
+        </p><p><b><span class="type">type_info</span> comparison fix. </b>
+          Comparison of <span class="type">type_info</span> objects now uses pointer
+          comparison where possible.
+        </p><p><b>C++ forced unwinding fixes. </b>
+          Some bugs relating to forced unwinding through C++ code have
+          been fixed.
+        </p><p><b>Support for additional Stellaris boards. </b>
+          Linker scripts are provided for the 6xx and 8xx series Stellaris
+          boards.
+        </p><p><b>Linux support for USB Debug Sprite. </b>
+          A new driver is included to allow the Sourcery G++ Lite USB Debug Sprite 
+          to run on Linux hosts.  See <a href="chap-release.html" title="Chapter 3. Sourcery G++ Lite for ARM GNU/Linux">Chapter 3, <i>Sourcery G++ Lite for ARM GNU/Linux</i></a> for
+          additional information.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304532"></a>Changes in Sourcery G++ Lite 4.1-33</h3></div></div></div><p><b>Linker scripts. </b>
+          A bug is fixed where an erroneous linker script would cause a
+          linker crash.  An error message is now produced.
+        </p><p><b>Newlib memory use improvements. </b>
+          The memory overhead of linking with newlib is reduced.
+          Applications that use only a minimal set of library
+          features may now require significantly less memory.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304562"></a>Changes in Sourcery G++ Lite 4.1-31</h3></div></div></div><p><b>Compiler alias analysis. </b>
+          The type-based alias analysis performed by the compiler when compiling
+          with <code class="option">-O2</code> or with <code class="option">-fstrict-aliasing</code> is
+          now more conservative.  The more aggressive analysis used in previous
+          versions sometimes resulted in incorrect code generation.
+        </p><p><b>Fully relocatable preprocessor. </b>
+          When cross-compiling, the default preprocessor search path includes only 
+          the directories present in the installed toolchain. This speeds up the 
+          preprocessor and prevents the unintentional use of unrelated files and 
+          directories on the machine where it is installed.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304601"></a>Changes in Sourcery G++ Lite 4.1-29</h3></div></div></div><p><b>Support for new-style symbol hashing. </b>
+          Support has been added in binutils and the prelinker
+          for new-style (also known as <code class="literal">DT_GNU_HASH</code>)
+          symbol hashing.  This can dramatically speed up symbol
+          resolution time and is particularly applicable in environments
+          where full prelinking is not possible (for example where
+          shared libraries are dynamically opened at
+          runtime).  The new-style hashing may be enabled by passing
+          <code class="option">--hash-style=gnu</code> to the linker.
+        </p><p><b>Prelinker update. </b>
+          The prelinker has been updated to the current
+          upstream sources and some bugs affecting operation have been
+          fixed.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304642"></a>Changes in Sourcery G++ Lite 4.1-28</h3></div></div></div><p><b>Improved support for ROM debugging. </b>
+          GDB now determines ROM regions automatically from the memory map
+          included in target configuration files.  This information is
+          used to determine when hardware breakpoints should automatically
+          be used (for instance the <span><strong class="command">step</strong></span>,
+          <span><strong class="command">next</strong></span> and <span><strong class="command">finish</strong></span> commands).
+          Separate ROM configurations have been removed from the Eclipse
+          debugger menu.  The Eclipse GUI has been extended to provide
+          improved support for debugging programs in ROM, when a memory
+          map is not automatically available.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304682"></a>Changes in Sourcery G++ Lite 4.1-27</h3></div></div></div><p><b>Rename Windows executables. </b>
+          The Windows host tools <span><strong class="command">make.exe</strong></span> and
+          <span><strong class="command">rm.exe</strong></span> are now named
+          <span><strong class="command">cs-make.exe</strong></span> and
+          <span><strong class="command">cs-rm.exe</strong></span>. This change avoids conflicts with
+          tools provided by other distributors.
+        </p><p><b>iWMMXt bug fixes. </b>
+          Some bugs involving incorrect code generation and internal
+          compiler errors when generating iWMMXt code have been fixed.
+        </p><p><b>Cortex-M3 startup code. </b>
+          The ARMv7M startup code (<code class="filename">armv7m-crt0.o</code>) incorrectly
+          contained ARM code.  This has been replaced with Thumb-2 code.
+        </p><p><b>ARM EABI coverage testing support. </b>
+        Coverage testing using GCOV is now supported for the ARM EABI 
+        target. Please refer to the
+        <em class="citetitle">GNU C Compiler Manual (HTML)</em>
+        for more information on coverage testing.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304769"></a>Changes in Sourcery G++ Lite 4.1-23</h3></div></div></div><p><b>Windows debugging fix. </b>
+          In recent releases of Sourcery G++ Lite, the GDB <span><strong class="command">target remote |
+          </strong></span> command would hang on Windows.  This affected both command
+          line and Eclipse debugging when using the Sourcery G++ Lite Debug Sprite.
+        </p><p><b>Stellaris USB Debug Sprite improvements. </b>
+          The former USB Debug Stub, <span><strong class="command">armswd</strong></span>, is now known as
+          the USB Debug Sprite, and has been renamed to
+          <span><strong class="command">arm-stellaris-eabi-sprite</strong></span>.  In addition, its
+          initialization sequence has been updated to recognize the r1p1 
+          release of the Cortex-M3 processor.
+        </p><p><b>Incompatible changes to Stellaris linker scripts. </b>
+          Sourcery G++ Lite now supports linking executables to run from RAM as well
+          as ROM.  As part of this change, there are now separate RAM and ROM
+          versions of the linker scripts for each supported board, and the former
+          ROM-based versions have been renamed.  For example, if you were 
+          formerly linking with <code class="option">-T lm3s10x.ld</code>, you should now use
+          <code class="option">-T lm3s10x-rom.ld</code> to get the same behavior.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304839"></a>Changes in Sourcery G++ Lite 4.1-21</h3></div></div></div><p><b>Eclipse debuggers. </b>
+          Eclipse configurations for debugging arm-none-eabi applications
+          using the GDB simulator and remote debug stubs have been added.
+        </p><p><b>iWMMXt2 support. </b>
+          The assembler and disassembler now support iWMMXt2
+          instructions.
+        </p><p><b>NEON intrinsics support. </b>
+          GCC now supports NEON intrinsics defined in the
+          <code class="filename">arm_neon.h</code> header.
+          These are the same intrinsics supported by the ARM 
+	  <span class="trademark">RealView</span>®
+          compiler and are documented in the 'ARM NEON Intrinsics'
+          section of the GCC manual.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304894"></a>Changes in Sourcery G++ Lite 4.1-19</h3></div></div></div><p><b>ARMv4t linux multilib. </b>
+          Linux configurations now support ARMv4t CPUs.
+        </p><p><b>Linker scripts. </b>
+          Several problems with the linker scripts for bare-metal targets have
+          been fixed.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id304922"></a>Changes in Sourcery G++ Lite 4.1-18</h3></div></div></div><p><b>Binutils update. </b>
+          The binutils in this release is based on the final binutils 2.17
+          release.
+        </p><p><b>GDB update. </b>
+          The included version of GDB has been upgraded to 6.5.50.20060822.
+          This includes numerous bug fixes from the previous version.
+        </p><p><b>GDB support for flash memory. </b>
+          The GDB <span><strong class="command">load</strong></span> command can now write to flash
+          memory, if the remote debugging stub contains appropriate support.
+        </p><p><b>Compiler support for NEON. </b>
+          Initial GCC support for autovectorization and generation
+          of NEON SIMD instructions has been added.
+        </p><p><b>Bare metal Cortex-M3 configurations. </b>
+          Bare metal configurations now support generating images for
+          use on ARMv7M devices (eg. Cortex-M3).
+        </p><p><b>iWMMXt support in GLIBC. </b>
+          GLIBC's <code class="function">setjmp</code> and
+          <code class="function">longjmp</code> now support saving and restoring
+          iWMMXt registers on hardware with those registers.  This
+          requires a kernel reporting
+          <code class="computeroutput">iwmmxt</code> in the
+          <code class="computeroutput">Features</code> entry in
+          <code class="filename">/proc/cpuinfo</code>.
+        </p><p><b>iWMMXt exception handling support. </b>
+          Exception handling now restores the values of iWMMXt registers
+          correctly.
+        </p><p><b>Corrected IPC functions. </b>
+          A bug in GLIBC's <code class="function">msgctl</code>,
+          <code class="function">semctl</code>, and <code class="function">shmctl</code>
+          functions has been corrected.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305072"></a>Changes in Sourcery G++ Lite 4.1-16</h3></div></div></div><p><b>GCC update. </b>
+          This release is based on GCC 4.1.1.
+        </p><p><b>Fully relocatable compiler. </b>
+          The compiler now searches for its components only in the directory where it
+          has been installed, and no longer also searches pathnames matching the
+          directory where it was configured.  This speeds up the compiler and prevents
+          problems with unintentionally finding unrelated files or directories on the
+          machine where it has been installed. 
+        </p><p><b>Stack permission marking for ARM GNU/Linux. </b>
+          Non-executable stacks can provide increased security against
+          some forms of buffer overflow attacks. The tools involved must
+          coordinate the annotation of required stack permissions, either
+          executable, or non-executable.  For ARM GNU/Linux targets the
+          compiler now outputs annotations indicating the required stack
+          permissions.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305116"></a>Changes in Sourcery G++ Lite 4.1-15</h3></div></div></div><p><b>Stabs debugging information support. </b>
+          Using the Stabs debugging format (available with
+          <code class="option">-gstabs</code> or <code class="option">-gstabs+</code>) now works
+          in conjunction with <code class="option">-mthumb</code>.  CodeSourcery
+          recommends the default DWARF debugging format (available with
+          <code class="option">-g</code>) as DWARF is a more comprehensive debugging format.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305149"></a>Changes in Sourcery G++ Lite 4.1-13</h3></div></div></div><p><b>Stellaris linker scripts in IDE. </b>
+          Linker scripts may now be selected via a drop-down menu in
+          Eclipse. 
+        </p><p><b>Stellaris linker scripts for 3xx series CPUs. </b>
+          The linker scripts for 3xx Series CPUs now place the ISR vector
+          at address zero, as required by all Cortex-M3 cores.
+        </p><p><b>Stellaris USB Debug Sprite improvements. </b>
+          Bug fixes and new features include:
+          </p><div class="itemizedlist"><ul type="disc"><li>
+            A bug that caused the stub not to correctly update the program counter 
+            and other register values was fixed.  As a result of this fix, it is 
+            now possible to run programs residing in SRAM using the
+            <code class="literal">continue</code> command from GDB.
+          </li><li>
+            The stub no longer prints status messages via GDB console
+            output when invoked with the <code class="option">-q</code> command-line option.  
+          </li><li>
+            The stub's initialization sequence was updated to recognize revision C
+            Cortex-M3 hardware.  
+          </li></ul></div><p>
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305216"></a>Changes in Sourcery G++ Lite 4.1-9</h3></div></div></div><p><b>Stellaris USB Debug Sprite improvements. </b>
+         Program images exceeding 4K can now be uploaded to flash memory.
+        </p><p><b>Additional Stellaris boards supported. </b>
+          The Stellaris 301, 310, 315, and 316 CPUs are now supported.
+          Linker scripts have been added for these boards.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305245"></a>Changes in Sourcery G++ Lite 4.1-8</h3></div></div></div><p><b>Stellaris USB Debug Sprite improvements. </b>
+          Several bug fixes and enhancements were made to the USB Debug Stub.
+          In particular:
+          </p><div class="itemizedlist"><ul type="disc"><li>
+              Bugs in the implementation of <code class="function">open</code>,
+     	  <code class="function">read</code>, and <code class="function">lseek</code> were
+      	  fixed.
+            </li><li>
+              Support was added for <code class="function">isatty</code>,
+              <code class="function">rename</code>, <code class="function">unlink</code>, and
+              <code class="function">system</code>.
+            </li><li>
+              Memory reads that span 4K block boundaries now work correctly.
+            </li></ul></div><p>
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305320"></a>Changes in Sourcery G++ Lite 4.1-4</h3></div></div></div><p><b>Runtime libraries. </b>
+          Support for ARMv7 including Cortex-M3 and pure Thumb-2. 
+        </p><p><b>Assembler. </b>
+          Support for NEON and VFPv3, including unified NEON/VFP syntax.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id305348"></a>Changes in Sourcery G++ Lite 4.1-1</h3></div></div></div><p><b>Initial release. </b>
+          This release is based on GCC 4.1.0.
+        </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="chap-release.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="chap-installation.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using Sourcery G++ Lite for ARM GNU/Linux </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. Installation and Configuration</td></tr></table></div></body></html>

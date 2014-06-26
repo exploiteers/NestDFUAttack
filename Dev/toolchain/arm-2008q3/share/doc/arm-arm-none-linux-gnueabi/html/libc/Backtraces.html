@@ -1,0 +1,180 @@
+<html lang="en">
+<head>
+<title>Backtraces - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Debugging-Support.html#Debugging-Support" title="Debugging Support">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Backtraces"></a>
+Up:&nbsp;<a rel="up" accesskey="u" href="Debugging-Support.html#Debugging-Support">Debugging Support</a>
+<hr>
+</div>
+
+<h3 class="section">33.1 Backtraces</h3>
+
+<p><a name="index-backtrace-3694"></a><a name="index-backtrace_005fsymbols-3695"></a><a name="index-backtrace_005ffd-3696"></a>A <dfn>backtrace</dfn> is a list of the function calls that are currently
+active in a thread.  The usual way to inspect a backtrace of a program
+is to use an external debugger such as gdb.  However, sometimes it is
+useful to obtain a backtrace programmatically from within a program,
+e.g., for the purposes of logging or diagnostics.
+
+   <p>The header file <samp><span class="file">execinfo.h</span></samp> declares three functions that obtain
+and manipulate backtraces of the current thread. 
+<a name="index-execinfo_002eh-3697"></a>
+<!-- execinfo.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Function: int <b>backtrace</b> (<var>void **buffer, int size</var>)<var><a name="index-backtrace-3698"></a></var><br>
+<blockquote><p>The <code>backtrace</code> function obtains a backtrace for the current
+thread, as a list of pointers, and places the information into
+<var>buffer</var>.  The argument <var>size</var> should be the number of
+<code>void&nbsp;*</code><!-- /@w --> elements that will fit into <var>buffer</var>.  The return
+value is the actual number of entries of <var>buffer</var> that are obtained,
+and is at most <var>size</var>.
+
+        <p>The pointers placed in <var>buffer</var> are actually return addresses
+obtained by inspecting the stack, one return address per stack frame.
+
+        <p>Note that certain compiler optimizations may interfere with obtaining a
+valid backtrace.  Function inlining causes the inlined function to not
+have a stack frame; tail call optimization replaces one stack frame with
+another; frame pointer elimination will stop <code>backtrace</code> from
+interpreting the stack contents correctly. 
+</p></blockquote></div>
+
+<!-- execinfo.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char ** <b>backtrace_symbols</b> (<var>void *const *buffer, int size</var>)<var><a name="index-backtrace_005fsymbols-3699"></a></var><br>
+<blockquote><p>The <code>backtrace_symbols</code> function translates the information
+obtained from the <code>backtrace</code> function into an array of strings. 
+The argument <var>buffer</var> should be a pointer to an array of addresses
+obtained via the <code>backtrace</code> function, and <var>size</var> is the number
+of entries in that array (the return value of <code>backtrace</code>).
+
+        <p>The return value is a pointer to an array of strings, which has
+<var>size</var> entries just like the array <var>buffer</var>.  Each string
+contains a printable representation of the corresponding element of
+<var>buffer</var>.  It includes the function name (if this can be
+determined), an offset into the function, and the actual return address
+(in hexadecimal).
+
+        <p>Currently, the function name and offset only be obtained on systems that
+use the ELF binary format for programs and libraries.  On other systems,
+only the hexadecimal return address will be present.  Also, you may need
+to pass additional flags to the linker to make the function names
+available to the program.  (For example, on systems using GNU ld, you
+must pass (<code>-rdynamic</code>.)
+
+        <p>The return value of <code>backtrace_symbols</code> is a pointer obtained via
+the <code>malloc</code> function, and it is the responsibility of the caller
+to <code>free</code> that pointer.  Note that only the return value need be
+freed, not the individual strings.
+
+        <p>The return value is <code>NULL</code> if sufficient memory for the strings
+cannot be obtained. 
+</p></blockquote></div>
+
+<!-- execinfo.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>backtrace_symbols_fd</b> (<var>void *const *buffer, int size, int fd</var>)<var><a name="index-backtrace_005fsymbols_005ffd-3700"></a></var><br>
+<blockquote><p>The <code>backtrace_symbols_fd</code> function performs the same translation
+as the function <code>backtrace_symbols</code> function.  Instead of returning
+the strings to the caller, it writes the strings to the file descriptor
+<var>fd</var>, one per line.  It does not use the <code>malloc</code> function, and
+can therefore be used in situations where that function might fail. 
+</p></blockquote></div>
+
+   <p>The following program illustrates the use of these functions.  Note that
+the array to contain the return addresses returned by <code>backtrace</code>
+is allocated on the stack.  Therefore code like this can be used in
+situations where the memory handling via <code>malloc</code> does not work
+anymore (in which case the <code>backtrace_symbols</code> has to be replaced
+by a <code>backtrace_symbols_fd</code> call as well).  The number of return
+addresses is normally not very large.  Even complicated programs rather
+seldom have a nesting level of more than, say, 50 and with 200 possible
+entries probably all programs should be covered.
+
+<pre class="smallexample">     #include &lt;execinfo.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     
+     /* <span class="roman">Obtain a backtrace and print it to </span><code>stdout</code><span class="roman">.</span> */
+     void
+     print_trace (void)
+     {
+       void *array[10];
+       size_t size;
+       char **strings;
+       size_t i;
+     
+       size = backtrace (array, 10);
+       strings = backtrace_symbols (array, size);
+     
+       printf ("Obtained %zd stack frames.\n", size);
+     
+       for (i = 0; i &lt; size; i++)
+          printf ("%s\n", strings[i]);
+     
+       free (strings);
+     }
+     
+     /* <span class="roman">A dummy function to make the backtrace more interesting.</span> */
+     void
+     dummy_function (void)
+     {
+       print_trace ();
+     }
+     
+     int
+     main (void)
+     {
+       dummy_function ();
+       return 0;
+     }
+</pre>
+   <!-- This node must have no pointers. -->
+   </body></html>
+

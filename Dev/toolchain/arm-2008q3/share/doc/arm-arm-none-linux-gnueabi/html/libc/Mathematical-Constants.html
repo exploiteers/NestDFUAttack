@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Mathematical Constants - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="next" href="Trig-Functions.html#Trig-Functions" title="Trig Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Mathematical-Constants"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Trig-Functions.html#Trig-Functions">Trig Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.1 Predefined Mathematical Constants</h3>
+
+<p><a name="index-constants-2067"></a><a name="index-mathematical-constants-2068"></a>
+The header <samp><span class="file">math.h</span></samp> defines several useful mathematical constants. 
+All values are defined as preprocessor macros starting with <code>M_</code>. 
+The values provided are:
+
+     <dl>
+<dt><code>M_E</code><a name="index-M_005fE-2069"></a><dd>The base of natural logarithms. 
+<br><dt><code>M_LOG2E</code><a name="index-M_005fLOG2E-2070"></a><dd>The logarithm to base <code>2</code> of <code>M_E</code>. 
+<br><dt><code>M_LOG10E</code><a name="index-M_005fLOG10E-2071"></a><dd>The logarithm to base <code>10</code> of <code>M_E</code>. 
+<br><dt><code>M_LN2</code><a name="index-M_005fLN2-2072"></a><dd>The natural logarithm of <code>2</code>. 
+<br><dt><code>M_LN10</code><a name="index-M_005fLN10-2073"></a><dd>The natural logarithm of <code>10</code>. 
+<br><dt><code>M_PI</code><a name="index-M_005fPI-2074"></a><dd>Pi, the ratio of a circle's circumference to its diameter. 
+<br><dt><code>M_PI_2</code><a name="index-M_005fPI_005f2-2075"></a><dd>Pi divided by two. 
+<br><dt><code>M_PI_4</code><a name="index-M_005fPI_005f4-2076"></a><dd>Pi divided by four. 
+<br><dt><code>M_1_PI</code><a name="index-M_005f1_005fPI-2077"></a><dd>The reciprocal of pi (1/pi)
+<br><dt><code>M_2_PI</code><a name="index-M_005f2_005fPI-2078"></a><dd>Two times the reciprocal of pi. 
+<br><dt><code>M_2_SQRTPI</code><a name="index-M_005f2_005fSQRTPI-2079"></a><dd>Two times the reciprocal of the square root of pi. 
+<br><dt><code>M_SQRT2</code><a name="index-M_005fSQRT2-2080"></a><dd>The square root of two. 
+<br><dt><code>M_SQRT1_2</code><a name="index-M_005fSQRT1_005f2-2081"></a><dd>The reciprocal of the square root of two (also the square root of 1/2). 
+</dl>
+
+   <p>These constants come from the Unix98 standard and were also available in
+4.4BSD; therefore they are only defined if <code>_BSD_SOURCE</code> or
+<code>_XOPEN_SOURCE=500</code>, or a more general feature select macro, is
+defined.  The default set of features includes these constants. 
+See <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+   <p>All values are of type <code>double</code>.  As an extension, the GNU C
+library also defines these constants with type <code>long double</code>.  The
+<code>long double</code> macros have a lowercase &lsquo;<samp><span class="samp">l</span></samp>&rsquo; appended to their
+names: <code>M_El</code>, <code>M_PIl</code>, and so forth.  These are only
+available if <code>_GNU_SOURCE</code> is defined.
+
+   <p><a name="index-PI-2082"></a><em>Note:</em> Some programs use a constant named <code>PI</code> which has the
+same value as <code>M_PI</code>.  This constant is not standard; it may have
+appeared in some old AT&amp;T headers, and is mentioned in Stroustrup's book
+on C++.  It infringes on the user's name space, so the GNU C library
+does not define it.  Fixing programs written to expect it is simple:
+replace <code>PI</code> with <code>M_PI</code> throughout, or put &lsquo;<samp><span class="samp">-DPI=M_PI</span></samp>&rsquo;
+on the compiler command line.
+
+   </body></html>
+

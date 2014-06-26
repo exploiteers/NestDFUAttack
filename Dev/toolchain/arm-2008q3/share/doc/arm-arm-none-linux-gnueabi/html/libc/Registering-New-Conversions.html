@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+<title>Registering New Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link rel="next" href="Conversion-Specifier-Options.html#Conversion-Specifier-Options" title="Conversion Specifier Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Registering-New-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">Conversion Specifier Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.13.1 Registering New Conversions</h4>
+
+<p>The function to register a new output conversion is
+<code>register_printf_function</code>, declared in <samp><span class="file">printf.h</span></samp>. 
+<a name="index-printf_002eh-1063"></a>
+<!-- printf.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Function: int <b>register_printf_function</b> (<var>int spec, printf_function handler-function, printf_arginfo_function arginfo-function</var>)<var><a name="index-register_005fprintf_005ffunction-1064"></a></var><br>
+<blockquote><p>This function defines the conversion specifier character <var>spec</var>. 
+Thus, if <var>spec</var> is <code>'Y'</code>, it defines the conversion &lsquo;<samp><span class="samp">%Y</span></samp>&rsquo;. 
+You can redefine the built-in conversions like &lsquo;<samp><span class="samp">%s</span></samp>&rsquo;, but flag
+characters like &lsquo;<samp><span class="samp">#</span></samp>&rsquo; and type modifiers like &lsquo;<samp><span class="samp">l</span></samp>&rsquo; can never be
+used as conversions; calling <code>register_printf_function</code> for those
+characters has no effect.  It is advisable not to use lowercase letters,
+since the ISO C standard warns that additional lowercase letters may be
+standardized in future editions of the standard.
+
+        <p>The <var>handler-function</var> is the function called by <code>printf</code> and
+friends when this conversion appears in a template string. 
+See <a href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">Defining the Output Handler</a>, for information about how to define
+a function to pass as this argument.  If you specify a null pointer, any
+existing handler function for <var>spec</var> is removed.
+
+        <p>The <var>arginfo-function</var> is the function called by
+<code>parse_printf_format</code> when this conversion appears in a
+template string.  See <a href="Parsing-a-Template-String.html#Parsing-a-Template-String">Parsing a Template String</a>, for information
+about this.
+
+     <!-- The following is not true anymore.  The `parse_printf_format' function -->
+     <!-- is now also called from `vfprintf' via `parse_one_spec'. -->
+     <!-- drepper@gnu, 1996/11/14 -->
+     <!-- Normally, you install both functions for a conversion at the same time, -->
+     <!-- but if you are never going to call @code{parse_printf_format}, you do -->
+     <!-- not need to define an arginfo function. -->
+        <p><strong>Attention:</strong> In the GNU C library versions before 2.0 the
+<var>arginfo-function</var> function did not need to be installed unless
+the user used the <code>parse_printf_format</code> function.  This has changed. 
+Now a call to any of the <code>printf</code> functions will call this
+function when this format specifier appears in the format string.
+
+        <p>The return value is <code>0</code> on success, and <code>-1</code> on failure
+(which occurs if <var>spec</var> is out of range).
+
+        <p>You can redefine the standard output conversions, but this is probably
+not a good idea because of the potential for confusion.  Library routines
+written by other people could break if you do this. 
+</p></blockquote></div>
+
+   </body></html>
+

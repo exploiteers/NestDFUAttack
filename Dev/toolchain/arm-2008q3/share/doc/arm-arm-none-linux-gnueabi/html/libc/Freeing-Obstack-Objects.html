@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Freeing Obstack Objects - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack" title="Allocation in an Obstack">
+<link rel="next" href="Obstack-Functions.html#Obstack-Functions" title="Obstack Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Freeing-Obstack-Objects"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Obstack-Functions.html#Obstack-Functions">Obstack Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">Allocation in an Obstack</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.4 Freeing Objects in an Obstack</h5>
+
+<p><a name="index-freeing-_0028obstacks_0029-310"></a>
+To free an object allocated in an obstack, use the function
+<code>obstack_free</code>.  Since the obstack is a stack of objects, freeing
+one object automatically frees all other objects allocated more recently
+in the same obstack.
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_free</b> (<var>struct obstack *obstack-ptr, void *object</var>)<var><a name="index-obstack_005ffree-311"></a></var><br>
+<blockquote><p>If <var>object</var> is a null pointer, everything allocated in the obstack
+is freed.  Otherwise, <var>object</var> must be the address of an object
+allocated in the obstack.  Then <var>object</var> is freed, along with
+everything allocated in <var>obstack</var> since <var>object</var>. 
+</p></blockquote></div>
+
+   <p>Note that if <var>object</var> is a null pointer, the result is an
+uninitialized obstack.  To free all memory in an obstack but leave it
+valid for further allocation, call <code>obstack_free</code> with the address
+of the first object allocated on the obstack:
+
+<pre class="smallexample">     obstack_free (obstack_ptr, first_object_allocated_ptr);
+</pre>
+   <p>Recall that the objects in an obstack are grouped into chunks.  When all
+the objects in a chunk become free, the obstack library automatically
+frees the chunk (see <a href="Preparing-for-Obstacks.html#Preparing-for-Obstacks">Preparing for Obstacks</a>).  Then other
+obstacks, or non-obstack allocation, can reuse the space of the chunk.
+
+   </body></html>
+

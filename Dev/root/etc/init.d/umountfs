@@ -1,0 +1,126 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to handles unmounting of all
+#      non-networked and non-root filesystems on system shutdown or
+#      restart.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+unmount_fs () {
+    local description="${1}"
+    local args="${2}"
+    shift 2
+    local mountpoints=${*}
+
+    if [ -n "${mountpoints}" ]; then
+	${ECHO} "Unmounting ${description} filesystems:\c"
+
+	    ${UNMOUNT} ${args} ${mountpoints}
+
+	${ECHO} " done."
+    fi
+}
+
+stop_fs () {
+    # Save standard input and redirect it from the current list of
+    # mounted file systems.
+
+    exec 9<&0 < ${ROOTDIR}proc/mounts
+
+    PROTECTED_MOUNTS="$(${SED} -n '0,/^\/[^ ]* \/ /p' ${ROOTDIR}proc/mounts)"
+    NONCORE_MOUNTPOINTS=""
+    LOCAL_MOUNTPOINTS=""
+    TMPFS_MOUNTPOINTS=""
+
+    # Split them by device, mount point, type and the remainder and
+    # filter them, mount-by-mount.
+
+    while read -r DEVICE MOUNTPOINT TYPE REMAINDER
+    do
+	# Filter out the root file system mount point, that's handled
+	# elsewhere.
+
+	echo "${PROTECTED_MOUNTS}" | ${GREP} -qs "^${DEVICE} ${MOUNTPOINT} " && continue
+
+    	# Filter out filesystems by mount point
+
+	case "${MOUNTPOINT}" in
+
+	${ROOTDIR}|${ROOTDIR}proc|${ROOTDIR}dev|${ROOTDIR}.dev|${ROOTDIR}dev/pts|${ROOTDIR}dev/shm|${ROOTDIR}dev/.static/dev|${ROOTDIR}proc/*|${ROOTDIR}sys|${LIBDIR}/init/rw)
+	    continue
+	    ;;
+
+	${VARDIR}/run)
+	    continue
+            ;;
+
+        ${VARDIR}/lock)
+            continue
+            ;;
+
+        esac
+
+	# Filter out filesystems by type
+
+	case "${TYPE}" in
+
+	proc|procfs|linprocfs|devfs|devtmpfs|sysfs|usbfs|usbdevfs|devpts)
+	    continue
+	    ;;
+
+	tmpfs)
+	    TMPFS_MOUNTPOINTS="${MOUNTPOINT} ${TMPFS_MOUNTPOINTS}"
+	    ;;
+
+	*)
+	    if echo "$PROTECTED_MOUNTS" | ${GREP} -qs "^${DEVICE} "; then
+		NONCORE_MOUNTPOINTS="${MOUNTPOINT} ${NONCORE_MOUNTPOINTS}"
+	    else
+		LOCAL_MOUNTPOINTS="${MOUNTPOINT} ${LOCAL_MOUNTPOINTS}"
+	    fi
+	    ;;
+
+	esac
+    done
+
+    # Restore standard input
+
+    exec 0<&9 9<&-
+
+    # Unmount non-essential temporary (RAM-based) file systems
+
+    unmount_fs "temporary" "" ${TMPFS_MOUNTPOINTS}
+
+    # Unmount non-essential other file systems (debufs, etc.)
+
+    unmount_fs "non-essential" "-r -d" ${NONCORE_MOUNTPOINTS}
+
+    # Unmount local file systems
+
+    unmount_fs "non-root local" "-f -r -d" ${LOCAL_MOUNTPOINTS}
+}
+
+case "${1}" in
+
+'start')
+	;;
+
+'stop')
+	stop_fs
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop>"
+	exit 1
+	;;
+
+esac
+
+

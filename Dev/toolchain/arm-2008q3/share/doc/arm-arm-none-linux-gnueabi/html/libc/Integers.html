@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Integers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="next" href="Integer-Division.html#Integer-Division" title="Integer Division">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Integers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Integer-Division.html#Integer-Division">Integer Division</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.1 Integers</h3>
+
+<p><a name="index-integer-2319"></a>
+The C language defines several integer data types: integer, short integer,
+long integer, and character, all in both signed and unsigned varieties. 
+The GNU C compiler extends the language to contain long long integers
+as well. 
+<a name="index-signedness-2320"></a>
+The C integer types were intended to allow code to be portable among
+machines with different inherent data sizes (word sizes), so each type
+may have different ranges on different machines.  The problem with
+this is that a program often needs to be written for a particular range
+of integers, and sometimes must be written for a particular size of
+storage, regardless of what machine the program runs on.
+
+   <p>To address this problem, the GNU C library contains C type definitions
+you can use to declare integers that meet your exact needs.  Because the
+GNU C library header files are customized to a specific machine, your
+program source code doesn't have to be.
+
+   <p>These <code>typedef</code>s are in <samp><span class="file">stdint.h</span></samp>. 
+<a name="index-stdint_002eh-2321"></a>
+If you require that an integer be represented in exactly N bits, use one
+of the following types, with the obvious mapping to bit size and signedness:
+
+     <ul>
+<li>int8_t
+<li>int16_t
+<li>int32_t
+<li>int64_t
+<li>uint8_t
+<li>uint16_t
+<li>uint32_t
+<li>uint64_t
+</ul>
+
+   <p>If your C compiler and target machine do not allow integers of a certain
+size, the corresponding above type does not exist.
+
+   <p>If you don't need a specific storage size, but want the smallest data
+structure with <em>at least</em> N bits, use one of these:
+
+     <ul>
+<li>int_least8_t
+<li>int_least16_t
+<li>int_least32_t
+<li>int_least64_t
+<li>uint_least8_t
+<li>uint_least16_t
+<li>uint_least32_t
+<li>uint_least64_t
+</ul>
+
+   <p>If you don't need a specific storage size, but want the data structure
+that allows the fastest access while having at least N bits (and
+among data structures with the same access speed, the smallest one), use
+one of these:
+
+     <ul>
+<li>int_fast8_t
+<li>int_fast16_t
+<li>int_fast32_t
+<li>int_fast64_t
+<li>uint_fast8_t
+<li>uint_fast16_t
+<li>uint_fast32_t
+<li>uint_fast64_t
+</ul>
+
+   <p>If you want an integer with the widest range possible on the platform on
+which it is being used, use one of the following.  If you use these,
+you should write code that takes into account the variable size and range
+of the integer.
+
+     <ul>
+<li>intmax_t
+<li>uintmax_t
+</ul>
+
+   <p>The GNU C library also provides macros that tell you the maximum and
+minimum possible values for each integer data type.  The macro names
+follow these examples: <code>INT32_MAX</code>, <code>UINT8_MAX</code>,
+<code>INT_FAST32_MIN</code>, <code>INT_LEAST64_MIN</code>, <code>UINTMAX_MAX</code>,
+<code>INTMAX_MAX</code>, <code>INTMAX_MIN</code>.  Note that there are no macros for
+unsigned integer minima.  These are always zero. 
+<a name="index-maximum-possible-integer-2322"></a><a name="index-minimum-possible-integer-2323"></a>
+There are similar macros for use with C's built in integer types which
+should come with your C compiler.  These are described in <a href="Data-Type-Measurements.html#Data-Type-Measurements">Data Type Measurements</a>.
+
+   <p>Don't forget you can use the C <code>sizeof</code> function with any of these
+data types to get the number of bytes of storage each uses.
+
+   </body></html>
+

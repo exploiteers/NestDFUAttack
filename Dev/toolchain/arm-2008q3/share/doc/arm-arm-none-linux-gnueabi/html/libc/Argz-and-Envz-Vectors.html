@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+<title>Argz and Envz Vectors - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Encode-Binary-Data.html#Encode-Binary-Data" title="Encode Binary Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argz-and-Envz-Vectors"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Encode-Binary-Data.html#Encode-Binary-Data">Encode Binary Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.12 Argz and Envz Vectors</h3>
+
+<p><a name="index-argz-vectors-_0028string-vectors_0029-585"></a><a name="index-string-vectors_002c-null_002dcharacter-separated-586"></a><a name="index-argument-vectors_002c-null_002dcharacter-separated-587"></a><dfn>argz vectors</dfn> are vectors of strings in a contiguous block of
+memory, each element separated from its neighbors by null-characters
+(<code>'\0'</code>).
+
+   <p><a name="index-envz-vectors-_0028environment-vectors_0029-588"></a><a name="index-environment-vectors_002c-null_002dcharacter-separated-589"></a><dfn>Envz vectors</dfn> are an extension of argz vectors where each element is a
+name-value pair, separated by a <code>'='</code> character (as in a Unix
+environment).
+
+<ul class="menu">
+<li><a accesskey="1" href="Argz-Functions.html#Argz-Functions">Argz Functions</a>:               Operations on argz vectors. 
+<li><a accesskey="2" href="Envz-Functions.html#Envz-Functions">Envz Functions</a>:               Additional operations on environment vectors. 
+</ul>
+
+   </body></html>
+

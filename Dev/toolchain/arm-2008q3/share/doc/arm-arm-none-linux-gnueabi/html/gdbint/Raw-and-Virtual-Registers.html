@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Raw and Virtual Registers - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Address-Classes.html#Address-Classes" title="Address Classes">
+<link rel="next" href="Register-and-Memory-Data.html#Register-and-Memory-Data" title="Register and Memory Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Raw-and-Virtual-Registers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Register-and-Memory-Data.html#Register-and-Memory-Data">Register and Memory Data</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Address-Classes.html#Address-Classes">Address Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.6 Raw and Virtual Register Representations</h3>
+
+<p><a name="index-raw-register-representation-248"></a><a name="index-virtual-register-representation-249"></a><a name="index-representations_002c-raw-and-virtual-registers-250"></a>
+<em>Maintainer note: This section is pretty much obsolete.  The
+functionality described here has largely been replaced by
+pseudo-registers and the mechanisms described in <a href="Register-and-Memory-Data.html#Register-and-Memory-Data">Using Different Register and Memory Data Representations</a>.  See also <a href="http://www.gnu.org/software/gdb/bugs/">Bug Tracking Database</a> and
+<a href="http://sources.redhat.com/gdb/current/ari/">ARI Index</a> for more
+up-to-date information.</em>
+
+   <p>Some architectures use one representation for a value when it lives in a
+register, but use a different representation when it lives in memory. 
+In <span class="sc">gdb</span>'s terminology, the <dfn>raw</dfn> representation is the one used in
+the target registers, and the <dfn>virtual</dfn> representation is the one
+used in memory, and within <span class="sc">gdb</span> <code>struct value</code> objects.
+
+   <p><em>Maintainer note: Notice that the same mechanism is being used to
+both convert a register to a </em><code>struct value</code><em> and alternative
+register forms.</em>
+
+   <p>For almost all data types on almost all architectures, the virtual and
+raw representations are identical, and no special handling is needed. 
+However, they do occasionally differ.  For example:
+
+     <ul>
+<li>The x86 architecture supports an 80-bit <code>long double</code> type.  However, when
+we store those values in memory, they occupy twelve bytes: the
+floating-point number occupies the first ten, and the final two bytes
+are unused.  This keeps the values aligned on four-byte boundaries,
+allowing more efficient access.  Thus, the x86 80-bit floating-point
+type is the raw representation, and the twelve-byte loosely-packed
+arrangement is the virtual representation.
+
+     <li>Some 64-bit MIPS targets present 32-bit registers to <span class="sc">gdb</span> as 64-bit
+registers, with garbage in their upper bits.  <span class="sc">gdb</span> ignores the top 32
+bits.  Thus, the 64-bit form, with garbage in the upper 32 bits, is the
+raw representation, and the trimmed 32-bit representation is the
+virtual representation. 
+</ul>
+
+   <p>In general, the raw representation is determined by the architecture, or
+<span class="sc">gdb</span>'s interface to the architecture, while the virtual representation
+can be chosen for <span class="sc">gdb</span>'s convenience.  <span class="sc">gdb</span>'s register file,
+<code>registers</code>, holds the register contents in raw format, and the
+<span class="sc">gdb</span> remote protocol transmits register values in raw format.
+
+   <p>Your architecture may define the following macros to request
+conversions between the raw and virtual format:
+
+<div class="defun">
+&mdash; Target Macro: int <b>REGISTER_CONVERTIBLE</b> (<var>int reg</var>)<var><a name="index-REGISTER_005fCONVERTIBLE-251"></a></var><br>
+<blockquote><p>Return non-zero if register number <var>reg</var>'s value needs different raw
+and virtual formats.
+
+        <p>You should not use <code>REGISTER_CONVERT_TO_VIRTUAL</code> for a register
+unless this macro returns a non-zero value for that register. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Target Macro: void <b>REGISTER_CONVERT_TO_VIRTUAL</b> (<var>int reg, struct type *type, char *from, char *to</var>)<var><a name="index-REGISTER_005fCONVERT_005fTO_005fVIRTUAL-252"></a></var><br>
+<blockquote><p>Convert the value of register number <var>reg</var> to <var>type</var>, which
+should always be <code>gdbarch_register_type (</code><var>reg</var><code>)</code>.  The buffer
+at <var>from</var> holds the register's value in raw format; the macro should
+convert the value to virtual format, and place it at <var>to</var>.
+
+        <p>Note that <code>REGISTER_CONVERT_TO_VIRTUAL</code> and
+<code>REGISTER_CONVERT_TO_RAW</code> take their <var>reg</var> and <var>type</var>
+arguments in different orders.
+
+        <p>You should only use <code>REGISTER_CONVERT_TO_VIRTUAL</code> with registers
+for which the <code>REGISTER_CONVERTIBLE</code> macro returns a non-zero
+value. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Target Macro: void <b>REGISTER_CONVERT_TO_RAW</b> (<var>struct type *type, int reg, char *from, char *to</var>)<var><a name="index-REGISTER_005fCONVERT_005fTO_005fRAW-253"></a></var><br>
+<blockquote><p>Convert the value of register number <var>reg</var> to <var>type</var>, which
+should always be <code>gdbarch_register_type (</code><var>reg</var><code>)</code>.  The buffer
+at <var>from</var> holds the register's value in raw format; the macro should
+convert the value to virtual format, and place it at <var>to</var>.
+
+        <p>Note that REGISTER_CONVERT_TO_VIRTUAL and REGISTER_CONVERT_TO_RAW take
+their <var>reg</var> and <var>type</var> arguments in different orders. 
+</p></blockquote></div>
+
+   </body></html>
+

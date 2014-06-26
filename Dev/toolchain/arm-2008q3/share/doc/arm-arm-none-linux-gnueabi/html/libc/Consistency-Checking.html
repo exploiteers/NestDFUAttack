@@ -1,0 +1,159 @@
+<html lang="en">
+<head>
+<title>Consistency Checking - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Language-Features.html#Language-Features" title="Language Features">
+<link rel="next" href="Variadic-Functions.html#Variadic-Functions" title="Variadic Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Consistency-Checking"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variadic-Functions.html#Variadic-Functions">Variadic Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Language-Features.html#Language-Features">Language Features</a>
+<hr>
+</div>
+
+<h3 class="section">A.1 Explicitly Checking Internal Consistency</h3>
+
+<p><a name="index-consistency-checking-3701"></a><a name="index-impossible-events-3702"></a><a name="index-assertions-3703"></a>
+When you're writing a program, it's often a good idea to put in checks
+at strategic places for &ldquo;impossible&rdquo; errors or violations of basic
+assumptions.  These kinds of checks are helpful in debugging problems
+with the interfaces between different parts of the program, for example.
+
+   <p><a name="index-assert_002eh-3704"></a>The <code>assert</code> macro, defined in the header file <samp><span class="file">assert.h</span></samp>,
+provides a convenient way to abort the program while printing a message
+about where in the program the error was detected.
+
+   <p><a name="index-NDEBUG-3705"></a>Once you think your program is debugged, you can disable the error
+checks performed by the <code>assert</code> macro by recompiling with the
+macro <code>NDEBUG</code> defined.  This means you don't actually have to
+change the program source code to disable these checks.
+
+   <p>But disabling these consistency checks is undesirable unless they make
+the program significantly slower.  All else being equal, more error
+checking is good no matter who is running the program.  A wise user
+would rather have a program crash, visibly, than have it return nonsense
+without indicating anything might be wrong.
+
+<!-- assert.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: void <b>assert</b> (<var>int expression</var>)<var><a name="index-assert-3706"></a></var><br>
+<blockquote><p>Verify the programmer's belief that <var>expression</var> is nonzero at
+this point in the program.
+
+        <p>If <code>NDEBUG</code> is not defined, <code>assert</code> tests the value of
+<var>expression</var>.  If it is false (zero), <code>assert</code> aborts the
+program (see <a href="Aborting-a-Program.html#Aborting-a-Program">Aborting a Program</a>) after printing a message of the
+form:
+
+     <pre class="smallexample">          <samp><var>file</var></samp>:<var>linenum</var>: <var>function</var>: Assertion `<var>expression</var>' failed.
+</pre>
+        <p class="noindent">on the standard error stream <code>stderr</code> (see <a href="Standard-Streams.html#Standard-Streams">Standard Streams</a>). 
+The filename and line number are taken from the C preprocessor macros
+<code>__FILE__</code> and <code>__LINE__</code> and specify where the call to
+<code>assert</code> was made.  When using the GNU C compiler, the name of
+the function which calls <code>assert</code> is taken from the built-in
+variable <code>__PRETTY_FUNCTION__</code>; with older compilers, the function
+name and following colon are omitted.
+
+        <p>If the preprocessor macro <code>NDEBUG</code> is defined before
+<samp><span class="file">assert.h</span></samp> is included, the <code>assert</code> macro is defined to do
+absolutely nothing.
+
+        <p><strong>Warning:</strong> Even the argument expression <var>expression</var> is not
+evaluated if <code>NDEBUG</code> is in effect.  So never use <code>assert</code>
+with arguments that involve side effects.  For example, <code>assert
+(++i &gt; 0);</code> is a bad idea, because <code>i</code> will not be incremented if
+<code>NDEBUG</code> is defined. 
+</p></blockquote></div>
+
+   <p>Sometimes the &ldquo;impossible&rdquo; condition you want to check for is an error
+return from an operating system function.  Then it is useful to display
+not only where the program crashes, but also what error was returned. 
+The <code>assert_perror</code> macro makes this easy.
+
+<!-- assert.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: void <b>assert_perror</b> (<var>int errnum</var>)<var><a name="index-assert_005fperror-3707"></a></var><br>
+<blockquote><p>Similar to <code>assert</code>, but verifies that <var>errnum</var> is zero.
+
+        <p>If <code>NDEBUG</code> is not defined, <code>assert_perror</code> tests the value of
+<var>errnum</var>.  If it is nonzero, <code>assert_perror</code> aborts the program
+after printing a message of the form:
+
+     <pre class="smallexample">          <samp><var>file</var></samp>:<var>linenum</var>: <var>function</var>: <var>error text</var>
+</pre>
+        <p class="noindent">on the standard error stream.  The file name, line number, and function
+name are as for <code>assert</code>.  The error text is the result of
+<code>strerror&nbsp;(</code><var>errnum</var><code>)</code><!-- /@w -->.  See <a href="Error-Messages.html#Error-Messages">Error Messages</a>.
+
+        <p>Like <code>assert</code>, if <code>NDEBUG</code> is defined before <samp><span class="file">assert.h</span></samp>
+is included, the <code>assert_perror</code> macro does absolutely nothing.  It
+does not evaluate the argument, so <var>errnum</var> should not have any side
+effects.  It is best for <var>errnum</var> to be just a simple variable
+reference; often it will be <code>errno</code>.
+
+        <p>This macro is a GNU extension. 
+</p></blockquote></div>
+
+   <p><strong>Usage note:</strong> The <code>assert</code> facility is designed for
+detecting <em>internal inconsistency</em>; it is not suitable for
+reporting invalid input or improper usage by the <em>user</em> of the
+program.
+
+   <p>The information in the diagnostic messages printed by the <code>assert</code>
+and <code>assert_perror</code> macro is intended to help you, the programmer,
+track down the cause of a bug, but is not really useful for telling a user
+of your program why his or her input was invalid or why a command could not
+be carried out.  What's more, your program should not abort when given
+invalid input, as <code>assert</code> would do&mdash;it should exit with nonzero
+status (see <a href="Exit-Status.html#Exit-Status">Exit Status</a>) after printing its error messages, or perhaps
+read another command or move on to the next input file.
+
+   <p>See <a href="Error-Messages.html#Error-Messages">Error Messages</a>, for information on printing error messages for
+problems that <em>do not</em> represent bugs in the program.
+
+   </body></html>
+

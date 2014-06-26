@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+<title>Signal Characters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Special-Characters.html#Special-Characters" title="Special Characters">
+<link rel="prev" href="Editing-Characters.html#Editing-Characters" title="Editing Characters">
+<link rel="next" href="Start_002fStop-Characters.html#Start_002fStop-Characters" title="Start/Stop Characters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Characters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Start_002fStop-Characters.html#Start_002fStop-Characters">Start/Stop Characters</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Editing-Characters.html#Editing-Characters">Editing Characters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Special-Characters.html#Special-Characters">Special Characters</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">17.4.9.2 Characters that Cause Signals</h5>
+
+<p>These special characters may be active in either canonical or noncanonical
+input mode, but only when the <code>ISIG</code> flag is set (see <a href="Local-Modes.html#Local-Modes">Local Modes</a>).
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VINTR</b><var><a name="index-VINTR-1970"></a></var><br>
+<blockquote><p><a name="index-INTR-character-1971"></a><a name="index-interrupt-character-1972"></a>This is the subscript for the INTR character in the special control
+character array.  <var>termios</var><code>.c_cc[VINTR]</code> holds the character
+itself.
+
+        <p>The INTR (interrupt) character raises a <code>SIGINT</code> signal for all
+processes in the foreground job associated with the terminal.  The INTR
+character itself is then discarded.  See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for more
+information about signals.
+
+        <p>Typically, the INTR character is <kbd>C-c</kbd>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VQUIT</b><var><a name="index-VQUIT-1973"></a></var><br>
+<blockquote><p><a name="index-QUIT-character-1974"></a>This is the subscript for the QUIT character in the special control
+character array.  <var>termios</var><code>.c_cc[VQUIT]</code> holds the character
+itself.
+
+        <p>The QUIT character raises a <code>SIGQUIT</code> signal for all processes in
+the foreground job associated with the terminal.  The QUIT character
+itself is then discarded.  See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for more information
+about signals.
+
+        <p>Typically, the QUIT character is <kbd>C-\</kbd>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VSUSP</b><var><a name="index-VSUSP-1975"></a></var><br>
+<blockquote><p><a name="index-SUSP-character-1976"></a><a name="index-suspend-character-1977"></a>This is the subscript for the SUSP character in the special control
+character array.  <var>termios</var><code>.c_cc[VSUSP]</code> holds the character
+itself.
+
+        <p>The SUSP (suspend) character is recognized only if the implementation
+supports job control (see <a href="Job-Control.html#Job-Control">Job Control</a>).  It causes a <code>SIGTSTP</code>
+signal to be sent to all processes in the foreground job associated with
+the terminal.  The SUSP character itself is then discarded. 
+See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for more information about signals.
+
+        <p>Typically, the SUSP character is <kbd>C-z</kbd>. 
+</p></blockquote></div>
+
+   <p>Few applications disable the normal interpretation of the SUSP
+character.  If your program does this, it should provide some other
+mechanism for the user to stop the job.  When the user invokes this
+mechanism, the program should send a <code>SIGTSTP</code> signal to the
+process group of the process, not just to the process itself. 
+See <a href="Signaling-Another-Process.html#Signaling-Another-Process">Signaling Another Process</a>.
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>VDSUSP</b><var><a name="index-VDSUSP-1978"></a></var><br>
+<blockquote><p><a name="index-DSUSP-character-1979"></a><a name="index-delayed-suspend-character-1980"></a>This is the subscript for the DSUSP character in the special control
+character array.  <var>termios</var><code>.c_cc[VDSUSP]</code> holds the character
+itself.
+
+        <p>The DSUSP (suspend) character is recognized only if the implementation
+supports job control (see <a href="Job-Control.html#Job-Control">Job Control</a>).  It sends a <code>SIGTSTP</code>
+signal, like the SUSP character, but not right away&mdash;only when the
+program tries to read it as input.  Not all systems with job control
+support DSUSP; only BSD-compatible systems (including the GNU system).
+
+        <p>See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for more information about signals.
+
+        <p>Typically, the DSUSP character is <kbd>C-y</kbd>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Pseudo-Random Numbers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="prev" href="Errors-in-Math-Functions.html#Errors-in-Math-Functions" title="Errors in Math Functions">
+<link rel="next" href="FP-Function-Optimizations.html#FP-Function-Optimizations" title="FP Function Optimizations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pseudo-Random-Numbers"></a>
+<a name="Pseudo_002dRandom-Numbers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="FP-Function-Optimizations.html#FP-Function-Optimizations">FP Function Optimizations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Errors-in-Math-Functions.html#Errors-in-Math-Functions">Errors in Math Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.8 Pseudo-Random Numbers</h3>
+
+<p><a name="index-random-numbers-2281"></a><a name="index-pseudo_002drandom-numbers-2282"></a><a name="index-seed-_0028for-random-numbers_0029-2283"></a>
+This section describes the GNU facilities for generating a series of
+pseudo-random numbers.  The numbers generated are not truly random;
+typically, they form a sequence that repeats periodically, with a period
+so large that you can ignore it for ordinary purposes.  The random
+number generator works by remembering a <dfn>seed</dfn> value which it uses
+to compute the next random number and also to compute a new seed.
+
+   <p>Although the generated numbers look unpredictable within one run of a
+program, the sequence of numbers is <em>exactly the same</em> from one run
+to the next.  This is because the initial seed is always the same.  This
+is convenient when you are debugging a program, but it is unhelpful if
+you want the program to behave unpredictably.  If you want a different
+pseudo-random series each time your program runs, you must specify a
+different seed each time.  For ordinary purposes, basing the seed on the
+current time works well.
+
+   <p>You can obtain repeatable sequences of numbers on a particular machine type
+by specifying the same initial seed value for the random number
+generator.  There is no standard meaning for a particular seed value;
+the same seed, used in different C libraries or on different CPU types,
+will give you different random numbers.
+
+   <p>The GNU library supports the standard ISO&nbsp;C<!-- /@w --> random number functions
+plus two other sets derived from BSD and SVID.  The BSD and ISO&nbsp;C<!-- /@w -->
+functions provide identical, somewhat limited functionality.  If only a
+small number of random bits are required, we recommend you use the
+ISO&nbsp;C<!-- /@w --> interface, <code>rand</code> and <code>srand</code>.  The SVID functions
+provide a more flexible interface, which allows better random number
+generator algorithms, provides more random bits (up to 48) per call, and
+can provide random floating-point numbers.  These functions are required
+by the XPG standard and therefore will be present in all modern Unix
+systems.
+
+<ul class="menu">
+<li><a accesskey="1" href="ISO-Random.html#ISO-Random">ISO Random</a>:                   <code>rand</code> and friends. 
+<li><a accesskey="2" href="BSD-Random.html#BSD-Random">BSD Random</a>:                   <code>random</code> and friends. 
+<li><a accesskey="3" href="SVID-Random.html#SVID-Random">SVID Random</a>:                  <code>drand48</code> and friends. 
+</ul>
+
+   </body></html>
+

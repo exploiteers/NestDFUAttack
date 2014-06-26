@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Signal Messages - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standard-Signals.html#Standard-Signals" title="Standard Signals">
+<link rel="prev" href="Miscellaneous-Signals.html#Miscellaneous-Signals" title="Miscellaneous Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Messages"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Miscellaneous-Signals.html#Miscellaneous-Signals">Miscellaneous Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standard-Signals.html#Standard-Signals">Standard Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.2.8 Signal Messages</h4>
+
+<p><a name="index-signal-messages-2898"></a>
+We mentioned above that the shell prints a message describing the signal
+that terminated a child process.  The clean way to print a message
+describing a signal is to use the functions <code>strsignal</code> and
+<code>psignal</code>.  These functions use a signal number to specify which
+kind of signal to describe.  The signal number may come from the
+termination status of a child process (see <a href="Process-Completion.html#Process-Completion">Process Completion</a>) or it
+may come from a signal handler in the same process.
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>strsignal</b> (<var>int signum</var>)<var><a name="index-strsignal-2899"></a></var><br>
+<blockquote><p>This function returns a pointer to a statically-allocated string
+containing a message describing the signal <var>signum</var>.  You
+should not modify the contents of this string; and, since it can be
+rewritten on subsequent calls, you should save a copy of it if you need
+to reference it later.
+
+        <p><a name="index-string_002eh-2900"></a>This function is a GNU extension, declared in the header file
+<samp><span class="file">string.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>psignal</b> (<var>int signum, const char *message</var>)<var><a name="index-psignal-2901"></a></var><br>
+<blockquote><p>This function prints a message describing the signal <var>signum</var> to the
+standard error output stream <code>stderr</code>; see <a href="Standard-Streams.html#Standard-Streams">Standard Streams</a>.
+
+        <p>If you call <code>psignal</code> with a <var>message</var> that is either a null
+pointer or an empty string, <code>psignal</code> just prints the message
+corresponding to <var>signum</var>, adding a trailing newline.
+
+        <p>If you supply a non-null <var>message</var> argument, then <code>psignal</code>
+prefixes its output with this string.  It adds a colon and a space
+character to separate the <var>message</var> from the string corresponding
+to <var>signum</var>.
+
+        <p><a name="index-stdio_002eh-2902"></a>This function is a BSD feature, declared in the header file <samp><span class="file">signal.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-sys_005fsiglist-2903"></a>There is also an array <code>sys_siglist</code> which contains the messages
+for the various signal codes.  This array exists on BSD systems, unlike
+<code>strsignal</code>.
+
+   </body></html>
+

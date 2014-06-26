@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Argp Example 2 - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Examples.html#Argp-Examples" title="Argp Examples">
+<link rel="prev" href="Argp-Example-1.html#Argp-Example-1" title="Argp Example 1">
+<link rel="next" href="Argp-Example-3.html#Argp-Example-3" title="Argp Example 3">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Example-2"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Example-3.html#Argp-Example-3">Argp Example 3</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Example-1.html#Argp-Example-1">Argp Example 1</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Examples.html#Argp-Examples">Argp Examples</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">25.3.11.2 A Program Using Argp with Only Default Options</h5>
+
+<p>This program doesn't use any options or arguments, it uses argp to be
+compliant with the GNU standard command line format.
+
+   <p>In addition to giving no arguments and implementing a &lsquo;<samp><span class="samp">--help</span></samp>&rsquo;
+option, this example has a &lsquo;<samp><span class="samp">--version</span></samp>&rsquo; option, which will put the
+given documentation string and bug address in the &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; output,
+as per GNU standards.
+
+   <p>The variable <code>argp</code> contains the argument parser
+specification.  Adding fields to this structure is the way most
+parameters are passed to <code>argp_parse</code>.  The first three fields are
+normally used, but they are not in this small program.  There are also
+two global variables that argp can use defined here,
+<code>argp_program_version</code> and <code>argp_program_bug_address</code>.  They
+are considered global variables because they will almost always be
+constant for a given program, even if they use different argument
+parsers for various tasks.
+
+<pre class="smallexample">     /* <span class="roman">Argp example #2 -- a pretty minimal program using argp</span> */
+     
+     /* <span class="roman">This program doesn't use any options or arguments, but uses
+        argp to be compliant with the GNU standard command line
+        format.
+     
+        In addition to making sure no arguments are given, and
+        implementing a --help option, this example will have a
+        --version option, and will put the given documentation string
+        and bug address in the --help output, as per GNU standards.
+     
+        The variable ARGP contains the argument parser specification;
+        adding fields to this structure is the way most parameters are
+        passed to argp_parse (the first three fields are usually used,
+        but not in this small program).  There are also two global
+        variables that argp knows about defined here,
+        ARGP_PROGRAM_VERSION and ARGP_PROGRAM_BUG_ADDRESS (they are
+        global variables because they will almost always be constant
+        for a given program, even if it uses different argument
+        parsers for various tasks).</span> */
+     
+     #include &lt;argp.h&gt;
+     
+     const char *argp_program_version =
+       "argp-ex2 1.0";
+     const char *argp_program_bug_address =
+       "&lt;bug-gnu-utils@gnu.org&gt;";
+     
+     /* <span class="roman">Program documentation.</span> */
+     static char doc[] =
+       "Argp example #2 -- a pretty minimal program using argp";
+     
+     /* <span class="roman">Our argument parser.  The </span><code>options</code><span class="roman">, </span><code>parser</code><span class="roman">, and
+        </span><code>args_doc</code><span class="roman"> fields are zero because we have neither options or
+        arguments; </span><code>doc</code><span class="roman"> and </span><code>argp_program_bug_address</code><span class="roman"> will be
+        used in the output for &lsquo;</span><samp><span class="samp">--help</span></samp><span class="roman">&rsquo;, and the &lsquo;</span><samp><span class="samp">--version</span></samp><span class="roman">&rsquo;
+        option will print out </span><code>argp_program_version</code><span class="roman">.</span> */
+     static struct argp argp = { 0, 0, 0, doc };
+     
+     int main (int argc, char **argv)
+     {
+       argp_parse (&amp;argp, argc, argv, 0, 0, 0);
+       exit (0);
+     }
+</pre>
+   </body></html>
+

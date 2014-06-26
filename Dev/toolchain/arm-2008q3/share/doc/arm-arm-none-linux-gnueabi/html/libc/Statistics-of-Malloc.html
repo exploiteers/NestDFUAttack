@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Statistics of Malloc - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Hooks-for-Malloc.html#Hooks-for-Malloc" title="Hooks for Malloc">
+<link rel="next" href="Summary-of-Malloc.html#Summary-of-Malloc" title="Summary of Malloc">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Statistics-of-Malloc"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Summary-of-Malloc.html#Summary-of-Malloc">Summary of Malloc</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hooks-for-Malloc.html#Hooks-for-Malloc">Hooks for Malloc</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.11 Statistics for Memory Allocation with <code>malloc</code></h5>
+
+<p><a name="index-allocation-statistics-291"></a>You can get information about dynamic memory allocation by calling the
+<code>mallinfo</code> function.  This function and its associated data type
+are declared in <samp><span class="file">malloc.h</span></samp>; they are an extension of the standard
+SVID/XPG version. 
+<a name="index-malloc_002eh-292"></a>
+<!-- malloc.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct mallinfo</b><var><a name="index-struct-mallinfo-293"></a></var><br>
+<blockquote><p>This structure type is used to return information about the dynamic
+memory allocator.  It contains the following members:
+
+          <dl>
+<dt><code>int arena</code><dd>This is the total size of memory allocated with <code>sbrk</code> by
+<code>malloc</code>, in bytes.
+
+          <br><dt><code>int ordblks</code><dd>This is the number of chunks not in use.  (The memory allocator
+internally gets chunks of memory from the operating system, and then
+carves them up to satisfy individual <code>malloc</code> requests; see
+<a href="Efficiency-and-Malloc.html#Efficiency-and-Malloc">Efficiency and Malloc</a>.)
+
+          <br><dt><code>int smblks</code><dd>This field is unused.
+
+          <br><dt><code>int hblks</code><dd>This is the total number of chunks allocated with <code>mmap</code>.
+
+          <br><dt><code>int hblkhd</code><dd>This is the total size of memory allocated with <code>mmap</code>, in bytes.
+
+          <br><dt><code>int usmblks</code><dd>This field is unused.
+
+          <br><dt><code>int fsmblks</code><dd>This field is unused.
+
+          <br><dt><code>int uordblks</code><dd>This is the total size of memory occupied by chunks handed out by
+<code>malloc</code>.
+
+          <br><dt><code>int fordblks</code><dd>This is the total size of memory occupied by free (not in use) chunks.
+
+          <br><dt><code>int keepcost</code><dd>This is the size of the top-most releasable chunk that normally
+borders the end of the heap (i.e., the high end of the virtual address
+space's data segment).
+
+        </dl>
+        </p></blockquote></div>
+
+<!-- malloc.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: struct mallinfo <b>mallinfo</b> (<var>void</var>)<var><a name="index-mallinfo-294"></a></var><br>
+<blockquote><p>This function returns information about the current dynamic memory usage
+in a structure of type <code>struct mallinfo</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

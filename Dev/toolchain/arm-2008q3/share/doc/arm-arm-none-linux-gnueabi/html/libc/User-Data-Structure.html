@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+<title>User Data Structure - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="User-Database.html#User-Database" title="User Database">
+<link rel="next" href="Lookup-User.html#Lookup-User" title="Lookup User">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="User-Data-Structure"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Lookup-User.html#Lookup-User">Lookup User</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="User-Database.html#User-Database">User Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.13.1 The Data Structure that Describes a User</h4>
+
+<p>The functions and data structures for accessing the system user database
+are declared in the header file <samp><span class="file">pwd.h</span></samp>. 
+<a name="index-pwd_002eh-3390"></a>
+<!-- pwd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct passwd</b><var><a name="index-struct-passwd-3391"></a></var><br>
+<blockquote><p>The <code>passwd</code> data structure is used to hold information about
+entries in the system user data base.  It has at least the following members:
+
+          <dl>
+<dt><code>char *pw_name</code><dd>The user's login name.
+
+          <br><dt><code>char *pw_passwd.</code><dd>The encrypted password string.
+
+          <br><dt><code>uid_t pw_uid</code><dd>The user ID number.
+
+          <br><dt><code>gid_t pw_gid</code><dd>The user's default group ID number.
+
+          <br><dt><code>char *pw_gecos</code><dd>A string typically containing the user's real name, and possibly other
+information such as a phone number.
+
+          <br><dt><code>char *pw_dir</code><dd>The user's home directory, or initial working directory.  This might be
+a null pointer, in which case the interpretation is system-dependent.
+
+          <br><dt><code>char *pw_shell</code><dd>The user's default shell, or the initial program run when the user logs in. 
+This might be a null pointer, indicating that the system default should
+be used. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

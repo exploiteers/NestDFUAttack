@@ -1,0 +1,187 @@
+<html lang="en">
+<head>
+<title>Floating Point Classes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Floating-Point-Numbers.html#Floating-Point-Numbers" title="Floating Point Numbers">
+<link rel="next" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Floating-Point-Classes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Floating-Point-Numbers.html#Floating-Point-Numbers">Floating Point Numbers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.4 Floating-Point Number Classification Functions</h3>
+
+<p><a name="index-floating_002dpoint-classes-2337"></a><a name="index-classes_002c-floating_002dpoint-2338"></a><a name="index-math_002eh-2339"></a>
+ISO&nbsp;C99<!-- /@w --> defines macros that let you determine what sort of
+floating-point number a variable holds.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>fpclassify</b> (<em>float-type</em><var> x</var>)<var><a name="index-fpclassify-2340"></a></var><br>
+<blockquote><p>This is a generic macro which works on all floating-point types and
+which returns a value of type <code>int</code>.  The possible values are:
+
+          <dl>
+<dt><code>FP_NAN</code><a name="index-FP_005fNAN-2341"></a><dd>The floating-point number <var>x</var> is &ldquo;Not a Number&rdquo; (see <a href="Infinity-and-NaN.html#Infinity-and-NaN">Infinity and NaN</a>)
+<br><dt><code>FP_INFINITE</code><a name="index-FP_005fINFINITE-2342"></a><dd>The value of <var>x</var> is either plus or minus infinity (see <a href="Infinity-and-NaN.html#Infinity-and-NaN">Infinity and NaN</a>)
+<br><dt><code>FP_ZERO</code><a name="index-FP_005fZERO-2343"></a><dd>The value of <var>x</var> is zero.  In floating-point formats like IEEE&nbsp;754<!-- /@w -->, where zero can be signed, this value is also returned if
+<var>x</var> is negative zero. 
+<br><dt><code>FP_SUBNORMAL</code><a name="index-FP_005fSUBNORMAL-2344"></a><dd>Numbers whose absolute value is too small to be represented in the
+normal format are represented in an alternate, <dfn>denormalized</dfn> format
+(see <a href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>).  This format is less precise but can
+represent values closer to zero.  <code>fpclassify</code> returns this value
+for values of <var>x</var> in this alternate format. 
+<br><dt><code>FP_NORMAL</code><a name="index-FP_005fNORMAL-2345"></a><dd>This value is returned for all other values of <var>x</var>.  It indicates
+that there is nothing special about the number. 
+</dl>
+
+        </blockquote></div>
+
+   <p><code>fpclassify</code> is most useful if more than one property of a number
+must be tested.  There are more specific macros which only test one
+property at a time.  Generally these macros execute faster than
+<code>fpclassify</code>, since there is special hardware support for them. 
+You should therefore use the specific macros whenever possible.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isfinite</b> (<em>float-type</em><var> x</var>)<var><a name="index-isfinite-2346"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if <var>x</var> is finite: not plus or
+minus infinity, and not NaN.  It is equivalent to
+
+     <pre class="smallexample">          (fpclassify (x) != FP_NAN &amp;&amp; fpclassify (x) != FP_INFINITE)
+</pre>
+        <p><code>isfinite</code> is implemented as a macro which accepts any
+floating-point type. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isnormal</b> (<em>float-type</em><var> x</var>)<var><a name="index-isnormal-2347"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if <var>x</var> is finite and normalized. 
+It is equivalent to
+
+     <pre class="smallexample">          (fpclassify (x) == FP_NORMAL)
+</pre>
+        </blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isnan</b> (<em>float-type</em><var> x</var>)<var><a name="index-isnan-2348"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if <var>x</var> is NaN.  It is equivalent
+to
+
+     <pre class="smallexample">          (fpclassify (x) == FP_NAN)
+</pre>
+        </blockquote></div>
+
+   <p>Another set of floating-point classification functions was provided by
+BSD.  The GNU C library also supports these functions; however, we
+recommend that you use the ISO C99 macros in new code.  Those are standard
+and will be available more widely.  Also, since they are macros, you do
+not have to worry about the type of their argument.
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>isinf</b> (<var>double x</var>)<var><a name="index-isinf-2349"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>isinff</b> (<var>float x</var>)<var><a name="index-isinff-2350"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>isinfl</b> (<var>long double x</var>)<var><a name="index-isinfl-2351"></a></var><br>
+<blockquote><p>This function returns <code>-1</code> if <var>x</var> represents negative infinity,
+<code>1</code> if <var>x</var> represents positive infinity, and <code>0</code> otherwise. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>isnan</b> (<var>double x</var>)<var><a name="index-isnan-2352"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>isnanf</b> (<var>float x</var>)<var><a name="index-isnanf-2353"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>isnanl</b> (<var>long double x</var>)<var><a name="index-isnanl-2354"></a></var><br>
+<blockquote><p>This function returns a nonzero value if <var>x</var> is a &ldquo;not a number&rdquo;
+value, and zero otherwise.
+
+        <p><strong>Note:</strong> The <code>isnan</code> macro defined by ISO&nbsp;C99<!-- /@w --> overrides
+the BSD function.  This is normally not a problem, because the two
+routines behave identically.  However, if you really need to get the BSD
+function for some reason, you can write
+
+     <pre class="smallexample">          (isnan) (x)
+</pre>
+        </blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>finite</b> (<var>double x</var>)<var><a name="index-finite-2355"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>finitef</b> (<var>float x</var>)<var><a name="index-finitef-2356"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: int <b>finitel</b> (<var>long double x</var>)<var><a name="index-finitel-2357"></a></var><br>
+<blockquote><p>This function returns a nonzero value if <var>x</var> is finite or a &ldquo;not a
+number&rdquo; value, and zero otherwise. 
+</p></blockquote></div>
+
+   <p><strong>Portability Note:</strong> The functions listed in this section are BSD
+extensions.
+
+   </body></html>
+

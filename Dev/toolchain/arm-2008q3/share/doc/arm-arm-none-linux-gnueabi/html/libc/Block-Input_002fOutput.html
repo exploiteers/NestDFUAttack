@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+<title>Block Input/Output - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Unreading.html#Unreading" title="Unreading">
+<link rel="next" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Block-Input%2fOutput"></a>
+<a name="Block-Input_002fOutput"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Unreading.html#Unreading">Unreading</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.11 Block Input/Output</h3>
+
+<p>This section describes how to do input and output operations on blocks
+of data.  You can use these functions to read and write binary data, as
+well as to read and write text in fixed-size blocks instead of by
+characters or lines. 
+<a name="index-binary-I_002fO-to-a-stream-1005"></a><a name="index-block-I_002fO-to-a-stream-1006"></a><a name="index-reading-from-a-stream_002c-by-blocks-1007"></a><a name="index-writing-to-a-stream_002c-by-blocks-1008"></a>
+Binary files are typically used to read and write blocks of data in the
+same format as is used to represent the data in a running program.  In
+other words, arbitrary blocks of memory&mdash;not just character or string
+objects&mdash;can be written to a binary file, and meaningfully read in
+again by the same program.
+
+   <p>Storing data in binary form is often considerably more efficient than
+using the formatted I/O functions.  Also, for floating-point numbers,
+the binary form avoids possible loss of precision in the conversion
+process.  On the other hand, binary files can't be examined or modified
+easily using many standard file utilities (such as text editors), and
+are not portable between different implementations of the language, or
+different kinds of computers.
+
+   <p>These functions are declared in <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1009"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: size_t <b>fread</b> (<var>void *data, size_t size, size_t count, FILE *stream</var>)<var><a name="index-fread-1010"></a></var><br>
+<blockquote><p>This function reads up to <var>count</var> objects of size <var>size</var> into
+the array <var>data</var>, from the stream <var>stream</var>.  It returns the
+number of objects actually read, which might be less than <var>count</var> if
+a read error occurs or the end of the file is reached.  This function
+returns a value of zero (and doesn't read anything) if either <var>size</var>
+or <var>count</var> is zero.
+
+        <p>If <code>fread</code> encounters end of file in the middle of an object, it
+returns the number of complete objects read, and discards the partial
+object.  Therefore, the stream remains at the actual end of the file. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>fread_unlocked</b> (<var>void *data, size_t size, size_t count, FILE *stream</var>)<var><a name="index-fread_005funlocked-1011"></a></var><br>
+<blockquote><p>The <code>fread_unlocked</code> function is equivalent to the <code>fread</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>fwrite</b> (<var>const void *data, size_t size, size_t count, FILE *stream</var>)<var><a name="index-fwrite-1012"></a></var><br>
+<blockquote><p>This function writes up to <var>count</var> objects of size <var>size</var> from
+the array <var>data</var>, to the stream <var>stream</var>.  The return value is
+normally <var>count</var>, if the call succeeds.  Any other value indicates
+some sort of error, such as running out of space. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>fwrite_unlocked</b> (<var>const void *data, size_t size, size_t count, FILE *stream</var>)<var><a name="index-fwrite_005funlocked-1013"></a></var><br>
+<blockquote><p>The <code>fwrite_unlocked</code> function is equivalent to the <code>fwrite</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   </body></html>
+

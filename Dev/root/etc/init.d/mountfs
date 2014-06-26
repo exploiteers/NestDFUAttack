@@ -1,0 +1,40 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file handles mounting all filesystems.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+MOUNTFLAGS='-n'
+
+case "${1}" in
+
+start)
+	${ECHO} "Mounting file systems: \c"
+
+		# Allow udev to finish.
+
+		${SBINDIR}/udevadm settle
+
+		# Mount all other filesystems, except for NFS and proc. The former is
+		# already mounted if we are NFS root (and there should never be an NFS
+		# mount in fstab) and the latter was manually mounted above.
+
+		${MOUNT} ${MOUNTFLAGS} -a -t nonfs,proc
+			
+	${ECHO} "done."
+	;;
+					
+*)
+	echo "Usage: ${0} <start>"
+	
+	exit 1
+	;;
+
+esac

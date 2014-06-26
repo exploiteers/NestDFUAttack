@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+<title>Out-of-Band Data - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="prev" href="Server-Example.html#Server-Example" title="Server Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Out-of-Band-Data"></a>
+<a name="Out_002dof_002dBand-Data"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Server-Example.html#Server-Example">Server Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.8 Out-of-Band Data</h4>
+
+<p><a name="index-out_002dof_002dband-data-1813"></a><a name="index-high_002dpriority-data-1814"></a>Streams with connections permit <dfn>out-of-band</dfn> data that is
+delivered with higher priority than ordinary data.  Typically the
+reason for sending out-of-band data is to send notice of an
+exceptional condition.  To send out-of-band data use
+<code>send</code>, specifying the flag <code>MSG_OOB</code> (see <a href="Sending-Data.html#Sending-Data">Sending Data</a>).
+
+   <p>Out-of-band data are received with higher priority because the
+receiving process need not read it in sequence; to read the next
+available out-of-band data, use <code>recv</code> with the <code>MSG_OOB</code>
+flag (see <a href="Receiving-Data.html#Receiving-Data">Receiving Data</a>).  Ordinary read operations do not read
+out-of-band data; they read only ordinary data.
+
+   <p><a name="index-urgent-socket-condition-1815"></a>When a socket finds that out-of-band data are on their way, it sends a
+<code>SIGURG</code> signal to the owner process or process group of the
+socket.  You can specify the owner using the <code>F_SETOWN</code> command
+to the <code>fcntl</code> function; see <a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>.  You must
+also establish a handler for this signal, as described in <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, in order to take appropriate action such as reading the
+out-of-band data.
+
+   <p>Alternatively, you can test for pending out-of-band data, or wait
+until there is out-of-band data, using the <code>select</code> function; it
+can wait for an exceptional condition on the socket.  See <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>, for more information about <code>select</code>.
+
+   <p>Notification of out-of-band data (whether with <code>SIGURG</code> or with
+<code>select</code>) indicates that out-of-band data are on the way; the data
+may not actually arrive until later.  If you try to read the
+out-of-band data before it arrives, <code>recv</code> fails with an
+<code>EWOULDBLOCK</code> error.
+
+   <p>Sending out-of-band data automatically places a &ldquo;mark&rdquo; in the stream
+of ordinary data, showing where in the sequence the out-of-band data
+&ldquo;would have been&rdquo;.  This is useful when the meaning of out-of-band
+data is &ldquo;cancel everything sent so far&rdquo;.  Here is how you can test,
+in the receiving process, whether any ordinary data was sent before
+the mark:
+
+<pre class="smallexample">     success = ioctl (socket, SIOCATMARK, &amp;atmark);
+</pre>
+   <p>The <code>integer</code> variable <var>atmark</var> is set to a nonzero value if
+the socket's read pointer has reached the &ldquo;mark&rdquo;.
+
+<!-- Posix  1.g specifies sockatmark for this ioctl.  sockatmark is not -->
+<!-- implemented yet. -->
+   <p>Here's a function to discard any ordinary data preceding the
+out-of-band mark:
+
+<pre class="smallexample">     int
+     discard_until_mark (int socket)
+     {
+       while (1)
+         {
+           /* <span class="roman">This is not an arbitrary limit; any size will do.</span>  */
+           char buffer[1024];
+           int atmark, success;
+     
+           /* <span class="roman">If we have reached the mark, return.</span>  */
+           success = ioctl (socket, SIOCATMARK, &amp;atmark);
+           if (success &lt; 0)
+             perror ("ioctl");
+           if (result)
+             return;
+     
+           /* <span class="roman">Otherwise, read a bunch of ordinary data and discard it.</span>
+              <span class="roman">This is guaranteed not to read past the mark</span>
+              <span class="roman">if it starts before the mark.</span>  */
+           success = read (socket, buffer, sizeof buffer);
+           if (success &lt; 0)
+             perror ("read");
+         }
+     }
+</pre>
+   <p>If you don't want to discard the ordinary data preceding the mark, you
+may need to read some of it anyway, to make room in internal system
+buffers for the out-of-band data.  If you try to read out-of-band data
+and get an <code>EWOULDBLOCK</code> error, try reading some ordinary data
+(saving it so that you can use it when you want it) and see if that
+makes room.  Here is an example:
+
+<pre class="smallexample">     struct buffer
+     {
+       char *buf;
+       int size;
+       struct buffer *next;
+     };
+     
+     /* <span class="roman">Read the out-of-band data from SOCKET and return it</span>
+        <span class="roman">as a `struct buffer', which records the address of the data</span>
+        <span class="roman">and its size.</span>
+     
+        <span class="roman">It may be necessary to read some ordinary data</span>
+        <span class="roman">in order to make room for the out-of-band data.</span>
+        <span class="roman">If so, the ordinary data are saved as a chain of buffers</span>
+        <span class="roman">found in the `next' field of the value.</span>  */
+     
+     struct buffer *
+     read_oob (int socket)
+     {
+       struct buffer *tail = 0;
+       struct buffer *list = 0;
+     
+       while (1)
+         {
+           /* <span class="roman">This is an arbitrary limit.</span>
+              <span class="roman">Does anyone know how to do this without a limit?</span>  */
+     #define BUF_SZ 1024
+           char *buf = (char *) xmalloc (BUF_SZ);
+           int success;
+           int atmark;
+     
+           /* <span class="roman">Try again to read the out-of-band data.</span>  */
+           success = recv (socket, buf, BUF_SZ, MSG_OOB);
+           if (success &gt;= 0)
+             {
+               /* <span class="roman">We got it, so return it.</span>  */
+               struct buffer *link
+                 = (struct buffer *) xmalloc (sizeof (struct buffer));
+               link-&gt;buf = buf;
+               link-&gt;size = success;
+               link-&gt;next = list;
+               return link;
+             }
+     
+           /* <span class="roman">If we fail, see if we are at the mark.</span>  */
+           success = ioctl (socket, SIOCATMARK, &amp;atmark);
+           if (success &lt; 0)
+             perror ("ioctl");
+           if (atmark)
+             {
+               /* <span class="roman">At the mark; skipping past more ordinary data cannot help.</span>
+                  <span class="roman">So just wait a while.</span>  */
+               sleep (1);
+               continue;
+             }
+     
+           /* <span class="roman">Otherwise, read a bunch of ordinary data and save it.</span>
+              <span class="roman">This is guaranteed not to read past the mark</span>
+              <span class="roman">if it starts before the mark.</span>  */
+           success = read (socket, buf, BUF_SZ);
+           if (success &lt; 0)
+             perror ("read");
+     
+           /* <span class="roman">Save this data in the buffer list.</span>  */
+           {
+             struct buffer *link
+               = (struct buffer *) xmalloc (sizeof (struct buffer));
+             link-&gt;buf = buf;
+             link-&gt;size = success;
+     
+             /* <span class="roman">Add the new link to the end of the list.</span>  */
+             if (tail)
+               tail-&gt;next = link;
+             else
+               list = link;
+             tail = link;
+           }
+         }
+     }
+</pre>
+   </body></html>
+

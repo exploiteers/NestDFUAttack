@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Process Signal Mask - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Signal-Sets.html#Signal-Sets" title="Signal Sets">
+<link rel="next" href="Testing-for-Delivery.html#Testing-for-Delivery" title="Testing for Delivery">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Process-Signal-Mask"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Testing-for-Delivery.html#Testing-for-Delivery">Testing for Delivery</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signal-Sets.html#Signal-Sets">Signal Sets</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.3 Process Signal Mask</h4>
+
+<p><a name="index-signal-mask-2964"></a><a name="index-process-signal-mask-2965"></a>
+The collection of signals that are currently blocked is called the
+<dfn>signal mask</dfn>.  Each process has its own signal mask.  When you
+create a new process (see <a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>), it inherits its
+parent's mask.  You can block or unblock signals with total flexibility
+by modifying the signal mask.
+
+   <p>The prototype for the <code>sigprocmask</code> function is in <samp><span class="file">signal.h</span></samp>. 
+<a name="index-signal_002eh-2966"></a>
+Note that you must not use <code>sigprocmask</code> in multi-threaded processes,
+because each thread has its own signal mask and there is no single process
+signal mask. According to POSIX, the behavior of <code>sigprocmask</code> in a
+multi-threaded process is &ldquo;unspecified&rdquo;. 
+Instead, use <code>pthread_sigmask</code>.
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigprocmask</b> (<var>int how, const sigset_t *restrict set, sigset_t *restrict oldset</var>)<var><a name="index-sigprocmask-2967"></a></var><br>
+<blockquote><p>The <code>sigprocmask</code> function is used to examine or change the calling
+process's signal mask.  The <var>how</var> argument determines how the signal
+mask is changed, and must be one of the following values:
+
+          <dl>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<a name="index-SIG_005fBLOCK-2968"></a><dt><code>SIG_BLOCK</code><dd>Block the signals in <code>set</code>&mdash;add them to the existing mask.  In
+other words, the new mask is the union of the existing mask and
+<var>set</var>.
+
+          <!-- signal.h -->
+          <!-- POSIX.1 -->
+          <p><a name="index-SIG_005fUNBLOCK-2969"></a><br><dt><code>SIG_UNBLOCK</code><dd>Unblock the signals in <var>set</var>&mdash;remove them from the existing mask.
+
+          <!-- signal.h -->
+          <!-- POSIX.1 -->
+          <p><a name="index-SIG_005fSETMASK-2970"></a><br><dt><code>SIG_SETMASK</code><dd>Use <var>set</var> for the mask; ignore the previous value of the mask. 
+</dl>
+
+        <p>The last argument, <var>oldset</var>, is used to return information about the
+old process signal mask.  If you just want to change the mask without
+looking at it, pass a null pointer as the <var>oldset</var> argument. 
+Similarly, if you want to know what's in the mask without changing it,
+pass a null pointer for <var>set</var> (in this case the <var>how</var> argument
+is not significant).  The <var>oldset</var> argument is often used to
+remember the previous signal mask in order to restore it later.  (Since
+the signal mask is inherited over <code>fork</code> and <code>exec</code> calls, you
+can't predict what its contents are when your program starts running.)
+
+        <p>If invoking <code>sigprocmask</code> causes any pending signals to be
+unblocked, at least one of those signals is delivered to the process
+before <code>sigprocmask</code> returns.  The order in which pending signals
+are delivered is not specified, but you can control the order explicitly
+by making multiple <code>sigprocmask</code> calls to unblock various signals
+one at a time.
+
+        <p>The <code>sigprocmask</code> function returns <code>0</code> if successful, and <code>-1</code>
+to indicate an error.  The following <code>errno</code> error conditions are
+defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The <var>how</var> argument is invalid. 
+</dl>
+
+        <p>You can't block the <code>SIGKILL</code> and <code>SIGSTOP</code> signals, but
+if the signal set includes these, <code>sigprocmask</code> just ignores
+them instead of returning an error status.
+
+        <p>Remember, too, that blocking program error signals such as <code>SIGFPE</code>
+leads to undesirable results for signals generated by an actual program
+error (as opposed to signals sent with <code>raise</code> or <code>kill</code>). 
+This is because your program may be too broken to be able to continue
+executing to a point where the signal is unblocked again. 
+See <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

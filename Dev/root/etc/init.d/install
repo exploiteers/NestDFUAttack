@@ -1,0 +1,56 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to both check the status of an
+#      existing installation as well as to continue/resume, if
+#      necessary, a previous, in-progress installation.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+OSM=${NESTLABSSBINDIR}/osm
+
+GROUP="Unknown"
+STATE="Unknown"
+
+case "${1}" in
+
+'status')
+	${ECHO} "Active install: \c"
+
+	    if test -x ${OSM}; then
+	        GROUP=`${OSM} install --status group 2> ${NULL}`
+	    fi
+
+	${ECHO} "${GROUP}."
+
+	${ECHO} "Install status: \c"
+
+	    if test -x ${OSM}; then
+	        STATE=`${OSM} install --status state 2> ${NULL}`
+	    fi
+
+	${ECHO} "${STATE}."
+	;;
+	
+'resume')
+	${ECHO} "Resuming install: \c"
+
+	    if test -x ${OSM}; then
+	        ${OSM} install --continue 2> ${NULL}
+	    fi
+
+	${ECHO} ""
+	;;
+
+*)
+	echo "Usage: ${0} <status | resume>"
+	exit 1
+	;;
+
+esac

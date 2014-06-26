@@ -1,0 +1,82 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2011 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the secure shell
+#      daemon, sshd.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+NAME=sshd
+
+SSHD="${USRSBINDIR}/${NAME}"
+
+SSHCONFDIR=/media/system-config/ssh
+
+SSHKEYGEN=${USRBINDIR}/ssh-keygen
+SSHDSAKEY=${SSHCONFDIR}/ssh_host_dsa_key
+SSHRSAKEY=${SSHCONFDIR}/ssh_host_rsa_key
+
+CreateKeyIfAbsent() {
+    if [ ! -f "${2}" ]; then
+	test -x ${SSHKEYGEN} && ${SSHKEYGEN} -t "${1}" -f "${2}" -N ""
+    fi
+}
+
+CreateDirIfAbsent() {
+    if [ ! -d "${1}" ]; then   
+        ${MKDIR} -p "${1}"     
+    fi                                  
+}
+
+CreateKeysIfAbsent() {
+    CreateDirIfAbsent "${SSHCONFDIR}"
+    CreateKeyIfAbsent dsa "${SSHDSAKEY}"
+    CreateKeyIfAbsent rsa "${SSHRSAKEY}"
+}
+
+start_sshd() {
+	if test -x ${SSHD}; then
+		CreateKeysIfAbsent
+
+		${STARTDAEMON} -q -x ${SSHD} > ${NULL} 2>&1 -- `${CAT} ${CONFDIR}/${NAME}.options 2> ${NULL}`
+		${ECHO} " ${NAME}\c"
+	fi
+}
+
+stop_sshd() {
+	${STOPDAEMON} -q -x ${SSHD} > ${NULL} 2>&1
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "Secure shell daemon:\c"
+
+	if $CHECK sshd; then
+	    start_sshd
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	stop_sshd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

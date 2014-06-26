@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+<title>Unsupported Languages - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Languages.html#Languages" title="Languages">
+<link rel="prev" href="Supported-Languages.html#Supported-Languages" title="Supported Languages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Unsupported-Languages"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Supported-Languages.html#Supported-Languages">Supported Languages</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Languages.html#Languages">Languages</a>
+<hr>
+</div>
+
+<h3 class="section">13.5 Unsupported Languages</h3>
+
+<p><a name="index-unsupported-languages-749"></a><a name="index-minimal-language-750"></a>In addition to the other fully-supported programming languages,
+<span class="sc">gdb</span> also provides a pseudo-language, called <code>minimal</code>. 
+It does not represent a real programming language, but provides a set
+of capabilities close to what the C or assembly languages provide. 
+This should allow most simple operations to be performed while debugging
+an application that uses a language currently not supported by <span class="sc">gdb</span>.
+
+   <p>If the language is set to <code>auto</code>, <span class="sc">gdb</span> will automatically
+select this language if the current frame corresponds to an unsupported
+language.
+
+   </body></html>
+

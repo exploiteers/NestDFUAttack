@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Why Change Persona - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Process-Persona.html#Process-Persona" title="Process Persona">
+<link rel="next" href="How-Change-Persona.html#How-Change-Persona" title="How Change Persona">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Why-Change-Persona"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Persona.html#Process-Persona">Process Persona</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.3 Why Change the Persona of a Process?</h3>
+
+<p>The most obvious situation where it is necessary for a process to change
+its user and/or group IDs is the <code>login</code> program.  When
+<code>login</code> starts running, its user ID is <code>root</code>.  Its job is to
+start a shell whose user and group IDs are those of the user who is
+logging in.  (To accomplish this fully, <code>login</code> must set the real
+user and group IDs as well as its persona.  But this is a special case.)
+
+   <p>The more common case of changing persona is when an ordinary user
+program needs access to a resource that wouldn't ordinarily be
+accessible to the user actually running it.
+
+   <p>For example, you may have a file that is controlled by your program but
+that shouldn't be read or modified directly by other users, either
+because it implements some kind of locking protocol, or because you want
+to preserve the integrity or privacy of the information it contains. 
+This kind of restricted access can be implemented by having the program
+change its effective user or group ID to match that of the resource.
+
+   <p>Thus, imagine a game program that saves scores in a file.  The game
+program itself needs to be able to update this file no matter who is
+running it, but if users can write the file without going through the
+game, they can give themselves any scores they like.  Some people
+consider this undesirable, or even reprehensible.  It can be prevented
+by creating a new user ID and login name (say, <code>games</code>) to own the
+scores file, and make the file writable only by this user.  Then, when
+the game program wants to update this file, it can change its effective
+user ID to be that for <code>games</code>.  In effect, the program must
+adopt the persona of <code>games</code> so it can write the scores file.
+
+   </body></html>
+

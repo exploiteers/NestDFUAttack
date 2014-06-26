@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+<title>Open-time Flags - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Status-Flags.html#File-Status-Flags" title="File Status Flags">
+<link rel="prev" href="Access-Modes.html#Access-Modes" title="Access Modes">
+<link rel="next" href="Operating-Modes.html#Operating-Modes" title="Operating Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Open-time-Flags"></a>
+<a name="Open_002dtime-Flags"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Operating-Modes.html#Operating-Modes">Operating Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Access-Modes.html#Access-Modes">Access Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.14.2 Open-time Flags</h4>
+
+<p>The open-time flags specify options affecting how <code>open</code> will behave. 
+These options are not preserved once the file is open.  The exception to
+this is <code>O_NONBLOCK</code>, which is also an I/O operating mode and so it
+<em>is</em> saved.  See <a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>, for how to call
+<code>open</code>.
+
+   <p>There are two sorts of options specified by open-time flags.
+
+     <ul>
+<li><dfn>File name translation flags</dfn> affect how <code>open</code> looks up the
+file name to locate the file, and whether the file can be created. 
+<a name="index-file-name-translation-flags-1336"></a><a name="index-flags_002c-file-name-translation-1337"></a>
+<li><dfn>Open-time action flags</dfn> specify extra operations that <code>open</code> will
+perform on the file once it is open. 
+<a name="index-open_002dtime-action-flags-1338"></a><a name="index-flags_002c-open_002dtime-action-1339"></a></ul>
+
+   <p>Here are the file name translation flags.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_CREAT</b><var><a name="index-O_005fCREAT-1340"></a></var><br>
+<blockquote><p>If set, the file will be created if it doesn't already exist. 
+<!-- !!! mode arg, umask -->
+<a name="index-create-on-open-_0028file-status-flag_0029-1341"></a></p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_EXCL</b><var><a name="index-O_005fEXCL-1342"></a></var><br>
+<blockquote><p>If both <code>O_CREAT</code> and <code>O_EXCL</code> are set, then <code>open</code> fails
+if the specified file already exists.  This is guaranteed to never
+clobber an existing file. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_NONBLOCK</b><var><a name="index-O_005fNONBLOCK-1343"></a></var><br>
+<blockquote><p><a name="index-non_002dblocking-open-1344"></a>This prevents <code>open</code> from blocking for a &ldquo;long time&rdquo; to open the
+file.  This is only meaningful for some kinds of files, usually devices
+such as serial ports; when it is not meaningful, it is harmless and
+ignored.  Often opening a port to a modem blocks until the modem reports
+carrier detection; if <code>O_NONBLOCK</code> is specified, <code>open</code> will
+return immediately without a carrier.
+
+        <p>Note that the <code>O_NONBLOCK</code> flag is overloaded as both an I/O operating
+mode and a file name translation flag.  This means that specifying
+<code>O_NONBLOCK</code> in <code>open</code> also sets nonblocking I/O mode;
+see <a href="Operating-Modes.html#Operating-Modes">Operating Modes</a>.  To open the file without blocking but do normal
+I/O that blocks, you must call <code>open</code> with <code>O_NONBLOCK</code> set and
+then call <code>fcntl</code> to turn the bit off. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_NOCTTY</b><var><a name="index-O_005fNOCTTY-1345"></a></var><br>
+<blockquote><p>If the named file is a terminal device, don't make it the controlling
+terminal for the process.  See <a href="Job-Control.html#Job-Control">Job Control</a>, for information about
+what it means to be the controlling terminal.
+
+        <p>In the GNU system and 4.4 BSD, opening a file never makes it the
+controlling terminal and <code>O_NOCTTY</code> is zero.  However, other
+systems may use a nonzero value for <code>O_NOCTTY</code> and set the
+controlling terminal when you open a file that is a terminal device; so
+to be portable, use <code>O_NOCTTY</code> when it is important to avoid this. 
+<a name="index-controlling-terminal_002c-setting-1346"></a></p></blockquote></div>
+
+   <p>The following three file name translation flags exist only in the GNU system.
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_IGNORE_CTTY</b><var><a name="index-O_005fIGNORE_005fCTTY-1347"></a></var><br>
+<blockquote><p>Do not recognize the named file as the controlling terminal, even if it
+refers to the process's existing controlling terminal device.  Operations
+on the new file descriptor will never induce job control signals. 
+See <a href="Job-Control.html#Job-Control">Job Control</a>. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_NOLINK</b><var><a name="index-O_005fNOLINK-1348"></a></var><br>
+<blockquote><p>If the named file is a symbolic link, open the link itself instead of
+the file it refers to.  (<code>fstat</code> on the new file descriptor will
+return the information returned by <code>lstat</code> on the link's name.) 
+<a name="index-symbolic-link_002c-opening-1349"></a></p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_NOTRANS</b><var><a name="index-O_005fNOTRANS-1350"></a></var><br>
+<blockquote><p>If the named file is specially translated, do not invoke the translator. 
+Open the bare file the translator itself sees. 
+</p></blockquote></div>
+
+   <p>The open-time action flags tell <code>open</code> to do additional operations
+which are not really related to opening the file.  The reason to do them
+as part of <code>open</code> instead of in separate calls is that <code>open</code>
+can do them <i>atomically</i>.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_TRUNC</b><var><a name="index-O_005fTRUNC-1351"></a></var><br>
+<blockquote><p>Truncate the file to zero length.  This option is only useful for
+regular files, not special files such as directories or FIFOs.  POSIX.1
+requires that you open the file for writing to use <code>O_TRUNC</code>.  In
+BSD and GNU you must have permission to write the file to truncate it,
+but you need not open for write access.
+
+        <p>This is the only open-time action flag specified by POSIX.1.  There is
+no good reason for truncation to be done by <code>open</code>, instead of by
+calling <code>ftruncate</code> afterwards.  The <code>O_TRUNC</code> flag existed in
+Unix before <code>ftruncate</code> was invented, and is retained for backward
+compatibility. 
+</p></blockquote></div>
+
+   <p>The remaining operating modes are BSD extensions.  They exist only
+on some systems.  On other systems, these macros are not defined.
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_SHLOCK</b><var><a name="index-O_005fSHLOCK-1352"></a></var><br>
+<blockquote><p>Acquire a shared lock on the file, as with <code>flock</code>. 
+See <a href="File-Locks.html#File-Locks">File Locks</a>.
+
+        <p>If <code>O_CREAT</code> is specified, the locking is done atomically when
+creating the file.  You are guaranteed that no other process will get
+the lock on the new file first. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_EXLOCK</b><var><a name="index-O_005fEXLOCK-1353"></a></var><br>
+<blockquote><p>Acquire an exclusive lock on the file, as with <code>flock</code>. 
+See <a href="File-Locks.html#File-Locks">File Locks</a>.  This is atomic like <code>O_SHLOCK</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

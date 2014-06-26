@@ -1,0 +1,181 @@
+<html lang="en">
+<head>
+<title>Traditional Scheduling Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Traditional-Scheduling.html#Traditional-Scheduling" title="Traditional Scheduling">
+<link rel="prev" href="Traditional-Scheduling-Intro.html#Traditional-Scheduling-Intro" title="Traditional Scheduling Intro">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Traditional-Scheduling-Functions"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Traditional-Scheduling-Intro.html#Traditional-Scheduling-Intro">Traditional Scheduling Intro</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">22.3.4.2 Functions For Traditional Scheduling</h5>
+
+<p><a name="index-sys_002fresource_002eh-2754"></a>This section describes how you can read and set the nice value of a
+process.  All these symbols are declared in <samp><span class="file">sys/resource.h</span></samp>.
+
+   <p>The function and macro names are defined by POSIX, and refer to
+"priority," but the functions actually have to do with nice values, as
+the terms are used both in the manual and POSIX.
+
+   <p>The range of valid nice values depends on the kernel, but typically it
+runs from <code>-20</code> to <code>20</code>.  A lower nice value corresponds to
+higher priority for the process.  These constants describe the range of
+priority values:
+
+     <dl>
+<!-- sys/resource.h -->
+<!-- BSD -->
+<dt><code>PRIO_MIN</code><a name="index-PRIO_005fMIN-2755"></a><dd>The lowest valid nice value.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>PRIO_MAX</code><a name="index-PRIO_005fMAX-2756"></a><dd>The highest valid nice value. 
+</dl>
+
+<!-- sys/resource.h -->
+<!-- BSD,POSIX -->
+<div class="defun">
+&mdash; Function: int <b>getpriority</b> (<var>int class, int id</var>)<var><a name="index-getpriority-2757"></a></var><br>
+<blockquote><p>Return the nice value of a set of processes; <var>class</var> and <var>id</var>
+specify which ones (see below).  If the processes specified do not all
+have the same nice value, this returns the lowest value that any of them
+has.
+
+        <p>On success, the return value is <code>0</code>.  Otherwise, it is <code>-1</code>
+and <code>ERRNO</code> is set accordingly.  The <code>errno</code> values specific
+to this function are:
+
+          <dl>
+<dt><code>ESRCH</code><dd>The combination of <var>class</var> and <var>id</var> does not match any existing
+process.
+
+          <br><dt><code>EINVAL</code><dd>The value of <var>class</var> is not valid. 
+</dl>
+
+        <p>If the return value is <code>-1</code>, it could indicate failure, or it could
+be the nice value.  The only way to make certain is to set <code>errno =
+0</code> before calling <code>getpriority</code>, then use <code>errno != 0</code>
+afterward as the criterion for failure. 
+</p></blockquote></div>
+
+<!-- sys/resource.h -->
+<!-- BSD,POSIX -->
+<div class="defun">
+&mdash; Function: int <b>setpriority</b> (<var>int class, int id, int niceval</var>)<var><a name="index-setpriority-2758"></a></var><br>
+<blockquote><p>Set the nice value of a set of processes to <var>niceval</var>; <var>class</var>
+and <var>id</var> specify which ones (see below).
+
+        <p>The return value is <code>0</code> on success, and <code>-1</code> on
+failure.  The following <code>errno</code> error condition are possible for
+this function:
+
+          <dl>
+<dt><code>ESRCH</code><dd>The combination of <var>class</var> and <var>id</var> does not match any existing
+process.
+
+          <br><dt><code>EINVAL</code><dd>The value of <var>class</var> is not valid.
+
+          <br><dt><code>EPERM</code><dd>The call would set the nice value of a process which is owned by a different
+user than the calling process (i.e., the target process' real or effective
+uid does not match the calling process' effective uid) and the calling
+process does not have <code>CAP_SYS_NICE</code> permission.
+
+          <br><dt><code>EACCES</code><dd>The call would lower the process' nice value and the process does not have
+<code>CAP_SYS_NICE</code> permission. 
+</dl>
+
+        </blockquote></div>
+
+   <p>The arguments <var>class</var> and <var>id</var> together specify a set of
+processes in which you are interested.  These are the possible values of
+<var>class</var>:
+
+     <dl>
+<!-- sys/resource.h -->
+<!-- BSD -->
+<dt><code>PRIO_PROCESS</code><a name="index-PRIO_005fPROCESS-2759"></a><dd>One particular process.  The argument <var>id</var> is a process ID (pid).
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>PRIO_PGRP</code><a name="index-PRIO_005fPGRP-2760"></a><dd>All the processes in a particular process group.  The argument <var>id</var> is
+a process group ID (pgid).
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>PRIO_USER</code><a name="index-PRIO_005fUSER-2761"></a><dd>All the processes owned by a particular user (i.e., whose real uid
+indicates the user).  The argument <var>id</var> is a user ID (uid). 
+</dl>
+
+   <p>If the argument <var>id</var> is 0, it stands for the calling process, its
+process group, or its owner (real uid), according to <var>class</var>.
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>nice</b> (<var>int increment</var>)<var><a name="index-nice-2762"></a></var><br>
+<blockquote><p>Increment the nice value of the calling process by <var>increment</var>. 
+The return value is the new nice value on success, and <code>-1</code> on
+failure.  In the case of failure, <code>errno</code> will be set to the
+same values as for <code>setpriority</code>.
+
+        <p>Here is an equivalent definition of <code>nice</code>:
+
+     <pre class="smallexample">          int
+          nice (int increment)
+          {
+            int result, old = getpriority (PRIO_PROCESS, 0);
+            result = setpriority (PRIO_PROCESS, 0, old + increment);
+            if (result != -1)
+                return old + increment;
+            else
+                return -1;
+          }
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

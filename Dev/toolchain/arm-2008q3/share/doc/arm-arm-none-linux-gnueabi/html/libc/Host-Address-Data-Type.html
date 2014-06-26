@@ -1,0 +1,155 @@
+<html lang="en">
+<head>
+<title>Host Address Data Type - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Host-Addresses.html#Host-Addresses" title="Host Addresses">
+<link rel="prev" href="Abstract-Host-Addresses.html#Abstract-Host-Addresses" title="Abstract Host Addresses">
+<link rel="next" href="Host-Address-Functions.html#Host-Address-Functions" title="Host Address Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Host-Address-Data-Type"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Host-Address-Functions.html#Host-Address-Functions">Host Address Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Abstract-Host-Addresses.html#Abstract-Host-Addresses">Abstract Host Addresses</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">16.6.2.2 Host Address Data Type</h5>
+
+<p>IPv4 Internet host addresses are represented in some contexts as integers
+(type <code>uint32_t</code>).  In other contexts, the integer is
+packaged inside a structure of type <code>struct in_addr</code>.  It would
+be better if the usage were made consistent, but it is not hard to extract
+the integer from the structure or put the integer into a structure.
+
+   <p>You will find older code that uses <code>unsigned long int</code> for
+IPv4 Internet host addresses instead of <code>uint32_t</code> or <code>struct
+in_addr</code>.  Historically <code>unsigned long int</code> was a 32-bit number but
+with 64-bit machines this has changed.  Using <code>unsigned long int</code>
+might break the code if it is used on machines where this type doesn't
+have 32 bits.  <code>uint32_t</code> is specified by Unix98 and guaranteed to have
+32 bits.
+
+   <p>IPv6 Internet host addresses have 128 bits and are packaged inside a
+structure of type <code>struct in6_addr</code>.
+
+   <p>The following basic definitions for Internet addresses are declared in
+the header file <samp><span class="file">netinet/in.h</span></samp>:
+<a name="index-netinet_002fin_002eh-1692"></a>
+<!-- netinet/in.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct in_addr</b><var><a name="index-struct-in_005faddr-1693"></a></var><br>
+<blockquote><p>This data type is used in certain contexts to contain an IPv4 Internet
+host address.  It has just one field, named <code>s_addr</code>, which records
+the host address number as an <code>uint32_t</code>. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: uint32_t <b>INADDR_LOOPBACK</b><var><a name="index-INADDR_005fLOOPBACK-1694"></a></var><br>
+<blockquote><p>You can use this constant to stand for &ldquo;the address of this machine,&rdquo;
+instead of finding its actual address.  It is the IPv4 Internet address
+&lsquo;<samp><span class="samp">127.0.0.1</span></samp>&rsquo;, which is usually called &lsquo;<samp><span class="samp">localhost</span></samp>&rsquo;.  This
+special constant saves you the trouble of looking up the address of your
+own machine.  Also, the system usually implements <code>INADDR_LOOPBACK</code>
+specially, avoiding any network traffic for the case of one machine
+talking to itself. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: uint32_t <b>INADDR_ANY</b><var><a name="index-INADDR_005fANY-1695"></a></var><br>
+<blockquote><p>You can use this constant to stand for &ldquo;any incoming address&rdquo; when
+binding to an address.  See <a href="Setting-Address.html#Setting-Address">Setting Address</a>.  This is the usual
+address to give in the <code>sin_addr</code> member of <code>struct&nbsp;sockaddr_in</code><!-- /@w --> when you want to accept Internet connections. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: uint32_t <b>INADDR_BROADCAST</b><var><a name="index-INADDR_005fBROADCAST-1696"></a></var><br>
+<blockquote><p>This constant is the address you use to send a broadcast message. 
+<!-- !!! broadcast needs further documented -->
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: uint32_t <b>INADDR_NONE</b><var><a name="index-INADDR_005fNONE-1697"></a></var><br>
+<blockquote><p>This constant is returned by some functions to indicate an error. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Data Type: <b>struct in6_addr</b><var><a name="index-struct-in6_005faddr-1698"></a></var><br>
+<blockquote><p>This data type is used to store an IPv6 address.  It stores 128 bits of
+data, which can be accessed (via a union) in a variety of ways. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Constant: struct in6_addr <b>in6addr_loopback</b><var><a name="index-in6addr_005floopback-1699"></a></var><br>
+<blockquote><p>This constant is the IPv6 address &lsquo;<samp><span class="samp">::1</span></samp>&rsquo;, the loopback address.  See
+above for a description of what this means.  The macro
+<code>IN6ADDR_LOOPBACK_INIT</code> is provided to allow you to initialize your
+own variables to this value. 
+</p></blockquote></div>
+
+<!-- netinet/in.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Constant: struct in6_addr <b>in6addr_any</b><var><a name="index-in6addr_005fany-1700"></a></var><br>
+<blockquote><p>This constant is the IPv6 address &lsquo;<samp><span class="samp">::</span></samp>&rsquo;, the unspecified address.  See
+above for a description of what this means.  The macro
+<code>IN6ADDR_ANY_INIT</code> is provided to allow you to initialize your
+own variables to this value. 
+</p></blockquote></div>
+
+   </body></html>
+

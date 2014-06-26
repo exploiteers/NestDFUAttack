@@ -1,0 +1,13 @@
+#
+#    Copyright (c) 2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the control and configuration file for the
+#      daemon-monitoring daemon, monit, for the Nest Heartbeat
+#      Software / Watchdog process, nlheartbeat.
+#
+
+check process nlheartbeatd with pidfile "/var/run/nlheartbeatd.pid"
+  start program = "/etc/init.d/heartbeat start"
+  stop  program = "/etc/init.d/heartbeat stop"

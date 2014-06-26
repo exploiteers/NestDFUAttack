@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+<title>String Length - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="String_002fArray-Conventions.html#String_002fArray-Conventions" title="String/Array Conventions">
+<link rel="next" href="Copying-and-Concatenation.html#Copying-and-Concatenation" title="Copying and Concatenation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String-Length"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="String_002fArray-Conventions.html#String_002fArray-Conventions">String/Array Conventions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.3 String Length</h3>
+
+<p>You can get the length of a string using the <code>strlen</code> function. 
+This function is declared in the header file <samp><span class="file">string.h</span></samp>. 
+<a name="index-string_002eh-472"></a>
+<!-- string.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: size_t <b>strlen</b> (<var>const char *s</var>)<var><a name="index-strlen-473"></a></var><br>
+<blockquote><p>The <code>strlen</code> function returns the length of the null-terminated
+string <var>s</var> in bytes.  (In other words, it returns the offset of the
+terminating null character within the array.)
+
+        <p>For example,
+     <pre class="smallexample">          strlen ("hello, world")
+              &rArr; 12
+</pre>
+        <p>When applied to a character array, the <code>strlen</code> function returns
+the length of the string stored there, not its allocated size.  You can
+get the allocated size of the character array that holds a string using
+the <code>sizeof</code> operator:
+
+     <pre class="smallexample">          char string[32] = "hello, world";
+          sizeof (string)
+              &rArr; 32
+          strlen (string)
+              &rArr; 12
+</pre>
+        <p>But beware, this will not work unless <var>string</var> is the character
+array itself, not a pointer to it.  For example:
+
+     <pre class="smallexample">          char string[32] = "hello, world";
+          char *ptr = string;
+          sizeof (string)
+              &rArr; 32
+          sizeof (ptr)
+              &rArr; 4  /* <span class="roman">(on a machine with 4 byte pointers)</span> */
+</pre>
+        <p>This is an easy mistake to make when you are working with functions that
+take string arguments; those arguments are always pointers, not arrays.
+
+        <p>It must also be noted that for multibyte encoded strings the return
+value does not have to correspond to the number of characters in the
+string.  To get this value the string can be converted to wide
+characters and <code>wcslen</code> can be used or something like the following
+code can be used:
+
+     <pre class="smallexample">          /* <span class="roman">The input is in </span><code>string</code><span class="roman">.</span>
+             <span class="roman">The length is expected in </span><code>n</code><span class="roman">.</span>  */
+          {
+            mbstate_t t;
+            char *scopy = string;
+            /* In initial state.  */
+            memset (&amp;t, '\0', sizeof (t));
+            /* Determine number of characters.  */
+            n = mbsrtowcs (NULL, &amp;scopy, strlen (scopy), &amp;t);
+          }
+</pre>
+        <p>This is cumbersome to do so if the number of characters (as opposed to
+bytes) is needed often it is better to work with wide characters. 
+</p></blockquote></div>
+
+   <p>The wide character equivalent is declared in <samp><span class="file">wchar.h</span></samp>.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>wcslen</b> (<var>const wchar_t *ws</var>)<var><a name="index-wcslen-474"></a></var><br>
+<blockquote><p>The <code>wcslen</code> function is the wide character equivalent to
+<code>strlen</code>.  The return value is the number of wide characters in the
+wide character string pointed to by <var>ws</var> (this is also the offset of
+the terminating null wide character of <var>ws</var>).
+
+        <p>Since there are no multi wide character sequences making up one
+character the return value is not only the offset in the array, it is
+also the number of wide characters.
+
+        <p>This function was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>strnlen</b> (<var>const char *s, size_t maxlen</var>)<var><a name="index-strnlen-475"></a></var><br>
+<blockquote><p>The <code>strnlen</code> function returns the length of the string <var>s</var> in
+bytes if this length is smaller than <var>maxlen</var> bytes.  Otherwise it
+returns <var>maxlen</var>.  Therefore this function is equivalent to
+<code>(strlen (</code><var>s</var><code>) &lt; n ? strlen (</code><var>s</var><code>) : </code><var>maxlen</var><code>)</code> but it
+is more efficient and works even if the string <var>s</var> is not
+null-terminated.
+
+     <pre class="smallexample">          char string[32] = "hello, world";
+          strnlen (string, 32)
+              &rArr; 12
+          strnlen (string, 5)
+              &rArr; 5
+</pre>
+        <p>This function is a GNU extension and is declared in <samp><span class="file">string.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>wcsnlen</b> (<var>const wchar_t *ws, size_t maxlen</var>)<var><a name="index-wcsnlen-476"></a></var><br>
+<blockquote><p><code>wcsnlen</code> is the wide character equivalent to <code>strnlen</code>.  The
+<var>maxlen</var> parameter specifies the maximum number of wide characters.
+
+        <p>This function is a GNU extension and is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

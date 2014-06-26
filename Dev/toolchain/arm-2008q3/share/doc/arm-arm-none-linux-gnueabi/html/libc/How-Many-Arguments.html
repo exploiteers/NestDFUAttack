@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>How Many Arguments - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="How-Variadic.html#How-Variadic" title="How Variadic">
+<link rel="prev" href="Receiving-Arguments.html#Receiving-Arguments" title="Receiving Arguments">
+<link rel="next" href="Calling-Variadics.html#Calling-Variadics" title="Calling Variadics">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="How-Many-Arguments"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Calling-Variadics.html#Calling-Variadics">Calling Variadics</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Receiving-Arguments.html#Receiving-Arguments">Receiving Arguments</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="How-Variadic.html#How-Variadic">How Variadic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.2.2.3 How Many Arguments Were Supplied</h5>
+
+<p><a name="index-number-of-arguments-passed-3717"></a><a name="index-how-many-arguments-3718"></a><a name="index-arguments_002c-how-many-3719"></a>
+There is no general way for a function to determine the number and type
+of the optional arguments it was called with.  So whoever designs the
+function typically designs a convention for the caller to specify the number
+and type of arguments.  It is up to you to define an appropriate calling
+convention for each variadic function, and write all calls accordingly.
+
+   <p>One kind of calling convention is to pass the number of optional
+arguments as one of the fixed arguments.  This convention works provided
+all of the optional arguments are of the same type.
+
+   <p>A similar alternative is to have one of the required arguments be a bit
+mask, with a bit for each possible purpose for which an optional
+argument might be supplied.  You would test the bits in a predefined
+sequence; if the bit is set, fetch the value of the next argument,
+otherwise use a default value.
+
+   <p>A required argument can be used as a pattern to specify both the number
+and types of the optional arguments.  The format string argument to
+<code>printf</code> is one example of this (see <a href="Formatted-Output-Functions.html#Formatted-Output-Functions">Formatted Output Functions</a>).
+
+   <p>Another possibility is to pass an &ldquo;end marker&rdquo; value as the last
+optional argument.  For example, for a function that manipulates an
+arbitrary number of pointer arguments, a null pointer might indicate the
+end of the argument list.  (This assumes that a null pointer isn't
+otherwise meaningful to the function.)  The <code>execl</code> function works
+in just this way; see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>.
+
+   </body></html>
+

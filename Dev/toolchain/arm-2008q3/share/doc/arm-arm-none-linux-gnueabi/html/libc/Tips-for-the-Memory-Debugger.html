@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Tips for the Memory Debugger - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Allocation-Debugging.html#Allocation-Debugging" title="Allocation Debugging">
+<link rel="prev" href="Using-the-Memory-Debugger.html#Using-the-Memory-Debugger" title="Using the Memory Debugger">
+<link rel="next" href="Interpreting-the-traces.html#Interpreting-the-traces" title="Interpreting the traces">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Tips-for-the-Memory-Debugger"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Interpreting-the-traces.html#Interpreting-the-traces">Interpreting the traces</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-the-Memory-Debugger.html#Using-the-Memory-Debugger">Using the Memory Debugger</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.3.3 Some more or less clever ideas</h5>
+
+<p>You know the situation.  The program is prepared for debugging and in
+all debugging sessions it runs well.  But once it is started without
+debugging the error shows up.  A typical example is a memory leak that
+becomes visible only when we turn off the debugging.  If you foresee
+such situations you can still win.  Simply use something equivalent to
+the following little program:
+
+<pre class="example">     #include &lt;mcheck.h&gt;
+     #include &lt;signal.h&gt;
+     
+     static void
+     enable (int sig)
+     {
+       mtrace ();
+       signal (SIGUSR1, enable);
+     }
+     
+     static void
+     disable (int sig)
+     {
+       muntrace ();
+       signal (SIGUSR2, disable);
+     }
+     
+     int
+     main (int argc, char *argv[])
+     {
+       ...
+     
+       signal (SIGUSR1, enable);
+       signal (SIGUSR2, disable);
+     
+       ...
+     }
+</pre>
+   <p>I.e., the user can start the memory debugger any time s/he wants if the
+program was started with <code>MALLOC_TRACE</code> set in the environment. 
+The output will of course not show the allocations which happened before
+the first signal but if there is a memory leak this will show up
+nevertheless.
+
+   </body></html>
+

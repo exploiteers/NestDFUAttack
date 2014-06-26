@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>FP Comparison Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="prev" href="FP-Bit-Twiddling.html#FP-Bit-Twiddling" title="FP Bit Twiddling">
+<link rel="next" href="Misc-FP-Arithmetic.html#Misc-FP-Arithmetic" title="Misc FP Arithmetic">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="FP-Comparison-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Misc-FP-Arithmetic.html#Misc-FP-Arithmetic">Misc FP Arithmetic</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="FP-Bit-Twiddling.html#FP-Bit-Twiddling">FP Bit Twiddling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.6 Floating-Point Comparison Functions</h4>
+
+<p><a name="index-unordered-comparison-2495"></a>
+The standard C comparison operators provoke exceptions when one or other
+of the operands is NaN.  For example,
+
+<pre class="smallexample">     int v = a &lt; 1.0;
+</pre>
+   <p class="noindent">will raise an exception if <var>a</var> is NaN.  (This does <em>not</em>
+happen with <code>==</code> and <code>!=</code>; those merely return false and true,
+respectively, when NaN is examined.)  Frequently this exception is
+undesirable.  ISO&nbsp;C99<!-- /@w --> therefore defines comparison functions that
+do not raise exceptions when NaN is examined.  All of the functions are
+implemented as macros which allow their arguments to be of any
+floating-point type.  The macros are guaranteed to evaluate their
+arguments only once.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isgreater</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-isgreater-2496"></a></var><br>
+<blockquote><p>This macro determines whether the argument <var>x</var> is greater than
+<var>y</var>.  It is equivalent to <code>(</code><var>x</var><code>) &gt; (</code><var>y</var><code>)</code>, but no
+exception is raised if <var>x</var> or <var>y</var> are NaN. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isgreaterequal</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-isgreaterequal-2497"></a></var><br>
+<blockquote><p>This macro determines whether the argument <var>x</var> is greater than or
+equal to <var>y</var>.  It is equivalent to <code>(</code><var>x</var><code>) &gt;= (</code><var>y</var><code>)</code>, but no
+exception is raised if <var>x</var> or <var>y</var> are NaN. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isless</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-isless-2498"></a></var><br>
+<blockquote><p>This macro determines whether the argument <var>x</var> is less than <var>y</var>. 
+It is equivalent to <code>(</code><var>x</var><code>) &lt; (</code><var>y</var><code>)</code>, but no exception is
+raised if <var>x</var> or <var>y</var> are NaN. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>islessequal</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-islessequal-2499"></a></var><br>
+<blockquote><p>This macro determines whether the argument <var>x</var> is less than or equal
+to <var>y</var>.  It is equivalent to <code>(</code><var>x</var><code>) &lt;= (</code><var>y</var><code>)</code>, but no
+exception is raised if <var>x</var> or <var>y</var> are NaN. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>islessgreater</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-islessgreater-2500"></a></var><br>
+<blockquote><p>This macro determines whether the argument <var>x</var> is less or greater
+than <var>y</var>.  It is equivalent to <code>(</code><var>x</var><code>) &lt; (</code><var>y</var><code>) ||
+(</code><var>x</var><code>) &gt; (</code><var>y</var><code>)</code> (although it only evaluates <var>x</var> and <var>y</var>
+once), but no exception is raised if <var>x</var> or <var>y</var> are NaN.
+
+        <p>This macro is not equivalent to <var>x</var><code> != </code><var>y</var>, because that
+expression is true if <var>x</var> or <var>y</var> are NaN. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>isunordered</b> (<em>real-floating</em><var> x, </var><em>real-floating</em><var> y</var>)<var><a name="index-isunordered-2501"></a></var><br>
+<blockquote><p>This macro determines whether its arguments are unordered.  In other
+words, it is true if <var>x</var> or <var>y</var> are NaN, and false otherwise. 
+</p></blockquote></div>
+
+   <p>Not all machines provide hardware support for these operations.  On
+machines that don't, the macros can be very slow.  Therefore, you should
+not use these functions when NaN is not a concern.
+
+   <p><strong>Note:</strong> There are no macros <code>isequal</code> or <code>isunequal</code>. 
+They are unnecessary, because the <code>==</code> and <code>!=</code> operators do
+<em>not</em> throw an exception if one or both of the operands are NaN.
+
+   </body></html>
+

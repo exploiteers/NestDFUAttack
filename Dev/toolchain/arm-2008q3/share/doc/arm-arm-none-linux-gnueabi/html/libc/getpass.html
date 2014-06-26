@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>getpass - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Cryptographic-Functions.html#Cryptographic-Functions" title="Cryptographic Functions">
+<link rel="prev" href="Legal-Problems.html#Legal-Problems" title="Legal Problems">
+<link rel="next" href="crypt.html#crypt" title="crypt">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="getpass"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="crypt.html#crypt">crypt</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Legal-Problems.html#Legal-Problems">Legal Problems</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Cryptographic-Functions.html#Cryptographic-Functions">Cryptographic Functions</a>
+<hr>
+</div>
+
+<h3 class="section">32.2 Reading Passwords</h3>
+
+<p>When reading in a password, it is desirable to avoid displaying it on
+the screen, to help keep it secret.  The following function handles this
+in a convenient way.
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>getpass</b> (<var>const char *prompt</var>)<var><a name="index-getpass-3675"></a></var><br>
+<blockquote>
+        <p><code>getpass</code> outputs <var>prompt</var>, then reads a string in from the
+terminal without echoing it.  It tries to connect to the real terminal,
+<samp><span class="file">/dev/tty</span></samp>, if possible, to encourage users not to put plaintext
+passwords in files; otherwise, it uses <code>stdin</code> and <code>stderr</code>. 
+<code>getpass</code> also disables the INTR, QUIT, and SUSP characters on the
+terminal using the <code>ISIG</code> terminal attribute (see <a href="Local-Modes.html#Local-Modes">Local Modes</a>). 
+The terminal is flushed before and after <code>getpass</code>, so that
+characters of a mistyped password are not accidentally visible.
+
+        <p>In other C libraries, <code>getpass</code> may only return the first
+<code>PASS_MAX</code> bytes of a password.  The GNU C library has no limit, so
+<code>PASS_MAX</code> is undefined.
+
+        <p>The prototype for this function is in <samp><span class="file">unistd.h</span></samp>.  <code>PASS_MAX</code>
+would be defined in <samp><span class="file">limits.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>This precise set of operations may not suit all possible situations.  In
+this case, it is recommended that users write their own <code>getpass</code>
+substitute.  For instance, a very simple substitute is as follows:
+
+<pre class="smallexample">     #include &lt;termios.h&gt;
+     #include &lt;stdio.h&gt;
+     
+     ssize_t
+     my_getpass (char **lineptr, size_t *n, FILE *stream)
+     {
+       struct termios old, new;
+       int nread;
+     
+       /* <span class="roman">Turn echoing off and fail if we can't.</span> */
+       if (tcgetattr (fileno (stream), &amp;old) != 0)
+         return -1;
+       new = old;
+       new.c_lflag &amp;= ~ECHO;
+       if (tcsetattr (fileno (stream), TCSAFLUSH, &amp;new) != 0)
+         return -1;
+     
+       /* <span class="roman">Read the password.</span> */
+       nread = getline (lineptr, n, stream);
+     
+       /* <span class="roman">Restore terminal.</span> */
+       (void) tcsetattr (fileno (stream), TCSAFLUSH, &amp;old);
+     
+       return nread;
+     }
+</pre>
+   <p>The substitute takes the same parameters as <code>getline</code>
+(see <a href="Line-Input.html#Line-Input">Line Input</a>); the user must print any prompt desired.
+
+   </body></html>
+

@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+<title>Locales - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Character-Set-Handling.html#Character-Set-Handling" title="Character Set Handling">
+<link rel="next" href="Message-Translation.html#Message-Translation" title="Message Translation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Locales"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Message-Translation.html#Message-Translation">Message Translation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% The country and language can affect the behavior of library functions -->
+<h2 class="chapter">7 Locales and Internationalization</h2>
+
+<p>Different countries and cultures have varying conventions for how to
+communicate.  These conventions range from very simple ones, such as the
+format for representing dates and times, to very complex ones, such as
+the language spoken.
+
+   <p><a name="index-internationalization-686"></a><a name="index-locales-687"></a><dfn>Internationalization</dfn> of software means programming it to be able
+to adapt to the user's favorite conventions.  In ISO&nbsp;C<!-- /@w -->,
+internationalization works by means of <dfn>locales</dfn>.  Each locale
+specifies a collection of conventions, one convention for each purpose. 
+The user chooses a set of conventions by specifying a locale (via
+environment variables).
+
+   <p>All programs inherit the chosen locale as part of their environment. 
+Provided the programs are written to obey the choice of locale, they
+will follow the conventions preferred by the user.
+
+<ul class="menu">
+<li><a accesskey="1" href="Effects-of-Locale.html#Effects-of-Locale">Effects of Locale</a>:            Actions affected by the choice of
+                                 locale. 
+<li><a accesskey="2" href="Choosing-Locale.html#Choosing-Locale">Choosing Locale</a>:              How the user specifies a locale. 
+<li><a accesskey="3" href="Locale-Categories.html#Locale-Categories">Locale Categories</a>:            Different purposes for which you can
+                                 select a locale. 
+<li><a accesskey="4" href="Setting-the-Locale.html#Setting-the-Locale">Setting the Locale</a>:           How a program specifies the locale
+                                 with library functions. 
+<li><a accesskey="5" href="Standard-Locales.html#Standard-Locales">Standard Locales</a>:             Locale names available on all systems. 
+<li><a accesskey="6" href="Locale-Information.html#Locale-Information">Locale Information</a>:           How to access the information for the locale. 
+<li><a accesskey="7" href="Formatting-Numbers.html#Formatting-Numbers">Formatting Numbers</a>:           A dedicated function to format numbers. 
+<li><a accesskey="8" href="Yes_002dor_002dNo-Questions.html#Yes_002dor_002dNo-Questions">Yes-or-No Questions</a>:          Check a Response against the locale. 
+</ul>
+
+   </body></html>
+

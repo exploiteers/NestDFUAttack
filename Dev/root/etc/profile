@@ -1,0 +1,56 @@
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the default system-wide set-up file for all Bourne- and
+#      Korn-compatible shells.
+#
+
+umask 022
+
+PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH
+
+#
+# Interactive setup
+#
+
+#
+# Set up the text for the shell prompt.
+#
+
+# Bash does not have nice little canned macros like tcsh does for
+# changing the appearance/color of the prompt, so we create our own
+# for clarity of implementation.
+#
+# Other Bourne- and Korn-compatiable shells lack Bash's escape
+# sequences for things like host name, user name, current working
+# directory, etc.
+
+if [ -n "${BASH}" ]; then
+   B='\[\033[1m\]'
+   b='\[\033[m\]'
+   PROMPTHOST=\h
+   PROMPTUSER=\u
+else
+   PROMPTHOST=`hostname`
+   PROMPTUSER="${USER}"
+fi
+
+# Set the prompt character depending on the credentials of the user.
+
+if [ -O /bin/su ] || [ "`id -u`" -eq 0 ]; then
+   PROMPTCHAR="#"
+else
+   PROMPTCHAR="$"
+fi
+
+# Set the prompt.
+
+PS1="${B}${PROMPTUSER}@${PROMPTHOST}${PROMPTCHAR} ${b}"
+export PS1
+
+# Purge the prompt set-up variables that are no longer needed.
+
+unset B b PROMPTHOST PROMPTUSER PROMPTCHAR

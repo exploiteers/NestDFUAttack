@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Interrupted Primitives - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Handling.html#Signal-Handling" title="Signal Handling">
+<link rel="prev" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link rel="next" href="Generating-Signals.html#Generating-Signals" title="Generating Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Interrupted-Primitives"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Handling.html#Signal-Handling">Signal Handling</a>
+<hr>
+</div>
+
+<h3 class="section">24.5 Primitives Interrupted by Signals</h3>
+
+<p>A signal can arrive and be handled while an I/O primitive such as
+<code>open</code> or <code>read</code> is waiting for an I/O device.  If the signal
+handler returns, the system faces the question: what should happen next?
+
+   <p>POSIX specifies one approach: make the primitive fail right away.  The
+error code for this kind of failure is <code>EINTR</code>.  This is flexible,
+but usually inconvenient.  Typically, POSIX applications that use signal
+handlers must check for <code>EINTR</code> after each library function that
+can return it, in order to try the call again.  Often programmers forget
+to check, which is a common source of error.
+
+   <p>The GNU library provides a convenient way to retry a call after a
+temporary failure, with the macro <code>TEMP_FAILURE_RETRY</code>:
+
+<!-- unistd.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>TEMP_FAILURE_RETRY</b> (<var>expression</var>)<var><a name="index-TEMP_005fFAILURE_005fRETRY-2939"></a></var><br>
+<blockquote><p>This macro evaluates <var>expression</var> once, and examines its value as
+type <code>long int</code>.  If the value equals <code>-1</code>, that indicates a
+failure and <code>errno</code> should be set to show what kind of failure. 
+If it fails and reports error code <code>EINTR</code>,
+<code>TEMP_FAILURE_RETRY</code> evaluates it again, and over and over until
+the result is not a temporary failure.
+
+        <p>The value returned by <code>TEMP_FAILURE_RETRY</code> is whatever value
+<var>expression</var> produced. 
+</p></blockquote></div>
+
+   <p>BSD avoids <code>EINTR</code> entirely and provides a more convenient
+approach: to restart the interrupted primitive, instead of making it
+fail.  If you choose this approach, you need not be concerned with
+<code>EINTR</code>.
+
+   <p>You can choose either approach with the GNU library.  If you use
+<code>sigaction</code> to establish a signal handler, you can specify how that
+handler should behave.  If you specify the <code>SA_RESTART</code> flag,
+return from that handler will resume a primitive; otherwise, return from
+that handler will cause <code>EINTR</code>.  See <a href="Flags-for-Sigaction.html#Flags-for-Sigaction">Flags for Sigaction</a>.
+
+   <p>Another way to specify the choice is with the <code>siginterrupt</code>
+function.  See <a href="BSD-Handler.html#BSD-Handler">BSD Handler</a>.
+
+<!-- !!! not true now about _BSD_SOURCE -->
+   <p>When you don't specify with <code>sigaction</code> or <code>siginterrupt</code> what
+a particular handler should do, it uses a default choice.  The default
+choice in the GNU library depends on the feature test macros you have
+defined.  If you define <code>_BSD_SOURCE</code> or <code>_GNU_SOURCE</code> before
+calling <code>signal</code>, the default is to resume primitives; otherwise,
+the default is to make them fail with <code>EINTR</code>.  (The library
+contains alternate versions of the <code>signal</code> function, and the
+feature test macros determine which one you really call.)  See <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>. 
+<a name="index-EINTR_002c-and-restarting-interrupted-primitives-2940"></a><a name="index-restarting-interrupted-primitives-2941"></a><a name="index-interrupting-primitives-2942"></a><a name="index-primitives_002c-interrupting-2943"></a><!-- !!! want to have @cindex system calls @i{see} primitives [no page #] -->
+
+   <p>The description of each primitive affected by this issue
+lists <code>EINTR</code> among the error codes it can return.
+
+   <p>There is one situation where resumption never happens no matter which
+choice you make: when a data-transfer function such as <code>read</code> or
+<code>write</code> is interrupted by a signal after transferring part of the
+data.  In this case, the function returns the number of bytes already
+transferred, indicating partial success.
+
+   <p>This might at first appear to cause unreliable behavior on
+record-oriented devices (including datagram sockets; see <a href="Datagrams.html#Datagrams">Datagrams</a>),
+where splitting one <code>read</code> or <code>write</code> into two would read or
+write two records.  Actually, there is no problem, because interruption
+after a partial transfer cannot happen on such devices; they always
+transfer an entire record in one burst, with no waiting once data
+transfer has started.
+
+   </body></html>
+

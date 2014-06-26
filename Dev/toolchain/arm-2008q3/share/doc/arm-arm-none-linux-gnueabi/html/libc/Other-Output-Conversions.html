@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+<title>Other Output Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions" title="Floating-Point Conversions">
+<link rel="next" href="Formatted-Output-Functions.html#Formatted-Output-Functions" title="Formatted Output Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Other-Output-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatted-Output-Functions.html#Formatted-Output-Functions">Formatted Output Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions">Floating-Point Conversions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.6 Other Output Conversions</h4>
+
+<p>This section describes miscellaneous conversions for <code>printf</code>.
+
+   <p>The &lsquo;<samp><span class="samp">%c</span></samp>&rsquo; conversion prints a single character.  In case there is no
+&lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier the <code>int</code> argument is first converted to an
+<code>unsigned char</code>.  Then, if used in a wide stream function, the
+character is converted into the corresponding wide character.  The
+&lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag can be used to specify left-justification in the field,
+but no other flags are defined, and no precision or type modifier can be
+given.  For example:
+
+<pre class="smallexample">     printf ("%c%c%c%c%c", 'h', 'e', 'l', 'l', 'o');
+</pre>
+   <p class="noindent">prints &lsquo;<samp><span class="samp">hello</span></samp>&rsquo;.
+
+   <p>If there is a &lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier present the argument is expected to be
+of type <code>wint_t</code>.  If used in a multibyte function the wide
+character is converted into a multibyte character before being added to
+the output.  In this case more than one output byte can be produced.
+
+   <p>The &lsquo;<samp><span class="samp">%s</span></samp>&rsquo; conversion prints a string.  If no &lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier is
+present the corresponding argument must be of type <code>char *</code> (or
+<code>const char *</code>).  If used in a wide stream function the string is
+first converted in a wide character string.  A precision can be
+specified to indicate the maximum number of characters to write;
+otherwise characters in the string up to but not including the
+terminating null character are written to the output stream.  The
+&lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag can be used to specify left-justification in the field,
+but no other flags or type modifiers are defined for this conversion. 
+For example:
+
+<pre class="smallexample">     printf ("%3s%-6s", "no", "where");
+</pre>
+   <p class="noindent">prints &lsquo;<samp><span class="samp"> nowhere </span></samp>&rsquo;.
+
+   <p>If there is a &lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier present the argument is expected to be of type <code>wchar_t</code> (or <code>const wchar_t *</code>).
+
+   <p>If you accidentally pass a null pointer as the argument for a &lsquo;<samp><span class="samp">%s</span></samp>&rsquo;
+conversion, the GNU library prints it as &lsquo;<samp><span class="samp">(null)</span></samp>&rsquo;.  We think this
+is more useful than crashing.  But it's not good practice to pass a null
+argument intentionally.
+
+   <p>The &lsquo;<samp><span class="samp">%m</span></samp>&rsquo; conversion prints the string corresponding to the error
+code in <code>errno</code>.  See <a href="Error-Messages.html#Error-Messages">Error Messages</a>.  Thus:
+
+<pre class="smallexample">     fprintf (stderr, "can't open `%s': %m\n", filename);
+</pre>
+   <p class="noindent">is equivalent to:
+
+<pre class="smallexample">     fprintf (stderr, "can't open `%s': %s\n", filename, strerror (errno));
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">%m</span></samp>&rsquo; conversion is a GNU C library extension.
+
+   <p>The &lsquo;<samp><span class="samp">%p</span></samp>&rsquo; conversion prints a pointer value.  The corresponding
+argument must be of type <code>void *</code>.  In practice, you can use any
+type of pointer.
+
+   <p>In the GNU system, non-null pointers are printed as unsigned integers,
+as if a &lsquo;<samp><span class="samp">%#x</span></samp>&rsquo; conversion were used.  Null pointers print as
+&lsquo;<samp><span class="samp">(nil)</span></samp>&rsquo;.  (Pointers might print differently in other systems.)
+
+   <p>For example:
+
+<pre class="smallexample">     printf ("%p", "testing");
+</pre>
+   <p class="noindent">prints &lsquo;<samp><span class="samp">0x</span></samp>&rsquo; followed by a hexadecimal number&mdash;the address of the
+string constant <code>"testing"</code>.  It does not print the word
+&lsquo;<samp><span class="samp">testing</span></samp>&rsquo;.
+
+   <p>You can supply the &lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag with the &lsquo;<samp><span class="samp">%p</span></samp>&rsquo; conversion to
+specify left-justification, but no other flags, precision, or type
+modifiers are defined.
+
+   <p>The &lsquo;<samp><span class="samp">%n</span></samp>&rsquo; conversion is unlike any of the other output conversions. 
+It uses an argument which must be a pointer to an <code>int</code>, but
+instead of printing anything it stores the number of characters printed
+so far by this call at that location.  The &lsquo;<samp><span class="samp">h</span></samp>&rsquo; and &lsquo;<samp><span class="samp">l</span></samp>&rsquo; type
+modifiers are permitted to specify that the argument is of type
+<code>short int *</code> or <code>long int *</code> instead of <code>int *</code>, but no
+flags, field width, or precision are permitted.
+
+   <p>For example,
+
+<pre class="smallexample">     int nchar;
+     printf ("%d %s%n\n", 3, "bears", &amp;nchar);
+</pre>
+   <p class="noindent">prints:
+
+<pre class="smallexample">     3 bears
+</pre>
+   <p class="noindent">and sets <code>nchar</code> to <code>7</code>, because &lsquo;<samp><span class="samp">3 bears</span></samp>&rsquo; is seven
+characters.
+
+   <p>The &lsquo;<samp><span class="samp">%%</span></samp>&rsquo; conversion prints a literal &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character.  This
+conversion doesn't use an argument, and no flags, field width,
+precision, or type modifiers are permitted.
+
+   </body></html>
+

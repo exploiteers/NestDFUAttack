@@ -1,0 +1,160 @@
+<html lang="en">
+<head>
+<title>Tracing on Symmetrix - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Agent-Expressions.html#Agent-Expressions" title="Agent Expressions">
+<link rel="prev" href="Varying-Target-Capabilities.html#Varying-Target-Capabilities" title="Varying Target Capabilities">
+<link rel="next" href="Rationale.html#Rationale" title="Rationale">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Tracing-on-Symmetrix"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Rationale.html#Rationale">Rationale</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Varying-Target-Capabilities.html#Varying-Target-Capabilities">Varying Target Capabilities</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Agent-Expressions.html#Agent-Expressions">Agent Expressions</a>
+<hr>
+</div>
+
+<h3 class="section">E.5 Tracing on Symmetrix</h3>
+
+<p>This section documents the API used by the GDB agent to collect data on
+Symmetrix systems.
+
+   <p>Cygnus originally implemented these tracing features to help EMC
+Corporation debug their Symmetrix high-availability disk drives.  The
+Symmetrix application code already includes substantial tracing
+facilities; the GDB agent for the Symmetrix system uses those facilities
+for its own data collection, via the API described here.
+
+<div class="defun">
+&mdash; Function: DTC_RESPONSE <b>adbg_find_memory_in_frame</b> (<var>FRAME_DEF *frame, char *address, char **buffer, unsigned int *size</var>)<var><a name="index-adbg_005ffind_005fmemory_005fin_005fframe-1956"></a></var><br>
+<blockquote><p>Search the trace frame <var>frame</var> for memory saved from <var>address</var>. 
+If the memory is available, provide the address of the buffer holding
+it; otherwise, provide the address of the next saved area.
+
+          <ul>
+<li>If the memory at <var>address</var> was saved in <var>frame</var>, set
+<code>*</code><var>buffer</var> to point to the buffer in which that memory was
+saved, set <code>*</code><var>size</var> to the number of bytes from <var>address</var>
+that are saved at <code>*</code><var>buffer</var>, and return
+<code>OK_TARGET_RESPONSE</code>.  (Clearly, in this case, the function will
+always set <code>*</code><var>size</var> to a value greater than zero.)
+
+          <li>If <var>frame</var> does not record any memory at <var>address</var>, set
+<code>*</code><var>size</var> to the distance from <var>address</var> to the start of
+the saved region with the lowest address higher than <var>address</var>.  If
+there is no memory saved from any higher address, set <code>*</code><var>size</var>
+to zero.  Return <code>NOT_FOUND_TARGET_RESPONSE</code>. 
+</ul>
+
+        <p>These two possibilities allow the caller to either retrieve the data, or
+walk the address space to the next saved area. 
+</p></blockquote></div>
+
+   <p>This function allows the GDB agent to map the regions of memory saved in
+a particular frame, and retrieve their contents efficiently.
+
+   <p>This function also provides a clean interface between the GDB agent and
+the Symmetrix tracing structures, making it easier to adapt the GDB
+agent to future versions of the Symmetrix system, and vice versa.  This
+function searches all data saved in <var>frame</var>, whether the data is
+there at the request of a bytecode expression, or because it falls in
+one of the format's memory ranges, or because it was saved from the top
+of the stack.  EMC can arbitrarily change and enhance the tracing
+mechanism, but as long as this function works properly, all collected
+memory is visible to GDB.
+
+   <p>The function itself is straightforward to implement.  A single pass over
+the trace frame's stack area, memory ranges, and expression blocks can
+yield the address of the buffer (if the requested address was saved),
+and also note the address of the next higher range of memory, to be
+returned when the search fails.
+
+   <p>As an example, suppose the trace frame <code>f</code> has saved sixteen bytes
+from address <code>0x8000</code> in a buffer at <code>0x1000</code>, and thirty-two
+bytes from address <code>0xc000</code> in a buffer at <code>0x1010</code>.  Here are
+some sample calls, and the effect each would have:
+
+     <dl>
+<dt><code>adbg_find_memory_in_frame (f, (char*) 0x8000, &amp;buffer, &amp;size)</code><dd>This would set <code>buffer</code> to <code>0x1000</code>, set <code>size</code> to
+sixteen, and return <code>OK_TARGET_RESPONSE</code>, since <code>f</code> saves
+sixteen bytes from <code>0x8000</code> at <code>0x1000</code>.
+
+     <br><dt><code>adbg_find_memory_in_frame (f, (char *) 0x8004, &amp;buffer, &amp;size)</code><dd>This would set <code>buffer</code> to <code>0x1004</code>, set <code>size</code> to
+twelve, and return <code>OK_TARGET_RESPONSE</code>, since <samp><span class="file">f</span></samp> saves the
+twelve bytes from <code>0x8004</code> starting four bytes into the buffer at
+<code>0x1000</code>.  This shows that request addresses may fall in the middle
+of saved areas; the function should return the address and size of the
+remainder of the buffer.
+
+     <br><dt><code>adbg_find_memory_in_frame (f, (char *) 0x8100, &amp;buffer, &amp;size)</code><dd>This would set <code>size</code> to <code>0x3f00</code> and return
+<code>NOT_FOUND_TARGET_RESPONSE</code>, since there is no memory saved in
+<code>f</code> from the address <code>0x8100</code>, and the next memory available
+is at <code>0x8100 + 0x3f00</code>, or <code>0xc000</code>.  This shows that request
+addresses may fall outside of all saved memory ranges; the function
+should indicate the next saved area, if any.
+
+     <br><dt><code>adbg_find_memory_in_frame (f, (char *) 0x7000, &amp;buffer, &amp;size)</code><dd>This would set <code>size</code> to <code>0x1000</code> and return
+<code>NOT_FOUND_TARGET_RESPONSE</code>, since the next saved memory is at
+<code>0x7000 + 0x1000</code>, or <code>0x8000</code>.
+
+     <br><dt><code>adbg_find_memory_in_frame (f, (char *) 0xf000, &amp;buffer, &amp;size)</code><dd>This would set <code>size</code> to zero, and return
+<code>NOT_FOUND_TARGET_RESPONSE</code>.  This shows how the function tells the
+caller that no further memory ranges have been saved.
+
+   </dl>
+
+   <p>As another example, here is a function which will print out the
+addresses of all memory saved in the trace frame <code>frame</code> on the
+Symmetrix INLINES console:
+<pre class="example">     void
+     print_frame_addresses (FRAME_DEF *frame)
+     {
+       char *addr;
+       char *buffer;
+       unsigned long size;
+     
+       addr = 0;
+       for (;;)
+         {
+           /* Either find out how much memory we have here, or discover
+              where the next saved region is.  */
+           if (adbg_find_memory_in_frame (frame, addr, &amp;buffer, &amp;size)
+               == OK_TARGET_RESPONSE)
+             printp ("saved %x to %x\n", addr, addr + size);
+           if (size == 0)
+             break;
+           addr += size;
+         }
+     }
+</pre>
+   <p>Note that there is not necessarily any connection between the order in
+which the data is saved in the trace frame, and the order in which
+<code>adbg_find_memory_in_frame</code> will return those memory ranges.  The
+code above will always print the saved memory regions in order of
+increasing address, while the underlying frame structure might store the
+data in a random order.
+
+   <p>[[This section should cover the rest of the Symmetrix functions the stub
+relies upon, too.]]
+
+   </body></html>
+

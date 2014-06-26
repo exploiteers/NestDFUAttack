@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>Continuing Stopped Jobs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Implementing-a-Shell.html#Implementing-a-Shell" title="Implementing a Shell">
+<link rel="prev" href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs" title="Stopped and Terminated Jobs">
+<link rel="next" href="Missing-Pieces.html#Missing-Pieces" title="Missing Pieces">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Continuing-Stopped-Jobs"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Missing-Pieces.html#Missing-Pieces">Missing Pieces</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs">Stopped and Terminated Jobs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.6.6 Continuing Stopped Jobs</h4>
+
+<p><a name="index-stopped-jobs_002c-continuing-3224"></a>The shell can continue a stopped job by sending a <code>SIGCONT</code> signal
+to its process group.  If the job is being continued in the foreground,
+the shell should first invoke <code>tcsetpgrp</code> to give the job access to
+the terminal, and restore the saved terminal settings.  After continuing
+a job in the foreground, the shell should wait for the job to stop or
+complete, as if the job had just been launched in the foreground.
+
+   <p>The sample shell program handles both newly created and continued jobs
+with the same pair of functions, <code>put_job_in_foreground</code><!-- /@w --> and
+<code>put_job_in_background</code><!-- /@w -->.  The definitions of these functions
+were given in <a href="Foreground-and-Background.html#Foreground-and-Background">Foreground and Background</a>.  When continuing a
+stopped job, a nonzero value is passed as the <var>cont</var> argument to
+ensure that the <code>SIGCONT</code> signal is sent and the terminal modes
+reset, as appropriate.
+
+   <p>This leaves only a function for updating the shell's internal bookkeeping
+about the job being continued:
+
+<pre class="smallexample">     /* <span class="roman">Mark a stopped job J as being running again.</span>  */
+     
+     void
+     mark_job_as_running (job *j)
+     {
+       Process *p;
+     
+       for (p = j-&gt;first_process; p; p = p-&gt;next)
+         p-&gt;stopped = 0;
+       j-&gt;notified = 0;
+     }
+     
+     /* <span class="roman">Continue the job J.</span>  */
+     
+     void
+     continue_job (job *j, int foreground)
+     {
+       mark_job_as_running (j);
+       if (foreground)
+         put_job_in_foreground (j, 1);
+       else
+         put_job_in_background (j, 1);
+     }
+</pre>
+   </body></html>
+

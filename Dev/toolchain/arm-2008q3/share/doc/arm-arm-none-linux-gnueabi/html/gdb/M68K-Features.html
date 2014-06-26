@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+<title>M68K Features - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standard-Target-Features.html#Standard-Target-Features" title="Standard Target Features">
+<link rel="prev" href="MIPS-Features.html#MIPS-Features" title="MIPS Features">
+<link rel="next" href="PowerPC-Features.html#PowerPC-Features" title="PowerPC Features">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="M68K-Features"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="PowerPC-Features.html#PowerPC-Features">PowerPC Features</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="MIPS-Features.html#MIPS-Features">MIPS Features</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standard-Target-Features.html#Standard-Target-Features">Standard Target Features</a>
+<hr>
+</div>
+
+<h4 class="subsection">F.4.3 M68K Features</h4>
+
+<p><a name="index-target-descriptions_002c-M68K-features-1974"></a>
+     <dl>
+<dt><code>&lsquo;</code><samp><span class="samp">org.gnu.gdb.m68k.core</span></samp><code>&rsquo;</code><dt><code>&lsquo;</code><samp><span class="samp">org.gnu.gdb.coldfire.core</span></samp><code>&rsquo;</code><dt><code>&lsquo;</code><samp><span class="samp">org.gnu.gdb.fido.core</span></samp><code>&rsquo;</code><dd>One of those features must be always present. 
+The feature that is present determines which flavor of m86k is
+used.  The feature that is present should contain registers
+&lsquo;<samp><span class="samp">d0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">d7</span></samp>&rsquo;, &lsquo;<samp><span class="samp">a0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">a5</span></samp>&rsquo;, &lsquo;<samp><span class="samp">fp</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">sp</span></samp>&rsquo;, &lsquo;<samp><span class="samp">ps</span></samp>&rsquo; and &lsquo;<samp><span class="samp">pc</span></samp>&rsquo;.
+
+     <br><dt><code>&lsquo;</code><samp><span class="samp">org.gnu.gdb.coldfire.fp</span></samp><code>&rsquo;</code><dd>This feature is optional.  If present, it should contain registers
+&lsquo;<samp><span class="samp">fp0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">fp7</span></samp>&rsquo;, &lsquo;<samp><span class="samp">fpcontrol</span></samp>&rsquo;, &lsquo;<samp><span class="samp">fpstatus</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">fpiaddr</span></samp>&rsquo;. 
+</dl>
+
+   </body></html>
+

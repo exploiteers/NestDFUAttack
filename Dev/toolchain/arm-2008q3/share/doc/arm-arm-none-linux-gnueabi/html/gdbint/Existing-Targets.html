@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Existing Targets - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Vector-Definition.html#Target-Vector-Definition" title="Target Vector Definition">
+<link rel="prev" href="Managing-Execution-State.html#Managing-Execution-State" title="Managing Execution State">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Existing-Targets"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Managing-Execution-State.html#Managing-Execution-State">Managing Execution State</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Vector-Definition.html#Target-Vector-Definition">Target Vector Definition</a>
+<hr>
+</div>
+
+<h3 class="section">12.2 Existing Targets</h3>
+
+<p><a name="index-targets-369"></a>
+
+<h4 class="subsection">12.2.1 File Targets</h4>
+
+<p>Both executables and core files have target vectors.
+
+<h4 class="subsection">12.2.2 Standard Protocol and Remote Stubs</h4>
+
+<p><span class="sc">gdb</span>'s file <samp><span class="file">remote.c</span></samp> talks a serial protocol to code
+that runs in the target system.  <span class="sc">gdb</span> provides several sample
+<dfn>stubs</dfn> that can be integrated into target programs or operating
+systems for this purpose; they are named <samp><var>cpu</var><span class="file">-stub.c</span></samp>. Many
+operating systems, embedded targets, emulators, and simulators already
+have a GDB stub built into them, and maintenance of the remote
+protocol must be careful to preserve compatibility.
+
+   <p>The <span class="sc">gdb</span> user's manual describes how to put such a stub into
+your target code.  What follows is a discussion of integrating the
+SPARC stub into a complicated operating system (rather than a simple
+program), by Stu Grossman, the author of this stub.
+
+   <p>The trap handling code in the stub assumes the following upon entry to
+<code>trap_low</code>:
+
+     <ol type=1 start=1>
+<li>%l1 and %l2 contain pc and npc respectively at the time of the trap;
+
+     <li>traps are disabled;
+
+     <li>you are in the correct trap window.
+        </ol>
+
+   <p>As long as your trap handler can guarantee those conditions, then there
+is no reason why you shouldn't be able to &ldquo;share&rdquo; traps with the stub. 
+The stub has no requirement that it be jumped to directly from the
+hardware trap vector.  That is why it calls <code>exceptionHandler()</code>,
+which is provided by the external environment.  For instance, this could
+set up the hardware traps to actually execute code which calls the stub
+first, and then transfers to its own trap handler.
+
+   <p>For the most point, there probably won't be much of an issue with
+&ldquo;sharing&rdquo; traps, as the traps we use are usually not used by the kernel,
+and often indicate unrecoverable error conditions.  Anyway, this is all
+controlled by a table, and is trivial to modify.  The most important
+trap for us is for <code>ta 1</code>.  Without that, we can't single step or
+do breakpoints.  Everything else is unnecessary for the proper operation
+of the debugger/stub.
+
+   <p>From reading the stub, it's probably not obvious how breakpoints work. 
+They are simply done by deposit/examine operations from <span class="sc">gdb</span>.
+
+<h4 class="subsection">12.2.3 ROM Monitor Interface</h4>
+
+<h4 class="subsection">12.2.4 Custom Protocols</h4>
+
+<h4 class="subsection">12.2.5 Transport Layer</h4>
+
+<h4 class="subsection">12.2.6 Builtin Simulator</h4>
+
+</body></html>
+

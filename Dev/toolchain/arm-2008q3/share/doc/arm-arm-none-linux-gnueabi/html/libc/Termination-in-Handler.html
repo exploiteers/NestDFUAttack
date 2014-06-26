@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Termination in Handler - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link rel="prev" href="Handler-Returns.html#Handler-Returns" title="Handler Returns">
+<link rel="next" href="Longjmp-in-Handler.html#Longjmp-in-Handler" title="Longjmp in Handler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Termination-in-Handler"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Longjmp-in-Handler.html#Longjmp-in-Handler">Longjmp in Handler</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Handler-Returns.html#Handler-Returns">Handler Returns</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.4.2 Handlers That Terminate the Process</h4>
+
+<p>Handler functions that terminate the program are typically used to cause
+orderly cleanup or recovery from program error signals and interactive
+interrupts.
+
+   <p>The cleanest way for a handler to terminate the process is to raise the
+same signal that ran the handler in the first place.  Here is how to do
+this:
+
+<pre class="smallexample">     volatile sig_atomic_t fatal_error_in_progress = 0;
+     
+     void
+     fatal_error_signal (int sig)
+     {
+       /* <span class="roman">Since this handler is established for more than one kind of signal, </span>
+          <span class="roman">it might still get invoked recursively by delivery of some other kind</span>
+          <span class="roman">of signal.  Use a static variable to keep track of that.</span> */
+       if (fatal_error_in_progress)
+         raise (sig);
+       fatal_error_in_progress = 1;
+     
+       /* <span class="roman">Now do the clean up actions:</span>
+          <span class="roman">- reset terminal modes</span>
+          <span class="roman">- kill child processes</span>
+          <span class="roman">- remove lock files</span> */
+       ...
+     
+       /* <span class="roman">Now reraise the signal.  We reactivate the signal's</span>
+          <span class="roman">default handling, which is to terminate the process.</span>
+          <span class="roman">We could just call </span><code>exit</code><span class="roman"> or </span><code>abort</code><span class="roman">,</span>
+          <span class="roman">but reraising the signal sets the return status</span>
+          <span class="roman">from the process correctly.</span> */
+       signal (sig, SIG_DFL);
+       raise (sig);
+     }
+</pre>
+   </body></html>
+

@@ -1,0 +1,146 @@
+<html lang="en">
+<head>
+<title>Services Database - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Internet-Namespace.html#Internet-Namespace" title="Internet Namespace">
+<link rel="prev" href="Ports.html#Ports" title="Ports">
+<link rel="next" href="Byte-Order.html#Byte-Order" title="Byte Order">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Services-Database"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Byte-Order.html#Byte-Order">Byte Order</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Ports.html#Ports">Ports</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.6.4 The Services Database</h4>
+
+<p><a name="index-services-database-1735"></a><a name="index-converting-service-name-to-port-number-1736"></a><a name="index-converting-port-number-to-service-name-1737"></a>
+<a name="index-g_t_002fetc_002fservices-1738"></a>The database that keeps track of &ldquo;well-known&rdquo; services is usually
+either the file <samp><span class="file">/etc/services</span></samp> or an equivalent from a name server. 
+You can use these utilities, declared in <samp><span class="file">netdb.h</span></samp>, to access
+the services database. 
+<a name="index-netdb_002eh-1739"></a>
+<!-- netdb.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct servent</b><var><a name="index-struct-servent-1740"></a></var><br>
+<blockquote><p>This data type holds information about entries from the services database. 
+It has the following members:
+
+          <dl>
+<dt><code>char *s_name</code><dd>This is the &ldquo;official&rdquo; name of the service.
+
+          <br><dt><code>char **s_aliases</code><dd>These are alternate names for the service, represented as an array of
+strings.  A null pointer terminates the array.
+
+          <br><dt><code>int s_port</code><dd>This is the port number for the service.  Port numbers are given in
+network byte order; see <a href="Byte-Order.html#Byte-Order">Byte Order</a>.
+
+          <br><dt><code>char *s_proto</code><dd>This is the name of the protocol to use with this service. 
+See <a href="Protocols-Database.html#Protocols-Database">Protocols Database</a>. 
+</dl>
+        </p></blockquote></div>
+
+   <p>To get information about a particular service, use the
+<code>getservbyname</code> or <code>getservbyport</code> functions.  The information
+is returned in a statically-allocated structure; you must copy the
+information if you need to save it across calls.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct servent * <b>getservbyname</b> (<var>const char *name, const char *proto</var>)<var><a name="index-getservbyname-1741"></a></var><br>
+<blockquote><p>The <code>getservbyname</code> function returns information about the
+service named <var>name</var> using protocol <var>proto</var>.  If it can't find
+such a service, it returns a null pointer.
+
+        <p>This function is useful for servers as well as for clients; servers
+use it to determine which port they should listen on (see <a href="Listening.html#Listening">Listening</a>). 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct servent * <b>getservbyport</b> (<var>int port, const char *proto</var>)<var><a name="index-getservbyport-1742"></a></var><br>
+<blockquote><p>The <code>getservbyport</code> function returns information about the
+service at port <var>port</var> using protocol <var>proto</var>.  If it can't
+find such a service, it returns a null pointer. 
+</p></blockquote></div>
+
+<p class="noindent">You can also scan the services database using <code>setservent</code>,
+<code>getservent</code> and <code>endservent</code>.  Be careful when using these
+functions because they are not reentrant.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>setservent</b> (<var>int stayopen</var>)<var><a name="index-setservent-1743"></a></var><br>
+<blockquote><p>This function opens the services database to begin scanning it.
+
+        <p>If the <var>stayopen</var> argument is nonzero, this sets a flag so that
+subsequent calls to <code>getservbyname</code> or <code>getservbyport</code> will
+not close the database (as they usually would).  This makes for more
+efficiency if you call those functions several times, by avoiding
+reopening the database for each call. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct servent * <b>getservent</b> (<var>void</var>)<var><a name="index-getservent-1744"></a></var><br>
+<blockquote><p>This function returns the next entry in the services database.  If
+there are no more entries, it returns a null pointer. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>endservent</b> (<var>void</var>)<var><a name="index-endservent-1745"></a></var><br>
+<blockquote><p>This function closes the services database. 
+</p></blockquote></div>
+
+   </body></html>
+

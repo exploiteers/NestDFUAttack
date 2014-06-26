@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+<title>GUI program problems - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link rel="prev" href="Charset-conversion-in-gettext.html#Charset-conversion-in-gettext" title="Charset conversion in gettext">
+<link rel="next" href="Using-gettextized-software.html#Using-gettextized-software" title="Using gettextized software">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="GUI-program-problems"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-gettextized-software.html#Using-gettextized-software">Using gettextized software</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Charset-conversion-in-gettext.html#Charset-conversion-in-gettext">Charset conversion in gettext</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">8.2.1.5 How to use <code>gettext</code> in GUI programs</h5>
+
+<p>One place where the <code>gettext</code> functions, if used normally, have big
+problems is within programs with graphical user interfaces (GUIs).  The
+problem is that many of the strings which have to be translated are very
+short.  They have to appear in pull-down menus which restricts the
+length.  But strings which are not containing entire sentences or at
+least large fragments of a sentence may appear in more than one
+situation in the program but might have different translations.  This is
+especially true for the one-word strings which are frequently used in
+GUI programs.
+
+   <p>As a consequence many people say that the <code>gettext</code> approach is
+wrong and instead <code>catgets</code> should be used which indeed does not
+have this problem.  But there is a very simple and powerful method to
+handle these kind of problems with the <code>gettext</code> functions.
+
+<p class="noindent">As as example consider the following fictional situation.  A GUI program
+has a menu bar with the following entries:
+
+<pre class="smallexample">     +------------+------------+--------------------------------------+
+     | File       | Printer    |                                      |
+     +------------+------------+--------------------------------------+
+     | Open     | | Select   |
+     | New      | | Open     |
+     +----------+ | Connect  |
+                  +----------+
+</pre>
+   <p>To have the strings <code>File</code>, <code>Printer</code>, <code>Open</code>,
+<code>New</code>, <code>Select</code>, and <code>Connect</code> translated there has to be
+at some point in the code a call to a function of the <code>gettext</code>
+family.  But in two places the string passed into the function would be
+<code>Open</code>.  The translations might not be the same and therefore we
+are in the dilemma described above.
+
+   <p>One solution to this problem is to artificially enlengthen the strings
+to make them unambiguous.  But what would the program do if no
+translation is available?  The enlengthened string is not what should be
+printed.  So we should use a little bit modified version of the functions.
+
+   <p>To enlengthen the strings a uniform method should be used.  E.g., in the
+example above the strings could be chosen as
+
+<pre class="smallexample">     Menu|File
+     Menu|Printer
+     Menu|File|Open
+     Menu|File|New
+     Menu|Printer|Select
+     Menu|Printer|Open
+     Menu|Printer|Connect
+</pre>
+   <p>Now all the strings are different and if now instead of <code>gettext</code>
+the following little wrapper function is used, everything works just
+fine:
+
+   <p><a name="index-sgettext-816"></a>
+<pre class="smallexample">       char *
+       sgettext (const char *msgid)
+       {
+         char *msgval = gettext (msgid);
+         if (msgval == msgid)
+           msgval = strrchr (msgid, '|') + 1;
+         return msgval;
+       }
+</pre>
+   <p>What this little function does is to recognize the case when no
+translation is available.  This can be done very efficiently by a
+pointer comparison since the return value is the input value.  If there
+is no translation we know that the input string is in the format we used
+for the Menu entries and therefore contains a <code>|</code> character.  We
+simply search for the last occurrence of this character and return a
+pointer to the character following it.  That's it!
+
+   <p>If one now consistently uses the enlengthened string form and replaces
+the <code>gettext</code> calls with calls to <code>sgettext</code> (this is normally
+limited to very few places in the GUI implementation) then it is
+possible to produce a program which can be internationalized.
+
+   <p>With advanced compilers (such as GNU C) one can write the
+<code>sgettext</code> functions as an inline function or as a macro like this:
+
+   <p><a name="index-sgettext-817"></a>
+<pre class="smallexample">     #define sgettext(msgid) \
+       ({ const char *__msgid = (msgid);            \
+          char *__msgstr = gettext (__msgid);       \
+          if (__msgval == __msgid)                  \
+            __msgval = strrchr (__msgid, '|') + 1;  \
+          __msgval; })
+</pre>
+   <p>The other <code>gettext</code> functions (<code>dgettext</code>, <code>dcgettext</code>
+and the <code>ngettext</code> equivalents) can and should have corresponding
+functions as well which look almost identical, except for the parameters
+and the call to the underlying function.
+
+   <p>Now there is of course the question why such functions do not exist in
+the GNU C library?  There are two parts of the answer to this question.
+
+     <ul>
+<li>They are easy to write and therefore can be provided by the project they
+are used in.  This is not an answer by itself and must be seen together
+with the second part which is:
+
+     <li>There is no way the C library can contain a version which can work
+everywhere.  The problem is the selection of the character to separate
+the prefix from the actual string in the enlenghtened string.  The
+examples above used <code>|</code> which is a quite good choice because it
+resembles a notation frequently used in this context and it also is a
+character not often used in message strings.
+
+     <p>But what if the character is used in message strings.  Or if the chose
+character is not available in the character set on the machine one
+compiles (e.g., <code>|</code> is not required to exist for ISO&nbsp;C<!-- /@w -->; this is
+why the <samp><span class="file">iso646.h</span></samp> file exists in ISO&nbsp;C<!-- /@w --> programming environments). 
+</ul>
+
+   <p>There is only one more comment to make left.  The wrapper function above
+require that the translations strings are not enlengthened themselves. 
+This is only logical.  There is no need to disambiguate the strings
+(since they are never used as keys for a search) and one also saves
+quite some memory and disk space by doing this.
+
+   </body></html>
+

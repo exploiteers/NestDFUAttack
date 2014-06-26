@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+<title>Tree Search Function - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Searching-and-Sorting.html#Searching-and-Sorting" title="Searching and Sorting">
+<link rel="prev" href="Hash-Search-Function.html#Hash-Search-Function" title="Hash Search Function">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Tree-Search-Function"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hash-Search-Function.html#Hash-Search-Function">Hash Search Function</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>
+<hr>
+</div>
+
+<h3 class="section">9.6 The <code>tsearch</code> function.</h3>
+
+<p>Another common form to organize data for efficient search is to use
+trees.  The <code>tsearch</code> function family provides a nice interface to
+functions to organize possibly large amounts of data by providing a mean
+access time proportional to the logarithm of the number of elements. 
+The GNU C library implementation even guarantees that this bound is
+never exceeded even for input data which cause problems for simple
+binary tree implementations.
+
+   <p>The functions described in the chapter are all described in the System&nbsp;V<!-- /@w --> and X/Open specifications and are therefore quite portable.
+
+   <p>In contrast to the <code>hsearch</code> functions the <code>tsearch</code> functions
+can be used with arbitrary data and not only zero-terminated strings.
+
+   <p>The <code>tsearch</code> functions have the advantage that no function to
+initialize data structures is necessary.  A simple pointer of type
+<code>void *</code> initialized to <code>NULL</code> is a valid tree and can be
+extended or searched.  The prototypes for these functions can be found
+in the header file <samp><span class="file">search.h</span></samp>.
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void * <b>tsearch</b> (<var>const void *key, void **rootp, comparison_fn_t compar</var>)<var><a name="index-tsearch-841"></a></var><br>
+<blockquote><p>The <code>tsearch</code> function searches in the tree pointed to by
+<code>*</code><var>rootp</var> for an element matching <var>key</var>.  The function
+pointed to by <var>compar</var> is used to determine whether two elements
+match.  See <a href="Comparison-Functions.html#Comparison-Functions">Comparison Functions</a>, for a specification of the functions
+which can be used for the <var>compar</var> parameter.
+
+        <p>If the tree does not contain a matching entry the <var>key</var> value will
+be added to the tree.  <code>tsearch</code> does not make a copy of the object
+pointed to by <var>key</var> (how could it since the size is unknown). 
+Instead it adds a reference to this object which means the object must
+be available as long as the tree data structure is used.
+
+        <p>The tree is represented by a pointer to a pointer since it is sometimes
+necessary to change the root node of the tree.  So it must not be
+assumed that the variable pointed to by <var>rootp</var> has the same value
+after the call.  This also shows that it is not safe to call the
+<code>tsearch</code> function more than once at the same time using the same
+tree.  It is no problem to run it more than once at a time on different
+trees.
+
+        <p>The return value is a pointer to the matching element in the tree.  If a
+new element was created the pointer points to the new data (which is in
+fact <var>key</var>).  If an entry had to be created and the program ran out
+of space <code>NULL</code> is returned. 
+</p></blockquote></div>
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void * <b>tfind</b> (<var>const void *key, void *const *rootp, comparison_fn_t compar</var>)<var><a name="index-tfind-842"></a></var><br>
+<blockquote><p>The <code>tfind</code> function is similar to the <code>tsearch</code> function.  It
+locates an element matching the one pointed to by <var>key</var> and returns
+a pointer to this element.  But if no matching element is available no
+new element is entered (note that the <var>rootp</var> parameter points to a
+constant pointer).  Instead the function returns <code>NULL</code>. 
+</p></blockquote></div>
+
+   <p>Another advantage of the <code>tsearch</code> function in contrast to the
+<code>hsearch</code> functions is that there is an easy way to remove
+elements.
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void * <b>tdelete</b> (<var>const void *key, void **rootp, comparison_fn_t compar</var>)<var><a name="index-tdelete-843"></a></var><br>
+<blockquote><p>To remove a specific element matching <var>key</var> from the tree
+<code>tdelete</code> can be used.  It locates the matching element using the
+same method as <code>tfind</code>.  The corresponding element is then removed
+and a pointer to the parent of the deleted node is returned by the
+function.  If there is no matching entry in the tree nothing can be
+deleted and the function returns <code>NULL</code>.  If the root of the tree
+is deleted <code>tdelete</code> returns some unspecified value not equal to
+<code>NULL</code>. 
+</p></blockquote></div>
+
+<!-- search.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>tdestroy</b> (<var>void *vroot, __free_fn_t freefct</var>)<var><a name="index-tdestroy-844"></a></var><br>
+<blockquote><p>If the complete search tree has to be removed one can use
+<code>tdestroy</code>.  It frees all resources allocated by the <code>tsearch</code>
+function to generate the tree pointed to by <var>vroot</var>.
+
+        <p>For the data in each tree node the function <var>freefct</var> is called. 
+The pointer to the data is passed as the argument to the function.  If
+no such work is necessary <var>freefct</var> must point to a function doing
+nothing.  It is called in any case.
+
+        <p>This function is a GNU extension and not covered by the System&nbsp;V<!-- /@w --> or
+X/Open specifications. 
+</p></blockquote></div>
+
+   <p>In addition to the function to create and destroy the tree data
+structure, there is another function which allows you to apply a
+function to all elements of the tree.  The function must have this type:
+
+<pre class="smallexample">     void __action_fn_t (const void *nodep, VISIT value, int level);
+</pre>
+   <p>The <var>nodep</var> is the data value of the current node (once given as the
+<var>key</var> argument to <code>tsearch</code>).  <var>level</var> is a numeric value
+which corresponds to the depth of the current node in the tree.  The
+root node has the depth 0 and its children have a depth of
+1 and so on.  The <code>VISIT</code> type is an enumeration type.
+
+<div class="defun">
+&mdash; Data Type: <b>VISIT</b><var><a name="index-VISIT-845"></a></var><br>
+<blockquote><p>The <code>VISIT</code> value indicates the status of the current node in the
+tree and how the function is called.  The status of a node is either
+`leaf' or `internal node'.  For each leaf node the function is called
+exactly once, for each internal node it is called three times: before
+the first child is processed, after the first child is processed and
+after both children are processed.  This makes it possible to handle all
+three methods of tree traversal (or even a combination of them).
+
+          <dl>
+<dt><code>preorder</code><dd>The current node is an internal node and the function is called before
+the first child was processed. 
+<br><dt><code>postorder</code><dd>The current node is an internal node and the function is called after
+the first child was processed. 
+<br><dt><code>endorder</code><dd>The current node is an internal node and the function is called after
+the second child was processed. 
+<br><dt><code>leaf</code><dd>The current node is a leaf. 
+</dl>
+        </p></blockquote></div>
+
+<!-- search.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void <b>twalk</b> (<var>const void *root, __action_fn_t action</var>)<var><a name="index-twalk-846"></a></var><br>
+<blockquote><p>For each node in the tree with a node pointed to by <var>root</var>, the
+<code>twalk</code> function calls the function provided by the parameter
+<var>action</var>.  For leaf nodes the function is called exactly once with
+<var>value</var> set to <code>leaf</code>.  For internal nodes the function is
+called three times, setting the <var>value</var> parameter or <var>action</var> to
+the appropriate value.  The <var>level</var> argument for the <var>action</var>
+function is computed while descending the tree with increasing the value
+by one for the descend to a child, starting with the value 0 for
+the root node.
+
+        <p>Since the functions used for the <var>action</var> parameter to <code>twalk</code>
+must not modify the tree data, it is safe to run <code>twalk</code> in more
+than one thread at the same time, working on the same tree.  It is also
+safe to call <code>tfind</code> in parallel.  Functions which modify the tree
+must not be used, otherwise the behavior is undefined. 
+</p></blockquote></div>
+
+   </body></html>
+

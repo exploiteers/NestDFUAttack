@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Filesystem Handling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Management.html#System-Management" title="System Management">
+<link rel="prev" href="Platform-Type.html#Platform-Type" title="Platform Type">
+<link rel="next" href="System-Parameters.html#System-Parameters" title="System Parameters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Filesystem-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-Parameters.html#System-Parameters">System Parameters</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Platform-Type.html#Platform-Type">Platform Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Management.html#System-Management">System Management</a>
+<hr>
+</div>
+
+<h3 class="section">30.3 Controlling and Querying Mounts</h3>
+
+<p>All files are in filesystems, and before you can access any file, its
+filesystem must be mounted.  Because of Unix's concept of
+<em>Everything is a file</em>, mounting of filesystems is central to doing
+almost anything.  This section explains how to find out what filesystems
+are currently mounted and what filesystems are available for mounting,
+and how to change what is mounted.
+
+   <p>The classic filesystem is the contents of a disk drive.  The concept is
+considerably more abstract, though, and lots of things other than disk
+drives can be mounted.
+
+   <p>Some block devices don't correspond to traditional devices like disk
+drives.  For example, a loop device is a block device whose driver uses
+a regular file in another filesystem as its medium.  So if that regular
+file contains appropriate data for a filesystem, you can by mounting the
+loop device essentially mount a regular file.
+
+   <p>Some filesystems aren't based on a device of any kind.  The &ldquo;proc&rdquo;
+filesystem, for example, contains files whose data is made up by the
+filesystem driver on the fly whenever you ask for it.  And when you
+write to it, the data you write causes changes in the system.  No data
+gets stored.
+
+<!-- It would be good to mention NFS mounts here. -->
+<ul class="menu">
+<li><a accesskey="1" href="Mount-Information.html#Mount-Information">Mount Information</a>:            What is or could be mounted? 
+<li><a accesskey="2" href="Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">Mount-Unmount-Remount</a>:        Controlling what is mounted and how
+</ul>
+
+   </body></html>
+

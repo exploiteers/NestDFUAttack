@@ -1,0 +1,98 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the system
+#      heartbeat / software watchdog daemon.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+# Source daemon-monitor library
+. /etc/init.d/dm
+
+# Export fallback shared library search path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}${NESTLABSLIBDIR}
+
+NLHEARTBEATNAME=nlheartbeatd
+NLHEARTBEATAPP=${NESTLABSSBINDIR}/${NLHEARTBEATNAME}
+NLHEARTBEATPIDFILE="${VARDIR}/run/${NLHEARTBEATNAME}.pid"
+
+PROGRAM="`${BASENAME} ${0}`"
+
+end_service () {
+	local verb="${1}"
+	local how="${2}"
+
+	log_info "Service termination for ${NLHEARTBEATNAME} received from [${PPID}]: ${verb}"
+
+	${STOPDAEMON} -q -p ${NLHEARTBEATPIDFILE} ${how} > ${NULL} 2>&1
+	${ECHO} " ${verb} ${NLHEARTBEATNAME}\c"
+}
+
+kill_service () {
+	if test -x ${NLHEARTBEATAPP}; then
+		end_service "killing" "--signal KILL"
+	fi
+}
+
+stop_service () {
+	if test -x ${NLHEARTBEATAPP}; then
+		unmonitor_service "${NLHEARTBEATNAME}"
+		end_service "stopping" "--retry=TERM/180/ABRT/180/KILL/6"
+	fi
+}
+
+start_service () {
+	if test -x ${NLHEARTBEATAPP}; then
+		log_info "Service initiation for ${NLHEARTBEATNAME} received from [${PPID}]"
+
+		${STARTDAEMON} -q -b -m -p "${NLHEARTBEATPIDFILE}" -a "${NLHEARTBEATAPP}" -- `${CAT} ${CONFDIR}/${NLHEARTBEATNAME}.options 2> ${NULL}`
+		monitor_service "${NLHEARTBEATNAME}"
+		${ECHO} " ${NLHEARTBEATNAME}\c"
+	fi
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "Software watchdog daemon:\c"
+
+		if ${CHECK} heartbeat; then
+			start_service
+		fi
+
+	${ECHO} "."
+	;;
+
+'kill')
+	${ECHO} "Software watchdog daemon:\c"
+
+		kill_service
+
+	${ECHO} "."
+	;;
+
+'stop')
+	${ECHO} "Software watchdog daemon:\c"
+
+		stop_service
+
+	${ECHO} "."
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <kill | start | stop | restart>"
+	exit 1
+	;;
+
+esac

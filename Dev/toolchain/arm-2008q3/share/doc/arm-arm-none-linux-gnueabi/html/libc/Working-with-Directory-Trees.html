@@ -1,0 +1,327 @@
+<html lang="en">
+<head>
+<title>Working with Directory Trees - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Accessing-Directories.html#Accessing-Directories" title="Accessing Directories">
+<link rel="next" href="Hard-Links.html#Hard-Links" title="Hard Links">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Working-with-Directory-Trees"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hard-Links.html#Hard-Links">Hard Links</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.3 Working with Directory Trees</h3>
+
+<p><a name="index-directory-hierarchy-1431"></a><a name="index-hierarchy_002c-directory-1432"></a><a name="index-tree_002c-directory-1433"></a>
+The functions described so far for handling the files in a directory
+have allowed you to either retrieve the information bit by bit, or to
+process all the files as a group (see <code>scandir</code>).  Sometimes it is
+useful to process whole hierarchies of directories and their contained
+files.  The X/Open specification defines two functions to do this.  The
+simpler form is derived from an early definition in System&nbsp;V<!-- /@w --> systems
+and therefore this function is available on SVID-derived systems.  The
+prototypes and required definitions can be found in the <samp><span class="file">ftw.h</span></samp>
+header.
+
+   <p>There are four functions in this family: <code>ftw</code>, <code>nftw</code> and
+their 64-bit counterparts <code>ftw64</code> and <code>nftw64</code>.  These
+functions take as one of their arguments a pointer to a callback
+function of the appropriate type.
+
+<!-- ftw.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>__ftw_func_t</b><var><a name="index-g_t_005f_005fftw_005ffunc_005ft-1434"></a></var><br>
+<blockquote>
+     <pre class="smallexample">          int (*) (const char *, const struct stat *, int)
+</pre>
+        <p>The type of callback functions given to the <code>ftw</code> function.  The
+first parameter points to the file name, the second parameter to an
+object of type <code>struct stat</code> which is filled in for the file named
+in the first parameter.
+
+     <p class="noindent">The last parameter is a flag giving more information about the current
+file.  It can have the following values:
+
+          <dl>
+<dt><code>FTW_F</code><a name="index-FTW_005fF-1435"></a><dd>The item is either a normal file or a file which does not fit into one
+of the following categories.  This could be special files, sockets etc. 
+<br><dt><code>FTW_D</code><a name="index-FTW_005fD-1436"></a><dd>The item is a directory. 
+<br><dt><code>FTW_NS</code><a name="index-FTW_005fNS-1437"></a><dd>The <code>stat</code> call failed and so the information pointed to by the
+second paramater is invalid. 
+<br><dt><code>FTW_DNR</code><a name="index-FTW_005fDNR-1438"></a><dd>The item is a directory which cannot be read. 
+<br><dt><code>FTW_SL</code><a name="index-FTW_005fSL-1439"></a><dd>The item is a symbolic link.  Since symbolic links are normally followed
+seeing this value in a <code>ftw</code> callback function means the referenced
+file does not exist.  The situation for <code>nftw</code> is different.
+
+          <p>This value is only available if the program is compiled with
+<code>_BSD_SOURCE</code> or <code>_XOPEN_EXTENDED</code> defined before including
+the first header.  The original SVID systems do not have symbolic links. 
+</dl>
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+type is in fact <code>__ftw64_func_t</code> since this mode changes
+<code>struct stat</code> to be <code>struct stat64</code>. 
+</p></blockquote></div>
+
+   <p>For the LFS interface and for use in the function <code>ftw64</code>, the
+header <samp><span class="file">ftw.h</span></samp> defines another function type.
+
+<!-- ftw.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>__ftw64_func_t</b><var><a name="index-g_t_005f_005fftw64_005ffunc_005ft-1440"></a></var><br>
+<blockquote>
+     <pre class="smallexample">          int (*) (const char *, const struct stat64 *, int)
+</pre>
+        <p>This type is used just like <code>__ftw_func_t</code> for the callback
+function, but this time is called from <code>ftw64</code>.  The second
+parameter to the function is a pointer to a variable of type
+<code>struct stat64</code> which is able to represent the larger values. 
+</p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>__nftw_func_t</b><var><a name="index-g_t_005f_005fnftw_005ffunc_005ft-1441"></a></var><br>
+<blockquote>
+     <pre class="smallexample">          int (*) (const char *, const struct stat *, int, struct FTW *)
+</pre>
+        <p><a name="index-FTW_005fDP-1442"></a><a name="index-FTW_005fSLN-1443"></a>The first three arguments are the same as for the <code>__ftw_func_t</code>
+type.  However for the third argument some additional values are defined
+to allow finer differentiation:
+          <dl>
+<dt><code>FTW_DP</code><dd>The current item is a directory and all subdirectories have already been
+visited and reported.  This flag is returned instead of <code>FTW_D</code> if
+the <code>FTW_DEPTH</code> flag is passed to <code>nftw</code> (see below). 
+<br><dt><code>FTW_SLN</code><dd>The current item is a stale symbolic link.  The file it points to does
+not exist. 
+</dl>
+
+        <p>The last parameter of the callback function is a pointer to a structure
+with some extra information as described below.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+type is in fact <code>__nftw64_func_t</code> since this mode changes
+<code>struct stat</code> to be <code>struct stat64</code>. 
+</p></blockquote></div>
+
+   <p>For the LFS interface there is also a variant of this data type
+available which has to be used with the <code>nftw64</code> function.
+
+<!-- ftw.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>__nftw64_func_t</b><var><a name="index-g_t_005f_005fnftw64_005ffunc_005ft-1444"></a></var><br>
+<blockquote>
+     <pre class="smallexample">          int (*) (const char *, const struct stat64 *, int, struct FTW *)
+</pre>
+        <p>This type is used just like <code>__nftw_func_t</code> for the callback
+function, but this time is called from <code>nftw64</code>.  The second
+parameter to the function is this time a pointer to a variable of type
+<code>struct stat64</code> which is able to represent the larger values. 
+</p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Data Type: <b>struct FTW</b><var><a name="index-struct-FTW-1445"></a></var><br>
+<blockquote><p>The information contained in this structure helps in interpreting the
+name parameter and gives some information about the current state of the
+traversal of the directory hierarchy.
+
+          <dl>
+<dt><code>int base</code><dd>The value is the offset into the string passed in the first parameter to
+the callback function of the beginning of the file name.  The rest of
+the string is the path of the file.  This information is especially
+important if the <code>FTW_CHDIR</code> flag was set in calling <code>nftw</code>
+since then the current directory is the one the current item is found
+in. 
+<br><dt><code>int level</code><dd>Whilst processing, the code tracks how many directories down it has gone
+to find the current file.  This nesting level starts at 0 for
+files in the initial directory (or is zero for the initial file if a
+file was passed). 
+</dl>
+        </p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>ftw</b> (<var>const char *filename, __ftw_func_t func, int descriptors</var>)<var><a name="index-ftw-1446"></a></var><br>
+<blockquote><p>The <code>ftw</code> function calls the callback function given in the
+parameter <var>func</var> for every item which is found in the directory
+specified by <var>filename</var> and all directories below.  The function
+follows symbolic links if necessary but does not process an item twice. 
+If <var>filename</var> is not a directory then it itself is the only object
+returned to the callback function.
+
+        <p>The file name passed to the callback function is constructed by taking
+the <var>filename</var> parameter and appending the names of all passed
+directories and then the local file name.  So the callback function can
+use this parameter to access the file.  <code>ftw</code> also calls
+<code>stat</code> for the file and passes that information on to the callback
+function.  If this <code>stat</code> call was not successful the failure is
+indicated by setting the third argument of the callback function to
+<code>FTW_NS</code>.  Otherwise it is set according to the description given
+in the account of <code>__ftw_func_t</code> above.
+
+        <p>The callback function is expected to return 0 to indicate that no
+error occurred and that processing should continue.  If an error
+occurred in the callback function or it wants <code>ftw</code> to return
+immediately, the callback function can return a value other than
+0.  This is the only correct way to stop the function.  The
+program must not use <code>setjmp</code> or similar techniques to continue
+from another place.  This would leave resources allocated by the
+<code>ftw</code> function unfreed.
+
+        <p>The <var>descriptors</var> parameter to <code>ftw</code> specifies how many file
+descriptors it is allowed to consume.  The function runs faster the more
+descriptors it can use.  For each level in the directory hierarchy at
+most one descriptor is used, but for very deep ones any limit on open
+file descriptors for the process or the system may be exceeded. 
+Moreover, file descriptor limits in a multi-threaded program apply to
+all the threads as a group, and therefore it is a good idea to supply a
+reasonable limit to the number of open descriptors.
+
+        <p>The return value of the <code>ftw</code> function is 0 if all callback
+function calls returned 0 and all actions performed by the
+<code>ftw</code> succeeded.  If a function call failed (other than calling
+<code>stat</code> on an item) the function returns -1.  If a callback
+function returns a value other than 0 this value is returned as
+the return value of <code>ftw</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is in fact <code>ftw64</code>, i.e., the LFS
+interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>ftw64</b> (<var>const char *filename, __ftw64_func_t func, int descriptors</var>)<var><a name="index-ftw64-1447"></a></var><br>
+<blockquote><p>This function is similar to <code>ftw</code> but it can work on filesystems
+with large files.  File information is reported using a variable of type
+<code>struct stat64</code> which is passed by reference to the callback
+function.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is available under the name <code>ftw</code> and
+transparently replaces the old implementation. 
+</p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: int <b>nftw</b> (<var>const char *filename, __nftw_func_t func, int descriptors, int flag</var>)<var><a name="index-nftw-1448"></a></var><br>
+<blockquote><p>The <code>nftw</code> function works like the <code>ftw</code> functions.  They call
+the callback function <var>func</var> for all items found in the directory
+<var>filename</var> and below.  At most <var>descriptors</var> file descriptors
+are consumed during the <code>nftw</code> call.
+
+        <p>One difference is that the callback function is of a different type.  It
+is of type <code>struct&nbsp;FTW&nbsp;*</code><!-- /@w --> and provides the callback function
+with the extra information described above.
+
+        <p>A second difference is that <code>nftw</code> takes a fourth argument, which
+is 0 or a bitwise-OR combination of any of the following values.
+
+          <dl>
+<dt><code>FTW_PHYS</code><a name="index-FTW_005fPHYS-1449"></a><dd>While traversing the directory symbolic links are not followed.  Instead
+symbolic links are reported using the <code>FTW_SL</code> value for the type
+parameter to the callback function.  If the file referenced by a
+symbolic link does not exist <code>FTW_SLN</code> is returned instead. 
+<br><dt><code>FTW_MOUNT</code><a name="index-FTW_005fMOUNT-1450"></a><dd>The callback function is only called for items which are on the same
+mounted filesystem as the directory given by the <var>filename</var>
+parameter to <code>nftw</code>. 
+<br><dt><code>FTW_CHDIR</code><a name="index-FTW_005fCHDIR-1451"></a><dd>If this flag is given the current working directory is changed to the
+directory of the reported object before the callback function is called. 
+When <code>ntfw</code> finally returns the current directory is restored to
+its original value. 
+<br><dt><code>FTW_DEPTH</code><a name="index-FTW_005fDEPTH-1452"></a><dd>If this option is specified then all subdirectories and files within
+them are processed before processing the top directory itself
+(depth-first processing).  This also means the type flag given to the
+callback function is <code>FTW_DP</code> and not <code>FTW_D</code>. 
+<br><dt><code>FTW_ACTIONRETVAL</code><a name="index-FTW_005fACTIONRETVAL-1453"></a><dd>If this option is specified then return values from callbacks
+are handled differently.  If the callback returns <code>FTW_CONTINUE</code>,
+walking continues normally.  <code>FTW_STOP</code> means walking stops
+and <code>FTW_STOP</code> is returned to the caller.  If <code>FTW_SKIP_SUBTREE</code>
+is returned by the callback with <code>FTW_D</code> argument, the subtree
+is skipped and walking continues with next sibling of the directory. 
+If <code>FTW_SKIP_SIBLINGS</code> is returned by the callback, all siblings
+of the current entry are skipped and walking continues in its parent. 
+No other return values should be returned from the callbacks if
+this option is set.  This option is a GNU extension. 
+</dl>
+
+        <p>The return value is computed in the same way as for <code>ftw</code>. 
+<code>nftw</code> returns 0 if no failures occurred and all callback
+functions returned 0.  In case of internal errors, such as memory
+problems, the return value is -1 and <var>errno</var> is set
+accordingly.  If the return value of a callback invocation was non-zero
+then that value is returned.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is in fact <code>nftw64</code>, i.e., the LFS
+interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- ftw.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>nftw64</b> (<var>const char *filename, __nftw64_func_t func, int descriptors, int flag</var>)<var><a name="index-nftw64-1454"></a></var><br>
+<blockquote><p>This function is similar to <code>nftw</code> but it can work on filesystems
+with large files.  File information is reported using a variable of type
+<code>struct stat64</code> which is passed by reference to the callback
+function.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is available under the name <code>nftw</code> and
+transparently replaces the old implementation. 
+</p></blockquote></div>
+
+   </body></html>
+

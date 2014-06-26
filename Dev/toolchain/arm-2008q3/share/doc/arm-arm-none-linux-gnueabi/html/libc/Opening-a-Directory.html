@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+<title>Opening a Directory - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Accessing-Directories.html#Accessing-Directories" title="Accessing Directories">
+<link rel="prev" href="Directory-Entries.html#Directory-Entries" title="Directory Entries">
+<link rel="next" href="Reading_002fClosing-Directory.html#Reading_002fClosing-Directory" title="Reading/Closing Directory">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Opening-a-Directory"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Reading_002fClosing-Directory.html#Reading_002fClosing-Directory">Reading/Closing Directory</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Directory-Entries.html#Directory-Entries">Directory Entries</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.2.2 Opening a Directory Stream</h4>
+
+<p><a name="index-dirent_002eh-1410"></a>This section describes how to open a directory stream.  All the symbols
+are declared in the header file <samp><span class="file">dirent.h</span></samp>.
+
+<!-- dirent.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>DIR</b><var><a name="index-DIR-1411"></a></var><br>
+<blockquote><p>The <code>DIR</code> data type represents a directory stream. 
+</p></blockquote></div>
+
+   <p>You shouldn't ever allocate objects of the <code>struct dirent</code> or
+<code>DIR</code> data types, since the directory access functions do that for
+you.  Instead, you refer to these objects using the pointers returned by
+the following functions.
+
+<!-- dirent.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: DIR * <b>opendir</b> (<var>const char *dirname</var>)<var><a name="index-opendir-1412"></a></var><br>
+<blockquote><p>The <code>opendir</code> function opens and returns a directory stream for
+reading the directory whose file name is <var>dirname</var>.  The stream has
+type <code>DIR *</code>.
+
+        <p>If unsuccessful, <code>opendir</code> returns a null pointer.  In addition to
+the usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>Read permission is denied for the directory named by <code>dirname</code>.
+
+          <br><dt><code>EMFILE</code><dd>The process has too many files open.
+
+          <br><dt><code>ENFILE</code><dd>The entire system, or perhaps the file system which contains the
+directory, cannot support any additional open files at the moment. 
+(This problem cannot happen on the GNU system.)
+
+          <br><dt><code>ENOMEM</code><dd>Not enough memory available. 
+</dl>
+
+        <p>The <code>DIR</code> type is typically implemented using a file descriptor,
+and the <code>opendir</code> function in terms of the <code>open</code> function. 
+See <a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>.  Directory streams and the underlying
+file descriptors are closed on <code>exec</code> (see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>). 
+</p></blockquote></div>
+
+   <p>The directory which is opened for reading by <code>opendir</code> is
+identified by the name.  In some situations this is not sufficient. 
+Or the way <code>opendir</code> implicitly creates a file descriptor for the
+directory is not the way a program might want it.  In these cases an
+alternative interface can be used.
+
+<!-- dirent.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: DIR * <b>fdopendir</b> (<var>int fd</var>)<var><a name="index-fdopendir-1413"></a></var><br>
+<blockquote><p>The <code>fdopendir</code> function works just like <code>opendir</code> but
+instead of taking a file name and opening a file descriptor for the
+directory the caller is required to provide a file descriptor.  This
+file descriptor is then used in subsequent uses of the returned
+directory stream object.
+
+        <p>The caller must make sure the file descriptor is associated with a
+directory and it allows reading.
+
+        <p>If the <code>fdopendir</code> call returns successfully the file descriptor
+is now under the control of the system.  It can be used in the same
+way the descriptor implicitly created by <code>opendir</code> can be used
+but the program must not close the descriptor.
+
+        <p>In case the function is unsuccessful it returns a null pointer and the
+file descriptor remains to be usable by the program.  The following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The file descriptor is not valid.
+
+          <br><dt><code>ENOTDIR</code><dd>The file descriptor is not associated with a directory.
+
+          <br><dt><code>EINVAL</code><dd>The descriptor does not allow reading the directory content.
+
+          <br><dt><code>ENOMEM</code><dd>Not enough memory available. 
+</dl>
+        </p></blockquote></div>
+
+   <p>In some situations it can be desirable to get hold of the file
+descriptor which is created by the <code>opendir</code> call.  For instance,
+to switch the current working directory to the directory just read the
+<code>fchdir</code> function could be used.  Historically the <code>DIR</code> type
+was exposed and programs could access the fields.  This does not happen
+in the GNU C library.  Instead a separate function is provided to allow
+access.
+
+<!-- dirent.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>dirfd</b> (<var>DIR *dirstream</var>)<var><a name="index-dirfd-1414"></a></var><br>
+<blockquote><p>The function <code>dirfd</code> returns the file descriptor associated with
+the directory stream <var>dirstream</var>.  This descriptor can be used until
+the directory is closed with <code>closedir</code>.  If the directory stream
+implementation is not using file descriptors the return value is
+<code>-1</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

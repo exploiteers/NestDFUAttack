@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+<title>Users and Groups - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Name-Service-Switch.html#Name-Service-Switch" title="Name Service Switch">
+<link rel="next" href="System-Management.html#System-Management" title="System Management">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Users-and-Groups"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-Management.html#System-Management">System Management</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% How users are identified and classified -->
+<h2 class="chapter">29 Users and Groups</h2>
+
+<p>Every user who can log in on the system is identified by a unique number
+called the <dfn>user ID</dfn>.  Each process has an effective user ID which
+says which user's access permissions it has.
+
+   <p>Users are classified into <dfn>groups</dfn> for access control purposes.  Each
+process has one or more <dfn>group ID values</dfn> which say which groups the
+process can use for access to files.
+
+   <p>The effective user and group IDs of a process collectively form its
+<dfn>persona</dfn>.  This determines which files the process can access. 
+Normally, a process inherits its persona from the parent process, but
+under special circumstances a process can change its persona and thus
+change its access permissions.
+
+   <p>Each file in the system also has a user ID and a group ID.  Access
+control works by comparing the user and group IDs of the file with those
+of the running process.
+
+   <p>The system keeps a database of all the registered users, and another
+database of all the defined groups.  There are library functions you
+can use to examine these databases.
+
+<ul class="menu">
+<li><a accesskey="1" href="User-and-Group-IDs.html#User-and-Group-IDs">User and Group IDs</a>:           Each user has a unique numeric ID;
+				 likewise for groups. 
+<li><a accesskey="2" href="Process-Persona.html#Process-Persona">Process Persona</a>:              The user IDs and group IDs of a process. 
+<li><a accesskey="3" href="Why-Change-Persona.html#Why-Change-Persona">Why Change Persona</a>:           Why a program might need to change
+				 its user and/or group IDs. 
+<li><a accesskey="4" href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>:           Changing the user and group IDs. 
+<li><a accesskey="5" href="Reading-Persona.html#Reading-Persona">Reading Persona</a>:              How to examine the user and group IDs.
+
+<li><a accesskey="6" href="Setting-User-ID.html#Setting-User-ID">Setting User ID</a>:              Functions for setting the user ID. 
+<li><a accesskey="7" href="Setting-Groups.html#Setting-Groups">Setting Groups</a>:               Functions for setting the group IDs.
+
+<li><a accesskey="8" href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">Enable/Disable Setuid</a>:        Turning setuid access on and off. 
+<li><a accesskey="9" href="Setuid-Program-Example.html#Setuid-Program-Example">Setuid Program Example</a>:       The pertinent parts of one sample program. 
+<li><a href="Tips-for-Setuid.html#Tips-for-Setuid">Tips for Setuid</a>:              How to avoid granting unlimited access.
+
+<li><a href="Who-Logged-In.html#Who-Logged-In">Who Logged In</a>:                Getting the name of the user who logged in,
+				 or of the real user ID of the current process.
+
+<li><a href="User-Accounting-Database.html#User-Accounting-Database">User Accounting Database</a>:     Keeping information about users and various
+                                 actions in databases.
+
+<li><a href="User-Database.html#User-Database">User Database</a>:                Functions and data structures for
+                        	 accessing the user database. 
+<li><a href="Group-Database.html#Group-Database">Group Database</a>:               Functions and data structures for
+                        	 accessing the group database. 
+<li><a href="Database-Example.html#Database-Example">Database Example</a>:             Example program showing the use of database
+				 inquiry functions. 
+<li><a href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>:            Functions for accessing the netgroup database. 
+</ul>
+
+   </body></html>
+

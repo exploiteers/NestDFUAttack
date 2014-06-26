@@ -1,0 +1,36 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to handles remounting of the root 
+#      filesystem in read-only mode on system shutdown or restart.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+case "${1}" in
+
+'start')
+	;;
+
+'stop')
+	# Explicitly remount the root file system as read-only and
+	# don't try to update the mount table.
+
+	${ECHO} "Remounting root filesystem read-only:\c"
+
+		${MOUNT} ${VERBOSE} -n -o remount,ro ${ROOTDIR}
+
+	${ECHO} " done."
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop>"
+	exit 1
+	;;
+
+esac

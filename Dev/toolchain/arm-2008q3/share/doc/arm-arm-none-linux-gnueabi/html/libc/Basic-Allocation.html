@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Basic Allocation - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="next" href="Malloc-Examples.html#Malloc-Examples" title="Malloc Examples">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Basic-Allocation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Malloc-Examples.html#Malloc-Examples">Malloc Examples</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.1 Basic Memory Allocation</h5>
+
+<p><a name="index-allocation-of-memory-with-_0040code_007bmalloc_007d-256"></a>
+To allocate a block of memory, call <code>malloc</code>.  The prototype for
+this function is in <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-257"></a>
+<!-- malloc.h stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: void * <b>malloc</b> (<var>size_t size</var>)<var><a name="index-malloc-258"></a></var><br>
+<blockquote><p>This function returns a pointer to a newly allocated block <var>size</var>
+bytes long, or a null pointer if the block could not be allocated. 
+</p></blockquote></div>
+
+   <p>The contents of the block are undefined; you must initialize it yourself
+(or use <code>calloc</code> instead; see <a href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>). 
+Normally you would cast the value as a pointer to the kind of object
+that you want to store in the block.  Here we show an example of doing
+so, and of initializing the space with zeros using the library function
+<code>memset</code> (see <a href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>):
+
+<pre class="smallexample">     struct foo *ptr;
+     ...
+     ptr = (struct foo *) malloc (sizeof (struct foo));
+     if (ptr == 0) abort ();
+     memset (ptr, 0, sizeof (struct foo));
+</pre>
+   <p>You can store the result of <code>malloc</code> into any pointer variable
+without a cast, because ISO&nbsp;C<!-- /@w --> automatically converts the type
+<code>void *</code> to another type of pointer when necessary.  But the cast
+is necessary in contexts other than assignment operators or if you might
+want your code to run in traditional C.
+
+   <p>Remember that when allocating space for a string, the argument to
+<code>malloc</code> must be one plus the length of the string.  This is
+because a string is terminated with a null character that doesn't count
+in the &ldquo;length&rdquo; of the string but does need space.  For example:
+
+<pre class="smallexample">     char *ptr;
+     ...
+     ptr = (char *) malloc (length + 1);
+</pre>
+   <p class="noindent">See <a href="Representation-of-Strings.html#Representation-of-Strings">Representation of Strings</a>, for more information about this.
+
+   </body></html>
+

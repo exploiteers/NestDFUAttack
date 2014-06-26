@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+<title>struct timeval - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Protocol_002dspecific-Representation-of-Datatypes.html#Protocol_002dspecific-Representation-of-Datatypes" title="Protocol-specific Representation of Datatypes">
+<link rel="prev" href="struct-stat.html#struct-stat" title="struct stat">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="struct-timeval"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="struct-stat.html#struct-stat">struct stat</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Protocol_002dspecific-Representation-of-Datatypes.html#Protocol_002dspecific-Representation-of-Datatypes">Protocol-specific Representation of Datatypes</a>
+<hr>
+</div>
+
+<h5 class="unnumberedsubsubsec">struct timeval</h5>
+
+<p><a name="index-struct-timeval_002c-in-file_002di_002fo-protocol-1946"></a>
+The buffer of type <code>struct timeval</code> used by the File-I/O protocol
+is defined as follows:
+
+<pre class="smallexample">     struct timeval {
+         time_t tv_sec;  /* second */
+         long   tv_usec; /* microsecond */
+     };
+</pre>
+   <p>The integral datatypes conform to the definitions given in the
+appropriate section (see <a href="Integral-Datatypes.html#Integral-Datatypes">Integral Datatypes</a>, for details) so this
+structure is of size 8 bytes.
+
+   </body></html>
+

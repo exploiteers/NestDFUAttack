@@ -1,0 +1,298 @@
+<html lang="en">
+<head>
+<title>Temporary Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Making-Special-Files.html#Making-Special-Files" title="Making Special Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Temporary-Files"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Making-Special-Files.html#Making-Special-Files">Making Special Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.11 Temporary Files</h3>
+
+<p>If you need to use a temporary file in your program, you can use the
+<code>tmpfile</code> function to open it.  Or you can use the <code>tmpnam</code>
+(better: <code>tmpnam_r</code>) function to provide a name for a temporary
+file and then you can open it in the usual way with <code>fopen</code>.
+
+   <p>The <code>tempnam</code> function is like <code>tmpnam</code> but lets you choose
+what directory temporary files will go in, and something about what
+their file names will look like.  Important for multi-threaded programs
+is that <code>tempnam</code> is reentrant, while <code>tmpnam</code> is not since it
+returns a pointer to a static buffer.
+
+   <p>These facilities are declared in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1599"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: FILE * <b>tmpfile</b> (<var>void</var>)<var><a name="index-tmpfile-1600"></a></var><br>
+<blockquote><p>This function creates a temporary binary file for update mode, as if by
+calling <code>fopen</code> with mode <code>"wb+"</code>.  The file is deleted
+automatically when it is closed or when the program terminates.  (On
+some other ISO&nbsp;C<!-- /@w --> systems the file may fail to be deleted if the program
+terminates abnormally).
+
+        <p>This function is reentrant.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is in fact <code>tmpfile64</code>, i.e., the LFS
+interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: FILE * <b>tmpfile64</b> (<var>void</var>)<var><a name="index-tmpfile64-1601"></a></var><br>
+<blockquote><p>This function is similar to <code>tmpfile</code>, but the stream it returns a
+pointer to was opened using <code>tmpfile64</code>.  Therefore this stream can
+be used for files larger then 2^31 bytes on 32-bit machines.
+
+        <p>Please note that the return type is still <code>FILE *</code>.  There is no
+special <code>FILE</code> type for the LFS interface.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a 32
+bits machine this function is available under the name <code>tmpfile</code>
+and so transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>tmpnam</b> (<var>char *result</var>)<var><a name="index-tmpnam-1602"></a></var><br>
+<blockquote><p>This function constructs and returns a valid file name that does not
+refer to any existing file.  If the <var>result</var> argument is a null
+pointer, the return value is a pointer to an internal static string,
+which might be modified by subsequent calls and therefore makes this
+function non-reentrant.  Otherwise, the <var>result</var> argument should be
+a pointer to an array of at least <code>L_tmpnam</code> characters, and the
+result is written into that array.
+
+        <p>It is possible for <code>tmpnam</code> to fail if you call it too many times
+without removing previously-created files.  This is because the limited
+length of the temporary file names gives room for only a finite number
+of different names.  If <code>tmpnam</code> fails it returns a null pointer.
+
+        <p><strong>Warning:</strong> Between the time the pathname is constructed and the
+file is created another process might have created a file with the same
+name using <code>tmpnam</code>, leading to a possible security hole.  The
+implementation generates names which can hardly be predicted, but when
+opening the file you should use the <code>O_EXCL</code> flag.  Using
+<code>tmpfile</code> or <code>mkstemp</code> is a safe way to avoid this problem. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>tmpnam_r</b> (<var>char *result</var>)<var><a name="index-tmpnam_005fr-1603"></a></var><br>
+<blockquote><p>This function is nearly identical to the <code>tmpnam</code> function, except
+that if <var>result</var> is a null pointer it returns a null pointer.
+
+        <p>This guarantees reentrancy because the non-reentrant situation of
+<code>tmpnam</code> cannot happen here.
+
+        <p><strong>Warning</strong>: This function has the same security problems as
+<code>tmpnam</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>L_tmpnam</b><var><a name="index-L_005ftmpnam-1604"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that
+represents the minimum size of a string large enough to hold a file name
+generated by the <code>tmpnam</code> function. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>TMP_MAX</b><var><a name="index-TMP_005fMAX-1605"></a></var><br>
+<blockquote><p>The macro <code>TMP_MAX</code> is a lower bound for how many temporary names
+you can create with <code>tmpnam</code>.  You can rely on being able to call
+<code>tmpnam</code> at least this many times before it might fail saying you
+have made too many temporary file names.
+
+        <p>With the GNU library, you can create a very large number of temporary
+file names.  If you actually created the files, you would probably run
+out of disk space before you ran out of names.  Some other systems have
+a fixed, small limit on the number of temporary files.  The limit is
+never less than <code>25</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: char * <b>tempnam</b> (<var>const char *dir, const char *prefix</var>)<var><a name="index-tempnam-1606"></a></var><br>
+<blockquote><p>This function generates a unique temporary file name.  If <var>prefix</var>
+is not a null pointer, up to five characters of this string are used as
+a prefix for the file name.  The return value is a string newly
+allocated with <code>malloc</code>, so you should release its storage with
+<code>free</code> when it is no longer needed.
+
+        <p>Because the string is dynamically allocated this function is reentrant.
+
+        <p>The directory prefix for the temporary file name is determined by
+testing each of the following in sequence.  The directory must exist and
+be writable.
+
+          <ul>
+<li>The environment variable <code>TMPDIR</code>, if it is defined.  For security
+reasons this only happens if the program is not SUID or SGID enabled.
+
+          <li>The <var>dir</var> argument, if it is not a null pointer.
+
+          <li>The value of the <code>P_tmpdir</code> macro.
+
+          <li>The directory <samp><span class="file">/tmp</span></samp>. 
+</ul>
+
+        <p>This function is defined for SVID compatibility.
+
+        <p><strong>Warning:</strong> Between the time the pathname is constructed and the
+file is created another process might have created a file with the same
+name using <code>tempnam</code>, leading to a possible security hole.  The
+implementation generates names which can hardly be predicted, but when
+opening the file you should use the <code>O_EXCL</code> flag.  Using
+<code>tmpfile</code> or <code>mkstemp</code> is a safe way to avoid this problem. 
+</p></blockquote></div>
+   <a name="index-TMPDIR-environment-variable-1607"></a>
+<!-- stdio.h -->
+<!-- SVID -->
+<!-- !!! are we putting SVID/GNU/POSIX.1/BSD in here or not?? -->
+
+<div class="defun">
+&mdash; SVID Macro: char * <b>P_tmpdir</b><var><a name="index-P_005ftmpdir-1608"></a></var><br>
+<blockquote><p>This macro is the name of the default directory for temporary files. 
+</p></blockquote></div>
+
+   <p>Older Unix systems did not have the functions just described.  Instead
+they used <code>mktemp</code> and <code>mkstemp</code>.  Both of these functions
+work by modifying a file name template string you pass.  The last six
+characters of this string must be &lsquo;<samp><span class="samp">XXXXXX</span></samp>&rsquo;.  These six &lsquo;<samp><span class="samp">X</span></samp>&rsquo;s
+are replaced with six characters which make the whole string a unique
+file name.  Usually the template string is something like
+&lsquo;<samp><span class="samp">/tmp/</span><var>prefix</var><span class="samp">XXXXXX</span></samp>&rsquo;, and each program uses a unique <var>prefix</var>.
+
+   <p><strong>Note:</strong> Because <code>mktemp</code> and <code>mkstemp</code> modify the
+template string, you <em>must not</em> pass string constants to them. 
+String constants are normally in read-only storage, so your program
+would crash when <code>mktemp</code> or <code>mkstemp</code> tried to modify the
+string.  These functions are declared in the header file <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-1609"></a>
+<!-- stdlib.h -->
+<!-- Unix -->
+
+<div class="defun">
+&mdash; Function: char * <b>mktemp</b> (<var>char *template</var>)<var><a name="index-mktemp-1610"></a></var><br>
+<blockquote><p>The <code>mktemp</code> function generates a unique file name by modifying
+<var>template</var> as described above.  If successful, it returns
+<var>template</var> as modified.  If <code>mktemp</code> cannot find a unique file
+name, it makes <var>template</var> an empty string and returns that.  If
+<var>template</var> does not end with &lsquo;<samp><span class="samp">XXXXXX</span></samp>&rsquo;, <code>mktemp</code> returns a
+null pointer.
+
+        <p><strong>Warning:</strong> Between the time the pathname is constructed and the
+file is created another process might have created a file with the same
+name using <code>mktemp</code>, leading to a possible security hole.  The
+implementation generates names which can hardly be predicted, but when
+opening the file you should use the <code>O_EXCL</code> flag.  Using
+<code>mkstemp</code> is a safe way to avoid this problem. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>mkstemp</b> (<var>char *template</var>)<var><a name="index-mkstemp-1611"></a></var><br>
+<blockquote><p>The <code>mkstemp</code> function generates a unique file name just as
+<code>mktemp</code> does, but it also opens the file for you with <code>open</code>
+(see <a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>).  If successful, it modifies
+<var>template</var> in place and returns a file descriptor for that file open
+for reading and writing.  If <code>mkstemp</code> cannot create a
+uniquely-named file, it returns <code>-1</code>.  If <var>template</var> does not
+end with &lsquo;<samp><span class="samp">XXXXXX</span></samp>&rsquo;, <code>mkstemp</code> returns <code>-1</code> and does not
+modify <var>template</var>.
+
+        <p>The file is opened using mode <code>0600</code>.  If the file is meant to be
+used by other users this mode must be changed explicitly. 
+</p></blockquote></div>
+
+   <p>Unlike <code>mktemp</code>, <code>mkstemp</code> is actually guaranteed to create a
+unique file that cannot possibly clash with any other program trying to
+create a temporary file.  This is because it works by calling
+<code>open</code> with the <code>O_EXCL</code> flag, which says you want to create a
+new file and get an error if the file already exists.
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>mkdtemp</b> (<var>char *template</var>)<var><a name="index-mkdtemp-1612"></a></var><br>
+<blockquote><p>The <code>mkdtemp</code> function creates a directory with a unique name.  If
+it succeeds, it overwrites <var>template</var> with the name of the
+directory, and returns <var>template</var>.  As with <code>mktemp</code> and
+<code>mkstemp</code>, <var>template</var> should be a string ending with
+&lsquo;<samp><span class="samp">XXXXXX</span></samp>&rsquo;.
+
+        <p>If <code>mkdtemp</code> cannot create an uniquely named directory, it returns
+<code>NULL</code> and sets <var>errno</var> appropriately.  If <var>template</var> does
+not end with &lsquo;<samp><span class="samp">XXXXXX</span></samp>&rsquo;, <code>mkdtemp</code> returns <code>NULL</code> and does
+not modify <var>template</var>.  <var>errno</var> will be set to <code>EINVAL</code> in
+this case.
+
+        <p>The directory is created using mode <code>0700</code>. 
+</p></blockquote></div>
+
+   <p>The directory created by <code>mkdtemp</code> cannot clash with temporary
+files or directories created by other users.  This is because directory
+creation always works like <code>open</code> with <code>O_EXCL</code>. 
+See <a href="Creating-Directories.html#Creating-Directories">Creating Directories</a>.
+
+   <p>The <code>mkdtemp</code> function comes from OpenBSD.
+
+   </body></html>
+

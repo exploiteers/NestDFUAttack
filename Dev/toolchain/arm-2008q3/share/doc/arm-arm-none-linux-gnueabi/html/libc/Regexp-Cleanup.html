@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Regexp Cleanup - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Regular-Expressions.html#Regular-Expressions" title="Regular Expressions">
+<link rel="prev" href="Subexpression-Complications.html#Subexpression-Complications" title="Subexpression Complications">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Regexp-Cleanup"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Subexpression-Complications.html#Subexpression-Complications">Subexpression Complications</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Regular-Expressions.html#Regular-Expressions">Regular Expressions</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.3.6 POSIX Regexp Matching Cleanup</h4>
+
+<p>When you are finished using a compiled regular expression, you can
+free the storage it uses by calling <code>regfree</code>.
+
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: void <b>regfree</b> (<var>regex_t *compiled</var>)<var><a name="index-regfree-881"></a></var><br>
+<blockquote><p>Calling <code>regfree</code> frees all the storage that <code>*</code><var>compiled</var>
+points to.  This includes various internal fields of the <code>regex_t</code>
+structure that aren't documented in this manual.
+
+        <p><code>regfree</code> does not free the object <code>*</code><var>compiled</var> itself. 
+</p></blockquote></div>
+
+   <p>You should always free the space in a <code>regex_t</code> structure with
+<code>regfree</code> before using the structure to compile another regular
+expression.
+
+   <p>When <code>regcomp</code> or <code>regexec</code> reports an error, you can use
+the function <code>regerror</code> to turn it into an error message string.
+
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: size_t <b>regerror</b> (<var>int errcode, const regex_t *restrict compiled, char *restrict buffer, size_t length</var>)<var><a name="index-regerror-882"></a></var><br>
+<blockquote><p>This function produces an error message string for the error code
+<var>errcode</var>, and stores the string in <var>length</var> bytes of memory
+starting at <var>buffer</var>.  For the <var>compiled</var> argument, supply the
+same compiled regular expression structure that <code>regcomp</code> or
+<code>regexec</code> was working with when it got the error.  Alternatively,
+you can supply <code>NULL</code> for <var>compiled</var>; you will still get a
+meaningful error message, but it might not be as detailed.
+
+        <p>If the error message can't fit in <var>length</var> bytes (including a
+terminating null character), then <code>regerror</code> truncates it. 
+The string that <code>regerror</code> stores is always null-terminated
+even if it has been truncated.
+
+        <p>The return value of <code>regerror</code> is the minimum length needed to
+store the entire error message.  If this is less than <var>length</var>, then
+the error message was not truncated, and you can use it.  Otherwise, you
+should call <code>regerror</code> again with a larger buffer.
+
+        <p>Here is a function which uses <code>regerror</code>, but always dynamically
+allocates a buffer for the error message:
+
+     <pre class="smallexample">          char *get_regerror (int errcode, regex_t *compiled)
+          {
+            size_t length = regerror (errcode, compiled, NULL, 0);
+            char *buffer = xmalloc (length);
+            (void) regerror (errcode, compiled, buffer, length);
+            return buffer;
+          }
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

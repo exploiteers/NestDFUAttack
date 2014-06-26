@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Using the Memory Debugger - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Allocation-Debugging.html#Allocation-Debugging" title="Allocation Debugging">
+<link rel="prev" href="Tracing-malloc.html#Tracing-malloc" title="Tracing malloc">
+<link rel="next" href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger" title="Tips for the Memory Debugger">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Using-the-Memory-Debugger"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger">Tips for the Memory Debugger</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tracing-malloc.html#Tracing-malloc">Tracing malloc</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.3.2 Example program excerpts</h5>
+
+<p>Even though the tracing functionality does not influence the runtime
+behavior of the program it is not a good idea to call <code>mtrace</code> in
+all programs.  Just imagine that you debug a program using <code>mtrace</code>
+and all other programs used in the debugging session also trace their
+<code>malloc</code> calls.  The output file would be the same for all programs
+and thus is unusable.  Therefore one should call <code>mtrace</code> only if
+compiled for debugging.  A program could therefore start like this:
+
+<pre class="example">     #include &lt;mcheck.h&gt;
+     
+     int
+     main (int argc, char *argv[])
+     {
+     #ifdef DEBUGGING
+       mtrace ();
+     #endif
+       ...
+     }
+</pre>
+   <p>This is all what is needed if you want to trace the calls during the
+whole runtime of the program.  Alternatively you can stop the tracing at
+any time with a call to <code>muntrace</code>.  It is even possible to restart
+the tracing again with a new call to <code>mtrace</code>.  But this can cause
+unreliable results since there may be calls of the functions which are
+not called.  Please note that not only the application uses the traced
+functions, also libraries (including the C library itself) use these
+functions.
+
+   <p>This last point is also why it is no good idea to call <code>muntrace</code>
+before the program terminated.  The libraries are informed about the
+termination of the program only after the program returns from
+<code>main</code> or calls <code>exit</code> and so cannot free the memory they use
+before this time.
+
+   <p>So the best thing one can do is to call <code>mtrace</code> as the very first
+function in the program and never call <code>muntrace</code>.  So the program
+traces almost all uses of the <code>malloc</code> functions (except those
+calls which are executed by constructors of the program or used
+libraries).
+
+   </body></html>
+

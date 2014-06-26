@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+<title>C Defaults - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="C.html#C" title="C">
+<link rel="prev" href="C-Plus-Plus-Expressions.html#C-Plus-Plus-Expressions" title="C Plus Plus Expressions">
+<link rel="next" href="C-Checks.html#C-Checks" title="C Checks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="C-Defaults"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="C-Checks.html#C-Checks">C Checks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="C-Plus-Plus-Expressions.html#C-Plus-Plus-Expressions">C Plus Plus Expressions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="C.html#C">C</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">13.4.1.4 C and C<tt>++</tt> Defaults</h5>
+
+<p><a name="index-C-and-C_0040t_007b_002b_002b_007d-defaults-694"></a>
+If you allow <span class="sc">gdb</span> to set type and range checking automatically, they
+both default to <code>off</code> whenever the working language changes to
+C or C<tt>++</tt>.  This happens regardless of whether you or <span class="sc">gdb</span>
+selects the working language.
+
+   <p>If you allow <span class="sc">gdb</span> to set the language automatically, it
+recognizes source files whose names end with <samp><span class="file">.c</span></samp>, <samp><span class="file">.C</span></samp>, or
+<samp><span class="file">.cc</span></samp>, etc, and when <span class="sc">gdb</span> enters code compiled from one of
+these files, it sets the working language to C or C<tt>++</tt>. 
+See <a href="Automatically.html#Automatically">Having <span class="sc">gdb</span> Infer the Source Language</a>,
+for further details.
+
+<!-- Type checking is (a) primarily motivated by Modula-2, and (b) -->
+<!-- unimplemented.  If (b) changes, it might make sense to let this node -->
+<!-- appear even if Mod-2 does not, but meanwhile ignore it. roland 16jul93. -->
+   </body></html>
+

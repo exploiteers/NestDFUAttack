@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Services in the NSS configuration - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="NSS-Configuration-File.html#NSS-Configuration-File" title="NSS Configuration File">
+<link rel="prev" href="NSS-Configuration-File.html#NSS-Configuration-File" title="NSS Configuration File">
+<link rel="next" href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration" title="Actions in the NSS configuration">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Services-in-the-NSS-configuration"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.2.1 Services in the NSS configuration File</h4>
+
+<p>The above example file mentions four different services: <code>files</code>,
+<code>db</code>, <code>nis</code>, and <code>nisplus</code>.  This does not mean these
+services are available on all sites and it does also not mean these are
+all the services which will ever be available.
+
+   <p>In fact, these names are simply strings which the NSS code uses to find
+the implicitly addressed functions.  The internal interface will be
+described later.  Visible to the user are the modules which implement an
+individual service.
+
+   <p>Assume the service <var>name</var> shall be used for a lookup.  The code for
+this service is implemented in a module called <samp><span class="file">libnss_</span><var>name</var></samp>. 
+On a system supporting shared libraries this is in fact a shared library
+with the name (for example) <samp><span class="file">libnss_</span><var>name</var><span class="file">.so.2</span></samp>.  The number
+at the end is the currently used version of the interface which will not
+change frequently.  Normally the user should not have to be cognizant of
+these files since they should be placed in a directory where they are
+found automatically.  Only the names of all available services are
+important.
+
+   </body></html>
+

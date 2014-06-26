@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+<title>Start of New Year Procedure - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Versions-and-Branches.html#Versions-and-Branches" title="Versions and Branches">
+<link rel="next" href="Releasing-GDB.html#Releasing-GDB" title="Releasing GDB">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Start-of-New-Year-Procedure"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Releasing-GDB.html#Releasing-GDB">Releasing GDB</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Versions-and-Branches.html#Versions-and-Branches">Versions and Branches</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">18 Start of New Year Procedure</h2>
+
+<p><a name="index-new-year-procedure-428"></a>
+At the start of each new year, the following actions should be performed:
+
+     <ul>
+<li>Rotate the ChangeLog file
+
+     <p>The current <samp><span class="file">ChangeLog</span></samp> file should be renamed into
+<samp><span class="file">ChangeLog-YYYY</span></samp> where YYYY is the year that has just passed. 
+A new <samp><span class="file">ChangeLog</span></samp> file should be created, and its contents should
+contain a reference to the previous ChangeLog.  The following should
+also be preserved at the end of the new ChangeLog, in order to provide
+the appropriate settings when editing this file with Emacs:
+     <pre class="smallexample">          Local Variables:
+          mode: change-log
+          left-margin: 8
+          fill-column: 74
+          version-control: never
+          End:
+</pre>
+     <li>Add an entry for the newly created ChangeLog file (<samp><span class="file">ChangeLog-YYYY</span></samp>)
+in <samp><span class="file">gdb/config/djgpp/fnchange.lst</span></samp>.
+
+     <li>Update the copyright year in the startup message
+
+     <p>Update the copyright year in file <samp><span class="file">top.c</span></samp>, function
+<code>print_gdb_version</code>.
+
+     <li>Add the new year in the copyright notices of all source and documentation
+files.  This can be done semi-automatically by running the <code>copyright.sh</code>
+script.  This script requires Emacs 22 or later to be installed.
+
+   </ul>
+
+   </body></html>
+

@@ -1,0 +1,227 @@
+<html lang="en">
+<head>
+<title>Argp Example 3 - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Examples.html#Argp-Examples" title="Argp Examples">
+<link rel="prev" href="Argp-Example-2.html#Argp-Example-2" title="Argp Example 2">
+<link rel="next" href="Argp-Example-4.html#Argp-Example-4" title="Argp Example 4">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Example-3"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Example-4.html#Argp-Example-4">Argp Example 4</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Example-2.html#Argp-Example-2">Argp Example 2</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Examples.html#Argp-Examples">Argp Examples</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">25.3.11.3 A Program Using Argp with User Options</h5>
+
+<p>This program uses the same features as example 2, adding user options
+and arguments.
+
+   <p>We now use the first four fields in <code>argp</code> (see <a href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>)
+and specify <code>parse_opt</code> as the parser function.  See <a href="Argp-Parser-Functions.html#Argp-Parser-Functions">Argp Parser Functions</a>.
+
+   <p>Note that in this example, <code>main</code> uses a structure to communicate
+with the <code>parse_opt</code> function, a pointer to which it passes in the
+<code>input</code> argument to <code>argp_parse</code>.  See <a href="Argp.html#Argp">Argp</a>.  It is retrieved
+by <code>parse_opt</code> through the <code>input</code> field in its <code>state</code>
+argument.  See <a href="Argp-Parsing-State.html#Argp-Parsing-State">Argp Parsing State</a>.  Of course, it's also possible to
+use global variables instead, but using a structure like this is
+somewhat more flexible and clean.
+
+<pre class="smallexample">     /* <span class="roman">Argp example #3 -- a program with options and arguments using argp</span> */
+     
+     /* <span class="roman">This program uses the same features as example 2, and uses options and
+        arguments.
+     
+        We now use the first four fields in ARGP, so here's a description of them:
+          OPTIONS  -- A pointer to a vector of struct argp_option (see below)
+          PARSER   -- A function to parse a single option, called by argp
+          ARGS_DOC -- A string describing how the non-option arguments should look
+          DOC      -- A descriptive string about this program; if it contains a
+                      vertical tab character (\v), the part after it will be
+                      printed *following* the options
+     
+        The function PARSER takes the following arguments:
+          KEY  -- An integer specifying which option this is (taken
+                  from the KEY field in each struct argp_option), or
+                  a special key specifying something else; the only
+                  special keys we use here are ARGP_KEY_ARG, meaning
+                  a non-option argument, and ARGP_KEY_END, meaning
+                  that all arguments have been parsed
+          ARG  -- For an option KEY, the string value of its
+                  argument, or NULL if it has none
+          STATE-- A pointer to a struct argp_state, containing
+                  various useful information about the parsing state; used here
+                  are the INPUT field, which reflects the INPUT argument to
+                  argp_parse, and the ARG_NUM field, which is the number of the
+                  current non-option argument being parsed
+        It should return either 0, meaning success, ARGP_ERR_UNKNOWN, meaning the
+        given KEY wasn't recognized, or an errno value indicating some other
+        error.
+     
+        Note that in this example, main uses a structure to communicate with the
+        parse_opt function, a pointer to which it passes in the INPUT argument to
+        argp_parse.  Of course, it's also possible to use global variables
+        instead, but this is somewhat more flexible.
+     
+        The OPTIONS field contains a pointer to a vector of struct argp_option's;
+        that structure has the following fields (if you assign your option
+        structures using array initialization like this example, unspecified
+        fields will be defaulted to 0, and need not be specified):
+          NAME   -- The name of this option's long option (may be zero)
+          KEY    -- The KEY to pass to the PARSER function when parsing this option,
+                    *and* the name of this option's short option, if it is a
+                    printable ascii character
+          ARG    -- The name of this option's argument, if any
+          FLAGS  -- Flags describing this option; some of them are:
+                      OPTION_ARG_OPTIONAL -- The argument to this option is optional
+                      OPTION_ALIAS        -- This option is an alias for the
+                                             previous option
+                      OPTION_HIDDEN       -- Don't show this option in --help output
+          DOC    -- A documentation string for this option, shown in --help output
+     
+        An options vector should be terminated by an option with all fields zero.</span> */
+     
+     #include &lt;argp.h&gt;
+     
+     const char *argp_program_version =
+       "argp-ex3 1.0";
+     const char *argp_program_bug_address =
+       "&lt;bug-gnu-utils@gnu.org&gt;";
+     
+     /* <span class="roman">Program documentation.</span> */
+     static char doc[] =
+       "Argp example #3 -- a program with options and arguments using argp";
+     
+     /* <span class="roman">A description of the arguments we accept.</span> */
+     static char args_doc[] = "ARG1 ARG2";
+     
+     /* <span class="roman">The options we understand.</span> */
+     static struct argp_option options[] = {
+       {"verbose",  'v', 0,      0,  "Produce verbose output" },
+       {"quiet",    'q', 0,      0,  "Don't produce any output" },
+       {"silent",   's', 0,      OPTION_ALIAS },
+       {"output",   'o', "FILE", 0,
+        "Output to FILE instead of standard output" },
+       { 0 }
+     };
+     
+     /* <span class="roman">Used by </span><code>main</code><span class="roman"> to communicate with </span><code>parse_opt</code><span class="roman">.</span> */
+     struct arguments
+     {
+       char *args[2];                /* <var>arg1</var><span class="roman"> &amp; </span><var>arg2</var> */
+       int silent, verbose;
+       char *output_file;
+     };
+     
+     /* <span class="roman">Parse a single option.</span> */
+     static error_t
+     parse_opt (int key, char *arg, struct argp_state *state)
+     {
+       /* <span class="roman">Get the </span><var>input</var><span class="roman"> argument from </span><code>argp_parse</code><span class="roman">, which we
+          know is a pointer to our arguments structure.</span> */
+       struct arguments *arguments = state-&gt;input;
+     
+       switch (key)
+         {
+         case 'q': case 's':
+           arguments-&gt;silent = 1;
+           break;
+         case 'v':
+           arguments-&gt;verbose = 1;
+           break;
+         case 'o':
+           arguments-&gt;output_file = arg;
+           break;
+     
+         case ARGP_KEY_ARG:
+           if (state-&gt;arg_num &gt;= 2)
+             /* <span class="roman">Too many arguments.</span> */
+             argp_usage (state);
+     
+           arguments-&gt;args[state-&gt;arg_num] = arg;
+     
+           break;
+     
+         case ARGP_KEY_END:
+           if (state-&gt;arg_num &lt; 2)
+             /* <span class="roman">Not enough arguments.</span> */
+             argp_usage (state);
+           break;
+     
+         default:
+           return ARGP_ERR_UNKNOWN;
+         }
+       return 0;
+     }
+     
+     /* <span class="roman">Our argp parser.</span> */
+     static struct argp argp = { options, parse_opt, args_doc, doc };
+     
+     int main (int argc, char **argv)
+     {
+       struct arguments arguments;
+     
+       /* <span class="roman">Default values.</span> */
+       arguments.silent = 0;
+       arguments.verbose = 0;
+       arguments.output_file = "-";
+     
+       /* <span class="roman">Parse our arguments; every option seen by </span><code>parse_opt</code><span class="roman"> will
+          be reflected in </span><code>arguments</code><span class="roman">.</span> */
+       argp_parse (&amp;argp, argc, argv, 0, 0, &amp;arguments);
+     
+       printf ("ARG1 = %s\nARG2 = %s\nOUTPUT_FILE = %s\n"
+               "VERBOSE = %s\nSILENT = %s\n",
+               arguments.args[0], arguments.args[1],
+               arguments.output_file,
+               arguments.verbose ? "yes" : "no",
+               arguments.silent ? "yes" : "no");
+     
+       exit (0);
+     }
+</pre>
+   </body></html>
+

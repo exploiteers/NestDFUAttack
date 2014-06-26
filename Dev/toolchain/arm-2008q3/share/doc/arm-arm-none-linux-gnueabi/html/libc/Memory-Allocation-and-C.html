@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Memory Allocation and C - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Allocation.html#Memory-Allocation" title="Memory Allocation">
+<link rel="next" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Memory-Allocation-and-C"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.2.1 Memory Allocation in C Programs</h4>
+
+<p>The C language supports two kinds of memory allocation through the
+variables in C programs:
+
+     <ul>
+<li><dfn>Static allocation</dfn> is what happens when you declare a static or
+global variable.  Each static or global variable defines one block of
+space, of a fixed size.  The space is allocated once, when your program
+is started (part of the exec operation), and is never freed. 
+<a name="index-static-memory-allocation-247"></a><a name="index-static-storage-class-248"></a>
+<li><dfn>Automatic allocation</dfn> happens when you declare an automatic
+variable, such as a function argument or a local variable.  The space
+for an automatic variable is allocated when the compound statement
+containing the declaration is entered, and is freed when that
+compound statement is exited. 
+<a name="index-automatic-memory-allocation-249"></a><a name="index-automatic-storage-class-250"></a>
+In GNU C, the size of the automatic storage can be an expression
+that varies.  In other C implementations, it must be a constant. 
+</ul>
+
+   <p>A third important kind of memory allocation, <dfn>dynamic allocation</dfn>,
+is not supported by C variables but is available via GNU C library
+functions. 
+<a name="index-dynamic-memory-allocation-251"></a>
+
+<h5 class="subsubsection">3.2.1.1 Dynamic Memory Allocation</h5>
+
+<p><a name="index-dynamic-memory-allocation-252"></a>
+<dfn>Dynamic memory allocation</dfn> is a technique in which programs
+determine as they are running where to store some information.  You need
+dynamic allocation when the amount of memory you need, or how long you
+continue to need it, depends on factors that are not known before the
+program runs.
+
+   <p>For example, you may need a block to store a line read from an input
+file; since there is no limit to how long a line can be, you must
+allocate the memory dynamically and make it dynamically larger as you
+read more of the line.
+
+   <p>Or, you may need a block for each record or each definition in the input
+data; since you can't know in advance how many there will be, you must
+allocate a new block for each record or definition as you read it.
+
+   <p>When you use dynamic allocation, the allocation of a block of memory is
+an action that the program requests explicitly.  You call a function or
+macro when you want to allocate space, and specify the size with an
+argument.  If you want to free the space, you do so by calling another
+function or macro.  You can do these things whenever you want, as often
+as you want.
+
+   <p>Dynamic allocation is not supported by C variables; there is no storage
+class &ldquo;dynamic&rdquo;, and there can never be a C variable whose value is
+stored in dynamically allocated space.  The only way to get dynamically
+allocated memory is via a system call (which is generally via a GNU C
+library function call), and the only way to refer to dynamically
+allocated space is through a pointer.  Because it is less convenient,
+and because the actual process of dynamic allocation requires more
+computation time, programmers generally use dynamic allocation only when
+neither static nor automatic allocation will serve.
+
+   <p>For example, if you want to allocate dynamically some space to hold a
+<code>struct foobar</code>, you cannot declare a variable of type <code>struct
+foobar</code> whose contents are the dynamically allocated space.  But you can
+declare a variable of pointer type <code>struct foobar *</code> and assign it the
+address of the space.  Then you can use the operators &lsquo;<samp><span class="samp">*</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">-&gt;</span></samp>&rsquo; on this pointer variable to refer to the contents of the space:
+
+<pre class="smallexample">     {
+       struct foobar *ptr
+          = (struct foobar *) malloc (sizeof (struct foobar));
+       ptr-&gt;name = x;
+       ptr-&gt;next = current_foobar;
+       current_foobar = ptr;
+     }
+</pre>
+   </body></html>
+

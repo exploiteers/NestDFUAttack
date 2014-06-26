@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>All-Stop Mode - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Thread-Stops.html#Thread-Stops" title="Thread Stops">
+<link rel="next" href="Non_002dStop-Mode.html#Non_002dStop-Mode" title="Non-Stop Mode">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="All-Stop-Mode"></a>
+<a name="All_002dStop-Mode"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Non_002dStop-Mode.html#Non_002dStop-Mode">Non-Stop Mode</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Thread-Stops.html#Thread-Stops">Thread Stops</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.4.1 All-Stop Mode</h4>
+
+<p><a name="index-all_002dstop-mode-300"></a>
+In all-stop mode, whenever your program stops under <span class="sc">gdb</span> for any reason,
+<em>all</em> threads of execution stop, not just the current thread.  This
+allows you to examine the overall state of the program, including
+switching between threads, without worrying that things may change
+underfoot.
+
+   <p>Conversely, whenever you restart the program, <em>all</em> threads start
+executing.  <em>This is true even when single-stepping</em> with commands
+like <code>step</code> or <code>next</code>.
+
+   <p>In particular, <span class="sc">gdb</span> cannot single-step all threads in lockstep. 
+Since thread scheduling is up to your debugging target's operating
+system (not controlled by <span class="sc">gdb</span>), other threads may
+execute more than one statement while the current thread completes a
+single step.  Moreover, in general other threads stop in the middle of a
+statement, rather than at a clean statement boundary, when the program
+stops.
+
+   <p>You might even find your program stopped in another thread after
+continuing or even single-stepping.  This happens whenever some other
+thread runs into a breakpoint, a signal, or an exception before the
+first thread completes whatever you requested.
+
+   <p><a name="index-automatic-thread-selection-301"></a><a name="index-switching-threads-automatically-302"></a><a name="index-threads_002c-automatic-switching-303"></a>Whenever <span class="sc">gdb</span> stops your program, due to a breakpoint or a
+signal, it automatically selects the thread where that breakpoint or
+signal happened.  <span class="sc">gdb</span> alerts you to the context switch with a
+message such as &lsquo;<samp><span class="samp">[Switching to Thread </span><var>n</var><span class="samp">]</span></samp>&rsquo; to identify the
+thread.
+
+   <p>On some OSes, you can modify <span class="sc">gdb</span>'s default behavior by
+locking the OS scheduler to allow only a single thread to run.
+
+     <dl>
+<dt><code>set scheduler-locking </code><var>mode</var><dd><a name="index-scheduler-locking-mode-304"></a><a name="index-lock-scheduler-305"></a>Set the scheduler locking mode.  If it is <code>off</code>, then there is no
+locking and any thread may run at any time.  If <code>on</code>, then only the
+current thread may run when the inferior is resumed.  The <code>step</code>
+mode optimizes for single-stepping; it prevents other threads
+from preempting the current thread while you are stepping, so that
+the focus of debugging does not change unexpectedly. 
+Other threads only rarely (or never) get a chance to run
+when you step.  They are more likely to run when you &lsquo;<samp><span class="samp">next</span></samp>&rsquo; over a
+function call, and they are completely free to run when you use commands
+like &lsquo;<samp><span class="samp">continue</span></samp>&rsquo;, &lsquo;<samp><span class="samp">until</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">finish</span></samp>&rsquo;.  However, unless another
+thread hits a breakpoint during its timeslice, <span class="sc">gdb</span> does not change
+the current thread away from the thread that you are debugging.
+
+     <br><dt><code>show scheduler-locking</code><dd>Display the current scheduler locking mode. 
+</dl>
+
+   </body></html>
+

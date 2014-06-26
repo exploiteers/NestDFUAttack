@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>Platform Type - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Management.html#System-Management" title="System Management">
+<link rel="prev" href="Host-Identification.html#Host-Identification" title="Host Identification">
+<link rel="next" href="Filesystem-Handling.html#Filesystem-Handling" title="Filesystem Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Platform-Type"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Filesystem-Handling.html#Filesystem-Handling">Filesystem Handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Host-Identification.html#Host-Identification">Host Identification</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Management.html#System-Management">System Management</a>
+<hr>
+</div>
+
+<h3 class="section">30.2 Platform Type Identification</h3>
+
+<p>You can use the <code>uname</code> function to find out some information about
+the type of computer your program is running on.  This function and the
+associated data type are declared in the header file
+<samp><span class="file">sys/utsname.h</span></samp>. 
+<a name="index-sys_002futsname_002eh-3454"></a>
+As a bonus, <code>uname</code> also gives some information identifying the
+particular system your program is running on.  This is the same information
+which you can get with functions targetted to this purpose described in
+<a href="Host-Identification.html#Host-Identification">Host Identification</a>.
+
+<!-- sys/utsname.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>struct utsname</b><var><a name="index-struct-utsname-3455"></a></var><br>
+<blockquote><p>The <code>utsname</code> structure is used to hold information returned
+by the <code>uname</code> function.  It has the following members:
+
+          <dl>
+<dt><code>char sysname[]</code><dd>This is the name of the operating system in use.
+
+          <br><dt><code>char release[]</code><dd>This is the current release level of the operating system implementation.
+
+          <br><dt><code>char version[]</code><dd>This is the current version level within the release of the operating
+system.
+
+          <br><dt><code>char machine[]</code><dd>This is a description of the type of hardware that is in use.
+
+          <p>Some systems provide a mechanism to interrogate the kernel directly for
+this information.  On systems without such a mechanism, the GNU C
+library fills in this field based on the configuration name that was
+specified when building and installing the library.
+
+          <p>GNU uses a three-part name to describe a system configuration; the three
+parts are <var>cpu</var>, <var>manufacturer</var> and <var>system-type</var>, and they
+are separated with dashes.  Any possible combination of three names is
+potentially meaningful, but most such combinations are meaningless in
+practice and even the meaningful ones are not necessarily supported by
+any particular GNU program.
+
+          <p>Since the value in <code>machine</code> is supposed to describe just the
+hardware, it consists of the first two parts of the configuration name:
+&lsquo;<samp><var>cpu</var><span class="samp">-</span><var>manufacturer</var></samp>&rsquo;.  For example, it might be one of these:
+
+          <blockquote>
+<code>"sparc-sun"</code>,
+<code>"i386-</code><var>anything</var><code>"</code>,
+<code>"m68k-hp"</code>,
+<code>"m68k-sony"</code>,
+<code>"m68k-sun"</code>,
+<code>"mips-dec"</code>
+</blockquote>
+
+          <br><dt><code>char nodename[]</code><dd>This is the host name of this particular computer.  In the GNU C
+library, the value is the same as that returned by <code>gethostname</code>;
+see <a href="Host-Identification.html#Host-Identification">Host Identification</a>.
+
+          <p>gethostname() is implemented with a call to uname().
+
+          <br><dt><code>char domainname[]</code><dd>This is the NIS or YP domain name.  It is the same value returned by
+<code>getdomainname</code>; see <a href="Host-Identification.html#Host-Identification">Host Identification</a>.  This element
+is a relatively recent invention and use of it is not as portable as
+use of the rest of the structure.
+
+          <!-- getdomainname() is implemented with a call to uname(). -->
+        </dl>
+        </p></blockquote></div>
+
+<!-- sys/utsname.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>uname</b> (<var>struct utsname *info</var>)<var><a name="index-uname-3456"></a></var><br>
+<blockquote><p>The <code>uname</code> function fills in the structure pointed to by
+<var>info</var> with information about the operating system and host machine. 
+A non-negative value indicates that the data was successfully stored.
+
+        <p><code>-1</code> as the value indicates an error.  The only error possible is
+<code>EFAULT</code>, which we normally don't mention as it is always a
+possibility. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,160 @@
+<html lang="en">
+<head>
+<title>Using Getopt - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getopt.html#Getopt" title="Getopt">
+<link rel="next" href="Example-of-Getopt.html#Example-of-Getopt" title="Example of Getopt">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Using-Getopt"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Example-of-Getopt.html#Example-of-Getopt">Example of Getopt</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getopt.html#Getopt">Getopt</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.2.1 Using the <code>getopt</code> function</h4>
+
+<p>Here are the details about how to call the <code>getopt</code> function.  To
+use this facility, your program must include the header file
+<samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-3022"></a>
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+
+<div class="defun">
+&mdash; Variable: int <b>opterr</b><var><a name="index-opterr-3023"></a></var><br>
+<blockquote><p>If the value of this variable is nonzero, then <code>getopt</code> prints an
+error message to the standard error stream if it encounters an unknown
+option character or an option with a missing required argument.  This is
+the default behavior.  If you set this variable to zero, <code>getopt</code>
+does not print any messages, but it still returns the character <code>?</code>
+to indicate an error. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Variable: int <b>optopt</b><var><a name="index-optopt-3024"></a></var><br>
+<blockquote><p>When <code>getopt</code> encounters an unknown option character or an option
+with a missing required argument, it stores that option character in
+this variable.  You can use this for providing your own diagnostic
+messages. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Variable: int <b>optind</b><var><a name="index-optind-3025"></a></var><br>
+<blockquote><p>This variable is set by <code>getopt</code> to the index of the next element
+of the <var>argv</var> array to be processed.  Once <code>getopt</code> has found
+all of the option arguments, you can use this variable to determine
+where the remaining non-option arguments begin.  The initial value of
+this variable is <code>1</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Variable: char * <b>optarg</b><var><a name="index-optarg-3026"></a></var><br>
+<blockquote><p>This variable is set by <code>getopt</code> to point at the value of the
+option argument, for those options that accept arguments. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: int <b>getopt</b> (<var>int argc, char **argv, const char *options</var>)<var><a name="index-getopt-3027"></a></var><br>
+<blockquote><p>The <code>getopt</code> function gets the next option argument from the
+argument list specified by the <var>argv</var> and <var>argc</var> arguments. 
+Normally these values come directly from the arguments received by
+<code>main</code>.
+
+        <p>The <var>options</var> argument is a string that specifies the option
+characters that are valid for this program.  An option character in this
+string can be followed by a colon (&lsquo;<samp><span class="samp">:</span></samp>&rsquo;) to indicate that it takes a
+required argument.  If an option character is followed by two colons
+(&lsquo;<samp><span class="samp">::</span></samp>&rsquo;), its argument is optional; this is a GNU extension.
+
+        <p><code>getopt</code> has three ways to deal with options that follow
+non-options <var>argv</var> elements.  The special argument &lsquo;<samp><span class="samp">--</span></samp>&rsquo; forces
+in all cases the end of option scanning.
+
+          <ul>
+<li>The default is to permute the contents of <var>argv</var> while scanning it
+so that eventually all the non-options are at the end.  This allows
+options to be given in any order, even with programs that were not
+written to expect this.
+
+          <li>If the <var>options</var> argument string begins with a hyphen (&lsquo;<samp><span class="samp">-</span></samp>&rsquo;), this
+is treated specially.  It permits arguments that are not options to be
+returned as if they were associated with option character &lsquo;<samp><span class="samp">\1</span></samp>&rsquo;.
+
+          <li>POSIX demands the following behavior: The first non-option stops option
+processing.  This mode is selected by either setting the environment
+variable <code>POSIXLY_CORRECT</code> or beginning the <var>options</var> argument
+string with a plus sign (&lsquo;<samp><span class="samp">+</span></samp>&rsquo;). 
+</ul>
+
+        <p>The <code>getopt</code> function returns the option character for the next
+command line option.  When no more option arguments are available, it
+returns <code>-1</code>.  There may still be more non-option arguments; you
+must compare the external variable <code>optind</code> against the <var>argc</var>
+parameter to check this.
+
+        <p>If the option has an argument, <code>getopt</code> returns the argument by
+storing it in the variable <var>optarg</var>.  You don't ordinarily need to
+copy the <code>optarg</code> string, since it is a pointer into the original
+<var>argv</var> array, not into a static area that might be overwritten.
+
+        <p>If <code>getopt</code> finds an option character in <var>argv</var> that was not
+included in <var>options</var>, or a missing option argument, it returns
+&lsquo;<samp><span class="samp">?</span></samp>&rsquo; and sets the external variable <code>optopt</code> to the actual
+option character.  If the first character of <var>options</var> is a colon
+(&lsquo;<samp><span class="samp">:</span></samp>&rsquo;), then <code>getopt</code> returns &lsquo;<samp><span class="samp">:</span></samp>&rsquo; instead of &lsquo;<samp><span class="samp">?</span></samp>&rsquo; to
+indicate a missing option argument.  In addition, if the external
+variable <code>opterr</code> is nonzero (which is the default), <code>getopt</code>
+prints an error message. 
+</p></blockquote></div>
+
+   </body></html>
+

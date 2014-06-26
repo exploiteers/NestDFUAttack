@@ -1,0 +1,243 @@
+<html lang="en">
+<head>
+<title>The catgets Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen" title="Message catalogs a la X/Open">
+<link rel="next" href="The-message-catalog-files.html#The-message-catalog-files" title="The message catalog files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="The-catgets-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-message-catalog-files.html#The-message-catalog-files">The message catalog files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen">Message catalogs a la X/Open</a>
+<hr>
+</div>
+
+<h4 class="subsection">8.1.1 The <code>catgets</code> function family</h4>
+
+<!-- nl_types.h -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Function: nl_catd <b>catopen</b> (<var>const char *cat_name, int flag</var>)<var><a name="index-catopen-799"></a></var><br>
+<blockquote><p>The <code>catgets</code> function tries to locate the message data file names
+<var>cat_name</var> and loads it when found.  The return value is of an
+opaque type and can be used in calls to the other functions to refer to
+this loaded catalog.
+
+        <p>The return value is <code>(nl_catd) -1</code> in case the function failed and
+no catalog was loaded.  The global variable <var>errno</var> contains a code
+for the error causing the failure.  But even if the function call
+succeeded this does not mean that all messages can be translated.
+
+        <p>Locating the catalog file must happen in a way which lets the user of
+the program influence the decision.  It is up to the user to decide
+about the language to use and sometimes it is useful to use alternate
+catalog files.  All this can be specified by the user by setting some
+environment variables.
+
+        <p>The first problem is to find out where all the message catalogs are
+stored.  Every program could have its own place to keep all the
+different files but usually the catalog files are grouped by languages
+and the catalogs for all programs are kept in the same place.
+
+        <p><a name="index-NLSPATH-environment-variable-800"></a>To tell the <code>catopen</code> function where the catalog for the program
+can be found the user can set the environment variable <code>NLSPATH</code> to
+a value which describes her/his choice.  Since this value must be usable
+for different languages and locales it cannot be a simple string. 
+Instead it is a format string (similar to <code>printf</code>'s).  An example
+is
+
+     <pre class="smallexample">          /usr/share/locale/%L/%N:/usr/share/locale/%L/LC_MESSAGES/%N
+</pre>
+        <p>First one can see that more than one directory can be specified (with
+the usual syntax of separating them by colons).  The next things to
+observe are the format string, <code>%L</code> and <code>%N</code> in this case. 
+The <code>catopen</code> function knows about several of them and the
+replacement for all of them is of course different.
+
+          <dl>
+<dt><code>%N</code><dd>This format element is substituted with the name of the catalog file. 
+This is the value of the <var>cat_name</var> argument given to
+<code>catgets</code>.
+
+          <br><dt><code>%L</code><dd>This format element is substituted with the name of the currently
+selected locale for translating messages.  How this is determined is
+explained below.
+
+          <br><dt><code>%l</code><dd>(This is the lowercase ell.) This format element is substituted with the
+language element of the locale name.  The string describing the selected
+locale is expected to have the form
+<var>lang</var><code>[_</code><var>terr</var><code>[.</code><var>codeset</var><code>]]</code> and this format uses the
+first part <var>lang</var>.
+
+          <br><dt><code>%t</code><dd>This format element is substituted by the territory part <var>terr</var> of
+the name of the currently selected locale.  See the explanation of the
+format above.
+
+          <br><dt><code>%c</code><dd>This format element is substituted by the codeset part <var>codeset</var> of
+the name of the currently selected locale.  See the explanation of the
+format above.
+
+          <br><dt><code>%%</code><dd>Since <code>%</code> is used in a meta character there must be a way to
+express the <code>%</code> character in the result itself.  Using <code>%%</code>
+does this just like it works for <code>printf</code>. 
+</dl>
+
+        <p>Using <code>NLSPATH</code> allows arbitrary directories to be searched for
+message catalogs while still allowing different languages to be used. 
+If the <code>NLSPATH</code> environment variable is not set, the default value
+is
+
+     <pre class="smallexample">          <var>prefix</var>/share/locale/%L/%N:<var>prefix</var>/share/locale/%L/LC_MESSAGES/%N
+</pre>
+        <p class="noindent">where <var>prefix</var> is given to <code>configure</code> while installing the GNU
+C Library (this value is in many cases <code>/usr</code> or the empty string).
+
+        <p>The remaining problem is to decide which must be used.  The value
+decides about the substitution of the format elements mentioned above. 
+First of all the user can specify a path in the message catalog name
+(i.e., the name contains a slash character).  In this situation the
+<code>NLSPATH</code> environment variable is not used.  The catalog must exist
+as specified in the program, perhaps relative to the current working
+directory.  This situation in not desirable and catalogs names never
+should be written this way.  Beside this, this behavior is not portable
+to all other platforms providing the <code>catgets</code> interface.
+
+        <p><a name="index-LC_005fALL-environment-variable-801"></a><a name="index-LC_005fMESSAGES-environment-variable-802"></a><a name="index-LANG-environment-variable-803"></a>Otherwise the values of environment variables from the standard
+environment are examined (see <a href="Standard-Environment.html#Standard-Environment">Standard Environment</a>).  Which
+variables are examined is decided by the <var>flag</var> parameter of
+<code>catopen</code>.  If the value is <code>NL_CAT_LOCALE</code> (which is defined
+in <samp><span class="file">nl_types.h</span></samp>) then the <code>catopen</code> function use the name of
+the locale currently selected for the <code>LC_MESSAGES</code> category.
+
+        <p>If <var>flag</var> is zero the <code>LANG</code> environment variable is examined. 
+This is a left-over from the early days where the concept of the locales
+had not even reached the level of POSIX locales.
+
+        <p>The environment variable and the locale name should have a value of the
+form <var>lang</var><code>[_</code><var>terr</var><code>[.</code><var>codeset</var><code>]]</code> as explained above. 
+If no environment variable is set the <code>"C"</code> locale is used which
+prevents any translation.
+
+        <p>The return value of the function is in any case a valid string.  Either
+it is a translation from a message catalog or it is the same as the
+<var>string</var> parameter.  So a piece of code to decide whether a
+translation actually happened must look like this:
+
+     <pre class="smallexample">          {
+            char *trans = catgets (desc, set, msg, input_string);
+            if (trans == input_string)
+              {
+                /* Something went wrong.  */
+              }
+          }
+</pre>
+        <p class="noindent">When an error occurred the global variable <var>errno</var> is set to
+
+          <dl>
+<dt><var>EBADF</var><dd>The catalog does not exist. 
+<br><dt><var>ENOMSG</var><dd>The set/message tuple does not name an existing element in the
+message catalog. 
+</dl>
+
+        <p>While it sometimes can be useful to test for errors programs normally
+will avoid any test.  If the translation is not available it is no big
+problem if the original, untranslated message is printed.  Either the
+user understands this as well or s/he will look for the reason why the
+messages are not translated. 
+</p></blockquote></div>
+
+   <p>Please note that the currently selected locale does not depend on a call
+to the <code>setlocale</code> function.  It is not necessary that the locale
+data files for this locale exist and calling <code>setlocale</code> succeeds. 
+The <code>catopen</code> function directly reads the values of the environment
+variables.
+
+<div class="defun">
+&mdash; Function: char * <b>catgets</b> (<var>nl_catd catalog_desc, int set, int message, const char *string</var>)<var><a name="index-catgets-804"></a></var><br>
+<blockquote><p>The function <code>catgets</code> has to be used to access the massage catalog
+previously opened using the <code>catopen</code> function.  The
+<var>catalog_desc</var> parameter must be a value previously returned by
+<code>catopen</code>.
+
+        <p>The next two parameters, <var>set</var> and <var>message</var>, reflect the
+internal organization of the message catalog files.  This will be
+explained in detail below.  For now it is interesting to know that a
+catalog can consists of several set and the messages in each thread are
+individually numbered using numbers.  Neither the set number nor the
+message number must be consecutive.  They can be arbitrarily chosen. 
+But each message (unless equal to another one) must have its own unique
+pair of set and message number.
+
+        <p>Since it is not guaranteed that the message catalog for the language
+selected by the user exists the last parameter <var>string</var> helps to
+handle this case gracefully.  If no matching string can be found
+<var>string</var> is returned.  This means for the programmer that
+
+          <ul>
+<li>the <var>string</var> parameters should contain reasonable text (this also
+helps to understand the program seems otherwise there would be no hint
+on the string which is expected to be returned. 
+<li>all <var>string</var> arguments should be written in the same language. 
+</ul>
+        </p></blockquote></div>
+
+   <p>It is somewhat uncomfortable to write a program using the <code>catgets</code>
+functions if no supporting functionality is available.  Since each
+set/message number tuple must be unique the programmer must keep lists
+of the messages at the same time the code is written.  And the work
+between several people working on the same project must be coordinated. 
+We will see some how these problems can be relaxed a bit (see <a href="Common-Usage.html#Common-Usage">Common Usage</a>).
+
+<div class="defun">
+&mdash; Function: int <b>catclose</b> (<var>nl_catd catalog_desc</var>)<var><a name="index-catclose-805"></a></var><br>
+<blockquote><p>The <code>catclose</code> function can be used to free the resources
+associated with a message catalog which previously was opened by a call
+to <code>catopen</code>.  If the resources can be successfully freed the
+function returns <code>0</code>.  Otherwise it return <code>&minus;1</code> and the
+global variable <var>errno</var> is set.  Errors can occur if the catalog
+descriptor <var>catalog_desc</var> is not valid in which case <var>errno</var> is
+set to <code>EBADF</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

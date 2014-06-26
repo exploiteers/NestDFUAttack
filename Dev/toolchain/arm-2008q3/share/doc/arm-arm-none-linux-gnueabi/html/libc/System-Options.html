@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+<title>System Options - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="General-Limits.html#General-Limits" title="General Limits">
+<link rel="next" href="Version-Supported.html#Version-Supported" title="Version Supported">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-Options"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Version-Supported.html#Version-Supported">Version Supported</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="General-Limits.html#General-Limits">General Limits</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.2 Overall System Options</h3>
+
+<p><a name="index-POSIX-optional-features-3511"></a><a name="index-optional-POSIX-features-3512"></a>
+POSIX defines certain system-specific options that not all POSIX systems
+support.  Since these options are provided in the kernel, not in the
+library, simply using the GNU C library does not guarantee any of these
+features is supported; it depends on the system you are using.
+
+   <p><a name="index-unistd_002eh-3513"></a>You can test for the availability of a given option using the macros in
+this section, together with the function <code>sysconf</code>.  The macros are
+defined only if you include <samp><span class="file">unistd.h</span></samp>.
+
+   <p>For the following macros, if the macro is defined in <samp><span class="file">unistd.h</span></samp>,
+then the option is supported.  Otherwise, the option may or may not be
+supported; use <code>sysconf</code> to find out.  See <a href="Sysconf.html#Sysconf">Sysconf</a>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX_JOB_CONTROL</b><var><a name="index-g_t_005fPOSIX_005fJOB_005fCONTROL-3514"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system supports job
+control.  Otherwise, the implementation behaves as if all processes
+within a session belong to a single process group.  See <a href="Job-Control.html#Job-Control">Job Control</a>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX_SAVED_IDS</b><var><a name="index-g_t_005fPOSIX_005fSAVED_005fIDS-3515"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system remembers the
+effective user and group IDs of a process before it executes an
+executable file with the set-user-ID or set-group-ID bits set, and that
+explicitly changing the effective user or group IDs back to these values
+is permitted.  If this option is not defined, then if a nonprivileged
+process changes its effective user or group ID to the real user or group
+ID of the process, it can't change it back again.  See <a href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">Enable/Disable Setuid</a>. 
+</p></blockquote></div>
+
+   <p>For the following macros, if the macro is defined in <samp><span class="file">unistd.h</span></samp>,
+then its value indicates whether the option is supported.  A value of
+<code>-1</code> means no, and any other value means yes.  If the macro is not
+defined, then the option may or may not be supported; use <code>sysconf</code>
+to find out.  See <a href="Sysconf.html#Sysconf">Sysconf</a>.
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX2_C_DEV</b><var><a name="index-g_t_005fPOSIX2_005fC_005fDEV-3516"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system has the POSIX.2
+C compiler command, <code>c89</code>.  The GNU C library always defines this
+as <code>1</code>, on the assumption that you would not have installed it if
+you didn't have a C compiler. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX2_FORT_DEV</b><var><a name="index-g_t_005fPOSIX2_005fFORT_005fDEV-3517"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system has the POSIX.2
+Fortran compiler command, <code>fort77</code>.  The GNU C library never
+defines this, because we don't know what the system has. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX2_FORT_RUN</b><var><a name="index-g_t_005fPOSIX2_005fFORT_005fRUN-3518"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system has the POSIX.2
+<code>asa</code> command to interpret Fortran carriage control.  The GNU C
+library never defines this, because we don't know what the system has. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX2_LOCALEDEF</b><var><a name="index-g_t_005fPOSIX2_005fLOCALEDEF-3519"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system has the POSIX.2
+<code>localedef</code> command.  The GNU C library never defines this, because
+we don't know what the system has. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX2_SW_DEV</b><var><a name="index-g_t_005fPOSIX2_005fSW_005fDEV-3520"></a></var><br>
+<blockquote><p>If this symbol is defined, it indicates that the system has the POSIX.2
+commands <code>ar</code>, <code>make</code>, and <code>strip</code>.  The GNU C library
+always defines this as <code>1</code>, on the assumption that you had to have
+<code>ar</code> and <code>make</code> to install the library, and it's unlikely that
+<code>strip</code> would be absent when those are present. 
+</p></blockquote></div>
+
+   </body></html>
+

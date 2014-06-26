@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Floating Point Concepts - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Type-Macros.html#Floating-Type-Macros" title="Floating Type Macros">
+<link rel="next" href="Floating-Point-Parameters.html#Floating-Point-Parameters" title="Floating Point Parameters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Floating-Point-Concepts"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating-Point-Parameters.html#Floating-Point-Parameters">Floating Point Parameters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Type-Macros.html#Floating-Type-Macros">Floating Type Macros</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.5.3.1 Floating Point Representation Concepts</h5>
+
+<p>This section introduces the terminology for describing floating point
+representations.
+
+   <p>You are probably already familiar with most of these concepts in terms
+of scientific or exponential notation for floating point numbers.  For
+example, the number <code>123456.0</code> could be expressed in exponential
+notation as <code>1.23456e+05</code>, a shorthand notation indicating that the
+mantissa <code>1.23456</code> is multiplied by the base <code>10</code> raised to
+power <code>5</code>.
+
+   <p>More formally, the internal representation of a floating point number
+can be characterized in terms of the following parameters:
+
+     <ul>
+<li><a name="index-sign-_0028of-floating-point-number_0029-3769"></a>The <dfn>sign</dfn> is either <code>-1</code> or <code>1</code>.
+
+     <li><a name="index-base-_0028of-floating-point-number_0029-3770"></a><a name="index-radix-_0028of-floating-point-number_0029-3771"></a>The <dfn>base</dfn> or <dfn>radix</dfn> for exponentiation, an integer greater
+than <code>1</code>.  This is a constant for a particular representation.
+
+     <li><a name="index-exponent-_0028of-floating-point-number_0029-3772"></a>The <dfn>exponent</dfn> to which the base is raised.  The upper and lower
+bounds of the exponent value are constants for a particular
+representation.
+
+     <p><a name="index-bias-_0028of-floating-point-number-exponent_0029-3773"></a>Sometimes, in the actual bits representing the floating point number,
+the exponent is <dfn>biased</dfn> by adding a constant to it, to make it
+always be represented as an unsigned quantity.  This is only important
+if you have some reason to pick apart the bit fields making up the
+floating point number by hand, which is something for which the GNU
+library provides no support.  So this is ignored in the discussion that
+follows.
+
+     <li><a name="index-mantissa-_0028of-floating-point-number_0029-3774"></a><a name="index-significand-_0028of-floating-point-number_0029-3775"></a>The <dfn>mantissa</dfn> or <dfn>significand</dfn> is an unsigned integer which is a
+part of each floating point number.
+
+     <li><a name="index-precision-_0028of-floating-point-number_0029-3776"></a>The <dfn>precision</dfn> of the mantissa.  If the base of the representation
+is <var>b</var>, then the precision is the number of base-<var>b</var> digits in
+the mantissa.  This is a constant for a particular representation.
+
+     <p><a name="index-hidden-bit-_0028of-floating-point-number-mantissa_0029-3777"></a>Many floating point representations have an implicit <dfn>hidden bit</dfn> in
+the mantissa.  This is a bit which is present virtually in the mantissa,
+but not stored in memory because its value is always 1 in a normalized
+number.  The precision figure (see above) includes any hidden bits.
+
+     <p>Again, the GNU library provides no facilities for dealing with such
+low-level aspects of the representation. 
+</ul>
+
+   <p>The mantissa of a floating point number represents an implicit fraction
+whose denominator is the base raised to the power of the precision.  Since
+the largest representable mantissa is one less than this denominator, the
+value of the fraction is always strictly less than <code>1</code>.  The
+mathematical value of a floating point number is then the product of this
+fraction, the sign, and the base raised to the exponent.
+
+   <p><a name="index-normalized-floating-point-number-3778"></a>We say that the floating point number is <dfn>normalized</dfn> if the
+fraction is at least <code>1/</code><var>b</var>, where <var>b</var> is the base.  In
+other words, the mantissa would be too large to fit if it were
+multiplied by the base.  Non-normalized numbers are sometimes called
+<dfn>denormal</dfn>; they contain less precision than the representation
+normally can hold.
+
+   <p>If the number is not normalized, then you can subtract <code>1</code> from the
+exponent while multiplying the mantissa by the base, and get another
+floating point number with the same value.  <dfn>Normalization</dfn> consists
+of doing this repeatedly until the number is normalized.  Two distinct
+normalized floating point numbers cannot be equal in value.
+
+   <p>(There is an exception to this rule: if the mantissa is zero, it is
+considered normalized.  Another exception happens on certain machines
+where the exponent is as small as the representation can hold.  Then
+it is impossible to subtract <code>1</code> from the exponent, so a number
+may be normalized even if its fraction is less than <code>1/</code><var>b</var>.)
+
+   </body></html>
+

@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>NSS Basics - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Name-Service-Switch.html#Name-Service-Switch" title="Name Service Switch">
+<link rel="prev" href="Name-Service-Switch.html#Name-Service-Switch" title="Name Service Switch">
+<link rel="next" href="NSS-Configuration-File.html#NSS-Configuration-File" title="NSS Configuration File">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="NSS-Basics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a>
+<hr>
+</div>
+
+<h3 class="section">28.1 NSS Basics</h3>
+
+<p>The basic idea is to put the implementation of the different services
+offered to access the databases in separate modules.  This has some
+advantages:
+
+     <ol type=1 start=1>
+<li>Contributors can add new services without adding them to GNU C Library. 
+<li>The modules can be updated separately. 
+<li>The C library image is smaller.
+        </ol>
+
+   <p>To fulfill the first goal above the ABI of the modules will be described
+below.  For getting the implementation of a new service right it is
+important to understand how the functions in the modules get called. 
+They are in no way designed to be used by the programmer directly. 
+Instead the programmer should only use the documented and standardized
+functions to access the databases.
+
+<p class="noindent">The databases available in the NSS are
+
+   <p><a name="index-ethers-3251"></a><a name="index-group-3252"></a><a name="index-hosts-3253"></a><a name="index-netgroup-3254"></a><a name="index-networks-3255"></a><a name="index-protocols-3256"></a><a name="index-passwd-3257"></a><a name="index-rpc-3258"></a><a name="index-services-3259"></a><a name="index-shadow-3260"></a>
+     <dl>
+<dt><code>aliases</code><a name="index-aliases-3261"></a><dd>Mail aliases
+<!-- @pxref{Mail Aliases}. -->
+<br><dt><code>ethers</code><a name="index-ethers-3262"></a><dd>Ethernet numbers,
+<!-- @pxref{Ethernet Numbers}. -->
+<br><dt><code>group</code><a name="index-group-3263"></a><dd>Groups of users, see <a href="Group-Database.html#Group-Database">Group Database</a>. 
+<br><dt><code>hosts</code><a name="index-hosts-3264"></a><dd>Host names and numbers, see <a href="Host-Names.html#Host-Names">Host Names</a>. 
+<br><dt><code>netgroup</code><a name="index-netgroup-3265"></a><dd>Network wide list of host and users, see <a href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>. 
+<br><dt><code>networks</code><a name="index-networks-3266"></a><dd>Network names and numbers, see <a href="Networks-Database.html#Networks-Database">Networks Database</a>. 
+<br><dt><code>protocols</code><a name="index-protocols-3267"></a><dd>Network protocols, see <a href="Protocols-Database.html#Protocols-Database">Protocols Database</a>. 
+<br><dt><code>passwd</code><a name="index-passwd-3268"></a><dd>User passwords, see <a href="User-Database.html#User-Database">User Database</a>. 
+<br><dt><code>rpc</code><a name="index-rpc-3269"></a><dd>Remote procedure call names and numbers,
+<!-- @pxref{RPC Database}. -->
+<br><dt><code>services</code><a name="index-services-3270"></a><dd>Network services, see <a href="Services-Database.html#Services-Database">Services Database</a>. 
+<br><dt><code>shadow</code><a name="index-shadow-3271"></a><dd>Shadow user passwords,
+<!-- @pxref{Shadow Password Database}. -->
+</dl>
+
+<p class="noindent">There will be some more added later (<code>automount</code>, <code>bootparams</code>,
+<code>netmasks</code>, and <code>publickey</code>).
+
+   </body></html>
+

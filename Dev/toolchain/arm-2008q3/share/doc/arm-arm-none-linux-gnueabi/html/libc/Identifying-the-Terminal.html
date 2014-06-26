@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Identifying the Terminal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Functions-for-Job-Control.html#Functions-for-Job-Control" title="Functions for Job Control">
+<link rel="next" href="Process-Group-Functions.html#Process-Group-Functions" title="Process Group Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Identifying-the-Terminal"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Process-Group-Functions.html#Process-Group-Functions">Process Group Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Functions-for-Job-Control.html#Functions-for-Job-Control">Functions for Job Control</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.7.1 Identifying the Controlling Terminal</h4>
+
+<p><a name="index-controlling-terminal_002c-determining-3227"></a>
+You can use the <code>ctermid</code> function to get a file name that you can
+use to open the controlling terminal.  In the GNU library, it returns
+the same string all the time: <code>"/dev/tty"</code>.  That is a special
+&ldquo;magic&rdquo; file name that refers to the controlling terminal of the
+current process (if it has one).  To find the name of the specific
+terminal device, use <code>ttyname</code>; see <a href="Is-It-a-Terminal.html#Is-It-a-Terminal">Is It a Terminal</a>.
+
+   <p>The function <code>ctermid</code> is declared in the header file
+<samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-3228"></a>
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: char * <b>ctermid</b> (<var>char *string</var>)<var><a name="index-ctermid-3229"></a></var><br>
+<blockquote><p>The <code>ctermid</code> function returns a string containing the file name of
+the controlling terminal for the current process.  If <var>string</var> is
+not a null pointer, it should be an array that can hold at least
+<code>L_ctermid</code> characters; the string is returned in this array. 
+Otherwise, a pointer to a string in a static area is returned, which
+might get overwritten on subsequent calls to this function.
+
+        <p>An empty string is returned if the file name cannot be determined for
+any reason.  Even if a file name is returned, access to the file it
+represents is not guaranteed. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>L_ctermid</b><var><a name="index-L_005fctermid-3230"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that
+represents the size of a string large enough to hold the file name
+returned by <code>ctermid</code>. 
+</p></blockquote></div>
+
+   <p>See also the <code>isatty</code> and <code>ttyname</code> functions, in
+<a href="Is-It-a-Terminal.html#Is-It-a-Terminal">Is It a Terminal</a>.
+
+   </body></html>
+

@@ -1,0 +1,116 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the
+#      system control and power management daemon
+#
+
+# Source common library
+. /etc/init.d/functions
+
+# Source daemon-monitor library
+. /etc/init.d/dm
+
+# Export fallback shared library search path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}${NESTLABSLIBDIR}
+
+NLSCPMNAME=nlscpmd
+NLSCPMAPP=${NESTLABSSBINDIR}/${NLSCPMNAME}
+NLSCPMPIDFILE="${VARDIR}/run/${NLSCPMNAME}.pid"
+
+NLSCPM_SERVICE="com.nestlabs.scpm"
+NLSCPM_PATH="/com/nestlabs/scpm/manager"
+DBUSSEND="${USRBINDIR}/dbus-send"
+NLSCPMSEND="${DBUSSEND} --system --print-reply --dest=${NLSCPM_SERVICE}"
+
+PMDEBUG=${ROOTDIR}sys/kernel/debug/pm_debug
+
+PROGRAM="`${BASENAME} ${0}`"
+
+end_service () {
+	local verb="${1}"
+	local how="${2}"
+
+	log_info "Service termination for ${NLSCPMNAME} received from [${PPID}]: ${verb}"
+
+	${STOPDAEMON} -q -p ${NLSCPMPIDFILE} ${how} > ${NULL} 2>&1
+	${ECHO} " ${verb} ${NLSCPMNAME}\c"
+}
+
+kill_service () {
+	if test -x ${NLSCPMAPP}; then
+		log_info "Service termination for ${NLSCPMNAME} received from [${PPID}]: killing"
+
+		${STOPDAEMON} -q -p ${NLSCPMPIDFILE} --signal KILL > ${NULL} 2>&1
+		${ECHO} " killing ${NLSCPMNAME}\c"
+	fi
+}
+
+stop_service () {
+	if test -x ${NLSCPMAPP}; then
+		unmonitor_service "${NLSCPMNAME}"
+		log_info "Service termination for ${NLSCPMNAME} received from [${PPID}]: stopping"
+		test -x ${DBUSSEND} && \
+		${NLSCPMSEND} "${NLSCPM_PATH}" \
+		com.nestlabs.scpm.main.Quit > ${NULL} 2>&1
+		${ECHO} " stopping ${NLSCPMNAME}\c"
+	fi
+}
+
+start_service () {
+	if test -x ${NLSCPMAPP}; then
+		log_info "Service initiation for ${NLSCPMNAME} received from [${PPID}]"
+
+		${STARTDAEMON} -q -b -m -p "${NLSCPMPIDFILE}" -a ${NLSCPMAPP} -- `${CAT} ${CONFDIR}/${NLSCPMNAME}.options 2> ${NULL}`
+		monitor_service "${NLSCPMNAME}"
+		${ECHO} " ${NLSCPMNAME}\c"
+
+		${ECHO} 1 > ${PMDEBUG}/enable_off_mode
+		${ECHO} 1 > ${PMDEBUG}/sleep_while_idle
+		${ECHO} 1 > ${PMDEBUG}/voltage_off_while_idle
+	fi
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "System control and power management daemon:\c"
+
+		if ${CHECK} scpm; then
+			start_service
+		fi
+
+	${ECHO} "."
+	;;
+
+'kill')
+	${ECHO} "System control and power management daemon:\c"
+
+		kill_service
+
+	${ECHO} "."
+	;;
+
+'stop')
+	${ECHO} "System control and power management daemon:\c"
+
+		stop_service
+
+	${ECHO} "."
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <kill | start | stop | restart>"
+	exit 1
+	;;
+
+esac

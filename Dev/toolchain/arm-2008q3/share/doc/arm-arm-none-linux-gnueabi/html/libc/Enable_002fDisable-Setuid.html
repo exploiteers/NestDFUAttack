@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>Enable/Disable Setuid - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Setting-Groups.html#Setting-Groups" title="Setting Groups">
+<link rel="next" href="Setuid-Program-Example.html#Setuid-Program-Example" title="Setuid Program Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Enable%2fDisable-Setuid"></a>
+<a name="Enable_002fDisable-Setuid"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Setuid-Program-Example.html#Setuid-Program-Example">Setuid Program Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Setting-Groups.html#Setting-Groups">Setting Groups</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.8 Enabling and Disabling Setuid Access</h3>
+
+<p>A typical setuid program does not need its special access all of the
+time.  It's a good idea to turn off this access when it isn't needed,
+so it can't possibly give unintended access.
+
+   <p>If the system supports the <code>_POSIX_SAVED_IDS</code> feature, you can
+accomplish this with <code>seteuid</code>.  When the game program starts, its
+real user ID is <code>jdoe</code>, its effective user ID is <code>games</code>, and
+its saved user ID is also <code>games</code>.  The program should record both
+user ID values once at the beginning, like this:
+
+<pre class="smallexample">     user_user_id = getuid ();
+     game_user_id = geteuid ();
+</pre>
+   <p>Then it can turn off game file access with
+
+<pre class="smallexample">     seteuid (user_user_id);
+</pre>
+   <p class="noindent">and turn it on with
+
+<pre class="smallexample">     seteuid (game_user_id);
+</pre>
+   <p class="noindent">Throughout this process, the real user ID remains <code>jdoe</code> and the
+file user ID remains <code>games</code>, so the program can always set its
+effective user ID to either one.
+
+   <p>On other systems that don't support file user IDs, you can
+turn setuid access on and off by using <code>setreuid</code> to swap the real
+and effective user IDs of the process, as follows:
+
+<pre class="smallexample">     setreuid (geteuid (), getuid ());
+</pre>
+   <p class="noindent">This special case is always allowed&mdash;it cannot fail.
+
+   <p>Why does this have the effect of toggling the setuid access?  Suppose a
+game program has just started, and its real user ID is <code>jdoe</code> while
+its effective user ID is <code>games</code>.  In this state, the game can
+write the scores file.  If it swaps the two uids, the real becomes
+<code>games</code> and the effective becomes <code>jdoe</code>; now the program has
+only <code>jdoe</code> access.  Another swap brings <code>games</code> back to
+the effective user ID and restores access to the scores file.
+
+   <p>In order to handle both kinds of systems, test for the saved user ID
+feature with a preprocessor conditional, like this:
+
+<pre class="smallexample">     #ifdef _POSIX_SAVED_IDS
+       seteuid (user_user_id);
+     #else
+       setreuid (geteuid (), getuid ());
+     #endif
+</pre>
+   </body></html>
+

@@ -1,0 +1,200 @@
+<html lang="en">
+<head>
+<title>More Flags for Globbing - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Globbing.html#Globbing" title="Globbing">
+<link rel="prev" href="Flags-for-Globbing.html#Flags-for-Globbing" title="Flags for Globbing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="More-Flags-for-Globbing"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Flags-for-Globbing.html#Flags-for-Globbing">Flags for Globbing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Globbing.html#Globbing">Globbing</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.2.3 More Flags for Globbing</h4>
+
+<p>Beside the flags described in the last section, the GNU implementation of
+<code>glob</code> allows a few more flags which are also defined in the
+<samp><span class="file">glob.h</span></samp> file.  Some of the extensions implement functionality
+which is available in modern shell implementations.
+
+     <dl>
+<!-- glob.h -->
+<!-- GNU -->
+<dt><code>GLOB_PERIOD</code><a name="index-GLOB_005fPERIOD-866"></a><dd>The <code>.</code> character (period) is treated special.  It cannot be
+matched by wildcards.  See <a href="Wildcard-Matching.html#Wildcard-Matching">Wildcard Matching</a>, <code>FNM_PERIOD</code>.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_MAGCHAR</code><a name="index-GLOB_005fMAGCHAR-867"></a><dd>The <code>GLOB_MAGCHAR</code> value is not to be given to <code>glob</code> in the
+<var>flags</var> parameter.  Instead, <code>glob</code> sets this bit in the
+<var>gl_flags</var> element of the <var>glob_t</var> structure provided as the
+result if the pattern used for matching contains any wildcard character.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_ALTDIRFUNC</code><a name="index-GLOB_005fALTDIRFUNC-868"></a><dd>Instead of the using the using the normal functions for accessing the
+filesystem the <code>glob</code> implementation uses the user-supplied
+functions specified in the structure pointed to by <var>pglob</var>
+parameter.  For more information about the functions refer to the
+sections about directory handling see <a href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>, and
+<a href="Reading-Attributes.html#Reading-Attributes">Reading Attributes</a>.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_BRACE</code><a name="index-GLOB_005fBRACE-869"></a><dd>If this flag is given the handling of braces in the pattern is changed. 
+It is now required that braces appear correctly grouped.  I.e., for each
+opening brace there must be a closing one.  Braces can be used
+recursively.  So it is possible to define one brace expression in
+another one.  It is important to note that the range of each brace
+expression is completely contained in the outer brace expression (if
+there is one).
+
+     <p>The string between the matching braces is separated into single
+expressions by splitting at <code>,</code> (comma) characters.  The commas
+themselves are discarded.  Please note what we said above about recursive
+brace expressions.  The commas used to separate the subexpressions must
+be at the same level.  Commas in brace subexpressions are not matched. 
+They are used during expansion of the brace expression of the deeper
+level.  The example below shows this
+
+     <pre class="smallexample">          glob ("{foo/{,bar,biz},baz}", GLOB_BRACE, NULL, &amp;result)
+</pre>
+     <p class="noindent">is equivalent to the sequence
+
+     <pre class="smallexample">          glob ("foo/", GLOB_BRACE, NULL, &amp;result)
+          glob ("foo/bar", GLOB_BRACE|GLOB_APPEND, NULL, &amp;result)
+          glob ("foo/biz", GLOB_BRACE|GLOB_APPEND, NULL, &amp;result)
+          glob ("baz", GLOB_BRACE|GLOB_APPEND, NULL, &amp;result)
+</pre>
+     <p class="noindent">if we leave aside error handling.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_NOMAGIC</code><a name="index-GLOB_005fNOMAGIC-870"></a><dd>If the pattern contains no wildcard constructs (it is a literal file name),
+return it as the sole &ldquo;matching&rdquo; word, even if no file exists by that name.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_TILDE</code><a name="index-GLOB_005fTILDE-871"></a><dd>If this flag is used the character <code>~</code> (tilde) is handled special
+if it appears at the beginning of the pattern.  Instead of being taken
+verbatim it is used to represent the home directory of a known user.
+
+     <p>If <code>~</code> is the only character in pattern or it is followed by a
+<code>/</code> (slash), the home directory of the process owner is
+substituted.  Using <code>getlogin</code> and <code>getpwnam</code> the information
+is read from the system databases.  As an example take user <code>bart</code>
+with his home directory at <samp><span class="file">/home/bart</span></samp>.  For him a call like
+
+     <pre class="smallexample">          glob ("~/bin/*", GLOB_TILDE, NULL, &amp;result)
+</pre>
+     <p class="noindent">would return the contents of the directory <samp><span class="file">/home/bart/bin</span></samp>. 
+Instead of referring to the own home directory it is also possible to
+name the home directory of other users.  To do so one has to append the
+user name after the tilde character.  So the contents of user
+<code>homer</code>'s <samp><span class="file">bin</span></samp> directory can be retrieved by
+
+     <pre class="smallexample">          glob ("~homer/bin/*", GLOB_TILDE, NULL, &amp;result)
+</pre>
+     <p>If the user name is not valid or the home directory cannot be determined
+for some reason the pattern is left untouched and itself used as the
+result.  I.e., if in the last example <code>home</code> is not available the
+tilde expansion yields to <code>"~homer/bin/*"</code> and <code>glob</code> is not
+looking for a directory named <code>~homer</code>.
+
+     <p>This functionality is equivalent to what is available in C-shells if the
+<code>nonomatch</code> flag is set.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_TILDE_CHECK</code><a name="index-GLOB_005fTILDE_005fCHECK-872"></a><dd>If this flag is used <code>glob</code> behaves like as if <code>GLOB_TILDE</code> is
+given.  The only difference is that if the user name is not available or
+the home directory cannot be determined for other reasons this leads to
+an error.  <code>glob</code> will return <code>GLOB_NOMATCH</code> instead of using
+the pattern itself as the name.
+
+     <p>This functionality is equivalent to what is available in C-shells if
+<code>nonomatch</code> flag is not set.
+
+     <!-- glob.h -->
+     <!-- GNU -->
+     <br><dt><code>GLOB_ONLYDIR</code><a name="index-GLOB_005fONLYDIR-873"></a><dd>If this flag is used the globbing function takes this as a
+<strong>hint</strong> that the caller is only interested in directories
+matching the pattern.  If the information about the type of the file
+is easily available non-directories will be rejected but no extra
+work will be done to determine the information for each file.  I.e.,
+the caller must still be able to filter directories out.
+
+     <p>This functionality is only available with the GNU <code>glob</code>
+implementation.  It is mainly used internally to increase the
+performance but might be useful for a user as well and therefore is
+documented here. 
+</dl>
+
+   <p>Calling <code>glob</code> will in most cases allocate resources which are used
+to represent the result of the function call.  If the same object of
+type <code>glob_t</code> is used in multiple call to <code>glob</code> the resources
+are freed or reused so that no leaks appear.  But this does not include
+the time when all <code>glob</code> calls are done.
+
+<!-- glob.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: void <b>globfree</b> (<var>glob_t *pglob</var>)<var><a name="index-globfree-874"></a></var><br>
+<blockquote><p>The <code>globfree</code> function frees all resources allocated by previous
+calls to <code>glob</code> associated with the object pointed to by
+<var>pglob</var>.  This function should be called whenever the currently used
+<code>glob_t</code> typed object isn't used anymore. 
+</p></blockquote></div>
+
+<!-- glob.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>globfree64</b> (<var>glob64_t *pglob</var>)<var><a name="index-globfree64-875"></a></var><br>
+<blockquote><p>This function is equivalent to <code>globfree</code> but it frees records of
+type <code>glob64_t</code> which were allocated by <code>glob64</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

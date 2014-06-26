@@ -1,0 +1,188 @@
+<html lang="en">
+<head>
+<title>crypt - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Cryptographic-Functions.html#Cryptographic-Functions" title="Cryptographic Functions">
+<link rel="prev" href="getpass.html#getpass" title="getpass">
+<link rel="next" href="DES-Encryption.html#DES-Encryption" title="DES Encryption">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="crypt"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="DES-Encryption.html#DES-Encryption">DES Encryption</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="getpass.html#getpass">getpass</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Cryptographic-Functions.html#Cryptographic-Functions">Cryptographic Functions</a>
+<hr>
+</div>
+
+<h3 class="section">32.3 Encrypting Passwords</h3>
+
+<!-- crypt.h -->
+<!-- BSD, SVID -->
+<div class="defun">
+&mdash; Function: char * <b>crypt</b> (<var>const char *key, const char *salt</var>)<var><a name="index-crypt-3676"></a></var><br>
+<blockquote>
+        <p>The <code>crypt</code> function takes a password, <var>key</var>, as a string, and
+a <var>salt</var> character array which is described below, and returns a
+printable ASCII string which starts with another salt.  It is believed
+that, given the output of the function, the best way to find a <var>key</var>
+that will produce that output is to guess values of <var>key</var> until the
+original value of <var>key</var> is found.
+
+        <p>The <var>salt</var> parameter does two things.  Firstly, it selects which
+algorithm is used, the MD5-based one or the DES-based one.  Secondly, it
+makes life harder for someone trying to guess passwords against a file
+containing many passwords; without a <var>salt</var>, an intruder can make a
+guess, run <code>crypt</code> on it once, and compare the result with all the
+passwords.  With a <var>salt</var>, the intruder must run <code>crypt</code> once
+for each different salt.
+
+        <p>For the MD5-based algorithm, the <var>salt</var> should consist of the string
+<code>$1$</code>, followed by up to 8 characters, terminated by either
+another <code>$</code> or the end of the string.  The result of <code>crypt</code>
+will be the <var>salt</var>, followed by a <code>$</code> if the salt didn't end
+with one, followed by 22 characters from the alphabet
+<code>./0-9A-Za-z</code>, up to 34 characters total.  Every character in the
+<var>key</var> is significant.
+
+        <p>For the DES-based algorithm, the <var>salt</var> should consist of two
+characters from the alphabet <code>./0-9A-Za-z</code>, and the result of
+<code>crypt</code> will be those two characters followed by 11 more from the
+same alphabet, 13 in total.  Only the first 8 characters in the
+<var>key</var> are significant.
+
+        <p>The MD5-based algorithm has no limit on the useful length of the
+password used, and is slightly more secure.  It is therefore preferred
+over the DES-based algorithm.
+
+        <p>When the user enters their password for the first time, the <var>salt</var>
+should be set to a new string which is reasonably random.  To verify a
+password against the result of a previous call to <code>crypt</code>, pass
+the result of the previous call as the <var>salt</var>. 
+</p></blockquote></div>
+
+   <p>The following short program is an example of how to use <code>crypt</code> the
+first time a password is entered.  Note that the <var>salt</var> generation
+is just barely acceptable; in particular, it is not unique between
+machines, and in many applications it would not be acceptable to let an
+attacker know what time the user's password was last set.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;time.h&gt;
+     #include &lt;unistd.h&gt;
+     #include &lt;crypt.h&gt;
+     
+     int
+     main(void)
+     {
+       unsigned long seed[2];
+       char salt[] = "$1$........";
+       const char *const seedchars =
+         "./0123456789ABCDEFGHIJKLMNOPQRST"
+         "UVWXYZabcdefghijklmnopqrstuvwxyz";
+       char *password;
+       int i;
+     
+       /* <span class="roman">Generate a (not very) random seed.
+          You should do it better than this...</span> */
+       seed[0] = time(NULL);
+       seed[1] = getpid() ^ (seed[0] &gt;&gt; 14 &amp; 0x30000);
+     
+       /* <span class="roman">Turn it into printable characters from `seedchars'.</span> */
+       for (i = 0; i &lt; 8; i++)
+         salt[3+i] = seedchars[(seed[i/5] &gt;&gt; (i%5)*6) &amp; 0x3f];
+     
+       /* <span class="roman">Read in the user's password and encrypt it.</span> */
+       password = crypt(getpass("Password:"), salt);
+     
+       /* <span class="roman">Print the results.</span> */
+       puts(password);
+       return 0;
+     }
+</pre>
+   <p>The next program shows how to verify a password.  It prompts the user
+for a password and prints &ldquo;Access granted.&rdquo; if the user types
+<code>GNU libc manual</code>.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;string.h&gt;
+     #include &lt;unistd.h&gt;
+     #include &lt;crypt.h&gt;
+     
+     int
+     main(void)
+     {
+       /* <span class="roman">Hashed form of "GNU libc manual".</span> */
+       const char *const pass = "$1$/iSaq7rB$EoUw5jJPPvAPECNaaWzMK/";
+     
+       char *result;
+       int ok;
+     
+       /* <span class="roman">Read in the user's password and encrypt it,
+          passing the expected password in as the salt.</span> */
+       result = crypt(getpass("Password:"), pass);
+     
+       /* <span class="roman">Test the result.</span> */
+       ok = strcmp (result, pass) == 0;
+     
+       puts(ok ? "Access granted." : "Access denied.");
+       return ok ? 0 : 1;
+     }
+</pre>
+   <!-- crypt.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>crypt_r</b> (<var>const char *key, const char *salt, struct crypt_data * data</var>)<var><a name="index-crypt_005fr-3677"></a></var><br>
+<blockquote>
+        <p>The <code>crypt_r</code> function does the same thing as <code>crypt</code>, but
+takes an extra parameter which includes space for its result (among
+other things), so it can be reentrant.  <code>data-&gt;<!-- /@w -->initialized</code> must be
+cleared to zero before the first time <code>crypt_r</code> is called.
+
+        <p>The <code>crypt_r</code> function is a GNU extension. 
+</p></blockquote></div>
+
+   <p>The <code>crypt</code> and <code>crypt_r</code> functions are prototyped in the
+header <samp><span class="file">crypt.h</span></samp>.
+
+   </body></html>
+

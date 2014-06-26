@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Process Completion Status - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="prev" href="Process-Completion.html#Process-Completion" title="Process Completion">
+<link rel="next" href="BSD-Wait-Functions.html#BSD-Wait-Functions" title="BSD Wait Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Process-Completion-Status"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="BSD-Wait-Functions.html#BSD-Wait-Functions">BSD Wait Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Completion.html#Process-Completion">Process Completion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.7 Process Completion Status</h3>
+
+<p>If the exit status value (see <a href="Program-Termination.html#Program-Termination">Program Termination</a>) of the child
+process is zero, then the status value reported by <code>waitpid</code> or
+<code>wait</code> is also zero.  You can test for other kinds of information
+encoded in the returned status value using the following macros. 
+These macros are defined in the header file <samp><span class="file">sys/wait.h</span></samp>. 
+<a name="index-sys_002fwait_002eh-3184"></a>
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>WIFEXITED</b> (<var>int status</var>)<var><a name="index-WIFEXITED-3185"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if the child process terminated
+normally with <code>exit</code> or <code>_exit</code>. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>WEXITSTATUS</b> (<var>int status</var>)<var><a name="index-WEXITSTATUS-3186"></a></var><br>
+<blockquote><p>If <code>WIFEXITED</code> is true of <var>status</var>, this macro returns the
+low-order 8 bits of the exit status value from the child process. 
+See <a href="Exit-Status.html#Exit-Status">Exit Status</a>. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>WIFSIGNALED</b> (<var>int status</var>)<var><a name="index-WIFSIGNALED-3187"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if the child process terminated
+because it received a signal that was not handled. 
+See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>WTERMSIG</b> (<var>int status</var>)<var><a name="index-WTERMSIG-3188"></a></var><br>
+<blockquote><p>If <code>WIFSIGNALED</code> is true of <var>status</var>, this macro returns the
+signal number of the signal that terminated the child process. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>WCOREDUMP</b> (<var>int status</var>)<var><a name="index-WCOREDUMP-3189"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if the child process terminated
+and produced a core dump. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>WIFSTOPPED</b> (<var>int status</var>)<var><a name="index-WIFSTOPPED-3190"></a></var><br>
+<blockquote><p>This macro returns a nonzero value if the child process is stopped. 
+</p></blockquote></div>
+
+<!-- sys/wait.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>WSTOPSIG</b> (<var>int status</var>)<var><a name="index-WSTOPSIG-3191"></a></var><br>
+<blockquote><p>If <code>WIFSTOPPED</code> is true of <var>status</var>, this macro returns the
+signal number of the signal that caused the child process to stop. 
+</p></blockquote></div>
+
+   </body></html>
+

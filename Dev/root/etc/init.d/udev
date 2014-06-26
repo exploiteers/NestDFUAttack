@@ -1,0 +1,50 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the user-space
+#      device daemon, udevd.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+UDEVD=${SBINDIR}/udevd
+
+kill_udevd () {
+    ${KILLALL} udevd > ${NULL} 2>&1
+}
+
+case "${1}" in
+
+'start')
+	kill_udevd
+
+	${ECHO} "User-space device daemon:\c"
+
+	if test -x ${UDEVD}; then
+	    ${UDEVD} `${CAT} ${CONFDIR}/udevd.options 2> ${NULL}` &
+	    ${ECHO} " udevd\c"
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	kill_udevd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

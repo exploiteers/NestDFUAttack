@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file handles the system halt command.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+case "${1}" in
+
+'start')
+	;;
+
+'stop')
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop>"
+	exit 1
+	;;
+
+esac

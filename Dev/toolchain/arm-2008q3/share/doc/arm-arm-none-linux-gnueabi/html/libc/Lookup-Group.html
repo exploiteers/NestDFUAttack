@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Lookup Group - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Group-Database.html#Group-Database" title="Group Database">
+<link rel="prev" href="Group-Data-Structure.html#Group-Data-Structure" title="Group Data Structure">
+<link rel="next" href="Scanning-All-Groups.html#Scanning-All-Groups" title="Scanning All Groups">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Lookup-Group"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scanning-All-Groups.html#Scanning-All-Groups">Scanning All Groups</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Group-Data-Structure.html#Group-Data-Structure">Group Data Structure</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Group-Database.html#Group-Database">Group Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.14.2 Looking Up One Group</h4>
+
+<p><a name="index-converting-group-name-to-group-ID-3410"></a><a name="index-converting-group-ID-to-group-name-3411"></a>
+You can search the group database for information about a specific
+group using <code>getgrgid</code> or <code>getgrnam</code>.  These functions are
+declared in <samp><span class="file">grp.h</span></samp>.
+
+<!-- grp.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: struct group * <b>getgrgid</b> (<var>gid_t gid</var>)<var><a name="index-getgrgid-3412"></a></var><br>
+<blockquote><p>This function returns a pointer to a statically-allocated structure
+containing information about the group whose group ID is <var>gid</var>. 
+This structure may be overwritten by subsequent calls to
+<code>getgrgid</code>.
+
+        <p>A null pointer indicates there is no group with ID <var>gid</var>. 
+</p></blockquote></div>
+
+<!-- grp.h -->
+<!-- POSIX.1c -->
+<div class="defun">
+&mdash; Function: int <b>getgrgid_r</b> (<var>gid_t gid, struct group *result_buf, char *buffer, size_t buflen, struct group **result</var>)<var><a name="index-getgrgid_005fr-3413"></a></var><br>
+<blockquote><p>This function is similar to <code>getgrgid</code> in that it returns
+information about the group whose group ID is <var>gid</var>.  However, it
+fills the user supplied structure pointed to by <var>result_buf</var> with
+the information instead of using a static buffer.  The first
+<var>buflen</var> bytes of the additional buffer pointed to by <var>buffer</var>
+are used to contain additional information, normally strings which are
+pointed to by the elements of the result structure.
+
+        <p>If a group with ID <var>gid</var> is found, the pointer returned in
+<var>result</var> points to the record which contains the wanted data (i.e.,
+<var>result</var> contains the value <var>result_buf</var>).  If no group is found
+or if an error occurred, the pointer returned in <var>result</var> is a null
+pointer.  The function returns zero or an error code.  If the buffer
+<var>buffer</var> is too small to contain all the needed information, the
+error code <code>ERANGE</code> is returned and <var>errno</var> is set to
+<code>ERANGE</code>. 
+</p></blockquote></div>
+
+<!-- grp.h -->
+<!-- SVID, BSD -->
+<div class="defun">
+&mdash; Function: struct group * <b>getgrnam</b> (<var>const char *name</var>)<var><a name="index-getgrnam-3414"></a></var><br>
+<blockquote><p>This function returns a pointer to a statically-allocated structure
+containing information about the group whose group name is <var>name</var>. 
+This structure may be overwritten by subsequent calls to
+<code>getgrnam</code>.
+
+        <p>A null pointer indicates there is no group named <var>name</var>. 
+</p></blockquote></div>
+
+<!-- grp.h -->
+<!-- POSIX.1c -->
+<div class="defun">
+&mdash; Function: int <b>getgrnam_r</b> (<var>const char *name, struct group *result_buf, char *buffer, size_t buflen, struct group **result</var>)<var><a name="index-getgrnam_005fr-3415"></a></var><br>
+<blockquote><p>This function is similar to <code>getgrnam</code> in that is returns
+information about the group whose group name is <var>name</var>.  Like
+<code>getgrgid_r</code>, it uses the user supplied buffers in
+<var>result_buf</var> and <var>buffer</var>, not a static buffer.
+
+        <p>The return values are the same as for <code>getgrgid_r</code>
+<code>ERANGE</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

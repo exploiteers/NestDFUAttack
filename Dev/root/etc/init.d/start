@@ -1,0 +1,47 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file handles early user-space start-up initialization,
+#      including mounting of various required file systems.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+MOUNTFLAGS='-n'
+echo "test 1" > /dev/ttyS0
+echo "test 1" > /dev/ttyS1
+echo "-----------------------------TTYO0 in the house" > /dev/ttyO0
+/bin/busybox getty 115200 /dev/ttyO0 -n -l /bin/sh
+
+UTMPDB=${VARDIR}/run/utmp
+
+# Mount the proc filesystem, since the correct functionality of many
+# subsequent commands are dependent on it. Be sure to pass '-n' to
+# mount so that we don't try to update /etc/mtab (which is just a
+# symlink to /proc/mounts anyway).
+
+if [ ! -e ${ROOTDIR}proc/mounts ]; then
+    ${MOUNT} ${MOUNTFLAGS} -t proc proc ${ROOTDIR}proc
+fi
+
+# Make sure that the root file system is mounted for read/write
+# access. Again, passing '-n' to mount. Also, specify the 'noatime'
+# option so we don't write back every time a file is accessed and
+# prematurely wear out nonvolatile storage.
+
+${MOUNT} ${MOUNTFLAGS} -o remount,rw,noatime ${ROOTDIR}
+
+# Clean-up utmp/wtmp databases
+
+:> ${UTMPDB}
+
+if getent group utmp > ${NULL} 2>&1
+then
+    chgrp utmp ${UTMPDB}
+    chmod 0664 ${UTMPDB}
+fi

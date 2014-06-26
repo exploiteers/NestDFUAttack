@@ -1,0 +1,210 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the primary
+#      system application.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+# Source daemon-monitor library
+. /etc/init.d/dm
+
+# Export fallback shared library search path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}${NESTLABSLIBDIR}
+
+NLCLIENTNAME=nlclient
+NLCLIENTAPP=${NESTLABSSBINDIR}/${NLCLIENTNAME}
+NLCLIENTPIDFILE="${VARDIR}/run/${NLCLIENTNAME}.pid"
+
+EGREP="${GREP} -E"
+RMDIR="${RM} -r"
+
+MEDIADIR=${ROOTDIR}media
+SCRATCHDIR=${MEDIADIR}/scratch
+
+PROGRAM="`${BASENAME} ${0}`"
+
+cleanup_scratch () {
+	${RMDIR} ${SCRATCHDIR}/*
+}
+
+identifier_to_family () {
+	${ECHO} "${1}" | ${SED} -n -e 's,^\([[:alpha:][:space:]]\+\)-\([[:digit:]]\+\)\.\([[:digit:]]\+\)$,\1,gp'
+}
+
+identifier_to_product () {
+	${ECHO} "${1}" | ${SED} -n -e 's,^\([[:alpha:][:space:]]\+-[[:digit:]]\+\)\.\([[:digit:]]\+\)$,\1,gp'
+}
+
+find_configs () {
+	local identifier="${1}"
+	local dir="${2}"
+	local configs=""
+
+	shift 2
+
+	for type in ${@}; do
+		local config=""
+
+		# If present, add product-independent configuration.
+
+		config="${dir}/${type}.config"
+
+		if [ -r "${config}" ]; then
+			configs="${configs} -config ${config}"
+		fi
+
+		if [ -n "${identifier}" ]; then
+			family="`identifier_to_family ${identifier}`"
+
+			# If present, add product family-dependent configuration.
+
+			config="${dir}/${family}/${type}.config"
+
+			if [ -r "${config}" ]; then
+				configs="${configs} -config ${config}"
+			fi
+
+			product="`identifier_to_product ${identifier}`"
+
+			# If present, add product model-dependent configuration.
+
+			config="${dir}/${family}/${product}/${type}.config"
+
+			if [ -r "${config}" ]; then
+				configs="${configs} -config ${config}"
+			fi
+
+			# If present, add product revision-dependent configuration.
+
+			config="${dir}/${family}/${product}/${identifier}/${type}.config"
+
+			if [ -r "${config}" ]; then
+				configs="${configs} -config ${config}"
+			fi
+		fi
+	done
+
+	if [ -n "${configs}" ]; then
+		${ECHO} "${configs}"
+	fi
+}
+
+has_configs () {
+	local identifer="${1}"
+	local dir="${2}"
+	
+	shift 2
+		
+	configs=`find_configs "${identifier}" "${dir}" ${@}`
+	
+	if [ -n "${configs}" ]; then
+		return 0
+	else
+		return 1
+	fi	
+}	
+
+end_service () {
+	local verb="${1}"
+	local how="${2}"
+
+	log_info "Service termination for ${NLCLIENTNAME} received from [${PPID}]: ${verb}"
+
+	${STOPDAEMON} -q -p ${NLCLIENTPIDFILE} ${how} > ${NULL} 2>&1
+	${ECHO} " ${verb} ${NLCLIENTNAME}\c"
+}
+
+kill_service () {
+	if test -x ${NLCLIENTAPP}; then
+		end_service "killing" "--signal KILL"
+	fi
+}
+
+stop_service () {
+	if test -x ${NLCLIENTAPP}; then
+		if has_configs "" "${NESTLABSCONFDIR}" demo ; then
+			STOPOPTS="--signal KILL"
+		else
+			STOPOPTS="--retry=TERM/180/ABRT/180/KILL/6"
+		fi
+
+		unmonitor_service "${NLCLIENTNAME}"
+		end_service "stopping" "${STOPOPTS}"
+	fi
+}
+
+check_service_status () {
+	local state="${1}"
+
+	if test -x ${MONIT}; then
+		${MONIT} summary 2>&1 | ${GREP} ${NLCLIENTNAME} | ${TOLOWER} | ${EGREP} "${state}" 2>&1 > ${NULL}
+	fi
+}
+
+start_service () {
+	if test -x ${NLCLIENTAPP}; then
+
+		log_info "Service initiation for ${NLCLIENTNAME} received from [${PPID}]"
+
+		if check_service_status "running|initializing" ; then
+			${ECHO} " running or stopping, will continue to monitor ${NLCLIENTNAME}\c"
+		else
+			local identifier="`${BOOTGETENV} -n nlmodel`"
+
+			${STARTDAEMON} -q -b -p "${NLCLIENTPIDFILE}" -a "${NLCLIENTAPP}" -- `find_configs ${identifier} ${NESTLABSCONFDIR} client demo`
+			${ECHO} " starting ${NLCLIENTNAME}\c"
+
+			if check_service_status "not monitored" ; then
+				monitor_service "${NLCLIENTNAME}"
+			fi
+		fi
+	fi
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "Nest services:\c"
+
+		if ${CHECK} nestlabs; then
+			cleanup_scratch
+			start_service
+		fi
+
+	${ECHO} "."
+	;;
+
+'kill')
+	${ECHO} "Nest services:\c"
+
+		kill_service
+
+	${ECHO} "."
+	;;
+
+'stop')
+	${ECHO} "Nest services:\c"
+
+		stop_service
+
+	${ECHO} "."
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <kill | start | stop | restart>"
+	exit 1
+	;;
+
+esac

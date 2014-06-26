@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>Version Supported - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="System-Options.html#System-Options" title="System Options">
+<link rel="next" href="Sysconf.html#Sysconf" title="Sysconf">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Version-Supported"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sysconf.html#Sysconf">Sysconf</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="System-Options.html#System-Options">System Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.3 Which Version of POSIX is Supported</h3>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: long int <b>_POSIX_VERSION</b><var><a name="index-g_t_005fPOSIX_005fVERSION-3521"></a></var><br>
+<blockquote><p>This constant represents the version of the POSIX.1 standard to which
+the implementation conforms.  For an implementation conforming to the
+1995 POSIX.1 standard, the value is the integer <code>199506L</code>.
+
+        <p><code>_POSIX_VERSION</code> is always defined (in <samp><span class="file">unistd.h</span></samp>) in any
+POSIX system.
+
+        <p><strong>Usage Note:</strong> Don't try to test whether the system supports POSIX
+by including <samp><span class="file">unistd.h</span></samp> and then checking whether
+<code>_POSIX_VERSION</code> is defined.  On a non-POSIX system, this will
+probably fail because there is no <samp><span class="file">unistd.h</span></samp>.  We do not know of
+<em>any</em> way you can reliably test at compilation time whether your
+target system supports POSIX or whether <samp><span class="file">unistd.h</span></samp> exists.
+
+        <p>The GNU C compiler predefines the symbol <code>__POSIX__</code> if the target
+system is a POSIX system.  Provided you do not use any other compilers
+on POSIX systems, testing <code>defined (__POSIX__)</code> will reliably
+detect such systems. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: long int <b>_POSIX2_C_VERSION</b><var><a name="index-g_t_005fPOSIX2_005fC_005fVERSION-3522"></a></var><br>
+<blockquote><p>This constant represents the version of the POSIX.2 standard which the
+library and system kernel support.  We don't know what value this will
+be for the first version of the POSIX.2 standard, because the value is
+based on the year and month in which the standard is officially adopted.
+
+        <p>The value of this symbol says nothing about the utilities installed on
+the system.
+
+        <p><strong>Usage Note:</strong> You can use this macro to tell whether a POSIX.1
+system library supports POSIX.2 as well.  Any POSIX.1 system contains
+<samp><span class="file">unistd.h</span></samp>, so include that file and then test <code>defined
+(_POSIX2_C_VERSION)</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

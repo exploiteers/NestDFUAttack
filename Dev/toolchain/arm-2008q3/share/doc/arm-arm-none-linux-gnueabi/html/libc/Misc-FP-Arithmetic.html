@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Misc FP Arithmetic - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="prev" href="FP-Comparison-Functions.html#FP-Comparison-Functions" title="FP Comparison Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Misc-FP-Arithmetic"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="FP-Comparison-Functions.html#FP-Comparison-Functions">FP Comparison Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.7 Miscellaneous FP arithmetic functions</h4>
+
+<p><a name="index-minimum-2502"></a><a name="index-maximum-2503"></a><a name="index-positive-difference-2504"></a><a name="index-multiply_002dadd-2505"></a>
+The functions in this section perform miscellaneous but common
+operations that are awkward to express with C operators.  On some
+processors these functions can use special machine instructions to
+perform these operations faster than the equivalent C code.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fmin</b> (<var>double x, double y</var>)<var><a name="index-fmin-2506"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fminf</b> (<var>float x, float y</var>)<var><a name="index-fminf-2507"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fminl</b> (<var>long double x, long double y</var>)<var><a name="index-fminl-2508"></a></var><br>
+<blockquote><p>The <code>fmin</code> function returns the lesser of the two values <var>x</var>
+and <var>y</var>.  It is similar to the expression
+     <pre class="smallexample">          ((x) &lt; (y) ? (x) : (y))
+</pre>
+        <p>except that <var>x</var> and <var>y</var> are only evaluated once.
+
+        <p>If an argument is NaN, the other argument is returned.  If both arguments
+are NaN, NaN is returned. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fmax</b> (<var>double x, double y</var>)<var><a name="index-fmax-2509"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fmaxf</b> (<var>float x, float y</var>)<var><a name="index-fmaxf-2510"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fmaxl</b> (<var>long double x, long double y</var>)<var><a name="index-fmaxl-2511"></a></var><br>
+<blockquote><p>The <code>fmax</code> function returns the greater of the two values <var>x</var>
+and <var>y</var>.
+
+        <p>If an argument is NaN, the other argument is returned.  If both arguments
+are NaN, NaN is returned. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fdim</b> (<var>double x, double y</var>)<var><a name="index-fdim-2512"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fdimf</b> (<var>float x, float y</var>)<var><a name="index-fdimf-2513"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fdiml</b> (<var>long double x, long double y</var>)<var><a name="index-fdiml-2514"></a></var><br>
+<blockquote><p>The <code>fdim</code> function returns the positive difference between
+<var>x</var> and <var>y</var>.  The positive difference is <var>x</var> -
+<var>y</var> if <var>x</var> is greater than <var>y</var>, and 0 otherwise.
+
+        <p>If <var>x</var>, <var>y</var>, or both are NaN, NaN is returned. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fma</b> (<var>double x, double y, double z</var>)<var><a name="index-fma-2515"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fmaf</b> (<var>float x, float y, float z</var>)<var><a name="index-fmaf-2516"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fmal</b> (<var>long double x, long double y, long double z</var>)<var><a name="index-fmal-2517"></a></var><br>
+<blockquote><p><a name="index-butterfly-2518"></a>The <code>fma</code> function performs floating-point multiply-add.  This is
+the operation (<var>x</var> &amp;middot; <var>y</var>) + <var>z</var>, but the
+intermediate result is not rounded to the destination type.  This can
+sometimes improve the precision of a calculation.
+
+        <p>This function was introduced because some processors have a special
+instruction to perform multiply-add.  The C compiler cannot use it
+directly, because the expression &lsquo;<samp><span class="samp">x*y + z</span></samp>&rsquo; is defined to round the
+intermediate result.  <code>fma</code> lets you choose when you want to round
+only once.
+
+        <p><a name="index-FP_005fFAST_005fFMA-2519"></a>On processors which do not implement multiply-add in hardware,
+<code>fma</code> can be very slow since it must avoid intermediate rounding. 
+<samp><span class="file">math.h</span></samp> defines the symbols <code>FP_FAST_FMA</code>,
+<code>FP_FAST_FMAF</code>, and <code>FP_FAST_FMAL</code> when the corresponding
+version of <code>fma</code> is no slower than the expression &lsquo;<samp><span class="samp">x*y + z</span></samp>&rsquo;. 
+In the GNU C library, this always means the operation is implemented in
+hardware. 
+</p></blockquote></div>
+
+   </body></html>
+

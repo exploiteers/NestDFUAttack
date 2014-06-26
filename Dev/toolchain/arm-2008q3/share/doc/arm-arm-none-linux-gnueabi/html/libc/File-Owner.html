@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+<title>File Owner - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="Testing-File-Type.html#Testing-File-Type" title="Testing File Type">
+<link rel="next" href="Permission-Bits.html#Permission-Bits" title="Permission Bits">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Owner"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Permission-Bits.html#Permission-Bits">Permission Bits</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.4 File Owner</h4>
+
+<p><a name="index-file-owner-1529"></a><a name="index-owner-of-a-file-1530"></a><a name="index-group-owner-of-a-file-1531"></a>
+Every file has an <dfn>owner</dfn> which is one of the registered user names
+defined on the system.  Each file also has a <dfn>group</dfn> which is one of
+the defined groups.  The file owner can often be useful for showing you
+who edited the file (especially when you edit with GNU Emacs), but its
+main purpose is for access control.
+
+   <p>The file owner and group play a role in determining access because the
+file has one set of access permission bits for the owner, another set
+that applies to users who belong to the file's group, and a third set of
+bits that applies to everyone else.  See <a href="Access-Permission.html#Access-Permission">Access Permission</a>, for the
+details of how access is decided based on this data.
+
+   <p>When a file is created, its owner is set to the effective user ID of the
+process that creates it (see <a href="Process-Persona.html#Process-Persona">Process Persona</a>).  The file's group ID
+may be set to either the effective group ID of the process, or the group
+ID of the directory that contains the file, depending on the system
+where the file is stored.  When you access a remote file system, it
+behaves according to its own rules, not according to the system your
+program is running on.  Thus, your program must be prepared to encounter
+either kind of behavior no matter what kind of system you run it on.
+
+   <p><a name="index-chown-1532"></a><a name="index-chgrp-1533"></a>You can change the owner and/or group owner of an existing file using
+the <code>chown</code> function.  This is the primitive for the <code>chown</code>
+and <code>chgrp</code> shell commands.
+
+   <p><a name="index-unistd_002eh-1534"></a>The prototype for this function is declared in <samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>chown</b> (<var>const char *filename, uid_t owner, gid_t group</var>)<var><a name="index-chown-1535"></a></var><br>
+<blockquote><p>The <code>chown</code> function changes the owner of the file <var>filename</var> to
+<var>owner</var>, and its group owner to <var>group</var>.
+
+        <p>Changing the owner of the file on certain systems clears the set-user-ID
+and set-group-ID permission bits.  (This is because those bits may not
+be appropriate for the new owner.)  Other file permission bits are not
+changed.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure. 
+In addition to the usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>),
+the following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EPERM</code><dd>This process lacks permission to make the requested change.
+
+          <p>Only privileged users or the file's owner can change the file's group. 
+On most file systems, only privileged users can change the file owner;
+some file systems allow you to change the owner if you are currently the
+owner.  When you access a remote file system, the behavior you encounter
+is determined by the system that actually holds the file, not by the
+system your program is running on.
+
+          <p>See <a href="Options-for-Files.html#Options-for-Files">Options for Files</a>, for information about the
+<code>_POSIX_CHOWN_RESTRICTED</code> macro.
+
+          <br><dt><code>EROFS</code><dd>The file is on a read-only file system. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>fchown</b> (<var>int filedes, int owner, int group</var>)<var><a name="index-fchown-1536"></a></var><br>
+<blockquote><p>This is like <code>chown</code>, except that it changes the owner of the open
+file with descriptor <var>filedes</var>.
+
+        <p>The return value from <code>fchown</code> is <code>0</code> on success and <code>-1</code>
+on failure.  The following <code>errno</code> error codes are defined for this
+function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EINVAL</code><dd>The <var>filedes</var> argument corresponds to a pipe or socket, not an ordinary
+file.
+
+          <br><dt><code>EPERM</code><dd>This process lacks permission to make the requested change.  For details
+see <code>chmod</code> above.
+
+          <br><dt><code>EROFS</code><dd>The file resides on a read-only file system. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

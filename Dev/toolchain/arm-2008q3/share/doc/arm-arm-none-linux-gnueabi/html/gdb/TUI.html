@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+<title>TUI - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Interpreters.html#Interpreters" title="Interpreters">
+<link rel="next" href="Emacs.html#Emacs" title="Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="TUI"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Emacs.html#Emacs">Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Interpreters.html#Interpreters">Interpreters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">23 <span class="sc">gdb</span> Text User Interface</h2>
+
+<p><a name="index-TUI-1414"></a><a name="index-Text-User-Interface-1415"></a>
+
+<ul class="menu">
+<li><a accesskey="1" href="TUI-Overview.html#TUI-Overview">TUI Overview</a>:                 TUI overview
+<li><a accesskey="2" href="TUI-Keys.html#TUI-Keys">TUI Keys</a>:                     TUI key bindings
+<li><a accesskey="3" href="TUI-Single-Key-Mode.html#TUI-Single-Key-Mode">TUI Single Key Mode</a>:          TUI single key mode
+<li><a accesskey="4" href="TUI-Commands.html#TUI-Commands">TUI Commands</a>:                 TUI-specific commands
+<li><a accesskey="5" href="TUI-Configuration.html#TUI-Configuration">TUI Configuration</a>:            TUI configuration variables
+</ul>
+
+   <p>The <span class="sc">gdb</span> Text User Interface (TUI) is a terminal
+interface which uses the <code>curses</code> library to show the source
+file, the assembly output, the program registers and <span class="sc">gdb</span>
+commands in separate text windows.  The TUI mode is supported only
+on platforms where a suitable version of the <code>curses</code> library
+is available.
+
+   <p><a name="index-g_t_0040value_007bGDBTUI_007d-1416"></a>The TUI mode is enabled by default when you invoke <span class="sc">gdb</span> as
+either &lsquo;<samp><span class="samp">gdbtui</span></samp>&rsquo; or &lsquo;<samp><span class="samp">gdb -tui</span></samp>&rsquo;. 
+You can also switch in and out of TUI mode while <span class="sc">gdb</span> runs by
+using various TUI commands and key bindings, such as <kbd>C-x C-a</kbd>. 
+See <a href="TUI-Keys.html#TUI-Keys">TUI Key Bindings</a>.
+
+   </body></html>
+

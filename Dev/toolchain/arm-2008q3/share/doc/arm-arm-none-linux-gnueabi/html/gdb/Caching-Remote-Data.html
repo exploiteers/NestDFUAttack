@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+<title>Caching Remote Data - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Data.html#Data" title="Data">
+<link rel="prev" href="Character-Sets.html#Character-Sets" title="Character Sets">
+<link rel="next" href="Searching-Memory.html#Searching-Memory" title="Searching Memory">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Caching-Remote-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Searching-Memory.html#Searching-Memory">Searching Memory</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Character-Sets.html#Character-Sets">Character Sets</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Data.html#Data">Data</a>
+<hr>
+</div>
+
+<h3 class="section">8.19 Caching Data of Remote Targets</h3>
+
+<p><a name="index-caching-data-of-remote-targets-574"></a>
+<span class="sc">gdb</span> can cache data exchanged between the debugger and a
+remote target (see <a href="Remote-Debugging.html#Remote-Debugging">Remote Debugging</a>).  Such caching generally improves
+performance, because it reduces the overhead of the remote protocol by
+bundling memory reads and writes into large chunks.  Unfortunately,
+<span class="sc">gdb</span> does not currently know anything about volatile
+registers, and thus data caching will produce incorrect results when
+volatile registers are in use.
+
+     
+<a name="index-set-remotecache-575"></a>
+<dl><dt><code>set remotecache on</code><dt><code>set remotecache off</code><dd>Set caching state for remote targets.  When <code>ON</code>, use data
+caching.  By default, this option is <code>OFF</code>.
+
+     <p><a name="index-show-remotecache-576"></a><br><dt><code>show remotecache</code><dd>Show the current state of data caching for remote targets.
+
+     <p><a name="index-info-dcache-577"></a><br><dt><code>info dcache</code><dd>Print the information about the data cache performance.  The
+information displayed includes: the dcache width and depth; and for
+each cache line, how many times it was referenced, and its data and
+state (dirty, bad, ok, etc.).  This command is useful for debugging
+the data cache operation. 
+</dl>
+
+   </body></html>
+

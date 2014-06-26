@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>Flags for POSIX Regexps - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Regular-Expressions.html#Regular-Expressions" title="Regular Expressions">
+<link rel="prev" href="POSIX-Regexp-Compilation.html#POSIX-Regexp-Compilation" title="POSIX Regexp Compilation">
+<link rel="next" href="Matching-POSIX-Regexps.html#Matching-POSIX-Regexps" title="Matching POSIX Regexps">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Flags-for-POSIX-Regexps"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Matching-POSIX-Regexps.html#Matching-POSIX-Regexps">Matching POSIX Regexps</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="POSIX-Regexp-Compilation.html#POSIX-Regexp-Compilation">POSIX Regexp Compilation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Regular-Expressions.html#Regular-Expressions">Regular Expressions</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.3.2 Flags for POSIX Regular Expressions</h4>
+
+<p>These are the bit flags that you can use in the <var>cflags</var> operand when
+compiling a regular expression with <code>regcomp</code>.
+
+     <dl>
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<dt><code>REG_EXTENDED</code><dd>Treat the pattern as an extended regular expression, rather than as a
+basic regular expression.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ICASE</code><dd>Ignore case when matching letters.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_NOSUB</code><dd>Don't bother storing the contents of the <var>matches-ptr</var> array.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_NEWLINE</code><dd>Treat a newline in <var>string</var> as dividing <var>string</var> into multiple
+lines, so that &lsquo;<samp><span class="samp">$</span></samp>&rsquo; can match before the newline and &lsquo;<samp><span class="samp">^</span></samp>&rsquo; can
+match after.  Also, don't permit &lsquo;<samp><span class="samp">.</span></samp>&rsquo; to match a newline, and don't
+permit &lsquo;<samp><span class="samp">[^...]</span></samp>&rsquo; to match a newline.
+
+     <p>Otherwise, newline acts like any other ordinary character. 
+</dl>
+
+   </body></html>
+

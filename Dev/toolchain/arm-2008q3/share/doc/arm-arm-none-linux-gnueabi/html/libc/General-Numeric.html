@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>General Numeric - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data" title="The Lame Way to Locale Data">
+<link rel="next" href="Currency-Symbol.html#Currency-Symbol" title="Currency Symbol">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="General-Numeric"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Currency-Symbol.html#Currency-Symbol">Currency Symbol</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">The Lame Way to Locale Data</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">7.6.1.1 Generic Numeric Formatting Parameters</h5>
+
+<p>These are the standard members of <code>struct lconv</code>; there may be
+others.
+
+     <dl>
+<dt><code>char *decimal_point</code><dt><code>char *mon_decimal_point</code><dd>These are the decimal-point separators used in formatting non-monetary
+and monetary quantities, respectively.  In the &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, the
+value of <code>decimal_point</code> is <code>"."</code>, and the value of
+<code>mon_decimal_point</code> is <code>""</code>. 
+<a name="index-decimal_002dpoint-separator-710"></a>
+<br><dt><code>char *thousands_sep</code><dt><code>char *mon_thousands_sep</code><dd>These are the separators used to delimit groups of digits to the left of
+the decimal point in formatting non-monetary and monetary quantities,
+respectively.  In the &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, both members have a value of
+<code>""</code> (the empty string).
+
+     <br><dt><code>char *grouping</code><dt><code>char *mon_grouping</code><dd>These are strings that specify how to group the digits to the left of
+the decimal point.  <code>grouping</code> applies to non-monetary quantities
+and <code>mon_grouping</code> applies to monetary quantities.  Use either
+<code>thousands_sep</code> or <code>mon_thousands_sep</code> to separate the digit
+groups. 
+<a name="index-grouping-of-digits-711"></a>
+Each member of these strings is to be interpreted as an integer value of
+type <code>char</code>.  Successive numbers (from left to right) give the
+sizes of successive groups (from right to left, starting at the decimal
+point.)  The last member is either <code>0</code>, in which case the previous
+member is used over and over again for all the remaining groups, or
+<code>CHAR_MAX</code>, in which case there is no more grouping&mdash;or, put
+another way, any remaining digits form one large group without
+separators.
+
+     <p>For example, if <code>grouping</code> is <code>"\04\03\02"</code>, the correct
+grouping for the number <code>123456787654321</code> is &lsquo;<samp><span class="samp">12</span></samp>&rsquo;, &lsquo;<samp><span class="samp">34</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">56</span></samp>&rsquo;, &lsquo;<samp><span class="samp">78</span></samp>&rsquo;, &lsquo;<samp><span class="samp">765</span></samp>&rsquo;, &lsquo;<samp><span class="samp">4321</span></samp>&rsquo;.  This uses a group of 4
+digits at the end, preceded by a group of 3 digits, preceded by groups
+of 2 digits (as many as needed).  With a separator of &lsquo;<samp><span class="samp">,</span></samp>&rsquo;, the
+number would be printed as &lsquo;<samp><span class="samp">12,34,56,78,765,4321</span></samp>&rsquo;.
+
+     <p>A value of <code>"\03"</code> indicates repeated groups of three digits, as
+normally used in the U.S.
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, both <code>grouping</code> and
+<code>mon_grouping</code> have a value of <code>""</code>.  This value specifies no
+grouping at all.
+
+     <br><dt><code>char int_frac_digits</code><dt><code>char frac_digits</code><dd>These are small integers indicating how many fractional digits (to the
+right of the decimal point) should be displayed in a monetary value in
+international and local formats, respectively.  (Most often, both
+members have the same value.)
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, both of these members have the value
+<code>CHAR_MAX</code>, meaning &ldquo;unspecified&rdquo;.  The ISO standard doesn't say
+what to do when you find this value; we recommend printing no
+fractional digits.  (This locale also specifies the empty string for
+<code>mon_decimal_point</code>, so printing any fractional digits would be
+confusing!) 
+</dl>
+
+   </body></html>
+

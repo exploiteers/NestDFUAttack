@@ -1,0 +1,125 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2011 Nest, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the network
+#      connection manager daemon, connmand.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+# Source daemon-monitor library
+. /etc/init.d/dm
+
+CONNMANCONFDIR=${ROOTDIR}media/user-config/connman
+
+NAME=connmand
+
+CONNMAND="${USRSBINDIR}/${NAME}"
+
+CONNMANDPIDFILE="${VARDIR}/run/${NAME}.pid"
+
+CONNMANDOPTS=`${CAT} ${CONFDIR}/${NAME}.options 2> ${NULL}`
+CONNMANDOPTS="${CONNMANDOPTS} --pidfile ${CONNMANDPIDFILE}"
+
+create_dir_if_absent () {
+	if [ ! -d "${1}" ]; then
+		${MKDIR} -p "${1}"     
+	fi                                  
+}
+
+flush_interface () {
+	local interface="${1}"
+
+	${IP} route flush dev "${interface}" > ${NULL} 2>&1
+	${IP} addr flush dev "${interface}" > ${NULL} 2>&1
+}
+
+flush_interfaces () {
+	for interface in `${SED} -n -e '/:/s/^[[:space:]]*\(.\+\):.\+$/\1/gp' < /proc/net/dev`; do
+		if [ "${interface}" != "lo" ]; then
+			flush_interface "${interface}"
+		fi
+	done
+}
+
+disable_arp_filter () {
+	${ECHO} "e f a 0 0 0 0" | ${USRSBINDIR}/wlan_cu -b > ${NULL} 2>&1
+}
+
+#
+# Start the daemon and then instruct the DMD to monitor it if it isn't already.
+#
+start_connmand () {
+	if test -x ${CONNMAND}; then
+
+		create_dir_if_absent "${CONNMANCONFDIR}"
+
+		# Ideally, connman would have a configuration option
+		# or flag to instruct it to flush all addresses and
+		# routes on start-up. However, lacking such an option,
+		# we lean on ip to do the work before we start
+		# connman; otherwise, we may end up with a situation
+		# (e.g. when connman crashes) that an interface is
+		# assigned multiple IP addresses.
+
+		flush_interfaces
+
+		# WORKAROUND to get the ARP filter working
+		# dEbug -> Fw debug -> set Arp ip filter
+		# 0 0 0 0 will disable the ARP filter and, as a result, 
+
+		disable_arp_filter
+
+		export CONNMAN_DHCP_DEBUG=1
+
+		${STARTDAEMON} -q -p ${CONNMANDPIDFILE} -a ${CONNMAND} -- ${CONNMANDOPTS}
+		unset CONNMAN_DHCP_DEBUG
+
+		monitor_service "${NAME}"
+
+		${ECHO} " ${NAME}\c"
+	fi
+}
+
+#
+# Stop the daemon and then instruct the DMD to unmonitor it if it isn't
+# already.
+#
+stop_connmand () {
+	unmonitor_service "${NAME}"
+	${STOPDAEMON} -q --retry=TERM/8/KILL/6 -p ${CONNMANDPIDFILE}
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "Network connection daemon:\c"
+
+	if ${CHECK} connmand; then
+	    start_connmand
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	stop_connmand
+	${SLEEP} 1
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

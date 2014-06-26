@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+<title>Realtime Scheduling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Priority.html#Priority" title="Priority">
+<link rel="prev" href="Absolute-Priority.html#Absolute-Priority" title="Absolute Priority">
+<link rel="next" href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions" title="Basic Scheduling Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Realtime-Scheduling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">Basic Scheduling Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Absolute-Priority.html#Absolute-Priority">Absolute Priority</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Priority.html#Priority">Priority</a>
+<hr>
+</div>
+
+<h4 class="subsection">22.3.2 Realtime Scheduling</h4>
+
+<p><a name="index-realtime-scheduling-2743"></a>
+Whenever two processes with the same absolute priority are ready to run,
+the kernel has a decision to make, because only one can run at a time. 
+If the processes have absolute priority 0, the kernel makes this decision
+as described in <a href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>.  Otherwise, the decision
+is as described in this section.
+
+   <p>If two processes are ready to run but have different absolute priorities,
+the decision is much simpler, and is described in <a href="Absolute-Priority.html#Absolute-Priority">Absolute Priority</a>.
+
+   <p>Each process has a scheduling policy.  For processes with absolute
+priority other than zero, there are two available:
+
+     <ol type=1 start=1>
+<li>First Come First Served
+<li>Round Robin
+        </ol>
+
+   <p>The most sensible case is where all the processes with a certain
+absolute priority have the same scheduling policy.  We'll discuss that
+first.
+
+   <p>In Round Robin, processes share the CPU, each one running for a small
+quantum of time (&ldquo;time slice&rdquo;) and then yielding to another in a
+circular fashion.  Of course, only processes that are ready to run and
+have the same absolute priority are in this circle.
+
+   <p>In First Come First Served, the process that has been waiting the
+longest to run gets the CPU, and it keeps it until it voluntarily
+relinquishes the CPU, runs out of things to do (blocks), or gets
+preempted by a higher priority process.
+
+   <p>First Come First Served, along with maximal absolute priority and
+careful control of interrupts and page faults, is the one to use when a
+process absolutely, positively has to run at full CPU speed or not at
+all.
+
+   <p>Judicious use of <code>sched_yield</code> function invocations by processes
+with First Come First Served scheduling policy forms a good compromise
+between Round Robin and First Come First Served.
+
+   <p>To understand how scheduling works when processes of different scheduling
+policies occupy the same absolute priority, you have to know the nitty
+gritty details of how processes enter and exit the ready to run list:
+
+   <p>In both cases, the ready to run list is organized as a true queue, where
+a process gets pushed onto the tail when it becomes ready to run and is
+popped off the head when the scheduler decides to run it.  Note that
+ready to run and running are two mutually exclusive states.  When the
+scheduler runs a process, that process is no longer ready to run and no
+longer in the ready to run list.  When the process stops running, it
+may go back to being ready to run again.
+
+   <p>The only difference between a process that is assigned the Round Robin
+scheduling policy and a process that is assigned First Come First Serve
+is that in the former case, the process is automatically booted off the
+CPU after a certain amount of time.  When that happens, the process goes
+back to being ready to run, which means it enters the queue at the tail. 
+The time quantum we're talking about is small.  Really small.  This is
+not your father's timesharing.  For example, with the Linux kernel, the
+round robin time slice is a thousand times shorter than its typical
+time slice for traditional scheduling.
+
+   <p>A process begins life with the same scheduling policy as its parent process. 
+Functions described in <a href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">Basic Scheduling Functions</a> can change it.
+
+   <p>Only a privileged process can set the scheduling policy of a process
+that has absolute priority higher than 0.
+
+   </body></html>
+

@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Argp Parser Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Parsers.html#Argp-Parsers" title="Argp Parsers">
+<link rel="prev" href="Argp-Option-Vectors.html#Argp-Option-Vectors" title="Argp Option Vectors">
+<link rel="next" href="Argp-Children.html#Argp-Children" title="Argp Children">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Parser-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Children.html#Argp-Children">Argp Children</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.5 Argp Parser Functions</h4>
+
+<p>The function pointed to by the <code>parser</code> field in a <code>struct
+argp</code> (see <a href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>) defines what actions take place in response
+to each option or argument parsed.  It is also used as a hook, allowing a
+parser to perform tasks at certain other points during parsing.
+
+   <p>Argp parser functions have the following type signature:
+
+   <p><a name="index-argp-parser-functions-3047"></a>
+<pre class="smallexample">     error_t <var>parser</var> (int <var>key</var>, char *<var>arg</var>, struct argp_state *<var>state</var>)
+</pre>
+   <p class="noindent">where the arguments are as follows:
+
+     <dl>
+<dt><var>key</var><dd>For each option that is parsed, <var>parser</var> is called with a value of
+<var>key</var> from that option's <code>key</code> field in the option
+vector.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.  <var>parser</var> is also called at
+other times with special reserved keys, such as <code>ARGP_KEY_ARG</code> for
+non-option arguments.  See <a href="Argp-Special-Keys.html#Argp-Special-Keys">Argp Special Keys</a>.
+
+     <br><dt><var>arg</var><dd>If <var>key</var> is an option, <var>arg</var> is its given value.  This defaults
+to zero if no value is specified.  Only options that have a non-zero
+<code>arg</code> field can ever have a value.  These must <em>always</em> have a
+value unless the <code>OPTION_ARG_OPTIONAL</code> flag is specified.  If the
+input being parsed specifies a value for an option that doesn't allow
+one, an error results before <var>parser</var> ever gets called.
+
+     <p>If <var>key</var> is <code>ARGP_KEY_ARG</code>, <var>arg</var> is a non-option
+argument.  Other special keys always have a zero <var>arg</var>.
+
+     <br><dt><var>state</var><dd><var>state</var> points to a <code>struct argp_state</code>, containing useful
+information about the current parsing state for use by
+<var>parser</var>.  See <a href="Argp-Parsing-State.html#Argp-Parsing-State">Argp Parsing State</a>. 
+</dl>
+
+   <p>When <var>parser</var> is called, it should perform whatever action is
+appropriate for <var>key</var>, and return <code>0</code> for success,
+<code>ARGP_ERR_UNKNOWN</code> if the value of <var>key</var> is not handled by this
+parser function, or a unix error code if a real error
+occurred.  See <a href="Error-Codes.html#Error-Codes">Error Codes</a>.
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>ARGP_ERR_UNKNOWN</b><var><a name="index-ARGP_005fERR_005fUNKNOWN-3048"></a></var><br>
+<blockquote><p>Argp parser functions should return <code>ARGP_ERR_UNKNOWN</code> for any
+<var>key</var> value they do not recognize, or for non-option arguments
+(<var>key</var><code> == ARGP_KEY_ARG</code>) that they are not equipped to handle. 
+</p></blockquote></div>
+
+   <p>A typical parser function uses a switch statement on <var>key</var>:
+
+<pre class="smallexample">     error_t
+     parse_opt (int key, char *arg, struct argp_state *state)
+     {
+       switch (key)
+         {
+         case <var>option_key</var>:
+           <var>action</var>
+           break;
+         ...
+         default:
+           return ARGP_ERR_UNKNOWN;
+         }
+       return 0;
+     }
+</pre>
+   <ul class="menu">
+<li><a accesskey="1" href="Argp-Special-Keys.html#Argp-Special-Keys">Keys</a>:            Special values for the <var>key</var> argument. 
+<li><a accesskey="2" href="Argp-Parsing-State.html#Argp-Parsing-State">State</a>:          What the <var>state</var> argument refers to. 
+<li><a accesskey="3" href="Argp-Helper-Functions.html#Argp-Helper-Functions">Functions</a>:   Functions to help during argp parsing. 
+</ul>
+
+   </body></html>
+

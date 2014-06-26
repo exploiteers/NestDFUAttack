@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Variable Arguments Input - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Formatted-Input-Functions.html#Formatted-Input-Functions" title="Formatted Input Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Variable-Arguments-Input"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Formatted-Input-Functions.html#Formatted-Input-Functions">Formatted Input Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.9 Variable Arguments Input Functions</h4>
+
+<p>The functions <code>vscanf</code> and friends are provided so that you can
+define your own variadic <code>scanf</code>-like functions that make use of
+the same internals as the built-in formatted output functions. 
+These functions are analogous to the <code>vprintf</code> series of output
+functions.  See <a href="Variable-Arguments-Output.html#Variable-Arguments-Output">Variable Arguments Output</a>, for important
+information on how to use them.
+
+   <p><strong>Portability Note:</strong> The functions listed in this section were
+introduced in ISO&nbsp;C99<!-- /@w --> and were before available as GNU extensions.
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vscanf</b> (<var>const char *template, va_list ap</var>)<var><a name="index-vscanf-1088"></a></var><br>
+<blockquote><p>This function is similar to <code>scanf</code>, but instead of taking
+a variable number of arguments directly, it takes an argument list
+pointer <var>ap</var> of type <code>va_list</code> (see <a href="Variadic-Functions.html#Variadic-Functions">Variadic Functions</a>). 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vwscanf</b> (<var>const wchar_t *template, va_list ap</var>)<var><a name="index-vwscanf-1089"></a></var><br>
+<blockquote><p>This function is similar to <code>wscanf</code>, but instead of taking
+a variable number of arguments directly, it takes an argument list
+pointer <var>ap</var> of type <code>va_list</code> (see <a href="Variadic-Functions.html#Variadic-Functions">Variadic Functions</a>). 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vfscanf</b> (<var>FILE *stream, const char *template, va_list ap</var>)<var><a name="index-vfscanf-1090"></a></var><br>
+<blockquote><p>This is the equivalent of <code>fscanf</code> with the variable argument list
+specified directly as for <code>vscanf</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vfwscanf</b> (<var>FILE *stream, const wchar_t *template, va_list ap</var>)<var><a name="index-vfwscanf-1091"></a></var><br>
+<blockquote><p>This is the equivalent of <code>fwscanf</code> with the variable argument list
+specified directly as for <code>vwscanf</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vsscanf</b> (<var>const char *s, const char *template, va_list ap</var>)<var><a name="index-vsscanf-1092"></a></var><br>
+<blockquote><p>This is the equivalent of <code>sscanf</code> with the variable argument list
+specified directly as for <code>vscanf</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>vswscanf</b> (<var>const wchar_t *s, const wchar_t *template, va_list ap</var>)<var><a name="index-vswscanf-1093"></a></var><br>
+<blockquote><p>This is the equivalent of <code>swscanf</code> with the variable argument list
+specified directly as for <code>vwscanf</code>. 
+</p></blockquote></div>
+
+   <p>In GNU C, there is a special construct you can use to let the compiler
+know that a function uses a <code>scanf</code>-style format string.  Then it
+can check the number and types of arguments in each call to the
+function, and warn you when they do not match the format string. 
+For details, see <a href="../gcc/Function-Attributes.html#Function-Attributes">Declaring Attributes of Functions</a>.
+
+   </body></html>
+

@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Low-Level I/O - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="next" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Low-Level-I%2fO"></a>
+<a name="Low_002dLevel-I_002fO"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-System-Interface.html#File-System-Interface">File System Interface</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Low-level, less portable I/O -->
+<h2 class="chapter">13 Low-Level Input/Output</h2>
+
+<p>This chapter describes functions for performing low-level input/output
+operations on file descriptors.  These functions include the primitives
+for the higher-level I/O functions described in <a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>, as
+well as functions for performing low-level control operations for which
+there are no equivalents on streams.
+
+   <p>Stream-level I/O is more flexible and usually more convenient;
+therefore, programmers generally use the descriptor-level functions only
+when necessary.  These are some of the usual reasons:
+
+     <ul>
+<li>For reading binary files in large chunks.
+
+     <li>For reading an entire file into core before parsing it.
+
+     <li>To perform operations other than data transfer, which can only be done
+with a descriptor.  (You can use <code>fileno</code> to get the descriptor
+corresponding to a stream.)
+
+     <li>To pass descriptors to a child process.  (The child can create its own
+stream to use a descriptor that it inherits, but cannot inherit a stream
+directly.) 
+</ul>
+
+<ul class="menu">
+<li><a accesskey="1" href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>:            How to open and close file
+                                         descriptors. 
+<li><a accesskey="2" href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>:                       Reading and writing data. 
+<li><a accesskey="3" href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>:              Setting a descriptor's file
+                                         position. 
+<li><a accesskey="4" href="Descriptors-and-Streams.html#Descriptors-and-Streams">Descriptors and Streams</a>:              Converting descriptor to stream
+                                         or vice-versa. 
+<li><a accesskey="5" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>:        Precautions needed if you use both
+                                         descriptors and streams. 
+<li><a accesskey="6" href="Scatter_002dGather.html#Scatter_002dGather">Scatter-Gather</a>:                       Fast I/O to discontinuous buffers. 
+<li><a accesskey="7" href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>:                    Using files like memory. 
+<li><a accesskey="8" href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>:                      How to check for input or output
+					 on multiple file descriptors. 
+<li><a accesskey="9" href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">Synchronizing I/O</a>:                    Making sure all I/O actions completed. 
+<li><a href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>:                     Perform I/O in parallel. 
+<li><a href="Control-Operations.html#Control-Operations">Control Operations</a>:                   Various other operations on file
+					 descriptors. 
+<li><a href="Duplicating-Descriptors.html#Duplicating-Descriptors">Duplicating Descriptors</a>:              Fcntl commands for duplicating
+                                         file descriptors. 
+<li><a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>:                     Fcntl commands for manipulating
+                                         flags associated with file
+                                         descriptors. 
+<li><a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>:                    Fcntl commands for manipulating
+                                         flags associated with open files. 
+<li><a href="File-Locks.html#File-Locks">File Locks</a>:                           Fcntl commands for implementing
+                                         file locking. 
+<li><a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>:                      Getting an asynchronous signal when
+                                         input arrives. 
+<li><a href="IOCTLs.html#IOCTLs">IOCTLs</a>:                               Generic I/O Control operations. 
+</ul>
+
+   </body></html>
+

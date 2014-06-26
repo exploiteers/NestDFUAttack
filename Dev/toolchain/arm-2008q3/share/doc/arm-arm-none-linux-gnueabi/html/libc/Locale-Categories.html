@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Locale Categories - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locales.html#Locales" title="Locales">
+<link rel="prev" href="Choosing-Locale.html#Choosing-Locale" title="Choosing Locale">
+<link rel="next" href="Setting-the-Locale.html#Setting-the-Locale" title="Setting the Locale">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Locale-Categories"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Setting-the-Locale.html#Setting-the-Locale">Setting the Locale</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Choosing-Locale.html#Choosing-Locale">Choosing Locale</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locales.html#Locales">Locales</a>
+<hr>
+</div>
+
+<h3 class="section">7.3 Categories of Activities that Locales Affect</h3>
+
+<p><a name="index-categories-for-locales-689"></a><a name="index-locale-categories-690"></a>
+The purposes that locales serve are grouped into <dfn>categories</dfn>, so
+that a user or a program can choose the locale for each category
+independently.  Here is a table of categories; each name is both an
+environment variable that a user can set, and a macro name that you can
+use as an argument to <code>setlocale</code>.
+
+     <dl>
+<!-- locale.h -->
+<!-- ISO -->
+<dt><code>LC_COLLATE</code><a name="index-LC_005fCOLLATE-691"></a><dd>This category applies to collation of strings (functions <code>strcoll</code>
+and <code>strxfrm</code>); see <a href="Collation-Functions.html#Collation-Functions">Collation Functions</a>.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LC_CTYPE</code><a name="index-LC_005fCTYPE-692"></a><dd>This category applies to classification and conversion of characters,
+and to multibyte and wide characters;
+see <a href="Character-Handling.html#Character-Handling">Character Handling</a>, and <a href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LC_MONETARY</code><a name="index-LC_005fMONETARY-693"></a><dd>This category applies to formatting monetary values; see <a href="General-Numeric.html#General-Numeric">General Numeric</a>.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LC_NUMERIC</code><a name="index-LC_005fNUMERIC-694"></a><dd>This category applies to formatting numeric values that are not
+monetary; see <a href="General-Numeric.html#General-Numeric">General Numeric</a>.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LC_TIME</code><a name="index-LC_005fTIME-695"></a><dd>This category applies to formatting date and time values; see
+<a href="Formatting-Calendar-Time.html#Formatting-Calendar-Time">Formatting Calendar Time</a>.
+
+     <!-- locale.h -->
+     <!-- XOPEN -->
+     <br><dt><code>LC_MESSAGES</code><a name="index-LC_005fMESSAGES-696"></a><dd>This category applies to selecting the language used in the user
+interface for message translation (see <a href="The-Uniforum-approach.html#The-Uniforum-approach">The Uniforum approach</a>;
+see <a href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen">Message catalogs a la X/Open</a>)  and contains regular expressions
+for affirmative and negative responses.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LC_ALL</code><a name="index-LC_005fALL-697"></a><dd>This is not an environment variable; it is only a macro that you can use
+with <code>setlocale</code> to set a single locale for all purposes.  Setting
+this environment variable overwrites all selections by the other
+<code>LC_*</code> variables or <code>LANG</code>.
+
+     <!-- locale.h -->
+     <!-- ISO -->
+     <br><dt><code>LANG</code><a name="index-LANG-698"></a><dd>If this environment variable is defined, its value specifies the locale
+to use for all purposes except as overridden by the variables above. 
+</dl>
+
+   <p><a name="index-LANGUAGE-699"></a>When developing the message translation functions it was felt that the
+functionality provided by the variables above is not sufficient.  For
+example, it should be possible to specify more than one locale name. 
+Take a Swedish user who better speaks German than English, and a program
+whose messages are output in English by default.  It should be possible
+to specify that the first choice of language is Swedish, the second
+German, and if this also fails to use English.  This is
+possible with the variable <code>LANGUAGE</code>.  For further description of
+this GNU extension see <a href="Using-gettextized-software.html#Using-gettextized-software">Using gettextized software</a>.
+
+   </body></html>
+

@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>User Accounting Database - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Who-Logged-In.html#Who-Logged-In" title="Who Logged In">
+<link rel="next" href="User-Database.html#User-Database" title="User Database">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="User-Accounting-Database"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="User-Database.html#User-Database">User Database</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Who-Logged-In.html#Who-Logged-In">Who Logged In</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.12 The User Accounting Database</h3>
+
+<p><a name="index-user-accounting-database-3335"></a>
+Most Unix-like operating systems keep track of logged in users by
+maintaining a user accounting database.  This user accounting database
+stores for each terminal, who has logged on, at what time, the process
+ID of the user's login shell, etc., etc., but also stores information
+about the run level of the system, the time of the last system reboot,
+and possibly more.
+
+   <p>The user accounting database typically lives in <samp><span class="file">/etc/utmp</span></samp>,
+<samp><span class="file">/var/adm/utmp</span></samp> or <samp><span class="file">/var/run/utmp</span></samp>.  However, these files
+should <strong>never</strong> be accessed directly.  For reading information
+from and writing information to the user accounting database, the
+functions described in this section should be used.
+
+<ul class="menu">
+<li><a accesskey="1" href="Manipulating-the-Database.html#Manipulating-the-Database">Manipulating the Database</a>:    Scanning and modifying the user
+                                 accounting database. 
+<li><a accesskey="2" href="XPG-Functions.html#XPG-Functions">XPG Functions</a>:                A standardized way for doing the same thing. 
+<li><a accesskey="3" href="Logging-In-and-Out.html#Logging-In-and-Out">Logging In and Out</a>:           Functions from BSD that modify the user
+                                 accounting database. 
+</ul>
+
+   </body></html>
+

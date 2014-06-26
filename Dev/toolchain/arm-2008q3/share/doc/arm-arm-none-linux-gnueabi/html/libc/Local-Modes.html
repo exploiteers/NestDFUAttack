@@ -1,0 +1,259 @@
+<html lang="en">
+<head>
+<title>Local Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Control-Modes.html#Control-Modes" title="Control Modes">
+<link rel="next" href="Line-Speed.html#Line-Speed" title="Line Speed">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Local-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Line-Speed.html#Line-Speed">Line Speed</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Control-Modes.html#Control-Modes">Control Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.7 Local Modes</h4>
+
+<p>This section describes the flags for the <code>c_lflag</code> member of the
+<code>struct termios</code> structure.  These flags generally control
+higher-level aspects of input processing than the input modes flags
+described in <a href="Input-Modes.html#Input-Modes">Input Modes</a>, such as echoing, signals, and the choice
+of canonical or noncanonical input.
+
+   <p>The <code>c_lflag</code> member itself is an integer, and you change the flags
+and fields using the operators <code>&amp;</code>, <code>|</code>, and <code>^</code>.  Don't
+try to specify the entire value for <code>c_lflag</code>&mdash;instead, change
+only specific flags and leave the rest untouched (see <a href="Setting-Modes.html#Setting-Modes">Setting Modes</a>).
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ICANON</b><var><a name="index-ICANON-1905"></a></var><br>
+<blockquote><p>This bit, if set, enables canonical input processing mode.  Otherwise,
+input is processed in noncanonical mode.  See <a href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHO</b><var><a name="index-ECHO-1906"></a></var><br>
+<blockquote><p>If this bit is set, echoing of input characters back to the terminal
+is enabled. 
+<a name="index-echo-of-terminal-input-1907"></a></p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHOE</b><var><a name="index-ECHOE-1908"></a></var><br>
+<blockquote><p>If this bit is set, echoing indicates erasure of input with the ERASE
+character by erasing the last character in the current line from the
+screen.  Otherwise, the character erased is re-echoed to show what has
+happened (suitable for a printing terminal).
+
+        <p>This bit only controls the display behavior; the <code>ICANON</code> bit by
+itself controls actual recognition of the ERASE character and erasure of
+input, without which <code>ECHOE</code> is simply irrelevant. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHOPRT</b><var><a name="index-ECHOPRT-1909"></a></var><br>
+<blockquote><p>This bit is like <code>ECHOE</code>, enables display of the ERASE character in
+a way that is geared to a hardcopy terminal.  When you type the ERASE
+character, a &lsquo;<samp><span class="samp">\</span></samp>&rsquo; character is printed followed by the first
+character erased.  Typing the ERASE character again just prints the next
+character erased.  Then, the next time you type a normal character, a
+&lsquo;<samp><span class="samp">/</span></samp>&rsquo; character is printed before the character echoes.
+
+        <p>This is a BSD extension, and exists only in BSD systems and the
+GNU system. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHOK</b><var><a name="index-ECHOK-1910"></a></var><br>
+<blockquote><p>This bit enables special display of the KILL character by moving to a
+new line after echoing the KILL character normally.  The behavior of
+<code>ECHOKE</code> (below) is nicer to look at.
+
+        <p>If this bit is not set, the KILL character echoes just as it would if it
+were not the KILL character.  Then it is up to the user to remember that
+the KILL character has erased the preceding input; there is no
+indication of this on the screen.
+
+        <p>This bit only controls the display behavior; the <code>ICANON</code> bit by
+itself controls actual recognition of the KILL character and erasure of
+input, without which <code>ECHOK</code> is simply irrelevant. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHOKE</b><var><a name="index-ECHOKE-1911"></a></var><br>
+<blockquote><p>This bit is similar to <code>ECHOK</code>.  It enables special display of the
+KILL character by erasing on the screen the entire line that has been
+killed.  This is a BSD extension, and exists only in BSD systems and the
+GNU system. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHONL</b><var><a name="index-ECHONL-1912"></a></var><br>
+<blockquote><p>If this bit is set and the <code>ICANON</code> bit is also set, then the
+newline (<code>'\n'</code>) character is echoed even if the <code>ECHO</code> bit
+is not set. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ECHOCTL</b><var><a name="index-ECHOCTL-1913"></a></var><br>
+<blockquote><p>If this bit is set and the <code>ECHO</code> bit is also set, echo control
+characters with &lsquo;<samp><span class="samp">^</span></samp>&rsquo; followed by the corresponding text character. 
+Thus, control-A echoes as &lsquo;<samp><span class="samp">^A</span></samp>&rsquo;.  This is usually the preferred mode
+for interactive input, because echoing a control character back to the
+terminal could have some undesired effect on the terminal.
+
+        <p>This is a BSD extension, and exists only in BSD systems and the
+GNU system. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ISIG</b><var><a name="index-ISIG-1914"></a></var><br>
+<blockquote><p>This bit controls whether the INTR, QUIT, and SUSP characters are
+recognized.  The functions associated with these characters are performed
+if and only if this bit is set.  Being in canonical or noncanonical
+input mode has no affect on the interpretation of these characters.
+
+        <p>You should use caution when disabling recognition of these characters. 
+Programs that cannot be interrupted interactively are very
+user-unfriendly.  If you clear this bit, your program should provide
+some alternate interface that allows the user to interactively send the
+signals associated with these characters, or to escape from the program. 
+<a name="index-interactive-signals_002c-from-terminal-1915"></a>
+See <a href="Signal-Characters.html#Signal-Characters">Signal Characters</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IEXTEN</b><var><a name="index-IEXTEN-1916"></a></var><br>
+<blockquote><p>POSIX.1 gives <code>IEXTEN</code> implementation-defined meaning,
+so you cannot rely on this interpretation on all systems.
+
+        <p>On BSD systems and the GNU system, it enables the LNEXT and DISCARD characters. 
+See <a href="Other-Special.html#Other-Special">Other Special</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>NOFLSH</b><var><a name="index-NOFLSH-1917"></a></var><br>
+<blockquote><p>Normally, the INTR, QUIT, and SUSP characters cause input and output
+queues for the terminal to be cleared.  If this bit is set, the queues
+are not cleared. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>TOSTOP</b><var><a name="index-TOSTOP-1918"></a></var><br>
+<blockquote><p>If this bit is set and the system supports job control, then
+<code>SIGTTOU</code> signals are generated by background processes that
+attempt to write to the terminal.  See <a href="Access-to-the-Terminal.html#Access-to-the-Terminal">Access to the Terminal</a>. 
+</p></blockquote></div>
+
+   <p>The following bits are BSD extensions; they exist only in BSD systems
+and the GNU system.
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ALTWERASE</b><var><a name="index-ALTWERASE-1919"></a></var><br>
+<blockquote><p>This bit determines how far the WERASE character should erase.  The
+WERASE character erases back to the beginning of a word; the question
+is, where do words begin?
+
+        <p>If this bit is clear, then the beginning of a word is a nonwhitespace
+character following a whitespace character.  If the bit is set, then the
+beginning of a word is an alphanumeric character or underscore following
+a character which is none of those.
+
+        <p>See <a href="Editing-Characters.html#Editing-Characters">Editing Characters</a>, for more information about the WERASE character. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>FLUSHO</b><var><a name="index-FLUSHO-1920"></a></var><br>
+<blockquote><p>This is the bit that toggles when the user types the DISCARD character. 
+While this bit is set, all output is discarded.  See <a href="Other-Special.html#Other-Special">Other Special</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>NOKERNINFO</b><var><a name="index-NOKERNINFO-1921"></a></var><br>
+<blockquote><p>Setting this bit disables handling of the STATUS character. 
+See <a href="Other-Special.html#Other-Special">Other Special</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>PENDIN</b><var><a name="index-PENDIN-1922"></a></var><br>
+<blockquote><p>If this bit is set, it indicates that there is a line of input that
+needs to be reprinted.  Typing the REPRINT character sets this bit; the
+bit remains set until reprinting is finished.  See <a href="Editing-Characters.html#Editing-Characters">Editing Characters</a>. 
+</p></blockquote></div>
+
+<!-- EXTPROC is too obscure to document now.  -roland -->
+   </body></html>
+

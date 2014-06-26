@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+<title>Output Conversion Syntax - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Formatted-Output-Basics.html#Formatted-Output-Basics" title="Formatted Output Basics">
+<link rel="next" href="Table-of-Output-Conversions.html#Table-of-Output-Conversions" title="Table of Output Conversions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Output-Conversion-Syntax"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Table-of-Output-Conversions.html#Table-of-Output-Conversions">Table of Output Conversions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Formatted-Output-Basics.html#Formatted-Output-Basics">Formatted Output Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.2 Output Conversion Syntax</h4>
+
+<p>This section provides details about the precise syntax of conversion
+specifications that can appear in a <code>printf</code> template
+string.
+
+   <p>Characters in the template string that are not part of a conversion
+specification are printed as-is to the output stream.  Multibyte
+character sequences (see <a href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>) are permitted in a
+template string.
+
+   <p>The conversion specifications in a <code>printf</code> template string have
+the general form:
+
+<pre class="smallexample">     % <span class="roman">[</span> <var>param-no</var> <span class="roman">$]</span> <var>flags</var> <var>width</var> <span class="roman">[</span> . <var>precision</var> <span class="roman">]</span> <var>type</var> <var>conversion</var>
+</pre>
+   <p class="noindent">or
+
+<pre class="smallexample">     % <span class="roman">[</span> <var>param-no</var> <span class="roman">$]</span> <var>flags</var> <var>width</var> . <span class="roman">*</span> <span class="roman">[</span> <var>param-no</var> <span class="roman">$]</span> <var>type</var> <var>conversion</var>
+</pre>
+   <p>For example, in the conversion specifier &lsquo;<samp><span class="samp">%-10.8ld</span></samp>&rsquo;, the &lsquo;<samp><span class="samp">-</span></samp>&rsquo;
+is a flag, &lsquo;<samp><span class="samp">10</span></samp>&rsquo; specifies the field width, the precision is
+&lsquo;<samp><span class="samp">8</span></samp>&rsquo;, the letter &lsquo;<samp><span class="samp">l</span></samp>&rsquo; is a type modifier, and &lsquo;<samp><span class="samp">d</span></samp>&rsquo; specifies
+the conversion style.  (This particular type specifier says to
+print a <code>long int</code> argument in decimal notation, with a minimum of
+8 digits left-justified in a field at least 10 characters wide.)
+
+   <p>In more detail, output conversion specifications consist of an
+initial &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character followed in sequence by:
+
+     <ul>
+<li>An optional specification of the parameter used for this format. 
+Normally the parameters to the <code>printf</code> function are assigned to the
+formats in the order of appearance in the format string.  But in some
+situations (such as message translation) this is not desirable and this
+extension allows an explicit parameter to be specified.
+
+     <p>The <var>param-no</var> parts of the format must be integers in the range of
+1 to the maximum number of arguments present to the function call.  Some
+implementations limit this number to a certainly upper bound.  The exact
+limit can be retrieved by the following constant.
+
+     <div class="defun">
+&mdash; Macro: <b>NL_ARGMAX</b><var><a name="index-NL_005fARGMAX-1019"></a></var><br>
+<blockquote> <p>The value of <code>NL_ARGMAX</code> is the maximum value allowed for the
+specification of an positional parameter in a <code>printf</code> call.  The
+actual value in effect at runtime can be retrieved by using
+<code>sysconf</code> using the <code>_SC_NL_ARGMAX</code> parameter see <a href="Sysconf-Definition.html#Sysconf-Definition">Sysconf Definition</a>.
+
+             <p>Some system have a quite low limit such as 9 for System&nbsp;V<!-- /@w -->
+systems.  The GNU C library has no real limit. 
+</p></blockquote></div>
+
+     <p>If any of the formats has a specification for the parameter position all
+of them in the format string shall have one.  Otherwise the behavior is
+undefined.
+
+     <li>Zero or more <dfn>flag characters</dfn> that modify the normal behavior of
+the conversion specification. 
+<a name="index-flag-character-_0028_0040code_007bprintf_007d_0029-1020"></a>
+<li>An optional decimal integer specifying the <dfn>minimum field width</dfn>. 
+If the normal conversion produces fewer characters than this, the field
+is padded with spaces to the specified width.  This is a <em>minimum</em>
+value; if the normal conversion produces more characters than this, the
+field is <em>not</em> truncated.  Normally, the output is right-justified
+within the field. 
+<a name="index-minimum-field-width-_0028_0040code_007bprintf_007d_0029-1021"></a>
+You can also specify a field width of &lsquo;<samp><span class="samp">*</span></samp>&rsquo;.  This means that the
+next argument in the argument list (before the actual value to be
+printed) is used as the field width.  The value must be an <code>int</code>. 
+If the value is negative, this means to set the &lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag (see
+below) and to use the absolute value as the field width.
+
+     <li>An optional <dfn>precision</dfn> to specify the number of digits to be
+written for the numeric conversions.  If the precision is specified, it
+consists of a period (&lsquo;<samp><span class="samp">.</span></samp>&rsquo;) followed optionally by a decimal integer
+(which defaults to zero if omitted). 
+<a name="index-precision-_0028_0040code_007bprintf_007d_0029-1022"></a>
+You can also specify a precision of &lsquo;<samp><span class="samp">*</span></samp>&rsquo;.  This means that the next
+argument in the argument list (before the actual value to be printed) is
+used as the precision.  The value must be an <code>int</code>, and is ignored
+if it is negative.  If you specify &lsquo;<samp><span class="samp">*</span></samp>&rsquo; for both the field width and
+precision, the field width argument precedes the precision argument. 
+Other C library versions may not recognize this syntax.
+
+     <li>An optional <dfn>type modifier character</dfn>, which is used to specify the
+data type of the corresponding argument if it differs from the default
+type.  (For example, the integer conversions assume a type of <code>int</code>,
+but you can specify &lsquo;<samp><span class="samp">h</span></samp>&rsquo;, &lsquo;<samp><span class="samp">l</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">L</span></samp>&rsquo; for other integer
+types.) 
+<a name="index-type-modifier-character-_0028_0040code_007bprintf_007d_0029-1023"></a>
+<li>A character that specifies the conversion to be applied. 
+</ul>
+
+   <p>The exact options that are permitted and how they are interpreted vary
+between the different conversion specifiers.  See the descriptions of the
+individual conversions for information about the particular options that
+they use.
+
+   <p>With the &lsquo;<samp><span class="samp">-Wformat</span></samp>&rsquo; option, the GNU C compiler checks calls to
+<code>printf</code> and related functions.  It examines the format string and
+verifies that the correct number and types of arguments are supplied. 
+There is also a GNU C syntax to tell the compiler that a function you
+write uses a <code>printf</code>-style format string. 
+See <a href="../gcc/Function-Attributes.html#Function-Attributes">Declaring Attributes of Functions</a>, for more information.
+
+   </body></html>
+

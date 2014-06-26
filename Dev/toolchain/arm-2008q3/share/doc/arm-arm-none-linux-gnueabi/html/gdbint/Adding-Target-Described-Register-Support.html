@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Adding Target Described Register Support - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Descriptions.html#Target-Descriptions" title="Target Descriptions">
+<link rel="prev" href="Target-Descriptions-Implementation.html#Target-Descriptions-Implementation" title="Target Descriptions Implementation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Adding-Target-Described-Register-Support"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Target-Descriptions-Implementation.html#Target-Descriptions-Implementation">Target Descriptions Implementation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Descriptions.html#Target-Descriptions">Target Descriptions</a>
+<hr>
+</div>
+
+<h3 class="section">11.2 Adding Target Described Register Support</h3>
+
+<p><a name="index-target-descriptions_002c-adding-register-support-366"></a>
+Target descriptions can report additional registers specific to an
+instance of the target.  But it takes a little work in the architecture
+specific routines to support this.
+
+   <p>A target description must either have no registers or a complete
+set&mdash;this avoids complexity in trying to merge standard registers
+with the target defined registers.  It is the architecture's
+responsibility to validate that a description with registers has
+everything it needs.  To keep architecture code simple, the same
+mechanism is used to assign fixed internal register numbers to
+standard registers.
+
+   <p>If <code>tdesc_has_registers</code> returns 1, the description contains
+registers.  The architecture's <code>gdbarch_init</code> routine should:
+
+     <ul>
+<li>Call <code>tdesc_data_alloc</code> to allocate storage, early, before
+searching for a matching gdbarch or allocating a new one.
+
+     <li>Use <code>tdesc_find_feature</code> to locate standard features by name.
+
+     <li>Use <code>tdesc_numbered_register</code> and <code>tdesc_numbered_register_choices</code>
+to locate the expected registers in the standard features.
+
+     <li>Return <code>NULL</code> if a required feature is missing, or if any standard
+feature is missing expected registers.  This will produce a warning that
+the description was incomplete.
+
+     <li>Free the allocated data before returning, unless <code>tdesc_use_registers</code>
+is called.
+
+     <li>Call <code>set_gdbarch_num_regs</code> as usual, with a number higher than any
+fixed number passed to <code>tdesc_numbered_register</code>.
+
+     <li>Call <code>tdesc_use_registers</code> after creating a new gdbarch, before
+returning it.
+
+   </ul>
+
+   <p>After <code>tdesc_use_registers</code> has been called, the architecture's
+<code>register_name</code>, <code>register_type</code>, and <code>register_reggroup_p</code>
+routines will not be called; that information will be taken from
+the target description.  <code>num_regs</code> may be increased to account
+for any additional registers in the description.
+
+   <p>Pseudo-registers require some extra care:
+
+     <ul>
+<li>Using <code>tdesc_numbered_register</code> allows the architecture to give
+constant register numbers to standard architectural registers, e.g. 
+as an <code>enum</code> in <samp><var>arch</var><span class="file">-tdep.h</span></samp>.  But because
+pseudo-registers are always numbered above <code>num_regs</code>,
+which may be increased by the description, constant numbers
+can not be used for pseudos.  They must be numbered relative to
+<code>num_regs</code> instead.
+
+     <li>The description will not describe pseudo-registers, so the
+architecture must call <code>set_tdesc_pseudo_register_name</code>,
+<code>set_tdesc_pseudo_register_type</code>, and
+<code>set_tdesc_pseudo_register_reggroup_p</code> to supply routines
+describing pseudo registers.  These routines will be passed
+internal register numbers, so the same routines used for the
+gdbarch equivalents are usually suitable.
+
+   </ul>
+
+   </body></html>
+

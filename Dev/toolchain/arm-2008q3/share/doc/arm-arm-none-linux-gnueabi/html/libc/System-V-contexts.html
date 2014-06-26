@@ -1,0 +1,384 @@
+<html lang="en">
+<head>
+<title>System V contexts - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits" title="Non-Local Exits">
+<link rel="prev" href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals" title="Non-Local Exits and Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-V-contexts"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals">Non-Local Exits and Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>
+<hr>
+</div>
+
+<h3 class="section">23.4 Complete Context Control</h3>
+
+<p>The Unix standard one more set of function to control the execution path
+and these functions are more powerful than those discussed in this
+chapter so far.  These function were part of the original System&nbsp;V<!-- /@w -->
+API and by this route were added to the Unix API.  Beside on branded
+Unix implementations these interfaces are not widely available.  Not all
+platforms and/or architectures the GNU C Library is available on provide
+this interface.  Use <samp><span class="file">configure</span></samp> to detect the availability.
+
+   <p>Similar to the <code>jmp_buf</code> and <code>sigjmp_buf</code> types used for the
+variables to contain the state of the <code>longjmp</code> functions the
+interfaces of interest here have an appropriate type as well.  Objects
+of this type are normally much larger since more information is
+contained.  The type is also used in a few more places as we will see. 
+The types and functions described in this section are all defined and
+declared respectively in the <samp><span class="file">ucontext.h</span></samp> header file.
+
+<!-- ucontext.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Data Type: <b>ucontext_t</b><var><a name="index-ucontext_005ft-2804"></a></var><br>
+<blockquote>
+        <p>The <code>ucontext_t</code> type is defined as a structure with as least the
+following elements:
+
+          <dl>
+<dt><code>ucontext_t *uc_link</code><dd>This is a pointer to the next context structure which is used if the
+context described in the current structure returns.
+
+          <br><dt><code>sigset_t uc_sigmask</code><dd>Set of signals which are blocked when this context is used.
+
+          <br><dt><code>stack_t uc_stack</code><dd>Stack used for this context.  The value need not be (and normally is
+not) the stack pointer.  See <a href="Signal-Stack.html#Signal-Stack">Signal Stack</a>.
+
+          <br><dt><code>mcontext_t uc_mcontext</code><dd>This element contains the actual state of the process.  The
+<code>mcontext_t</code> type is also defined in this header but the definition
+should be treated as opaque.  Any use of knowledge of the type makes
+applications less portable.
+
+        </dl>
+        </p></blockquote></div>
+
+   <p>Objects of this type have to be created by the user.  The initialization
+and modification happens through one of the following functions:
+
+<!-- ucontext.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>getcontext</b> (<var>ucontext_t *ucp</var>)<var><a name="index-getcontext-2805"></a></var><br>
+<blockquote><p>The <code>getcontext</code> function initializes the variable pointed to by
+<var>ucp</var> with the context of the calling thread.  The context contains
+the content of the registers, the signal mask, and the current stack. 
+Executing the contents would start at the point where the
+<code>getcontext</code> call just returned.
+
+        <p>The function returns <code>0</code> if successful.  Otherwise it returns
+<code>-1</code> and sets <var>errno</var> accordingly. 
+</p></blockquote></div>
+
+   <p>The <code>getcontext</code> function is similar to <code>setjmp</code> but it does
+not provide an indication of whether the function returns for the first
+time or whether the initialized context was used and the execution is
+resumed at just that point.  If this is necessary the user has to take
+determine this herself.  This must be done carefully since the context
+contains registers which might contain register variables.  This is a
+good situation to define variables with <code>volatile</code>.
+
+   <p>Once the context variable is initialized it can be used as is or it can
+be modified.  The latter is normally done to implement co-routines or
+similar constructs.  The <code>makecontext</code> function is what has to be
+used to do that.
+
+<!-- ucontext.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void <b>makecontext</b> (<var>ucontext_t *ucp, void </var>(<var>*func</var>) (<var>void</var>)<var>, int argc, <small class="dots">...</small></var>)<var><a name="index-makecontext-2806"></a></var><br>
+<blockquote>
+        <p>The <var>ucp</var> parameter passed to the <code>makecontext</code> shall be
+initialized by a call to <code>getcontext</code>.  The context will be
+modified to in a way so that if the context is resumed it will start by
+calling the function <code>func</code> which gets <var>argc</var> integer arguments
+passed.  The integer arguments which are to be passed should follow the
+<var>argc</var> parameter in the call to <code>makecontext</code>.
+
+        <p>Before the call to this function the <code>uc_stack</code> and <code>uc_link</code>
+element of the <var>ucp</var> structure should be initialized.  The
+<code>uc_stack</code> element describes the stack which is used for this
+context.  No two contexts which are used at the same time should use the
+same memory region for a stack.
+
+        <p>The <code>uc_link</code> element of the object pointed to by <var>ucp</var> should
+be a pointer to the context to be executed when the function <var>func</var>
+returns or it should be a null pointer.  See <code>setcontext</code> for more
+information about the exact use. 
+</p></blockquote></div>
+
+   <p>While allocating the memory for the stack one has to be careful.  Most
+modern processors keep track of whether a certain memory region is
+allowed to contain code which is executed or not.  Data segments and
+heap memory is normally not tagged to allow this.  The result is that
+programs would fail.  Examples for such code include the calling
+sequences the GNU C compiler generates for calls to nested functions. 
+Safe ways to allocate stacks correctly include using memory on the
+original threads stack or explicitly allocate memory tagged for
+execution using (see <a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>).
+
+   <p><strong>Compatibility note</strong>: The current Unix standard is very imprecise
+about the way the stack is allocated.  All implementations seem to agree
+that the <code>uc_stack</code> element must be used but the values stored in
+the elements of the <code>stack_t</code> value are unclear.  The GNU C library
+and most other Unix implementations require the <code>ss_sp</code> value of
+the <code>uc_stack</code> element to point to the base of the memory region
+allocated for the stack and the size of the memory region is stored in
+<code>ss_size</code>.  There are implements out there which require
+<code>ss_sp</code> to be set to the value the stack pointer will have (which
+can depending on the direction the stack grows be different).  This
+difference makes the <code>makecontext</code> function hard to use and it
+requires detection of the platform at compile time.
+
+<!-- ucontext.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>setcontext</b> (<var>const ucontext_t *ucp</var>)<var><a name="index-setcontext-2807"></a></var><br>
+<blockquote>
+        <p>The <code>setcontext</code> function restores the context described by
+<var>ucp</var>.  The context is not modified and can be reused as often as
+wanted.
+
+        <p>If the context was created by <code>getcontext</code> execution resumes with
+the registers filled with the same values and the same stack as if the
+<code>getcontext</code> call just returned.
+
+        <p>If the context was modified with a call to <code>makecontext</code> execution
+continues with the function passed to <code>makecontext</code> which gets the
+specified parameters passed.  If this function returns execution is
+resumed in the context which was referenced by the <code>uc_link</code>
+element of the context structure passed to <code>makecontext</code> at the
+time of the call.  If <code>uc_link</code> was a null pointer the application
+terminates in this case.
+
+        <p>Since the context contains information about the stack no two threads
+should use the same context at the same time.  The result in most cases
+would be disastrous.
+
+        <p>The <code>setcontext</code> function does not return unless an error occurred
+in which case it returns <code>-1</code>. 
+</p></blockquote></div>
+
+   <p>The <code>setcontext</code> function simply replaces the current context with
+the one described by the <var>ucp</var> parameter.  This is often useful but
+there are situations where the current context has to be preserved.
+
+<!-- ucontext.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>swapcontext</b> (<var>ucontext_t *restrict oucp, const ucontext_t *restrict ucp</var>)<var><a name="index-swapcontext-2808"></a></var><br>
+<blockquote>
+        <p>The <code>swapcontext</code> function is similar to <code>setcontext</code> but
+instead of just replacing the current context the latter is first saved
+in the object pointed to by <var>oucp</var> as if this was a call to
+<code>getcontext</code>.  The saved context would resume after the call to
+<code>swapcontext</code>.
+
+        <p>Once the current context is saved the context described in <var>ucp</var> is
+installed and execution continues as described in this context.
+
+        <p>If <code>swapcontext</code> succeeds the function does not return unless the
+context <var>oucp</var> is used without prior modification by
+<code>makecontext</code>.  The return value in this case is <code>0</code>.  If the
+function fails it returns <code>-1</code> and set <var>errno</var> accordingly. 
+</p></blockquote></div>
+
+<h3 class="heading">Example for SVID Context Handling</h3>
+
+<p>The easiest way to use the context handling functions is as a
+replacement for <code>setjmp</code> and <code>longjmp</code>.  The context contains
+on most platforms more information which might lead to less surprises
+but this also means using these functions is more expensive (beside
+being less portable).
+
+<pre class="smallexample">     int
+     random_search (int n, int (*fp) (int, ucontext_t *))
+     {
+       volatile int cnt = 0;
+       ucontext_t uc;
+     
+       /* <span class="roman">Safe current context.</span>  */
+       if (getcontext (&amp;uc) &lt; 0)
+         return -1;
+     
+       /* <span class="roman">If we have not tried </span><var>n</var><span class="roman"> times try again.</span>  */
+       if (cnt++ &lt; n)
+         /* <span class="roman">Call the function with a new random number</span>
+            <span class="roman">and the context</span>.  */
+         if (fp (rand (), &amp;uc) != 0)
+           /* <span class="roman">We found what we were looking for.</span>  */
+           return 1;
+     
+       /* <span class="roman">Not found.</span>  */
+       return 0;
+     }
+</pre>
+   <p>Using contexts in such a way enables emulating exception handling.  The
+search functions passed in the <var>fp</var> parameter could be very large,
+nested, and complex which would make it complicated (or at least would
+require a lot of code) to leave the function with an error value which
+has to be passed down to the caller.  By using the context it is
+possible to leave the search function in one step and allow restarting
+the search which also has the nice side effect that it can be
+significantly faster.
+
+   <p>Something which is harder to implement with <code>setjmp</code> and
+<code>longjmp</code> is to switch temporarily to a different execution path
+and then resume where execution was stopped.
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;ucontext.h&gt;
+     #include &lt;sys/time.h&gt;
+     
+     /* <span class="roman">Set by the signal handler.</span> */
+     static volatile int expired;
+     
+     /* <span class="roman">The contexts.</span> */
+     static ucontext_t uc[3];
+     
+     /* <span class="roman">We do only a certain number of switches.</span> */
+     static int switches;
+     
+     
+     /* <span class="roman">This is the function doing the work.  It is just a
+        skeleton, real code has to be filled in.</span> */
+     static void
+     f (int n)
+     {
+       int m = 0;
+       while (1)
+         {
+           /* <span class="roman">This is where the work would be done.</span> */
+           if (++m % 100 == 0)
+             {
+               putchar ('.');
+               fflush (stdout);
+             }
+     
+           /* <span class="roman">Regularly the </span><var>expire</var><span class="roman"> variable must be checked.</span> */
+           if (expired)
+             {
+               /* <span class="roman">We do not want the program to run forever.</span> */
+               if (++switches == 20)
+                 return;
+     
+               printf ("\nswitching from %d to %d\n", n, 3 - n);
+               expired = 0;
+               /* <span class="roman">Switch to the other context, saving the current one.</span> */
+               swapcontext (&amp;uc[n], &amp;uc[3 - n]);
+             }
+         }
+     }
+     
+     /* <span class="roman">This is the signal handler which simply set the variable.</span> */
+     void
+     handler (int signal)
+     {
+       expired = 1;
+     }
+     
+     
+     int
+     main (void)
+     {
+       struct sigaction sa;
+       struct itimerval it;
+       char st1[8192];
+       char st2[8192];
+     
+       /* <span class="roman">Initialize the data structures for the interval timer.</span> */
+       sa.sa_flags = SA_RESTART;
+       sigfillset (&amp;sa.sa_mask);
+       sa.sa_handler = handler;
+       it.it_interval.tv_sec = 0;
+       it.it_interval.tv_usec = 1;
+       it.it_value = it.it_interval;
+     
+       /* <span class="roman">Install the timer and get the context we can manipulate.</span> */
+       if (sigaction (SIGPROF, &amp;sa, NULL) &lt; 0
+           || setitimer (ITIMER_PROF, &amp;it, NULL) &lt; 0
+           || getcontext (&amp;uc[1]) == -1
+           || getcontext (&amp;uc[2]) == -1)
+         abort ();
+     
+       /* <span class="roman">Create a context with a separate stack which causes the
+          function </span><code>f</code><span class="roman"> to be call with the parameter </span><code>1</code><span class="roman">.
+          Note that the </span><code>uc_link</code><span class="roman"> points to the main context
+          which will cause the program to terminate once the function
+          return.</span> */
+       uc[1].uc_link = &amp;uc[0];
+       uc[1].uc_stack.ss_sp = st1;
+       uc[1].uc_stack.ss_size = sizeof st1;
+       makecontext (&amp;uc[1], (void (*) (void)) f, 1, 1);
+     
+       /* <span class="roman">Similarly, but </span><code>2</code><span class="roman"> is passed as the parameter to </span><code>f</code><span class="roman">.</span> */
+       uc[2].uc_link = &amp;uc[0];
+       uc[2].uc_stack.ss_sp = st2;
+       uc[2].uc_stack.ss_size = sizeof st2;
+       makecontext (&amp;uc[2], (void (*) (void)) f, 1, 2);
+     
+       /* <span class="roman">Start running.</span> */
+       swapcontext (&amp;uc[0], &amp;uc[1]);
+       putchar ('\n');
+     
+       return 0;
+     }
+</pre>
+   <p>This an example how the context functions can be used to implement
+co-routines or cooperative multi-threading.  All that has to be done is
+to call every once in a while <code>swapcontext</code> to continue running a
+different context.  It is not allowed to do the context switching from
+the signal handler directly since neither <code>setcontext</code> nor
+<code>swapcontext</code> are functions which can be called from a signal
+handler.  But setting a variable in the signal handler and checking it
+in the body of the functions which are executed.  Since
+<code>swapcontext</code> is saving the current context it is possible to have
+multiple different scheduling points in the code.  Execution will always
+resume where it was left.
+
+   </body></html>
+

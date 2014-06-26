@@ -1,0 +1,1 @@
+-O /var/log/messages -s 384 -b 31 -u

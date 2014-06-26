@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+<title>Argument Syntax - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Arguments.html#Program-Arguments" title="Program Arguments">
+<link rel="next" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments" title="Parsing Program Arguments">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argument-Syntax"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Arguments.html#Program-Arguments">Program Arguments</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.1.1 Program Argument Syntax Conventions</h4>
+
+<p><a name="index-program-argument-syntax-3015"></a><a name="index-syntax_002c-for-program-arguments-3016"></a><a name="index-command-argument-syntax-3017"></a>
+POSIX recommends these conventions for command line arguments. 
+<code>getopt</code> (see <a href="Getopt.html#Getopt">Getopt</a>) and <code>argp_parse</code> (see <a href="Argp.html#Argp">Argp</a>) make
+it easy to implement them.
+
+     <ul>
+<li>Arguments are options if they begin with a hyphen delimiter (&lsquo;<samp><span class="samp">-</span></samp>&rsquo;).
+
+     <li>Multiple options may follow a hyphen delimiter in a single token if
+the options do not take arguments.  Thus, &lsquo;<samp><span class="samp">-abc</span></samp>&rsquo; is equivalent to
+&lsquo;<samp><span class="samp">-a -b -c</span></samp>&rsquo;.
+
+     <li>Option names are single alphanumeric characters (as for <code>isalnum</code>;
+see <a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>).
+
+     <li>Certain options require an argument.  For example, the &lsquo;<samp><span class="samp">-o</span></samp>&rsquo; command
+of the <code>ld</code> command requires an argument&mdash;an output file name.
+
+     <li>An option and its argument may or may not appear as separate tokens.  (In
+other words, the whitespace separating them is optional.)  Thus,
+&lsquo;<samp><span class="samp">-o&nbsp;foo</span></samp>&rsquo;<!-- /@w --> and &lsquo;<samp><span class="samp">-ofoo</span></samp>&rsquo; are equivalent.
+
+     <li>Options typically precede other non-option arguments.
+
+     <p>The implementations of <code>getopt</code> and <code>argp_parse</code> in the GNU C
+library normally make it appear as if all the option arguments were
+specified before all the non-option arguments for the purposes of
+parsing, even if the user of your program intermixed option and
+non-option arguments.  They do this by reordering the elements of the
+<var>argv</var> array.  This behavior is nonstandard; if you want to suppress
+it, define the <code>_POSIX_OPTION_ORDER</code> environment variable. 
+See <a href="Standard-Environment.html#Standard-Environment">Standard Environment</a>.
+
+     <li>The argument &lsquo;<samp><span class="samp">--</span></samp>&rsquo; terminates all options; any following arguments
+are treated as non-option arguments, even if they begin with a hyphen.
+
+     <li>A token consisting of a single hyphen character is interpreted as an
+ordinary non-option argument.  By convention, it is used to specify
+input from or output to the standard input and output streams.
+
+     <li>Options may be supplied in any order, or appear multiple times.  The
+interpretation is left up to the particular application program. 
+</ul>
+
+   <p><a name="index-long_002dnamed-options-3018"></a>GNU adds <dfn>long options</dfn> to these conventions.  Long options consist
+of &lsquo;<samp><span class="samp">--</span></samp>&rsquo; followed by a name made of alphanumeric characters and
+dashes.  Option names are typically one to three words long, with
+hyphens to separate words.  Users can abbreviate the option names as
+long as the abbreviations are unique.
+
+   <p>To specify an argument for a long option, write
+&lsquo;<samp><span class="samp">--</span><var>name</var><span class="samp">=</span><var>value</var></samp>&rsquo;.  This syntax enables a long option to
+accept an argument that is itself optional.
+
+   <p>Eventually, the GNU system will provide completion for long option names
+in the shell.
+
+   </body></html>
+

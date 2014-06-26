@@ -1,0 +1,269 @@
+<html lang="en">
+<head>
+<title>Waiting for I/O - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO" title="Memory-mapped I/O">
+<link rel="next" href="Synchronizing-I_002fO.html#Synchronizing-I_002fO" title="Synchronizing I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Waiting-for-I%2fO"></a>
+<a name="Waiting-for-I_002fO"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">Synchronizing I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.8 Waiting for Input or Output</h3>
+
+<p><a name="index-waiting-for-input-or-output-1270"></a><a name="index-multiplexing-input-1271"></a><a name="index-input-from-multiple-files-1272"></a>
+Sometimes a program needs to accept input on multiple input channels
+whenever input arrives.  For example, some workstations may have devices
+such as a digitizing tablet, function button box, or dial box that are
+connected via normal asynchronous serial interfaces; good user interface
+style requires responding immediately to input on any device.  Another
+example is a program that acts as a server to several other processes
+via pipes or sockets.
+
+   <p>You cannot normally use <code>read</code> for this purpose, because this
+blocks the program until input is available on one particular file
+descriptor; input on other channels won't wake it up.  You could set
+nonblocking mode and poll each file descriptor in turn, but this is very
+inefficient.
+
+   <p>A better solution is to use the <code>select</code> function.  This blocks the
+program until input or output is ready on a specified set of file
+descriptors, or until a timer expires, whichever comes first.  This
+facility is declared in the header file <samp><span class="file">sys/types.h</span></samp>. 
+<a name="index-sys_002ftypes_002eh-1273"></a>
+In the case of a server socket (see <a href="Listening.html#Listening">Listening</a>), we say that
+&ldquo;input&rdquo; is available when there are pending connections that could be
+accepted (see <a href="Accepting-Connections.html#Accepting-Connections">Accepting Connections</a>).  <code>accept</code> for server
+sockets blocks and interacts with <code>select</code> just as <code>read</code> does
+for normal input.
+
+   <p><a name="index-file-descriptor-sets_002c-for-_0040code_007bselect_007d-1274"></a>The file descriptor sets for the <code>select</code> function are specified
+as <code>fd_set</code> objects.  Here is the description of the data type
+and some macros for manipulating these objects.
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>fd_set</b><var><a name="index-fd_005fset-1275"></a></var><br>
+<blockquote><p>The <code>fd_set</code> data type represents file descriptor sets for the
+<code>select</code> function.  It is actually a bit array. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>FD_SETSIZE</b><var><a name="index-FD_005fSETSIZE-1276"></a></var><br>
+<blockquote><p>The value of this macro is the maximum number of file descriptors that a
+<code>fd_set</code> object can hold information about.  On systems with a
+fixed maximum number, <code>FD_SETSIZE</code> is at least that number.  On
+some systems, including GNU, there is no absolute limit on the number of
+descriptors open, but this macro still has a constant value which
+controls the number of bits in an <code>fd_set</code>; if you get a file
+descriptor with a value as high as <code>FD_SETSIZE</code>, you cannot put
+that descriptor into an <code>fd_set</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: void <b>FD_ZERO</b> (<var>fd_set *set</var>)<var><a name="index-FD_005fZERO-1277"></a></var><br>
+<blockquote><p>This macro initializes the file descriptor set <var>set</var> to be the
+empty set. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: void <b>FD_SET</b> (<var>int filedes, fd_set *set</var>)<var><a name="index-FD_005fSET-1278"></a></var><br>
+<blockquote><p>This macro adds <var>filedes</var> to the file descriptor set <var>set</var>.
+
+        <p>The <var>filedes</var> parameter must not have side effects since it is
+evaluated more than once. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: void <b>FD_CLR</b> (<var>int filedes, fd_set *set</var>)<var><a name="index-FD_005fCLR-1279"></a></var><br>
+<blockquote><p>This macro removes <var>filedes</var> from the file descriptor set <var>set</var>.
+
+        <p>The <var>filedes</var> parameter must not have side effects since it is
+evaluated more than once. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>FD_ISSET</b> (<var>int filedes, const fd_set *set</var>)<var><a name="index-FD_005fISSET-1280"></a></var><br>
+<blockquote><p>This macro returns a nonzero value (true) if <var>filedes</var> is a member
+of the file descriptor set <var>set</var>, and zero (false) otherwise.
+
+        <p>The <var>filedes</var> parameter must not have side effects since it is
+evaluated more than once. 
+</p></blockquote></div>
+
+   <p>Next, here is the description of the <code>select</code> function itself.
+
+<!-- sys/types.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>select</b> (<var>int nfds, fd_set *read-fds, fd_set *write-fds, fd_set *except-fds, struct timeval *timeout</var>)<var><a name="index-select-1281"></a></var><br>
+<blockquote><p>The <code>select</code> function blocks the calling process until there is
+activity on any of the specified sets of file descriptors, or until the
+timeout period has expired.
+
+        <p>The file descriptors specified by the <var>read-fds</var> argument are
+checked to see if they are ready for reading; the <var>write-fds</var> file
+descriptors are checked to see if they are ready for writing; and the
+<var>except-fds</var> file descriptors are checked for exceptional
+conditions.  You can pass a null pointer for any of these arguments if
+you are not interested in checking for that kind of condition.
+
+        <p>A file descriptor is considered ready for reading if a <code>read</code>
+call will not block.  This usually includes the read offset being at
+the end of the file or there is an error to report.  A server socket
+is considered ready for reading if there is a pending connection which
+can be accepted with <code>accept</code>; see <a href="Accepting-Connections.html#Accepting-Connections">Accepting Connections</a>.  A
+client socket is ready for writing when its connection is fully
+established; see <a href="Connecting.html#Connecting">Connecting</a>.
+
+        <p>&ldquo;Exceptional conditions&rdquo; does not mean errors&mdash;errors are reported
+immediately when an erroneous system call is executed, and do not
+constitute a state of the descriptor.  Rather, they include conditions
+such as the presence of an urgent message on a socket.  (See <a href="Sockets.html#Sockets">Sockets</a>,
+for information on urgent messages.)
+
+        <p>The <code>select</code> function checks only the first <var>nfds</var> file
+descriptors.  The usual thing is to pass <code>FD_SETSIZE</code> as the value
+of this argument.
+
+        <p>The <var>timeout</var> specifies the maximum time to wait.  If you pass a
+null pointer for this argument, it means to block indefinitely until one
+of the file descriptors is ready.  Otherwise, you should provide the
+time in <code>struct timeval</code> format; see <a href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>.  Specify zero as the time (a <code>struct timeval</code> containing
+all zeros) if you want to find out which descriptors are ready without
+waiting if none are ready.
+
+        <p>The normal return value from <code>select</code> is the total number of ready file
+descriptors in all of the sets.  Each of the argument sets is overwritten
+with information about the descriptors that are ready for the corresponding
+operation.  Thus, to see if a particular descriptor <var>desc</var> has input,
+use <code>FD_ISSET (</code><var>desc</var><code>, </code><var>read-fds</var><code>)</code> after <code>select</code> returns.
+
+        <p>If <code>select</code> returns because the timeout period expires, it returns
+a value of zero.
+
+        <p>Any signal will cause <code>select</code> to return immediately.  So if your
+program uses signals, you can't rely on <code>select</code> to keep waiting
+for the full time specified.  If you want to be sure of waiting for a
+particular amount of time, you must check for <code>EINTR</code> and repeat
+the <code>select</code> with a newly calculated timeout based on the current
+time.  See the example below.  See also <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.
+
+        <p>If an error occurs, <code>select</code> returns <code>-1</code> and does not modify
+the argument file descriptor sets.  The following <code>errno</code> error
+conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>One of the file descriptor sets specified an invalid file descriptor.
+
+          <br><dt><code>EINTR</code><dd>The operation was interrupted by a signal.  See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.
+
+          <br><dt><code>EINVAL</code><dd>The <var>timeout</var> argument is invalid; one of the components is negative
+or too large. 
+</dl>
+        </p></blockquote></div>
+
+   <p><strong>Portability Note:</strong>  The <code>select</code> function is a BSD Unix
+feature.
+
+   <p>Here is an example showing how you can use <code>select</code> to establish a
+timeout period for reading from a file descriptor.  The <code>input_timeout</code>
+function blocks the calling process until input is available on the
+file descriptor, or until the timeout period expires.
+
+<pre class="smallexample">     #include &lt;errno.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;unistd.h&gt;
+     #include &lt;sys/types.h&gt;
+     #include &lt;sys/time.h&gt;
+     
+     int
+     input_timeout (int filedes, unsigned int seconds)
+     {
+       fd_set set;
+       struct timeval timeout;
+     
+       /* <span class="roman">Initialize the file descriptor set.</span> */
+       FD_ZERO (&amp;set);
+       FD_SET (filedes, &amp;set);
+     
+       /* <span class="roman">Initialize the timeout data structure.</span> */
+       timeout.tv_sec = seconds;
+       timeout.tv_usec = 0;
+     
+       /* <code>select</code><span class="roman"> returns 0 if timeout, 1 if input available, -1 if error.</span> */
+       return TEMP_FAILURE_RETRY (select (FD_SETSIZE,
+                                          &amp;set, NULL, NULL,
+                                          &amp;timeout));
+     }
+     
+     int
+     main (void)
+     {
+       fprintf (stderr, "select returned %d.\n",
+                input_timeout (STDIN_FILENO, 5));
+       return 0;
+     }
+</pre>
+   <p>There is another example showing the use of <code>select</code> to multiplex
+input from multiple sockets in <a href="Server-Example.html#Server-Example">Server Example</a>.
+
+   </body></html>
+

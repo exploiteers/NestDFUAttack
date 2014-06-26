@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Formatted Output Basics - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="next" href="Output-Conversion-Syntax.html#Output-Conversion-Syntax" title="Output Conversion Syntax">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatted-Output-Basics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Output-Conversion-Syntax.html#Output-Conversion-Syntax">Output Conversion Syntax</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.1 Formatted Output Basics</h4>
+
+<p>The <code>printf</code> function can be used to print any number of arguments. 
+The template string argument you supply in a call provides
+information not only about the number of additional arguments, but also
+about their types and what style should be used for printing them.
+
+   <p>Ordinary characters in the template string are simply written to the
+output stream as-is, while <dfn>conversion specifications</dfn> introduced by
+a &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character in the template cause subsequent arguments to be
+formatted and written to the output stream.  For example,
+<a name="index-conversion-specifications-_0028_0040code_007bprintf_007d_0029-1018"></a>
+<pre class="smallexample">     int pct = 37;
+     char filename[] = "foo.txt";
+     printf ("Processing of `%s' is %d%% finished.\nPlease be patient.\n",
+             filename, pct);
+</pre>
+   <p class="noindent">produces output like
+
+<pre class="smallexample">     Processing of `foo.txt' is 37% finished.
+     Please be patient.
+</pre>
+   <p>This example shows the use of the &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; conversion to specify that
+an <code>int</code> argument should be printed in decimal notation, the
+&lsquo;<samp><span class="samp">%s</span></samp>&rsquo; conversion to specify printing of a string argument, and
+the &lsquo;<samp><span class="samp">%%</span></samp>&rsquo; conversion to print a literal &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character.
+
+   <p>There are also conversions for printing an integer argument as an
+unsigned value in octal, decimal, or hexadecimal radix (&lsquo;<samp><span class="samp">%o</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%u</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">%x</span></samp>&rsquo;, respectively); or as a character value
+(&lsquo;<samp><span class="samp">%c</span></samp>&rsquo;).
+
+   <p>Floating-point numbers can be printed in normal, fixed-point notation
+using the &lsquo;<samp><span class="samp">%f</span></samp>&rsquo; conversion or in exponential notation using the
+&lsquo;<samp><span class="samp">%e</span></samp>&rsquo; conversion.  The &lsquo;<samp><span class="samp">%g</span></samp>&rsquo; conversion uses either &lsquo;<samp><span class="samp">%e</span></samp>&rsquo;
+or &lsquo;<samp><span class="samp">%f</span></samp>&rsquo; format, depending on what is more appropriate for the
+magnitude of the particular number.
+
+   <p>You can control formatting more precisely by writing <dfn>modifiers</dfn>
+between the &lsquo;<samp><span class="samp">%</span></samp>&rsquo; and the character that indicates which conversion
+to apply.  These slightly alter the ordinary behavior of the conversion. 
+For example, most conversion specifications permit you to specify a
+minimum field width and a flag indicating whether you want the result
+left- or right-justified within the field.
+
+   <p>The specific flags and modifiers that are permitted and their
+interpretation vary depending on the particular conversion.  They're all
+described in more detail in the following sections.  Don't worry if this
+all seems excessively complicated at first; you can almost always get
+reasonable free-format output without using any of the modifiers at all. 
+The modifiers are mostly used to make the output look &ldquo;prettier&rdquo; in
+tables.
+
+   </body></html>
+

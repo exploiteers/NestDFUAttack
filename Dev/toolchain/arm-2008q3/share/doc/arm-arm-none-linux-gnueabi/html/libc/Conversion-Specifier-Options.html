@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+<title>Conversion Specifier Options - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link rel="prev" href="Registering-New-Conversions.html#Registering-New-Conversions" title="Registering New Conversions">
+<link rel="next" href="Defining-the-Output-Handler.html#Defining-the-Output-Handler" title="Defining the Output Handler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Conversion-Specifier-Options"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">Defining the Output Handler</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Registering-New-Conversions.html#Registering-New-Conversions">Registering New Conversions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.13.2 Conversion Specifier Options</h4>
+
+<p>If you define a meaning for &lsquo;<samp><span class="samp">%A</span></samp>&rsquo;, what if the template contains
+&lsquo;<samp><span class="samp">%+23A</span></samp>&rsquo; or &lsquo;<samp><span class="samp">%-#A</span></samp>&rsquo;?  To implement a sensible meaning for these,
+the handler when called needs to be able to get the options specified in
+the template.
+
+   <p>Both the <var>handler-function</var> and <var>arginfo-function</var> accept an
+argument that points to a <code>struct printf_info</code>, which contains
+information about the options appearing in an instance of the conversion
+specifier.  This data type is declared in the header file
+<samp><span class="file">printf.h</span></samp>. 
+<a name="index-printf_002eh-1065"></a>
+<!-- printf.h -->
+<!-- GNU -->
+
+<div class="defun">
+&mdash; Type: <b>struct printf_info</b><var><a name="index-struct-printf_005finfo-1066"></a></var><br>
+<blockquote><p>This structure is used to pass information about the options appearing
+in an instance of a conversion specifier in a <code>printf</code> template
+string to the handler and arginfo functions for that specifier.  It
+contains the following members:
+
+          <dl>
+<dt><code>int prec</code><dd>This is the precision specified.  The value is <code>-1</code> if no precision
+was specified.  If the precision was given as &lsquo;<samp><span class="samp">*</span></samp>&rsquo;, the
+<code>printf_info</code> structure passed to the handler function contains the
+actual value retrieved from the argument list.  But the structure passed
+to the arginfo function contains a value of <code>INT_MIN</code>, since the
+actual value is not known.
+
+          <br><dt><code>int width</code><dd>This is the minimum field width specified.  The value is <code>0</code> if no
+width was specified.  If the field width was given as &lsquo;<samp><span class="samp">*</span></samp>&rsquo;, the
+<code>printf_info</code> structure passed to the handler function contains the
+actual value retrieved from the argument list.  But the structure passed
+to the arginfo function contains a value of <code>INT_MIN</code>, since the
+actual value is not known.
+
+          <br><dt><code>wchar_t spec</code><dd>This is the conversion specifier character specified.  It's stored in
+the structure so that you can register the same handler function for
+multiple characters, but still have a way to tell them apart when the
+handler function is called.
+
+          <br><dt><code>unsigned int is_long_double</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">L</span></samp>&rsquo;, &lsquo;<samp><span class="samp">ll</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">q</span></samp>&rsquo;
+type modifier was specified.  For integer conversions, this indicates
+<code>long long int</code>, as opposed to <code>long double</code> for floating
+point conversions.
+
+          <br><dt><code>unsigned int is_char</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">hh</span></samp>&rsquo; type modifier was specified.
+
+          <br><dt><code>unsigned int is_short</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">h</span></samp>&rsquo; type modifier was specified.
+
+          <br><dt><code>unsigned int is_long</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">l</span></samp>&rsquo; type modifier was specified.
+
+          <br><dt><code>unsigned int alt</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">#</span></samp>&rsquo; flag was specified.
+
+          <br><dt><code>unsigned int space</code><dd>This is a boolean that is true if the &lsquo;<samp> </samp>&rsquo; flag was specified.
+
+          <br><dt><code>unsigned int left</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">-</span></samp>&rsquo; flag was specified.
+
+          <br><dt><code>unsigned int showsign</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">+</span></samp>&rsquo; flag was specified.
+
+          <br><dt><code>unsigned int group</code><dd>This is a boolean that is true if the &lsquo;<samp><span class="samp">'</span></samp>&rsquo; flag was specified.
+
+          <br><dt><code>unsigned int extra</code><dd>This flag has a special meaning depending on the context.  It could
+be used freely by the user-defined handlers but when called from
+the <code>printf</code> function this variable always contains the value
+<code>0</code>.
+
+          <br><dt><code>unsigned int wide</code><dd>This flag is set if the stream is wide oriented.
+
+          <br><dt><code>wchar_t pad</code><dd>This is the character to use for padding the output to the minimum field
+width.  The value is <code>'0'</code> if the &lsquo;<samp><span class="samp">0</span></samp>&rsquo; flag was specified, and
+<code>' '</code> otherwise. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

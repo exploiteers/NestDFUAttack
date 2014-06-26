@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Accepting Connections - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="prev" href="Listening.html#Listening" title="Listening">
+<link rel="next" href="Who-is-Connected.html#Who-is-Connected" title="Who is Connected">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Accepting-Connections"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Who-is-Connected.html#Who-is-Connected">Who is Connected</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Listening.html#Listening">Listening</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.3 Accepting Connections</h4>
+
+<p><a name="index-sockets_002c-accepting-connections-1799"></a><a name="index-accepting-connections-1800"></a>
+When a server receives a connection request, it can complete the
+connection by accepting the request.  Use the function <code>accept</code>
+to do this.
+
+   <p>A socket that has been established as a server can accept connection
+requests from multiple clients.  The server's original socket
+<em>does not become part of the connection</em>; instead, <code>accept</code>
+makes a new socket which participates in the connection. 
+<code>accept</code> returns the descriptor for this socket.  The server's
+original socket remains available for listening for further connection
+requests.
+
+   <p>The number of pending connection requests on a server socket is finite. 
+If connection requests arrive from clients faster than the server can
+act upon them, the queue can fill up and additional requests are refused
+with an <code>ECONNREFUSED</code> error.  You can specify the maximum length of
+this queue as an argument to the <code>listen</code> function, although the
+system may also impose its own internal limit on the length of this
+queue.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>accept</b> (<var>int socket, struct sockaddr *addr, socklen_t *length_ptr</var>)<var><a name="index-accept-1801"></a></var><br>
+<blockquote><p>This function is used to accept a connection request on the server
+socket <var>socket</var>.
+
+        <p>The <code>accept</code> function waits if there are no connections pending,
+unless the socket <var>socket</var> has nonblocking mode set.  (You can use
+<code>select</code> to wait for a pending connection, with a nonblocking
+socket.)  See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>, for information about nonblocking
+mode.
+
+        <p>The <var>addr</var> and <var>length-ptr</var> arguments are used to return
+information about the name of the client socket that initiated the
+connection.  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>, for information about the format
+of the information.
+
+        <p>Accepting a connection does not make <var>socket</var> part of the
+connection.  Instead, it creates a new socket which becomes
+connected.  The normal return value of <code>accept</code> is the file
+descriptor for the new socket.
+
+        <p>After <code>accept</code>, the original socket <var>socket</var> remains open and
+unconnected, and continues listening until you close it.  You can
+accept further connections with <var>socket</var> by calling <code>accept</code>
+again.
+
+        <p>If an error occurs, <code>accept</code> returns <code>-1</code>.  The following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>socket</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The descriptor <var>socket</var> argument is not a socket.
+
+          <br><dt><code>EOPNOTSUPP</code><dd>The descriptor <var>socket</var> does not support this operation.
+
+          <br><dt><code>EWOULDBLOCK</code><dd><var>socket</var> has nonblocking mode set, and there are no pending
+connections immediately available. 
+</dl>
+
+        <p>This function is defined as a cancellation point in multi-threaded
+programs, so one has to be prepared for this and make sure that
+allocated resources (like memory, files descriptors, semaphores or
+whatever) are freed even if the thread is canceled. 
+<!-- @xref{pthread_cleanup_push}, for a method how to do this. -->
+</p></blockquote></div>
+
+   <p>The <code>accept</code> function is not allowed for sockets using
+connectionless communication styles.
+
+   </body></html>
+

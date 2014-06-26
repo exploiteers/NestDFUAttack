@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+<title>Time Zone Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link rel="prev" href="TZ-Variable.html#TZ-Variable" title="TZ Variable">
+<link rel="next" href="Time-Functions-Example.html#Time-Functions-Example" title="Time Functions Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Time-Zone-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Time-Functions-Example.html#Time-Functions-Example">Time Functions Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="TZ-Variable.html#TZ-Variable">TZ Variable</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.4.8 Functions and Variables for Time Zones</h4>
+
+<!-- time.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Variable: char * <b>tzname</b> [<var>2</var>]<var><a name="index-tzname-2673"></a></var><br>
+<blockquote><p>The array <code>tzname</code> contains two strings, which are the standard
+names of the pair of time zones (standard and Daylight
+Saving) that the user has selected.  <code>tzname[0]</code> is the name of
+the standard time zone (for example, <code>"EST"</code>), and <code>tzname[1]</code>
+is the name for the time zone when Daylight Saving Time is in use (for
+example, <code>"EDT"</code>).  These correspond to the <var>std</var> and <var>dst</var>
+strings (respectively) from the <code>TZ</code> environment variable.  If
+Daylight Saving Time is never used, <code>tzname[1]</code> is the empty string.
+
+        <p>The <code>tzname</code> array is initialized from the <code>TZ</code> environment
+variable whenever <code>tzset</code>, <code>ctime</code>, <code>strftime</code>,
+<code>mktime</code>, or <code>localtime</code> is called.  If multiple abbreviations
+have been used (e.g. <code>"EWT"</code> and <code>"EDT"</code> for U.S. Eastern War
+Time and Eastern Daylight Time), the array contains the most recent
+abbreviation.
+
+        <p>The <code>tzname</code> array is required for POSIX.1 compatibility, but in
+GNU programs it is better to use the <code>tm_zone</code> member of the
+broken-down time structure, since <code>tm_zone</code> reports the correct
+abbreviation even when it is not the latest one.
+
+        <p>Though the strings are declared as <code>char *</code> the user must refrain
+from modifying these strings.  Modifying the strings will almost certainly
+lead to trouble.
+
+     </blockquote></div>
+
+<!-- time.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: void <b>tzset</b> (<var>void</var>)<var><a name="index-tzset-2674"></a></var><br>
+<blockquote><p>The <code>tzset</code> function initializes the <code>tzname</code> variable from
+the value of the <code>TZ</code> environment variable.  It is not usually
+necessary for your program to call this function, because it is called
+automatically when you use the other time conversion functions that
+depend on the time zone. 
+</p></blockquote></div>
+
+   <p>The following variables are defined for compatibility with System V
+Unix.  Like <code>tzname</code>, these variables are set by calling
+<code>tzset</code> or the other time conversion functions.
+
+<!-- time.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Variable: long int <b>timezone</b><var><a name="index-timezone-2675"></a></var><br>
+<blockquote><p>This contains the difference between UTC and the latest local standard
+time, in seconds west of UTC.  For example, in the U.S. Eastern time
+zone, the value is <code>5*60*60</code>.  Unlike the <code>tm_gmtoff</code> member
+of the broken-down time structure, this value is not adjusted for
+daylight saving, and its sign is reversed.  In GNU programs it is better
+to use <code>tm_gmtoff</code>, since it contains the correct offset even when
+it is not the latest one. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Variable: int <b>daylight</b><var><a name="index-daylight-2676"></a></var><br>
+<blockquote><p>This variable has a nonzero value if Daylight Saving Time rules apply. 
+A nonzero value does not necessarily mean that Daylight Saving Time is
+now in effect; it means only that Daylight Saving Time is sometimes in
+effect. 
+</p></blockquote></div>
+
+   </body></html>
+

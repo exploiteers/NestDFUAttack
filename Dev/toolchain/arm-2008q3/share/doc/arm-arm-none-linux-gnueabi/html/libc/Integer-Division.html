@@ -1,0 +1,196 @@
+<html lang="en">
+<head>
+<title>Integer Division - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Integers.html#Integers" title="Integers">
+<link rel="next" href="Floating-Point-Numbers.html#Floating-Point-Numbers" title="Floating Point Numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Integer-Division"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating-Point-Numbers.html#Floating-Point-Numbers">Floating Point Numbers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Integers.html#Integers">Integers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.2 Integer Division</h3>
+
+<p><a name="index-integer-division-functions-2324"></a>
+This section describes functions for performing integer division.  These
+functions are redundant when GNU CC is used, because in GNU C the
+&lsquo;<samp><span class="samp">/</span></samp>&rsquo; operator always rounds towards zero.  But in other C
+implementations, &lsquo;<samp><span class="samp">/</span></samp>&rsquo; may round differently with negative arguments. 
+<code>div</code> and <code>ldiv</code> are useful because they specify how to round
+the quotient: towards zero.  The remainder has the same sign as the
+numerator.
+
+   <p>These functions are specified to return a result <var>r</var> such that the value
+<var>r</var><code>.quot*</code><var>denominator</var><code> + </code><var>r</var><code>.rem</code> equals
+<var>numerator</var>.
+
+   <p><a name="index-stdlib_002eh-2325"></a>To use these facilities, you should include the header file
+<samp><span class="file">stdlib.h</span></samp> in your program.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>div_t</b><var><a name="index-div_005ft-2326"></a></var><br>
+<blockquote><p>This is a structure type used to hold the result returned by the <code>div</code>
+function.  It has the following members:
+
+          <dl>
+<dt><code>int quot</code><dd>The quotient from the division.
+
+          <br><dt><code>int rem</code><dd>The remainder from the division. 
+</dl>
+        </p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: div_t <b>div</b> (<var>int numerator, int denominator</var>)<var><a name="index-div-2327"></a></var><br>
+<blockquote><p>This function <code>div</code> computes the quotient and remainder from
+the division of <var>numerator</var> by <var>denominator</var>, returning the
+result in a structure of type <code>div_t</code>.
+
+        <p>If the result cannot be represented (as in a division by zero), the
+behavior is undefined.
+
+        <p>Here is an example, albeit not a very useful one.
+
+     <pre class="smallexample">          div_t result;
+          result = div (20, -6);
+</pre>
+        <p class="noindent">Now <code>result.quot</code> is <code>-3</code> and <code>result.rem</code> is <code>2</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>ldiv_t</b><var><a name="index-ldiv_005ft-2328"></a></var><br>
+<blockquote><p>This is a structure type used to hold the result returned by the <code>ldiv</code>
+function.  It has the following members:
+
+          <dl>
+<dt><code>long int quot</code><dd>The quotient from the division.
+
+          <br><dt><code>long int rem</code><dd>The remainder from the division. 
+</dl>
+
+        <p>(This is identical to <code>div_t</code> except that the components are of
+type <code>long int</code> rather than <code>int</code>.) 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: ldiv_t <b>ldiv</b> (<var>long int numerator, long int denominator</var>)<var><a name="index-ldiv-2329"></a></var><br>
+<blockquote><p>The <code>ldiv</code> function is similar to <code>div</code>, except that the
+arguments are of type <code>long int</code> and the result is returned as a
+structure of type <code>ldiv_t</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>lldiv_t</b><var><a name="index-lldiv_005ft-2330"></a></var><br>
+<blockquote><p>This is a structure type used to hold the result returned by the <code>lldiv</code>
+function.  It has the following members:
+
+          <dl>
+<dt><code>long long int quot</code><dd>The quotient from the division.
+
+          <br><dt><code>long long int rem</code><dd>The remainder from the division. 
+</dl>
+
+        <p>(This is identical to <code>div_t</code> except that the components are of
+type <code>long long int</code> rather than <code>int</code>.) 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: lldiv_t <b>lldiv</b> (<var>long long int numerator, long long int denominator</var>)<var><a name="index-lldiv-2331"></a></var><br>
+<blockquote><p>The <code>lldiv</code> function is like the <code>div</code> function, but the
+arguments are of type <code>long long int</code> and the result is returned as
+a structure of type <code>lldiv_t</code>.
+
+        <p>The <code>lldiv</code> function was added in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- inttypes.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>imaxdiv_t</b><var><a name="index-imaxdiv_005ft-2332"></a></var><br>
+<blockquote><p>This is a structure type used to hold the result returned by the <code>imaxdiv</code>
+function.  It has the following members:
+
+          <dl>
+<dt><code>intmax_t quot</code><dd>The quotient from the division.
+
+          <br><dt><code>intmax_t rem</code><dd>The remainder from the division. 
+</dl>
+
+        <p>(This is identical to <code>div_t</code> except that the components are of
+type <code>intmax_t</code> rather than <code>int</code>.)
+
+        <p>See <a href="Integers.html#Integers">Integers</a> for a description of the <code>intmax_t</code> type.
+
+        </blockquote></div>
+
+<!-- inttypes.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: imaxdiv_t <b>imaxdiv</b> (<var>intmax_t numerator, intmax_t denominator</var>)<var><a name="index-imaxdiv-2333"></a></var><br>
+<blockquote><p>The <code>imaxdiv</code> function is like the <code>div</code> function, but the
+arguments are of type <code>intmax_t</code> and the result is returned as
+a structure of type <code>imaxdiv_t</code>.
+
+        <p>See <a href="Integers.html#Integers">Integers</a> for a description of the <code>intmax_t</code> type.
+
+        <p>The <code>imaxdiv</code> function was added in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+   </body></html>
+

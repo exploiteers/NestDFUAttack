@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Accessing Directories - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Working-Directory.html#Working-Directory" title="Working Directory">
+<link rel="next" href="Working-with-Directory-Trees.html#Working-with-Directory-Trees" title="Working with Directory Trees">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Accessing-Directories"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Working-with-Directory-Trees.html#Working-with-Directory-Trees">Working with Directory Trees</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Working-Directory.html#Working-Directory">Working Directory</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.2 Accessing Directories</h3>
+
+<p><a name="index-accessing-directories-1395"></a><a name="index-reading-from-a-directory-1396"></a><a name="index-directories_002c-accessing-1397"></a>
+The facilities described in this section let you read the contents of a
+directory file.  This is useful if you want your program to list all the
+files in a directory, perhaps as part of a menu.
+
+   <p><a name="index-directory-stream-1398"></a>The <code>opendir</code> function opens a <dfn>directory stream</dfn> whose
+elements are directory entries.  Alternatively <code>fdopendir</code> can be
+used which can have advantages if the program needs to have more
+control over the way the directory is opened for reading.  This
+allows, for instance, to pass the <code>O_NOATIME</code> flag to
+<code>open</code>.
+
+   <p>You use the <code>readdir</code> function on the directory stream to
+retrieve these entries, represented as <code>struct&nbsp;dirent</code><!-- /@w -->
+objects.  The name of the file for each entry is stored in the
+<code>d_name</code> member of this structure.  There are obvious parallels
+here to the stream facilities for ordinary files, described in
+<a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Directory-Entries.html#Directory-Entries">Directory Entries</a>:            Format of one directory entry. 
+<li><a accesskey="2" href="Opening-a-Directory.html#Opening-a-Directory">Opening a Directory</a>:          How to open a directory stream. 
+<li><a accesskey="3" href="Reading_002fClosing-Directory.html#Reading_002fClosing-Directory">Reading/Closing Directory</a>:    How to read directory entries from the stream. 
+<li><a accesskey="4" href="Simple-Directory-Lister.html#Simple-Directory-Lister">Simple Directory Lister</a>:      A very simple directory listing program. 
+<li><a accesskey="5" href="Random-Access-Directory.html#Random-Access-Directory">Random Access Directory</a>:      Rereading part of the directory
+                                 already read with the same stream. 
+<li><a accesskey="6" href="Scanning-Directory-Content.html#Scanning-Directory-Content">Scanning Directory Content</a>:   Get entries for user selected subset of
+                                 contents in given directory. 
+<li><a accesskey="7" href="Simple-Directory-Lister-Mark-II.html#Simple-Directory-Lister-Mark-II">Simple Directory Lister Mark II</a>:   Revised version of the program. 
+</ul>
+
+   </body></html>
+

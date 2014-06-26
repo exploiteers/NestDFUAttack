@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+<title>Absolute Priority - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Priority.html#Priority" title="Priority">
+<link rel="next" href="Realtime-Scheduling.html#Realtime-Scheduling" title="Realtime Scheduling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Absolute-Priority"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Realtime-Scheduling.html#Realtime-Scheduling">Realtime Scheduling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Priority.html#Priority">Priority</a>
+<hr>
+</div>
+
+<h4 class="subsection">22.3.1 Absolute Priority</h4>
+
+<p><a name="index-absolute-priority-2737"></a><a name="index-priority_002c-absolute-2738"></a>
+Every process has an absolute priority, and it is represented by a number. 
+The higher the number, the higher the absolute priority.
+
+   <p><a name="index-realtime-CPU-scheduling-2739"></a>On systems of the past, and most systems today, all processes have
+absolute priority 0 and this section is irrelevant.  In that case,
+See <a href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>.  Absolute priorities were invented to
+accommodate realtime systems, in which it is vital that certain processes
+be able to respond to external events happening in real time, which
+means they cannot wait around while some other process that <em>wants
+to</em>, but doesn't <em>need to</em> run occupies the CPU.
+
+   <p><a name="index-ready-to-run-2740"></a><a name="index-preemptive-scheduling-2741"></a>When two processes are in contention to use the CPU at any instant, the
+one with the higher absolute priority always gets it.  This is true even if the
+process with the lower priority is already using the CPU (i.e., the
+scheduling is preemptive).  Of course, we're only talking about
+processes that are running or &ldquo;ready to run,&rdquo; which means they are
+ready to execute instructions right now.  When a process blocks to wait
+for something like I/O, its absolute priority is irrelevant.
+
+   <p><a name="index-runnable-process-2742"></a><strong>Note:</strong>  The term &ldquo;runnable&rdquo; is a synonym for &ldquo;ready to run.&rdquo;
+
+   <p>When two processes are running or ready to run and both have the same
+absolute priority, it's more interesting.  In that case, who gets the
+CPU is determined by the scheduling policy.  If the processes have
+absolute priority 0, the traditional scheduling policy described in
+<a href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a> applies.  Otherwise, the policies described
+in <a href="Realtime-Scheduling.html#Realtime-Scheduling">Realtime Scheduling</a> apply.
+
+   <p>You normally give an absolute priority above 0 only to a process that
+can be trusted not to hog the CPU.  Such processes are designed to block
+(or terminate) after relatively short CPU runs.
+
+   <p>A process begins life with the same absolute priority as its parent
+process.  Functions described in <a href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">Basic Scheduling Functions</a> can
+change it.
+
+   <p>Only a privileged process can change a process' absolute priority to
+something other than <code>0</code>.  Only a privileged process or the
+target process' owner can change its absolute priority at all.
+
+   <p>POSIX requires absolute priority values used with the realtime
+scheduling policies to be consecutive with a range of at least 32.  On
+Linux, they are 1 through 99.  The functions
+<code>sched_get_priority_max</code> and <code>sched_set_priority_min</code> portably
+tell you what the range is on a particular system.
+
+<h5 class="subsubsection">22.3.1.1 Using Absolute Priority</h5>
+
+<p>One thing you must keep in mind when designing real time applications is
+that having higher absolute priority than any other process doesn't
+guarantee the process can run continuously.  Two things that can wreck a
+good CPU run are interrupts and page faults.
+
+   <p>Interrupt handlers live in that limbo between processes.  The CPU is
+executing instructions, but they aren't part of any process.  An
+interrupt will stop even the highest priority process.  So you must
+allow for slight delays and make sure that no device in the system has
+an interrupt handler that could cause too long a delay between
+instructions for your process.
+
+   <p>Similarly, a page fault causes what looks like a straightforward
+sequence of instructions to take a long time.  The fact that other
+processes get to run while the page faults in is of no consequence,
+because as soon as the I/O is complete, the high priority process will
+kick them out and run again, but the wait for the I/O itself could be a
+problem.  To neutralize this threat, use <code>mlock</code> or
+<code>mlockall</code>.
+
+   <p>There are a few ramifications of the absoluteness of this priority on a
+single-CPU system that you need to keep in mind when you choose to set a
+priority and also when you're working on a program that runs with high
+absolute priority.  Consider a process that has higher absolute priority
+than any other process in the system and due to a bug in its program, it
+gets into an infinite loop.  It will never cede the CPU.  You can't run
+a command to kill it because your command would need to get the CPU in
+order to run.  The errant program is in complete control.  It controls
+the vertical, it controls the horizontal.
+
+   <p>There are two ways to avoid this: 1) keep a shell running somewhere with
+a higher absolute priority.  2) keep a controlling terminal attached to
+the high priority process group.  All the priority in the world won't
+stop an interrupt handler from running and delivering a signal to the
+process if you hit Control-C.
+
+   <p>Some systems use absolute priority as a means of allocating a fixed
+percentage of CPU time to a process.  To do this, a super high priority
+privileged process constantly monitors the process' CPU usage and raises
+its absolute priority when the process isn't getting its entitled share
+and lowers it when the process is exceeding it.
+
+   <p><strong>Note:</strong>  The absolute priority is sometimes called the &ldquo;static
+priority.&rdquo;  We don't use that term in this manual because it misses the
+most important feature of the absolute priority:  its absoluteness.
+
+   </body></html>
+

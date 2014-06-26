@@ -1,0 +1,42 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the timed execution
+#      daemon, crond.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+CROND=${USRSBINDIR}/crond
+
+case "${1}" in
+
+'start')
+	${ECHO} "Timed execution daemon:\c"
+
+	if $CHECK cron; then
+	    ${KILLALL} crond
+	    if test -x ${CROND}; then
+		${CROND} `${CAT} ${CONFDIR}/crond.options 2> ${NULL}` &
+		${ECHO} " crond\c"
+	    fi
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	${KILLALL} crond
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop>"
+	exit 1
+	;;
+
+esac

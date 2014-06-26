@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+<title>Adding a New Target - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Target-Conditionals.html#Target-Conditionals" title="Target Conditionals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Adding-a-New-Target"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Target-Conditionals.html#Target-Conditionals">Target Conditionals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.12 Adding a New Target</h3>
+
+<p><a name="index-adding-a-target-362"></a>The following files add a target to <span class="sc">gdb</span>:
+
+     
+<a name="index-TDEPFILES-363"></a>
+<dl><dt><samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/</span><var>ttt</var><span class="file">.mt</span></samp><dd>Contains a Makefile fragment specific to this target.  Specifies what
+object files are needed for target <var>ttt</var>, by defining
+&lsquo;<samp><span class="samp">TDEPFILES=...</span></samp>&rsquo; and &lsquo;<samp><span class="samp">TDEPLIBS=...</span></samp>&rsquo;.
+
+     <p>You can also define &lsquo;<samp><span class="samp">TM_CLIBS</span></samp>&rsquo; and &lsquo;<samp><span class="samp">TM_CDEPS</span></samp>&rsquo;, but these are
+now deprecated, replaced by autoconf, and may go away in future
+versions of <span class="sc">gdb</span>.
+
+     <br><dt><samp><span class="file">gdb/</span><var>ttt</var><span class="file">-tdep.c</span></samp><dd>Contains any miscellaneous code required for this target machine.  On
+some machines it doesn't exist at all.
+
+     <br><dt><samp><span class="file">gdb/</span><var>arch</var><span class="file">-tdep.c</span></samp><dt><samp><span class="file">gdb/</span><var>arch</var><span class="file">-tdep.h</span></samp><dd>This is required to describe the basic layout of the target machine's
+processor chip (registers, stack, etc.).  It can be shared among many
+targets that use the same processor architecture.
+
+   </dl>
+
+   <p>(Target header files such as
+<samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/tm-</span><var>ttt</var><span class="file">.h</span></samp>,
+<samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/tm-</span><var>arch</var><span class="file">.h</span></samp>, and
+<samp><span class="file">config/tm-</span><var>os</var><span class="file">.h</span></samp> are no longer used.)
+
+   </body></html>
+

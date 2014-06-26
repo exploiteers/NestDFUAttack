@@ -1,0 +1,316 @@
+<html lang="en">
+<head>
+<title>Basic Scheduling Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Priority.html#Priority" title="Priority">
+<link rel="prev" href="Realtime-Scheduling.html#Realtime-Scheduling" title="Realtime Scheduling">
+<link rel="next" href="Traditional-Scheduling.html#Traditional-Scheduling" title="Traditional Scheduling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Basic-Scheduling-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Realtime-Scheduling.html#Realtime-Scheduling">Realtime Scheduling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Priority.html#Priority">Priority</a>
+<hr>
+</div>
+
+<h4 class="subsection">22.3.3 Basic Scheduling Functions</h4>
+
+<p>This section describes functions in the GNU C library for setting the
+absolute priority and scheduling policy of a process.
+
+   <p><strong>Portability Note:</strong>  On systems that have the functions in this
+section, the macro _POSIX_PRIORITY_SCHEDULING is defined in
+<samp><span class="file">&lt;unistd.h&gt;</span></samp>.
+
+   <p>For the case that the scheduling policy is traditional scheduling, more
+functions to fine tune the scheduling are in <a href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>.
+
+   <p>Don't try to make too much out of the naming and structure of these
+functions.  They don't match the concepts described in this manual
+because the functions are as defined by POSIX.1b, but the implementation
+on systems that use the GNU C library is the inverse of what the POSIX
+structure contemplates.  The POSIX scheme assumes that the primary
+scheduling parameter is the scheduling policy and that the priority
+value, if any, is a parameter of the scheduling policy.  In the
+implementation, though, the priority value is king and the scheduling
+policy, if anything, only fine tunes the effect of that priority.
+
+   <p>The symbols in this section are declared by including file <samp><span class="file">sched.h</span></samp>.
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Data Type: <b>struct sched_param</b><var><a name="index-struct-sched_005fparam-2744"></a></var><br>
+<blockquote><p>This structure describes an absolute priority.
+          <dl>
+<dt><code>int sched_priority</code><dd>absolute priority value
+</dl>
+        </p></blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_setscheduler</b> (<var>pid_t pid, int policy, const struct sched_param *param</var>)<var><a name="index-sched_005fsetscheduler-2745"></a></var><br>
+<blockquote>
+        <p>This function sets both the absolute priority and the scheduling policy
+for a process.
+
+        <p>It assigns the absolute priority value given by <var>param</var> and the
+scheduling policy <var>policy</var> to the process with Process ID <var>pid</var>,
+or the calling process if <var>pid</var> is zero.  If <var>policy</var> is
+negative, <code>sched_setscheduler</code> keeps the existing scheduling policy.
+
+        <p>The following macros represent the valid values for <var>policy</var>:
+
+          <dl>
+<dt><code>SCHED_OTHER</code><dd>Traditional Scheduling
+<br><dt><code>SCHED_FIFO</code><dd>First In First Out
+<br><dt><code>SCHED_RR</code><dd>Round Robin
+</dl>
+
+     <!-- The Linux kernel code (in sched.c) actually reschedules the process, -->
+     <!-- but it puts it at the head of the run queue, so I'm not sure just what -->
+     <!-- the effect is, but it must be subtle. -->
+        <p>On success, the return value is <code>0</code>.  Otherwise, it is <code>-1</code>
+and <code>ERRNO</code> is set accordingly.  The <code>errno</code> values specific
+to this function are:
+
+          <dl>
+<dt><code>EPERM</code><dd>
+               <ul>
+<li>The calling process does not have <code>CAP_SYS_NICE</code> permission and
+<var>policy</var> is not <code>SCHED_OTHER</code> (or it's negative and the
+existing policy is not <code>SCHED_OTHER</code>.
+
+               <li>The calling process does not have <code>CAP_SYS_NICE</code> permission and its
+owner is not the target process' owner.  I.e., the effective uid of the
+calling process is neither the effective nor the real uid of process
+<var>pid</var>. 
+<!-- We need a cross reference to the capabilities section, when written. -->
+</ul>
+
+          <br><dt><code>ESRCH</code><dd>There is no process with pid <var>pid</var> and <var>pid</var> is not zero.
+
+          <br><dt><code>EINVAL</code><dd>
+               <ul>
+<li><var>policy</var> does not identify an existing scheduling policy.
+
+               <li>The absolute priority value identified by *<var>param</var> is outside the
+valid range for the scheduling policy <var>policy</var> (or the existing
+scheduling policy if <var>policy</var> is negative) or <var>param</var> is
+null.  <code>sched_get_priority_max</code> and <code>sched_get_priority_min</code>
+tell you what the valid range is.
+
+               <li><var>pid</var> is negative. 
+</ul>
+          </dl>
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_getscheduler</b> (<var>pid_t pid</var>)<var><a name="index-sched_005fgetscheduler-2746"></a></var><br>
+<blockquote>
+        <p>This function returns the scheduling policy assigned to the process with
+Process ID (pid) <var>pid</var>, or the calling process if <var>pid</var> is zero.
+
+        <p>The return value is the scheduling policy.  See
+<code>sched_setscheduler</code> for the possible values.
+
+        <p>If the function fails, the return value is instead <code>-1</code> and
+<code>errno</code> is set accordingly.
+
+        <p>The <code>errno</code> values specific to this function are:
+
+          <dl>
+<dt><code>ESRCH</code><dd>There is no process with pid <var>pid</var> and it is not zero.
+
+          <br><dt><code>EINVAL</code><dd><var>pid</var> is negative.
+
+        </dl>
+
+        <p>Note that this function is not an exact mate to <code>sched_setscheduler</code>
+because while that function sets the scheduling policy and the absolute
+priority, this function gets only the scheduling policy.  To get the
+absolute priority, use <code>sched_getparam</code>.
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_setparam</b> (<var>pid_t pid, const struct sched_param *param</var>)<var><a name="index-sched_005fsetparam-2747"></a></var><br>
+<blockquote>
+        <p>This function sets a process' absolute priority.
+
+        <p>It is functionally identical to <code>sched_setscheduler</code> with
+<var>policy</var> = <code>-1</code>.
+
+     <!-- in fact, that's how it's implemented in Linux. -->
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_getparam</b> (<var>pid_t pid, const struct sched_param *param</var>)<var><a name="index-sched_005fgetparam-2748"></a></var><br>
+<blockquote>
+        <p>This function returns a process' absolute priority.
+
+        <p><var>pid</var> is the Process ID (pid) of the process whose absolute priority
+you want to know.
+
+        <p><var>param</var> is a pointer to a structure in which the function stores the
+absolute priority of the process.
+
+        <p>On success, the return value is <code>0</code>.  Otherwise, it is <code>-1</code>
+and <code>ERRNO</code> is set accordingly.  The <code>errno</code> values specific
+to this function are:
+
+          <dl>
+<dt><code>ESRCH</code><dd>There is no process with pid <var>pid</var> and it is not zero.
+
+          <br><dt><code>EINVAL</code><dd><var>pid</var> is negative.
+
+        </dl>
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_get_priority_min</b> (<var>int *policy</var>)<var>;<a name="index-sched_005fget_005fpriority_005fmin-2749"></a></var><br>
+<blockquote>
+        <p>This function returns the lowest absolute priority value that is
+allowable for a process with scheduling policy <var>policy</var>.
+
+        <p>On Linux, it is 0 for SCHED_OTHER and 1 for everything else.
+
+        <p>On success, the return value is <code>0</code>.  Otherwise, it is <code>-1</code>
+and <code>ERRNO</code> is set accordingly.  The <code>errno</code> values specific
+to this function are:
+
+          <dl>
+<dt><code>EINVAL</code><dd><var>policy</var> does not identify an existing scheduling policy. 
+</dl>
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_get_priority_max</b> (<var>int *policy</var>)<var>;<a name="index-sched_005fget_005fpriority_005fmax-2750"></a></var><br>
+<blockquote>
+        <p>This function returns the highest absolute priority value that is
+allowable for a process that with scheduling policy <var>policy</var>.
+
+        <p>On Linux, it is 0 for SCHED_OTHER and 99 for everything else.
+
+        <p>On success, the return value is <code>0</code>.  Otherwise, it is <code>-1</code>
+and <code>ERRNO</code> is set accordingly.  The <code>errno</code> values specific
+to this function are:
+
+          <dl>
+<dt><code>EINVAL</code><dd><var>policy</var> does not identify an existing scheduling policy. 
+</dl>
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_rr_get_interval</b> (<var>pid_t pid, struct timespec *interval</var>)<var><a name="index-sched_005frr_005fget_005finterval-2751"></a></var><br>
+<blockquote>
+        <p>This function returns the length of the quantum (time slice) used with
+the Round Robin scheduling policy, if it is used, for the process with
+Process ID <var>pid</var>.
+
+        <p>It returns the length of time as <var>interval</var>. 
+<!-- We need a cross-reference to where timespec is explained.  But that -->
+<!-- section doesn't exist yet, and the time chapter needs to be slightly -->
+<!-- reorganized so there is a place to put it (which will be right next -->
+<!-- to timeval, which is presently misplaced).  2000.05.07. -->
+
+        <p>With a Linux kernel, the round robin time slice is always 150
+microseconds, and <var>pid</var> need not even be a real pid.
+
+        <p>The return value is <code>0</code> on success and in the pathological case
+that it fails, the return value is <code>-1</code> and <code>errno</code> is set
+accordingly.  There is nothing specific that can go wrong with this
+function, so there are no specific <code>errno</code> values.
+
+        </blockquote></div>
+
+<!-- sched.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>sched_yield</b> (<var>void</var>)<var><a name="index-sched_005fyield-2752"></a></var><br>
+<blockquote>
+        <p>This function voluntarily gives up the process' claim on the CPU.
+
+        <p>Technically, <code>sched_yield</code> causes the calling process to be made
+immediately ready to run (as opposed to running, which is what it was
+before).  This means that if it has absolute priority higher than 0, it
+gets pushed onto the tail of the queue of processes that share its
+absolute priority and are ready to run, and it will run again when its
+turn next arrives.  If its absolute priority is 0, it is more
+complicated, but still has the effect of yielding the CPU to other
+processes.
+
+        <p>If there are no other processes that share the calling process' absolute
+priority, this function doesn't have any effect.
+
+        <p>To the extent that the containing program is oblivious to what other
+processes in the system are doing and how fast it executes, this
+function appears as a no-op.
+
+        <p>The return value is <code>0</code> on success and in the pathological case
+that it fails, the return value is <code>-1</code> and <code>errno</code> is set
+accordingly.  There is nothing specific that can go wrong with this
+function, so there are no specific <code>errno</code> values.
+
+        </blockquote></div>
+
+   </body></html>
+

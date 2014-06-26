@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Messages.html#Formatted-Messages" title="Formatted Messages">
+<link rel="prev" href="Adding-Severity-Classes.html#Adding-Severity-Classes" title="Adding Severity Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Adding-Severity-Classes.html#Adding-Severity-Classes">Adding Severity Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Messages.html#Formatted-Messages">Formatted Messages</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.22.3 How to use <code>fmtmsg</code> and <code>addseverity</code></h4>
+
+<p>Here is a simple example program to illustrate the use of the both
+functions described in this section.
+
+<pre class="smallexample">     #include &lt;fmtmsg.h&gt;
+     
+     int
+     main (void)
+     {
+       addseverity (5, "NOTE2");
+       fmtmsg (MM_PRINT, "only1field", MM_INFO, "text2", "action2", "tag2");
+       fmtmsg (MM_PRINT, "UX:cat", 5, "invalid syntax", "refer to manual",
+               "UX:cat:001");
+       fmtmsg (MM_PRINT, "label:foo", 6, "text", "action", "tag");
+       return 0;
+     }
+</pre>
+   <p>The second call to <code>fmtmsg</code> illustrates a use of this function as
+it usually occurs on System V systems, which heavily use this function. 
+It seems worthwhile to give a short explanation here of how this system
+works on System V.  The value of the
+<var>label</var> field (<code>UX:cat</code>) says that the error occurred in the
+Unix program <code>cat</code>.  The explanation of the error follows and the
+value for the <var>action</var> parameter is <code>"refer to manual"</code>.  One
+could be more specific here, if necessary.  The <var>tag</var> field contains,
+as proposed above, the value of the string given for the <var>label</var>
+parameter, and additionally a unique ID (<code>001</code> in this case).  For
+a GNU environment this string could contain a reference to the
+corresponding node in the Info page for the program.
+
+<p class="noindent">Running this program without specifying the <code>MSGVERB</code> and
+<code>SEV_LEVEL</code> function produces the following output:
+
+<pre class="smallexample">     UX:cat: NOTE2: invalid syntax
+     TO FIX: refer to manual UX:cat:001
+</pre>
+   <p>We see the different fields of the message and how the extra glue (the
+colons and the <code>TO FIX</code> string) are printed.  But only one of the
+three calls to <code>fmtmsg</code> produced output.  The first call does not
+print anything because the <var>label</var> parameter is not in the correct
+form.  The string must contain two fields, separated by a colon
+(see <a href="Printing-Formatted-Messages.html#Printing-Formatted-Messages">Printing Formatted Messages</a>).  The third <code>fmtmsg</code> call
+produced no output since the class with the numeric value <code>6</code> is
+not defined.  Although a class with numeric value <code>5</code> is also not
+defined by default, the call to <code>addseverity</code> introduces it and
+the second call to <code>fmtmsg</code> produces the above output.
+
+   <p>When we change the environment of the program to contain
+<code>SEV_LEVEL=XXX,6,NOTE</code> when running it we get a different result:
+
+<pre class="smallexample">     UX:cat: NOTE2: invalid syntax
+     TO FIX: refer to manual UX:cat:001
+     label:foo: NOTE: text
+     TO FIX: action tag
+</pre>
+   <p>Now the third call to <code>fmtmsg</code> produced some output and we see how
+the string <code>NOTE</code> from the environment variable appears in the
+message.
+
+   <p>Now we can reduce the output by specifying which fields we are
+interested in.  If we additionally set the environment variable
+<code>MSGVERB</code> to the value <code>severity:label:action</code> we get the
+following output:
+
+<pre class="smallexample">     UX:cat: NOTE2
+     TO FIX: refer to manual
+     label:foo: NOTE
+     TO FIX: action
+</pre>
+   <p class="noindent">I.e., the output produced by the <var>text</var> and the <var>tag</var> parameters
+to <code>fmtmsg</code> vanished.  Please also note that now there is no colon
+after the <code>NOTE</code> and <code>NOTE2</code> strings in the output.  This is
+not necessary since there is no more output on this line because the text
+is missing.
+
+   </body></html>
+

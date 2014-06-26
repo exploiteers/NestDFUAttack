@@ -1,0 +1,69 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file updates, if necessary, the time zone.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+CP="${BINDIR}/cp -f"
+LN="${BINDIR}/ln -sf"
+
+ZONEDEFAULT="${CONFDIR}/default/timezone"
+ZONEINFODIR="${USRDATADIR}/zoneinfo"
+ZONEUSERDATA="${NESTLABSCONFDIR}/user/localtime"
+ZONECONFDATA="${CONFDIR}/localtime"
+
+case "${1}" in
+
+'check')
+	${ECHO} "Time zone:\c"
+
+	# First, check to ensure that the symbolic link exists from
+	# the user configuration partition to the place the C library
+	# expects to find it on the root file system.
+
+	if [ ! -L "${ZONECONFDATA}" ]; then
+		${LN} "${ZONEUSERDATA}" "${ZONECONFDATA}"
+	fi
+
+	# Then, if the real zone data doesn't exist, attempt to
+	# determine a default value and then copy the zone data to the
+	# user configuration partition.
+
+	if [ ! -e "${ZONEUSERDATA}" ]; then
+		if [ -r "${ZONEDEFAULT}" ]; then
+			ZONE="`${CAT} ${ZONEDEFAULT}`"
+
+		elif [ -z "${ZONE}" ]; then
+			ZONE="UTC"
+
+		fi
+
+		ZONESOURCEDATA="${ZONEINFODIR}/${ZONE}"
+
+		if [ -r "${ZONESOURCEDATA}" ]; then
+		    ${CP} "${ZONESOURCEDATA}" "${ZONEUSERDATA}"
+		fi
+	fi
+
+	if ${CAT} "${ZONECONFDATA}" > ${NULL} 2>&1 ; then
+		${ECHO} " OK"
+	else
+		${ECHO} " NONE"
+
+	fi
+
+	;;
+
+*)
+	${ECHO} "Usage: ${0} <check>"
+	exit 1
+	;;
+
+esac

@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+<title>Shift State - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion" title="Non-reentrant Conversion">
+<link rel="prev" href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion" title="Non-reentrant String Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Shift-State"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion">Non-reentrant String Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.4.3 States in Non-reentrant Functions</h4>
+
+<p>In some multibyte character codes, the <em>meaning</em> of any particular
+byte sequence is not fixed; it depends on what other sequences have come
+earlier in the same string.  Typically there are just a few sequences that
+can change the meaning of other sequences; these few are called
+<dfn>shift sequences</dfn> and we say that they set the <dfn>shift state</dfn> for
+other sequences that follow.
+
+   <p>To illustrate shift state and shift sequences, suppose we decide that
+the sequence <code>0200</code> (just one byte) enters Japanese mode, in which
+pairs of bytes in the range from <code>0240</code> to <code>0377</code> are single
+characters, while <code>0201</code> enters Latin-1 mode, in which single bytes
+in the range from <code>0240</code> to <code>0377</code> are characters, and
+interpreted according to the ISO Latin-1 character set.  This is a
+multibyte code that has two alternative shift states (&ldquo;Japanese mode&rdquo;
+and &ldquo;Latin-1 mode&rdquo;), and two shift sequences that specify particular
+shift states.
+
+   <p>When the multibyte character code in use has shift states, then
+<code>mblen</code>, <code>mbtowc</code>, and <code>wctomb</code> must maintain and update
+the current shift state as they scan the string.  To make this work
+properly, you must follow these rules:
+
+     <ul>
+<li>Before starting to scan a string, call the function with a null pointer
+for the multibyte character address&mdash;for example, <code>mblen (NULL,
+0)</code>.  This initializes the shift state to its standard initial value.
+
+     <li>Scan the string one character at a time, in order.  Do not &ldquo;back up&rdquo;
+and rescan characters already scanned, and do not intersperse the
+processing of different strings. 
+</ul>
+
+   <p>Here is an example of using <code>mblen</code> following these rules:
+
+<pre class="smallexample">     void
+     scan_string (char *s)
+     {
+       int length = strlen (s);
+     
+       /* <span class="roman">Initialize shift state.</span>  */
+       mblen (NULL, 0);
+     
+       while (1)
+         {
+           int thischar = mblen (s, length);
+           /* <span class="roman">Deal with end of string and invalid characters.</span>  */
+           if (thischar == 0)
+             break;
+           if (thischar == -1)
+             {
+               error ("invalid multibyte character");
+               break;
+             }
+           /* <span class="roman">Advance past this character.</span>  */
+           s += thischar;
+           length -= thischar;
+         }
+     }
+</pre>
+   <p>The functions <code>mblen</code>, <code>mbtowc</code> and <code>wctomb</code> are not
+reentrant when using a multibyte code that uses a shift state.  However,
+no other library functions call these functions, so you don't have to
+worry that the shift state will be changed mysteriously.
+
+   </body></html>
+

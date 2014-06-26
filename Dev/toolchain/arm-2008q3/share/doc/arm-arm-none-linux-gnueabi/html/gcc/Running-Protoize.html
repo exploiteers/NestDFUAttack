@@ -1,0 +1,197 @@
+<html lang="en">
+<head>
+<title>Running Protoize - Using the GNU Compiler Collection (GCC)</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Using the GNU Compiler Collection (GCC)">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Invoking-GCC.html#Invoking-GCC" title="Invoking GCC">
+<link rel="prev" href="Precompiled-Headers.html#Precompiled-Headers" title="Precompiled Headers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+Copyright (C) 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
+1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007
+2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``GNU General Public License'' and ``Funding
+Free Software'', the Front-Cover texts being (a) (see below), and with
+the Back-Cover Texts being (b) (see below).  A copy of the license is
+included in the section entitled ``GNU Free Documentation License''.
+
+(a) The FSF's Front-Cover Text is:
+
+     A GNU Manual
+
+(b) The FSF's Back-Cover Text is:
+
+     You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Running-Protoize"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Precompiled-Headers.html#Precompiled-Headers">Precompiled Headers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Invoking-GCC.html#Invoking-GCC">Invoking GCC</a>
+<hr>
+</div>
+
+<h3 class="section">3.21 Running Protoize</h3>
+
+<p>The program <code>protoize</code> is an optional part of GCC.  You can use
+it to add prototypes to a program, thus converting the program to ISO
+C in one respect.  The companion program <code>unprotoize</code> does the
+reverse: it removes argument types from any prototypes that are found.
+
+ <p>When you run these programs, you must specify a set of source files as
+command line arguments.  The conversion programs start out by compiling
+these files to see what functions they define.  The information gathered
+about a file <var>foo</var> is saved in a file named <samp><var>foo</var><span class="file">.X</span></samp>.
+
+ <p>After scanning comes actual conversion.  The specified files are all
+eligible to be converted; any files they include (whether sources or
+just headers) are eligible as well.
+
+ <p>But not all the eligible files are converted.  By default,
+<code>protoize</code> and <code>unprotoize</code> convert only source and header
+files in the current directory.  You can specify additional directories
+whose files should be converted with the <samp><span class="option">-d </span><var>directory</var></samp>
+option.  You can also specify particular files to exclude with the
+<samp><span class="option">-x </span><var>file</var></samp> option.  A file is converted if it is eligible, its
+directory name matches one of the specified directory names, and its
+name within the directory has not been excluded.
+
+ <p>Basic conversion with <code>protoize</code> consists of rewriting most
+function definitions and function declarations to specify the types of
+the arguments.  The only ones not rewritten are those for varargs
+functions.
+
+ <p><code>protoize</code> optionally inserts prototype declarations at the
+beginning of the source file, to make them available for any calls that
+precede the function's definition.  Or it can insert prototype
+declarations with block scope in the blocks where undeclared functions
+are called.
+
+ <p>Basic conversion with <code>unprotoize</code> consists of rewriting most
+function declarations to remove any argument types, and rewriting
+function definitions to the old-style pre-ISO form.
+
+ <p>Both conversion programs print a warning for any function declaration or
+definition that they can't convert.  You can suppress these warnings
+with <samp><span class="option">-q</span></samp>.
+
+ <p>The output from <code>protoize</code> or <code>unprotoize</code> replaces the
+original source file.  The original file is renamed to a name ending
+with &lsquo;<samp><span class="samp">.save</span></samp>&rsquo; (for DOS, the saved filename ends in &lsquo;<samp><span class="samp">.sav</span></samp>&rsquo;
+without the original &lsquo;<samp><span class="samp">.c</span></samp>&rsquo; suffix).  If the &lsquo;<samp><span class="samp">.save</span></samp>&rsquo; (&lsquo;<samp><span class="samp">.sav</span></samp>&rsquo;
+for DOS) file already exists, then the source file is simply discarded.
+
+ <p><code>protoize</code> and <code>unprotoize</code> both depend on GCC itself to
+scan the program and collect information about the functions it uses. 
+So neither of these programs will work until GCC is installed.
+
+ <p>Here is a table of the options you can use with <code>protoize</code> and
+<code>unprotoize</code>.  Each option works with both programs unless
+otherwise stated.
+
+     <dl>
+<dt><code>-B </code><var>directory</var><dd>Look for the file <samp><span class="file">SYSCALLS.c.X</span></samp> in <var>directory</var>, instead of the
+usual directory (normally <samp><span class="file">/usr/local/lib</span></samp>).  This file contains
+prototype information about standard system functions.  This option
+applies only to <code>protoize</code>.
+
+     <br><dt><code>-c </code><var>compilation-options</var><dd>Use <var>compilation-options</var> as the options when running <samp><span class="command">gcc</span></samp> to
+produce the &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; files.  The special option <samp><span class="option">-aux-info</span></samp> is
+always passed in addition, to tell <samp><span class="command">gcc</span></samp> to write a &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; file.
+
+     <p>Note that the compilation options must be given as a single argument to
+<code>protoize</code> or <code>unprotoize</code>.  If you want to specify several
+<samp><span class="command">gcc</span></samp> options, you must quote the entire set of compilation options
+to make them a single word in the shell.
+
+     <p>There are certain <samp><span class="command">gcc</span></samp> arguments that you cannot use, because they
+would produce the wrong kind of output.  These include <samp><span class="option">-g</span></samp>,
+<samp><span class="option">-O</span></samp>, <samp><span class="option">-c</span></samp>, <samp><span class="option">-S</span></samp>, and <samp><span class="option">-o</span></samp> If you include these in
+the <var>compilation-options</var>, they are ignored.
+
+     <br><dt><code>-C</code><dd>Rename files to end in &lsquo;<samp><span class="samp">.C</span></samp>&rsquo; (&lsquo;<samp><span class="samp">.cc</span></samp>&rsquo; for DOS-based file
+systems) instead of &lsquo;<samp><span class="samp">.c</span></samp>&rsquo;.  This is convenient if you are converting
+a C program to C++.  This option applies only to <code>protoize</code>.
+
+     <br><dt><code>-g</code><dd>Add explicit global declarations.  This means inserting explicit
+declarations at the beginning of each source file for each function
+that is called in the file and was not declared.  These declarations
+precede the first function definition that contains a call to an
+undeclared function.  This option applies only to <code>protoize</code>.
+
+     <br><dt><code>-i </code><var>string</var><dd>Indent old-style parameter declarations with the string <var>string</var>. 
+This option applies only to <code>protoize</code>.
+
+     <p><code>unprotoize</code> converts prototyped function definitions to old-style
+function definitions, where the arguments are declared between the
+argument list and the initial &lsquo;<samp><span class="samp">{</span></samp>&rsquo;.  By default, <code>unprotoize</code>
+uses five spaces as the indentation.  If you want to indent with just
+one space instead, use <samp><span class="option">-i " "</span></samp>.
+
+     <br><dt><code>-k</code><dd>Keep the &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; files.  Normally, they are deleted after conversion
+is finished.
+
+     <br><dt><code>-l</code><dd>Add explicit local declarations.  <code>protoize</code> with <samp><span class="option">-l</span></samp> inserts
+a prototype declaration for each function in each block which calls the
+function without any declaration.  This option applies only to
+<code>protoize</code>.
+
+     <br><dt><code>-n</code><dd>Make no real changes.  This mode just prints information about the conversions
+that would have been done without <samp><span class="option">-n</span></samp>.
+
+     <br><dt><code>-N</code><dd>Make no &lsquo;<samp><span class="samp">.save</span></samp>&rsquo; files.  The original files are simply deleted. 
+Use this option with caution.
+
+     <br><dt><code>-p </code><var>program</var><dd>Use the program <var>program</var> as the compiler.  Normally, the name
+<samp><span class="file">gcc</span></samp> is used.
+
+     <br><dt><code>-q</code><dd>Work quietly.  Most warnings are suppressed.
+
+     <br><dt><code>-v</code><dd>Print the version number, just like <samp><span class="option">-v</span></samp> for <samp><span class="command">gcc</span></samp>. 
+</dl>
+
+ <p>If you need special compiler options to compile one of your program's
+source files, then you should generate that file's &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; file
+specially, by running <samp><span class="command">gcc</span></samp> on that source file with the
+appropriate options and the option <samp><span class="option">-aux-info</span></samp>.  Then run
+<code>protoize</code> on the entire set of files.  <code>protoize</code> will use
+the existing &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; file because it is newer than the source file. 
+For example:
+
+<pre class="smallexample">     gcc -Dfoo=bar file1.c -aux-info file1.X
+     protoize *.c
+</pre>
+ <p class="noindent">You need to include the special files along with the rest in the
+<code>protoize</code> command, even though their &lsquo;<samp><span class="samp">.X</span></samp>&rsquo; files already
+exist, because otherwise they won't get converted.
+
+ <p>See <a href="Protoize-Caveats.html#Protoize-Caveats">Protoize Caveats</a>, for more information on how to use
+<code>protoize</code> successfully.
+
+<!-- Copyright (C) 2001, 2002, 2003, 2004, 2006 Free Software Foundation, Inc. -->
+<!-- This is part of the GCC manual. -->
+<!-- For copying conditions, see the file gcc.texi. -->
+ </body></html>
+

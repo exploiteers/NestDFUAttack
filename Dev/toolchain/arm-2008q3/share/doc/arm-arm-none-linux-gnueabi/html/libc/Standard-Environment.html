@@ -1,0 +1,166 @@
+<html lang="en">
+<head>
+<title>Standard Environment - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Environment-Variables.html#Environment-Variables" title="Environment Variables">
+<link rel="prev" href="Environment-Access.html#Environment-Access" title="Environment Access">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Standard-Environment"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Environment-Access.html#Environment-Access">Environment Access</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.4.2 Standard Environment Variables</h4>
+
+<p><a name="index-standard-environment-variables-3108"></a>
+These environment variables have standard meanings.  This doesn't mean
+that they are always present in the environment; but if these variables
+<em>are</em> present, they have these meanings.  You shouldn't try to use
+these environment variable names for some other purpose.
+
+<!-- Extra blank lines make it look better. -->
+     <dl>
+<dt><code>HOME</code><dd><a name="index-g_t_0040code_007bHOME_007d-environment-variable-3109"></a><a name="index-home-directory-3110"></a>
+This is a string representing the user's <dfn>home directory</dfn>, or
+initial default working directory.
+
+     <p>The user can set <code>HOME</code> to any value. 
+If you need to make sure to obtain the proper home directory
+for a particular user, you should not use <code>HOME</code>; instead,
+look up the user's name in the user database (see <a href="User-Database.html#User-Database">User Database</a>).
+
+     <p>For most purposes, it is better to use <code>HOME</code>, precisely because
+this lets the user specify the value.
+
+     <!-- !!! also USER -->
+     <br><dt><code>LOGNAME</code><dd><a name="index-g_t_0040code_007bLOGNAME_007d-environment-variable-3111"></a>
+This is the name that the user used to log in.  Since the value in the
+environment can be tweaked arbitrarily, this is not a reliable way to
+identify the user who is running a program; a function like
+<code>getlogin</code> (see <a href="Who-Logged-In.html#Who-Logged-In">Who Logged In</a>) is better for that purpose.
+
+     <p>For most purposes, it is better to use <code>LOGNAME</code>, precisely because
+this lets the user specify the value.
+
+     <br><dt><code>PATH</code><dd><a name="index-g_t_0040code_007bPATH_007d-environment-variable-3112"></a>
+A <dfn>path</dfn> is a sequence of directory names which is used for
+searching for a file.  The variable <code>PATH</code> holds a path used
+for searching for programs to be run.
+
+     <p>The <code>execlp</code> and <code>execvp</code> functions (see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>)
+use this environment variable, as do many shells and other utilities
+which are implemented in terms of those functions.
+
+     <p>The syntax of a path is a sequence of directory names separated by
+colons.  An empty string instead of a directory name stands for the
+current directory (see <a href="Working-Directory.html#Working-Directory">Working Directory</a>).
+
+     <p>A typical value for this environment variable might be a string like:
+
+     <pre class="smallexample">          :/bin:/etc:/usr/bin:/usr/new/X11:/usr/new:/usr/local/bin
+</pre>
+     <p>This means that if the user tries to execute a program named <code>foo</code>,
+the system will look for files named <samp><span class="file">foo</span></samp>, <samp><span class="file">/bin/foo</span></samp>,
+<samp><span class="file">/etc/foo</span></samp>, and so on.  The first of these files that exists is
+the one that is executed.
+
+     <!-- !!! also TERMCAP -->
+     <br><dt><code>TERM</code><dd><a name="index-g_t_0040code_007bTERM_007d-environment-variable-3113"></a>
+This specifies the kind of terminal that is receiving program output. 
+Some programs can make use of this information to take advantage of
+special escape sequences or terminal modes supported by particular kinds
+of terminals.  Many programs which use the termcap library
+(see <a href="../termcap/Finding-a-Terminal-Description.html#Finding-a-Terminal-Description">Find</a>) use the <code>TERM</code> environment variable, for example.
+
+     <br><dt><code>TZ</code><dd><a name="index-g_t_0040code_007bTZ_007d-environment-variable-3114"></a>
+This specifies the time zone.  See <a href="TZ-Variable.html#TZ-Variable">TZ Variable</a>, for information about
+the format of this string and how it is used.
+
+     <br><dt><code>LANG</code><dd><a name="index-g_t_0040code_007bLANG_007d-environment-variable-3115"></a>
+This specifies the default locale to use for attribute categories where
+neither <code>LC_ALL</code> nor the specific environment variable for that
+category is set.  See <a href="Locales.html#Locales">Locales</a>, for more information about
+locales.
+
+     <br><dt><code>LC_ALL</code><dd><a name="index-g_t_0040code_007bLC_005fALL_007d-environment-variable-3116"></a>
+If this environment variable is set it overrides the selection for all
+the locales done using the other <code>LC_*</code> environment variables.  The
+value of the other <code>LC_*</code> environment variables is simply ignored
+in this case.
+
+     <br><dt><code>LC_COLLATE</code><dd><a name="index-g_t_0040code_007bLC_005fCOLLATE_007d-environment-variable-3117"></a>
+This specifies what locale to use for string sorting.
+
+     <br><dt><code>LC_CTYPE</code><dd><a name="index-g_t_0040code_007bLC_005fCTYPE_007d-environment-variable-3118"></a>
+This specifies what locale to use for character sets and character
+classification.
+
+     <br><dt><code>LC_MESSAGES</code><dd><a name="index-g_t_0040code_007bLC_005fMESSAGES_007d-environment-variable-3119"></a>
+This specifies what locale to use for printing messages and to parse
+responses.
+
+     <br><dt><code>LC_MONETARY</code><dd><a name="index-g_t_0040code_007bLC_005fMONETARY_007d-environment-variable-3120"></a>
+This specifies what locale to use for formatting monetary values.
+
+     <br><dt><code>LC_NUMERIC</code><dd><a name="index-g_t_0040code_007bLC_005fNUMERIC_007d-environment-variable-3121"></a>
+This specifies what locale to use for formatting numbers.
+
+     <br><dt><code>LC_TIME</code><dd><a name="index-g_t_0040code_007bLC_005fTIME_007d-environment-variable-3122"></a>
+This specifies what locale to use for formatting date/time values.
+
+     <br><dt><code>NLSPATH</code><dd><a name="index-g_t_0040code_007bNLSPATH_007d-environment-variable-3123"></a>
+This specifies the directories in which the <code>catopen</code> function
+looks for message translation catalogs.
+
+     <br><dt><code>_POSIX_OPTION_ORDER</code><dd><a name="index-g_t_0040code_007b_005fPOSIX_005fOPTION_005fORDER_007d-environment-variable_002e-3124"></a>
+If this environment variable is defined, it suppresses the usual
+reordering of command line arguments by <code>getopt</code> and
+<code>argp_parse</code>.  See <a href="Argument-Syntax.html#Argument-Syntax">Argument Syntax</a>.
+
+     <!-- !!! GNU also has COREFILE, CORESERVER, EXECSERVERS -->
+   </dl>
+
+   </body></html>
+

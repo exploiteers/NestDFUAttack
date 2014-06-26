@@ -1,0 +1,615 @@
+<html lang="en">
+<head>
+<title>Target Conditionals - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Compiler-Characteristics.html#Compiler-Characteristics" title="Compiler Characteristics">
+<link rel="next" href="Adding-a-New-Target.html#Adding-a-New-Target" title="Adding a New Target">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Target-Conditionals"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Adding-a-New-Target.html#Adding-a-New-Target">Adding a New Target</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiler-Characteristics.html#Compiler-Characteristics">Compiler Characteristics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.11 Target Conditionals</h3>
+
+<p>This section describes the macros and functions that you can use to define the
+target machine.
+
+     <dl>
+<dt><code>CORE_ADDR gdbarch_addr_bits_remove (</code><var>gdbarch</var><code>, </code><var>addr</var><code>)</code><dd><a name="index-gdbarch_005faddr_005fbits_005fremove-262"></a>If a raw machine instruction address includes any bits that are not
+really part of the address, then this function is used to zero those bits in
+<var>addr</var>.  This is only used for addresses of instructions, and even then not
+in all contexts.
+
+     <p>For example, the two low-order bits of the PC on the Hewlett-Packard PA
+2.0 architecture contain the privilege level of the corresponding
+instruction.  Since instructions must always be aligned on four-byte
+boundaries, the processor masks out these bits to generate the actual
+address of the instruction.  <code>gdbarch_addr_bits_remove</code> would then for
+example look like that:
+     <pre class="smallexample">          arch_addr_bits_remove (CORE_ADDR addr)
+          {
+            return (addr &amp;= ~0x3);
+          }
+</pre>
+     <br><dt><code>int address_class_name_to_type_flags (</code><var>gdbarch</var><code>, </code><var>name</var><code>, </code><var>type_flags_ptr</var><code>)</code><dd><a name="index-address_005fclass_005fname_005fto_005ftype_005fflags-263"></a>If <var>name</var> is a valid address class qualifier name, set the <code>int</code>
+referenced by <var>type_flags_ptr</var> to the mask representing the qualifier
+and return 1.  If <var>name</var> is not a valid address class qualifier name,
+return 0.
+
+     <p>The value for <var>type_flags_ptr</var> should be one of
+<code>TYPE_FLAG_ADDRESS_CLASS_1</code>, <code>TYPE_FLAG_ADDRESS_CLASS_2</code>, or
+possibly some combination of these values or'd together. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Address Classes</a>.
+
+     <br><dt><code>int address_class_name_to_type_flags_p (</code><var>gdbarch</var><code>)</code><dd><a name="index-address_005fclass_005fname_005fto_005ftype_005fflags_005fp-264"></a>Predicate which indicates whether <code>address_class_name_to_type_flags</code>
+has been defined.
+
+     <br><dt><code>int gdbarch_address_class_type_flags (</code><var>gdbarch</var><code>, </code><var>byte_size</var><code>, </code><var>dwarf2_addr_class</var><code>)</code><dd><a name="index-gdbarch_005faddress_005fclass_005ftype_005fflags-265"></a>Given a pointers byte size (as described by the debug information) and
+the possible <code>DW_AT_address_class</code> value, return the type flags
+used by <span class="sc">gdb</span> to represent this address class.  The value
+returned should be one of <code>TYPE_FLAG_ADDRESS_CLASS_1</code>,
+<code>TYPE_FLAG_ADDRESS_CLASS_2</code>, or possibly some combination of these
+values or'd together. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Address Classes</a>.
+
+     <br><dt><code>int gdbarch_address_class_type_flags_p (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005faddress_005fclass_005ftype_005fflags_005fp-266"></a>Predicate which indicates whether <code>gdbarch_address_class_type_flags_p</code> has
+been defined.
+
+     <br><dt><code>const char *gdbarch_address_class_type_flags_to_name (</code><var>gdbarch</var><code>, </code><var>type_flags</var><code>)</code><dd><a name="index-gdbarch_005faddress_005fclass_005ftype_005fflags_005fto_005fname-267"></a>Return the name of the address class qualifier associated with the type
+flags given by <var>type_flags</var>.
+
+     <br><dt><code>int gdbarch_address_class_type_flags_to_name_p (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005faddress_005fclass_005ftype_005fflags_005fto_005fname_005fp-268"></a>Predicate which indicates whether <code>gdbarch_address_class_type_flags_to_name</code> has been defined. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Address Classes</a>.
+
+     <br><dt><code>void gdbarch_address_to_pointer (</code><var>gdbarch</var><code>, </code><var>type</var><code>, </code><var>buf</var><code>, </code><var>addr</var><code>)</code><dd><a name="index-gdbarch_005faddress_005fto_005fpointer-269"></a>Store in <var>buf</var> a pointer of type <var>type</var> representing the address
+<var>addr</var>, in the appropriate format for the current architecture. 
+This function may safely assume that <var>type</var> is either a pointer or a
+C<tt>++</tt> reference type. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Pointers Are Not Always Addresses</a>.
+
+     <br><dt><code>int gdbarch_believe_pcc_promotion (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fbelieve_005fpcc_005fpromotion-270"></a>Used to notify if the compiler promotes a <code>short</code> or <code>char</code>
+parameter to an <code>int</code>, but still reports the parameter as its
+original type, rather than the promoted type.
+
+     <br><dt><code>gdbarch_bits_big_endian (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fbits_005fbig_005fendian-271"></a>This is used if the numbering of bits in the targets does <strong>not</strong> match
+the endianness of the target byte order.  A value of 1 means that the bits
+are numbered in a big-endian bit order, 0 means little-endian.
+
+     <br><dt><code>set_gdbarch_bits_big_endian (</code><var>gdbarch</var><code>, </code><var>bits_big_endian</var><code>)</code><dd><a name="index-set_005fgdbarch_005fbits_005fbig_005fendian-272"></a>Calling set_gdbarch_bits_big_endian with a value of 1 indicates that the
+bits in the target are numbered in a big-endian bit order, 0 indicates
+little-endian.
+
+     <br><dt><code>BREAKPOINT</code><dd><a name="index-BREAKPOINT-273"></a>This is the character array initializer for the bit pattern to put into
+memory where a breakpoint is set.  Although it's common to use a trap
+instruction for a breakpoint, it's not required; for instance, the bit
+pattern could be an invalid instruction.  The breakpoint must be no
+longer than the shortest instruction of the architecture.
+
+     <p><code>BREAKPOINT</code> has been deprecated in favor of
+<code>gdbarch_breakpoint_from_pc</code>.
+
+     <br><dt><code>BIG_BREAKPOINT</code><dt><code>LITTLE_BREAKPOINT</code><dd><a name="index-LITTLE_005fBREAKPOINT-274"></a><a name="index-BIG_005fBREAKPOINT-275"></a>Similar to BREAKPOINT, but used for bi-endian targets.
+
+     <p><code>BIG_BREAKPOINT</code> and <code>LITTLE_BREAKPOINT</code> have been deprecated in
+favor of <code>gdbarch_breakpoint_from_pc</code>.
+
+     <br><dt><code>const gdb_byte *gdbarch_breakpoint_from_pc (</code><var>gdbarch</var><code>, </code><var>pcptr</var><code>, </code><var>lenptr</var><code>)</code><dd><a name="index-gdbarch_005fbreakpoint_005ffrom_005fpc-276"></a><a name="gdbarch_005fbreakpoint_005ffrom_005fpc"></a>Use the program counter to determine the
+contents and size of a breakpoint instruction.  It returns a pointer to
+a string of bytes that encode a breakpoint instruction, stores the
+length of the string to <code>*</code><var>lenptr</var>, and adjusts the program
+counter (if necessary) to point to the actual memory location where the
+breakpoint should be inserted.
+
+     <p>Although it is common to use a trap instruction for a breakpoint, it's
+not required; for instance, the bit pattern could be an invalid
+instruction.  The breakpoint must be no longer than the shortest
+instruction of the architecture.
+
+     <p>Replaces all the other <var>BREAKPOINT</var> macros.
+
+     <br><dt><code>int gdbarch_memory_insert_breakpoint (</code><var>gdbarch</var><code>, </code><var>bp_tgt</var><code>)</code><dt><code>gdbarch_memory_remove_breakpoint (</code><var>gdbarch</var><code>, </code><var>bp_tgt</var><code>)</code><dd><a name="index-gdbarch_005fmemory_005fremove_005fbreakpoint-277"></a><a name="index-gdbarch_005fmemory_005finsert_005fbreakpoint-278"></a>Insert or remove memory based breakpoints.  Reasonable defaults
+(<code>default_memory_insert_breakpoint</code> and
+<code>default_memory_remove_breakpoint</code> respectively) have been
+provided so that it is not necessary to set these for most
+architectures.  Architectures which may want to set
+<code>gdbarch_memory_insert_breakpoint</code> and <code>gdbarch_memory_remove_breakpoint</code> will likely have instructions that are oddly sized or are not stored in a
+conventional manner.
+
+     <p>It may also be desirable (from an efficiency standpoint) to define
+custom breakpoint insertion and removal routines if
+<code>gdbarch_breakpoint_from_pc</code> needs to read the target's memory for some
+reason.
+
+     <br><dt><code>CORE_ADDR gdbarch_adjust_breakpoint_address (</code><var>gdbarch</var><code>, </code><var>bpaddr</var><code>)</code><dd><a name="index-gdbarch_005fadjust_005fbreakpoint_005faddress-279"></a><a name="index-breakpoint-address-adjusted-280"></a>Given an address at which a breakpoint is desired, return a breakpoint
+address adjusted to account for architectural constraints on
+breakpoint placement.  This method is not needed by most targets.
+
+     <p>The FR-V target (see <samp><span class="file">frv-tdep.c</span></samp>) requires this method. 
+The FR-V is a VLIW architecture in which a number of RISC-like
+instructions are grouped (packed) together into an aggregate
+instruction or instruction bundle.  When the processor executes
+one of these bundles, the component instructions are executed
+in parallel.
+
+     <p>In the course of optimization, the compiler may group instructions
+from distinct source statements into the same bundle.  The line number
+information associated with one of the latter statements will likely
+refer to some instruction other than the first one in the bundle.  So,
+if the user attempts to place a breakpoint on one of these latter
+statements, <span class="sc">gdb</span> must be careful to <em>not</em> place the break
+instruction on any instruction other than the first one in the bundle. 
+(Remember though that the instructions within a bundle execute
+in parallel, so the <em>first</em> instruction is the instruction
+at the lowest address and has nothing to do with execution order.)
+
+     <p>The FR-V's <code>gdbarch_adjust_breakpoint_address</code> method will adjust a
+breakpoint's address by scanning backwards for the beginning of
+the bundle, returning the address of the bundle.
+
+     <p>Since the adjustment of a breakpoint may significantly alter a user's
+expectation, <span class="sc">gdb</span> prints a warning when an adjusted breakpoint
+is initially set and each time that that breakpoint is hit.
+
+     <br><dt><code>int gdbarch_call_dummy_location (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fcall_005fdummy_005flocation-281"></a>See the file <samp><span class="file">inferior.h</span></samp>.
+
+     <p>This method has been replaced by <code>gdbarch_push_dummy_code</code>
+(see <a href="gdbarch_005fpush_005fdummy_005fcode.html#gdbarch_005fpush_005fdummy_005fcode">gdbarch_push_dummy_code</a>).
+
+     <br><dt><code>int gdbarch_cannot_fetch_register (</code><var>gdbarch</var><code>, </code><var>regum</var><code>)</code><dd><a name="index-gdbarch_005fcannot_005ffetch_005fregister-282"></a>This function should return nonzero if <var>regno</var> cannot be fetched
+from an inferior process.  This is only relevant if
+<code>FETCH_INFERIOR_REGISTERS</code> is not defined.
+
+     <br><dt><code>int gdbarch_cannot_store_register (</code><var>gdbarch</var><code>, </code><var>regnum</var><code>)</code><dd><a name="index-gdbarch_005fcannot_005fstore_005fregister-283"></a>This function should return nonzero if <var>regno</var> should not be
+written to the target.  This is often the case for program counters,
+status words, and other special registers.  This function returns 0 as
+default so that <span class="sc">gdb</span> will assume that all registers may be written.
+
+     <br><dt><code>int gdbarch_convert_register_p (</code><var>gdbarch</var><code>, </code><var>regnum</var><code>, struct type *</code><var>type</var><code>)</code><dd><a name="index-gdbarch_005fconvert_005fregister_005fp-284"></a>Return non-zero if register <var>regnum</var> represents data values of type
+<var>type</var> in a non-standard form. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Using Different Register and Memory Data Representations</a>.
+
+     <br><dt><code>CORE_ADDR gdbarch_decr_pc_after_break (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fdecr_005fpc_005fafter_005fbreak-285"></a>This function shall return the amount by which to decrement the PC after the
+program encounters a breakpoint.  This is often the number of bytes in
+<code>BREAKPOINT</code>, though not always.  For most targets this value will be 0.
+
+     <br><dt><code>DISABLE_UNSETTABLE_BREAK (</code><var>addr</var><code>)</code><dd><a name="index-DISABLE_005fUNSETTABLE_005fBREAK-286"></a>If defined, this should evaluate to 1 if <var>addr</var> is in a shared
+library in which breakpoints cannot be set and so should be disabled.
+
+     <br><dt><code>void gdbarch_print_float_info (</code><var>gdbarch</var><code>, </code><var>file</var><code>, </code><var>frame</var><code>, </code><var>args</var><code>)</code><dd><a name="index-gdbarch_005fprint_005ffloat_005finfo-287"></a>If defined, then the &lsquo;<samp><span class="samp">info float</span></samp>&rsquo; command will print information about
+the processor's floating point unit.
+
+     <br><dt><code>void gdbarch_print_registers_info (</code><var>gdbarch</var><code>, </code><var>frame</var><code>, </code><var>regnum</var><code>, </code><var>all</var><code>)</code><dd><a name="index-gdbarch_005fprint_005fregisters_005finfo-288"></a>If defined, pretty print the value of the register <var>regnum</var> for the
+specified <var>frame</var>.  If the value of <var>regnum</var> is -1, pretty print
+either all registers (<var>all</var> is non zero) or a select subset of
+registers (<var>all</var> is zero).
+
+     <p>The default method prints one register per line, and if <var>all</var> is
+zero omits floating-point registers.
+
+     <br><dt><code>int gdbarch_print_vector_info (</code><var>gdbarch</var><code>, </code><var>file</var><code>, </code><var>frame</var><code>, </code><var>args</var><code>)</code><dd><a name="index-gdbarch_005fprint_005fvector_005finfo-289"></a>If defined, then the &lsquo;<samp><span class="samp">info vector</span></samp>&rsquo; command will call this function
+to print information about the processor's vector unit.
+
+     <p>By default, the &lsquo;<samp><span class="samp">info vector</span></samp>&rsquo; command will print all vector
+registers (the register's type having the vector attribute).
+
+     <br><dt><code>int gdbarch_dwarf2_reg_to_regnum (</code><var>gdbarch</var><code>, </code><var>dwarf2_regnr</var><code>)</code><dd><a name="index-gdbarch_005fdwarf2_005freg_005fto_005fregnum-290"></a>Convert DWARF2 register number <var>dwarf2_regnr</var> into <span class="sc">gdb</span> regnum. 
+If not defined, no conversion will be performed.
+
+     <br><dt><code>int gdbarch_ecoff_reg_to_regnum (</code><var>gdbarch</var><code>, </code><var>ecoff_regnr</var><code>)</code><dd><a name="index-gdbarch_005fecoff_005freg_005fto_005fregnum-291"></a>Convert ECOFF register number  <var>ecoff_regnr</var> into <span class="sc">gdb</span> regnum.  If
+not defined, no conversion will be performed.
+
+     <br><dt><code>CORE_ADDR frame_align (</code><var>gdbarch</var><code>, </code><var>address</var><code>)</code><dd><a name="frame_005falign"></a><a name="index-frame_005falign-292"></a>Define this to adjust <var>address</var> so that it meets the alignment
+requirements for the start of a new stack frame.  A stack frame's
+alignment requirements are typically stronger than a target processors
+stack alignment requirements.
+
+     <p>This function is used to ensure that, when creating a dummy frame, both
+the initial stack pointer and (if needed) the address of the return
+value are correctly aligned.
+
+     <p>This function always adjusts the address in the direction of stack
+growth.
+
+     <p>By default, no frame based stack alignment is performed.
+
+     <br><dt><code>int gdbarch_frame_red_zone_size (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fframe_005fred_005fzone_005fsize-293"></a>The number of bytes, beyond the innermost-stack-address, reserved by the
+<span class="sc">abi</span>.  A function is permitted to use this scratch area (instead of
+allocating extra stack space).
+
+     <p>When performing an inferior function call, to ensure that it does not
+modify this area, <span class="sc">gdb</span> adjusts the innermost-stack-address by
+<var>gdbarch_frame_red_zone_size</var> bytes before pushing parameters onto the
+stack.
+
+     <p>By default, zero bytes are allocated.  The value must be aligned
+(see <a href="frame_005falign.html#frame_005falign">frame_align</a>).
+
+     <p>The <span class="sc">amd64</span> (nee x86-64) <span class="sc">abi</span> documentation refers to the
+<em>red zone</em> when describing this scratch area. 
+<a name="index-red-zone-294"></a>
+<code>FRAME_FIND_SAVED_REGS</code> is deprecated.
+
+     <br><dt><code>int gdbarch_frame_num_args (</code><var>gdbarch</var><code>, </code><var>frame</var><code>)</code><dd><a name="index-gdbarch_005fframe_005fnum_005fargs-295"></a>For the frame described by <var>frame</var> return the number of arguments that
+are being passed.  If the number of arguments is not known, return
+<code>-1</code>.
+
+     <br><dt><code>CORE_ADDR gdbarch_unwind_pc (</code><var>next_frame</var><code>)</code><dd><a name="index-gdbarch_005funwind_005fpc-296"></a><a name="gdbarch_005funwind_005fpc"></a>Return the instruction address, in
+<var>next_frame</var>'s caller, at which execution will resume after
+<var>next_frame</var> returns.  This is commonly referred to as the return address.
+
+     <p>The implementation, which must be frame agnostic (work with any frame),
+is typically no more than:
+
+     <pre class="smallexample">          ULONGEST pc;
+          pc = frame_unwind_register_unsigned (next_frame, S390_PC_REGNUM);
+          return gdbarch_addr_bits_remove (gdbarch, pc);
+</pre>
+     <p class="noindent"><br><dt><code>CORE_ADDR gdbarch_unwind_sp (</code><var>gdbarch</var><code>, </code><var>next_frame</var><code>)</code><dd><a name="index-gdbarch_005funwind_005fsp-297"></a><a name="gdbarch_005funwind_005fsp"></a>Return the frame's inner most stack address.  This is
+commonly referred to as the frame's <dfn>stack pointer</dfn>.
+
+     <p>The implementation, which must be frame agnostic (work with any frame),
+is typically no more than:
+
+     <pre class="smallexample">          ULONGEST sp;
+          sp = frame_unwind_register_unsigned (next_frame, S390_SP_REGNUM);
+          return gdbarch_addr_bits_remove (gdbarch, sp);
+</pre>
+     <p class="noindent">See <a href="TARGET_005fREAD_005fSP.html#TARGET_005fREAD_005fSP">TARGET_READ_SP</a>, which this method replaces.
+
+     <br><dt><code>GCC_COMPILED_FLAG_SYMBOL</code><dt><code>GCC2_COMPILED_FLAG_SYMBOL</code><dd><a name="index-GCC2_005fCOMPILED_005fFLAG_005fSYMBOL-298"></a><a name="index-GCC_005fCOMPILED_005fFLAG_005fSYMBOL-299"></a>If defined, these are the names of the symbols that <span class="sc">gdb</span> will
+look for to detect that GCC compiled the file.  The default symbols
+are <code>gcc_compiled.</code> and <code>gcc2_compiled.</code>,
+respectively.  (Currently only defined for the Delta 68.)
+
+     <br><dt><code>gdbarch_get_longjmp_target</code><dd><a name="index-gdbarch_005fget_005flongjmp_005ftarget-300"></a>This function determines the target PC address that <code>longjmp</code>
+will jump to, assuming that we have just stopped at a <code>longjmp</code>
+breakpoint.  It takes a <code>CORE_ADDR *</code> as argument, and stores the
+target PC value through this pointer.  It examines the current state
+of the machine as needed, typically by using a manually-determined
+offset into the <code>jmp_buf</code>. (While we might like to get the offset
+from the target's <samp><span class="file">jmpbuf.h</span></samp>, that header file cannot be assumed
+to be available when building a cross-debugger.)
+
+     <br><dt><code>DEPRECATED_IBM6000_TARGET</code><dd><a name="index-DEPRECATED_005fIBM6000_005fTARGET-301"></a>Shows that we are configured for an IBM RS/6000 system.  This
+conditional should be eliminated (FIXME) and replaced by
+feature-specific macros.  It was introduced in haste and we are
+repenting at leisure.
+
+     <br><dt><code>I386_USE_GENERIC_WATCHPOINTS</code><dd>An x86-based target can define this to use the generic x86 watchpoint
+support; see <a href="Algorithms.html#Algorithms">I386_USE_GENERIC_WATCHPOINTS</a>.
+
+     <br><dt><code>int gdbarch_inner_than (</code><var>gdbarch</var><code>, </code><var>lhs</var><code>, </code><var>rhs</var><code>)</code><dd><a name="index-gdbarch_005finner_005fthan-302"></a>Returns non-zero if stack address <var>lhs</var> is inner than (nearer to the
+stack top) stack address <var>rhs</var>.  Let the function return
+<code>lhs&nbsp;&lt;&nbsp;rhs</code><!-- /@w --> if the target's stack grows downward in memory, or
+<code>lhs&nbsp;&gt;&nbsp;rsh</code><!-- /@w --> if the stack grows upward.
+
+     <br><dt><code>gdbarch_in_function_epilogue_p (</code><var>gdbarch</var><code>, </code><var>addr</var><code>)</code><dd><a name="index-gdbarch_005fin_005ffunction_005fepilogue_005fp-303"></a>Returns non-zero if the given <var>addr</var> is in the epilogue of a function. 
+The epilogue of a function is defined as the part of a function where
+the stack frame of the function already has been destroyed up to the
+final `return from function call' instruction.
+
+     <br><dt><code>int gdbarch_in_solib_return_trampoline (</code><var>gdbarch</var><code>, </code><var>pc</var><code>, </code><var>name</var><code>)</code><dd><a name="index-gdbarch_005fin_005fsolib_005freturn_005ftrampoline-304"></a>Define this function to return nonzero if the program is stopped in the
+trampoline that returns from a shared library.
+
+     <br><dt><code>target_so_ops.in_dynsym_resolve_code (</code><var>pc</var><code>)</code><dd><a name="index-in_005fdynsym_005fresolve_005fcode-305"></a>Define this to return nonzero if the program is stopped in the
+dynamic linker.
+
+     <br><dt><code>SKIP_SOLIB_RESOLVER (</code><var>pc</var><code>)</code><dd><a name="index-SKIP_005fSOLIB_005fRESOLVER-306"></a>Define this to evaluate to the (nonzero) address at which execution
+should continue to get past the dynamic linker's symbol resolution
+function.  A zero value indicates that it is not important or necessary
+to set a breakpoint to get through the dynamic linker and that single
+stepping will suffice.
+
+     <br><dt><code>CORE_ADDR gdbarch_integer_to_address (</code><var>gdbarch</var><code>, </code><var>type</var><code>, </code><var>buf</var><code>)</code><dd><a name="index-gdbarch_005finteger_005fto_005faddress-307"></a><a name="index-converting-integers-to-addresses-308"></a>Define this when the architecture needs to handle non-pointer to address
+conversions specially.  Converts that value to an address according to
+the current architectures conventions.
+
+     <p><em>Pragmatics: When the user copies a well defined expression from
+their source code and passes it, as a parameter, to </em><span class="sc">gdb</span><em>'s
+</em><code>print</code><em> command, they should get the same value as would have been
+computed by the target program.  Any deviation from this rule can cause
+major confusion and annoyance, and needs to be justified carefully.  In
+other words, </em><span class="sc">gdb</span><em> doesn't really have the freedom to do these
+conversions in clever and useful ways.  It has, however, been pointed
+out that users aren't complaining about how </em><span class="sc">gdb</span><em> casts integers
+to pointers; they are complaining that they can't take an address from a
+disassembly listing and give it to </em><code>x/i</code><em>.  Adding an architecture
+method like </em><code>gdbarch_integer_to_address</code><em> certainly makes it possible for
+</em><span class="sc">gdb</span><em> to &ldquo;get it right&rdquo; in all circumstances.</em>
+
+     <p>See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Pointers Are Not Always Addresses</a>.
+
+     <br><dt><code>CORE_ADDR gdbarch_pointer_to_address (</code><var>gdbarch</var><code>, </code><var>type</var><code>, </code><var>buf</var><code>)</code><dd><a name="index-gdbarch_005fpointer_005fto_005faddress-309"></a>Assume that <var>buf</var> holds a pointer of type <var>type</var>, in the
+appropriate format for the current architecture.  Return the byte
+address the pointer refers to. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Pointers Are Not Always Addresses</a>.
+
+     <br><dt><code>void gdbarch_register_to_value(</code><var>gdbarch</var><code>, </code><var>frame</var><code>, </code><var>regnum</var><code>, </code><var>type</var><code>, </code><var>fur</var><code>)</code><dd><a name="index-gdbarch_005fregister_005fto_005fvalue-310"></a>Convert the raw contents of register <var>regnum</var> into a value of type
+<var>type</var>. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Using Different Register and Memory Data Representations</a>.
+
+     <br><dt><code>register_reggroup_p (</code><var>gdbarch</var><code>, </code><var>regnum</var><code>, </code><var>reggroup</var><code>)</code><dd><a name="index-register_005freggroup_005fp-311"></a><a name="index-register-groups-312"></a>Return non-zero if register <var>regnum</var> is a member of the register
+group <var>reggroup</var>.
+
+     <p>By default, registers are grouped as follows:
+
+          <dl>
+<dt><code>float_reggroup</code><dd>Any register with a valid name and a floating-point type. 
+<br><dt><code>vector_reggroup</code><dd>Any register with a valid name and a vector type. 
+<br><dt><code>general_reggroup</code><dd>Any register with a valid name and a type other than vector or
+floating-point.  &lsquo;<samp><span class="samp">float_reggroup</span></samp>&rsquo;. 
+<br><dt><code>save_reggroup</code><dt><code>restore_reggroup</code><dt><code>all_reggroup</code><dd>Any register with a valid name. 
+</dl>
+
+     <br><dt><code>struct type *register_type (</code><var>gdbarch</var><code>, </code><var>reg</var><code>)</code><dd><a name="index-register_005ftype-313"></a>If defined, return the type of register <var>reg</var>. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Raw and Virtual Register Representations</a>.
+
+     <br><dt><code>REGISTER_CONVERT_TO_VIRTUAL(</code><var>reg</var><code>, </code><var>type</var><code>, </code><var>from</var><code>, </code><var>to</var><code>)</code><dd><a name="index-REGISTER_005fCONVERT_005fTO_005fVIRTUAL-314"></a>Convert the value of register <var>reg</var> from its raw form to its virtual
+form. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Raw and Virtual Register Representations</a>.
+
+     <br><dt><code>REGISTER_CONVERT_TO_RAW(</code><var>type</var><code>, </code><var>reg</var><code>, </code><var>from</var><code>, </code><var>to</var><code>)</code><dd><a name="index-REGISTER_005fCONVERT_005fTO_005fRAW-315"></a>Convert the value of register <var>reg</var> from its virtual form to its raw
+form. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Raw and Virtual Register Representations</a>.
+
+     <br><dt><code>const struct regset *regset_from_core_section (struct gdbarch * </code><var>gdbarch</var><code>, const char * </code><var>sect_name</var><code>, size_t </code><var>sect_size</var><code>)</code><dd><a name="index-regset_005ffrom_005fcore_005fsection-316"></a>Return the appropriate register set for a core file section with name
+<var>sect_name</var> and size <var>sect_size</var>.
+
+     <br><dt><code>SOFTWARE_SINGLE_STEP_P()</code><dd><a name="index-SOFTWARE_005fSINGLE_005fSTEP_005fP-317"></a>Define this as 1 if the target does not have a hardware single-step
+mechanism.  The macro <code>SOFTWARE_SINGLE_STEP</code> must also be defined.
+
+     <br><dt><code>SOFTWARE_SINGLE_STEP(</code><var>signal</var><code>, </code><var>insert_breakpoints_p</var><code>)</code><dd><a name="index-SOFTWARE_005fSINGLE_005fSTEP-318"></a>A function that inserts or removes (depending on
+<var>insert_breakpoints_p</var>) breakpoints at each possible destinations of
+the next instruction. See <samp><span class="file">sparc-tdep.c</span></samp> and <samp><span class="file">rs6000-tdep.c</span></samp>
+for examples.
+
+     <br><dt><code>set_gdbarch_sofun_address_maybe_missing (</code><var>gdbarch</var><code>, </code><var>set</var><code>)</code><dd><a name="index-set_005fgdbarch_005fsofun_005faddress_005fmaybe_005fmissing-319"></a>Somebody clever observed that, the more actual addresses you have in the
+debug information, the more time the linker has to spend relocating
+them.  So whenever there's some other way the debugger could find the
+address it needs, you should omit it from the debug info, to make
+linking faster.
+
+     <p>Calling <code>set_gdbarch_sofun_address_maybe_missing</code> with a non-zero
+argument <var>set</var> indicates that a particular set of hacks of this sort
+are in use, affecting <code>N_SO</code> and <code>N_FUN</code> entries in stabs-format
+debugging information.  <code>N_SO</code> stabs mark the beginning and ending
+addresses of compilation units in the text segment.  <code>N_FUN</code> stabs
+mark the starts and ends of functions.
+
+     <p>In this case, <span class="sc">gdb</span> assumes two things:
+
+          <ul>
+<li><code>N_FUN</code> stabs have an address of zero.  Instead of using those
+addresses, you should find the address where the function starts by
+taking the function name from the stab, and then looking that up in the
+minsyms (the linker/assembler symbol table).  In other words, the stab
+has the name, and the linker/assembler symbol table is the only place
+that carries the address.
+
+          <li><code>N_SO</code> stabs have an address of zero, too.  You just look at the
+<code>N_FUN</code> stabs that appear before and after the <code>N_SO</code> stab, and
+guess the starting and ending addresses of the compilation unit from them. 
+</ul>
+
+     <br><dt><code>int gdbarch_pc_regnum (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fpc_005fregnum-320"></a>If the program counter is kept in a register, then let this function return
+the number (greater than or equal to zero) of that register.
+
+     <p>This should only need to be defined if <code>gdbarch_read_pc</code> and
+<code>gdbarch_write_pc</code> are not defined.
+
+     <br><dt><code>int gdbarch_stabs_argument_has_addr (</code><var>gdbarch</var><code>, </code><var>type</var><code>)</code><dd><a name="index-gdbarch_005fstabs_005fargument_005fhas_005faddr-321"></a><a name="gdbarch_005fstabs_005fargument_005fhas_005faddr"></a>Define this function to return
+nonzero if a function argument of type <var>type</var> is passed by reference
+instead of value.
+
+     <br><dt><code>PROCESS_LINENUMBER_HOOK</code><dd><a name="index-PROCESS_005fLINENUMBER_005fHOOK-322"></a>A hook defined for XCOFF reading.
+
+     <br><dt><code>gdbarch_ps_regnum (</code><var>gdbarch</var><dd><a name="index-gdbarch_005fps_005fregnum-323"></a>If defined, this function returns the number of the processor status
+register. 
+(This definition is only used in generic code when parsing "$ps".)
+
+     <br><dt><code>CORE_ADDR gdbarch_push_dummy_call (</code><var>gdbarch</var><code>, </code><var>function</var><code>, </code><var>regcache</var><code>, </code><var>bp_addr</var><code>, </code><var>nargs</var><code>, </code><var>args</var><code>, </code><var>sp</var><code>, </code><var>struct_return</var><code>, </code><var>struct_addr</var><code>)</code><dd><a name="index-gdbarch_005fpush_005fdummy_005fcall-324"></a><a name="gdbarch_005fpush_005fdummy_005fcall"></a>Define this to push the dummy frame's call to
+the inferior function onto the stack.  In addition to pushing <var>nargs</var>, the
+code should push <var>struct_addr</var> (when <var>struct_return</var> is non-zero), and
+the return address (<var>bp_addr</var>).
+
+     <p><var>function</var> is a pointer to a <code>struct value</code>; on architectures that use
+function descriptors, this contains the function descriptor value.
+
+     <p>Returns the updated top-of-stack pointer.
+
+     <br><dt><code>CORE_ADDR gdbarch_push_dummy_code (</code><var>gdbarch</var><code>, </code><var>sp</var><code>, </code><var>funaddr</var><code>, </code><var>using_gcc</var><code>, </code><var>args</var><code>, </code><var>nargs</var><code>, </code><var>value_type</var><code>, </code><var>real_pc</var><code>, </code><var>bp_addr</var><code>, </code><var>regcache</var><code>)</code><dd><a name="index-gdbarch_005fpush_005fdummy_005fcode-325"></a><a name="gdbarch_005fpush_005fdummy_005fcode"></a>Given a stack based call dummy, push the
+instruction sequence (including space for a breakpoint) to which the
+called function should return.
+
+     <p>Set <var>bp_addr</var> to the address at which the breakpoint instruction
+should be inserted, <var>real_pc</var> to the resume address when starting
+the call sequence, and return the updated inner-most stack address.
+
+     <p>By default, the stack is grown sufficient to hold a frame-aligned
+(see <a href="frame_005falign.html#frame_005falign">frame_align</a>) breakpoint, <var>bp_addr</var> is set to the address
+reserved for that breakpoint, and <var>real_pc</var> set to <var>funaddr</var>.
+
+     <p>This method replaces <code>gdbarch_call_dummy_location&nbsp;(</code><var>gdbarch</var><code>)</code><!-- /@w -->.
+
+     <br><dt><code>const char *gdbarch_register_name (</code><var>gdbarch</var><code>, </code><var>regnr</var><code>)</code><dd><a name="index-gdbarch_005fregister_005fname-326"></a>Return the name of register <var>regnr</var> as a string.  May return <code>NULL</code>
+to indicate that <var>regnr</var> is not a valid register.
+
+     <br><dt><code>int gdbarch_sdb_reg_to_regnum (</code><var>gdbarch</var><code>, </code><var>sdb_regnr</var><code>)</code><dd><a name="index-gdbarch_005fsdb_005freg_005fto_005fregnum-327"></a>Use this function to convert sdb register <var>sdb_regnr</var> into <span class="sc">gdb</span>
+regnum.  If not defined, no conversion will be done.
+
+     <br><dt><code>enum return_value_convention gdbarch_return_value (struct gdbarch *</code><var>gdbarch</var><code>, struct type *</code><var>valtype</var><code>, struct regcache *</code><var>regcache</var><code>, void *</code><var>readbuf</var><code>, const void *</code><var>writebuf</var><code>)</code><dd><a name="index-gdbarch_005freturn_005fvalue-328"></a><a name="gdbarch_005freturn_005fvalue"></a>Given a function with a return-value of
+type <var>rettype</var>, return which return-value convention that function
+would use.
+
+     <p><span class="sc">gdb</span> currently recognizes two function return-value conventions:
+<code>RETURN_VALUE_REGISTER_CONVENTION</code> where the return value is found
+in registers; and <code>RETURN_VALUE_STRUCT_CONVENTION</code> where the return
+value is found in memory and the address of that memory location is
+passed in as the function's first parameter.
+
+     <p>If the register convention is being used, and <var>writebuf</var> is
+non-<code>NULL</code>, also copy the return-value in <var>writebuf</var> into
+<var>regcache</var>.
+
+     <p>If the register convention is being used, and <var>readbuf</var> is
+non-<code>NULL</code>, also copy the return value from <var>regcache</var> into
+<var>readbuf</var> (<var>regcache</var> contains a copy of the registers from the
+just returned function).
+
+     <p><em>Maintainer note: This method replaces separate predicate, extract,
+store methods.  By having only one method, the logic needed to determine
+the return-value convention need only be implemented in one place.  If
+</em><span class="sc">gdb</span><em> were written in an </em><span class="sc">oo</span><em> language, this method would
+instead return an object that knew how to perform the register
+return-value extract and store.</em>
+
+     <p><em>Maintainer note: This method does not take a </em><var>gcc_p</var><em>
+parameter, and such a parameter should not be added.  If an architecture
+that requires per-compiler or per-function information be identified,
+then the replacement of </em><var>rettype</var><em> with </em><code>struct value</code>
+<var>function</var><em> should be pursued.</em>
+
+     <p><em>Maintainer note: The </em><var>regcache</var><em> parameter limits this methods
+to the inner most frame.  While replacing </em><var>regcache</var><em> with a
+</em><code>struct frame_info</code> <var>frame</var><em> parameter would remove that
+limitation there has yet to be a demonstrated need for such a change.</em>
+
+     <br><dt><code>void gdbarch_skip_permanent_breakpoint (</code><var>gdbarch</var><code>, </code><var>regcache</var><code>)</code><dd><a name="index-gdbarch_005fskip_005fpermanent_005fbreakpoint-329"></a>Advance the inferior's PC past a permanent breakpoint.  <span class="sc">gdb</span> normally
+steps over a breakpoint by removing it, stepping one instruction, and
+re-inserting the breakpoint.  However, permanent breakpoints are
+hardwired into the inferior, and can't be removed, so this strategy
+doesn't work.  Calling <code>gdbarch_skip_permanent_breakpoint</code> adjusts the
+processor's state so that execution will resume just after the breakpoint. 
+This function does the right thing even when the breakpoint is in the delay slot
+of a branch or jump.
+
+     <br><dt><code>CORE_ADDR gdbarch_skip_prologue (</code><var>gdbarch</var><code>, </code><var>ip</var><code>)</code><dd><a name="index-gdbarch_005fskip_005fprologue-330"></a>A function that returns the address of the &ldquo;real&rdquo; code beyond the
+function entry prologue found at <var>ip</var>.
+
+     <br><dt><code>CORE_ADDR gdbarch_skip_trampoline_code (</code><var>gdbarch</var><code>, </code><var>frame</var><code>, </code><var>pc</var><code>)</code><dd><a name="index-gdbarch_005fskip_005ftrampoline_005fcode-331"></a>If the target machine has trampoline code that sits between callers and
+the functions being called, then define this function to return a new PC
+that is at the start of the real function.
+
+     <br><dt><code>int gdbarch_sp_regnum (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fsp_005fregnum-332"></a>If the stack-pointer is kept in a register, then use this function to return
+the number (greater than or equal to zero) of that register, or -1 if
+there is no such register.
+
+     <br><dt><code>int gdbarch_deprecated_fp_regnum (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fdeprecated_005ffp_005fregnum-333"></a>If the frame pointer is in a register, use this function to return the
+number of that register.
+
+     <br><dt><code>int gdbarch_stab_reg_to_regnum (</code><var>gdbarch</var><code>, </code><var>stab_regnr</var><code>)</code><dd><a name="index-gdbarch_005fstab_005freg_005fto_005fregnum-334"></a>Use this function to convert stab register <var>stab_regnr</var> into <span class="sc">gdb</span>
+regnum.  If not defined, no conversion will be done.
+
+     <br><dt><code>SYMBOL_RELOADING_DEFAULT</code><dd><a name="index-SYMBOL_005fRELOADING_005fDEFAULT-335"></a>The default value of the &ldquo;symbol-reloading&rdquo; variable.  (Never defined in
+current sources.)
+
+     <br><dt><code>TARGET_CHAR_BIT</code><dd><a name="index-TARGET_005fCHAR_005fBIT-336"></a>Number of bits in a char; defaults to 8.
+
+     <br><dt><code>int gdbarch_char_signed (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fchar_005fsigned-337"></a>Non-zero if <code>char</code> is normally signed on this architecture; zero if
+it should be unsigned.
+
+     <p>The ISO C standard requires the compiler to treat <code>char</code> as
+equivalent to either <code>signed char</code> or <code>unsigned char</code>; any
+character in the standard execution set is supposed to be positive. 
+Most compilers treat <code>char</code> as signed, but <code>char</code> is unsigned
+on the IBM S/390, RS6000, and PowerPC targets.
+
+     <br><dt><code>int gdbarch_double_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fdouble_005fbit-338"></a>Number of bits in a double float; defaults to <code>8&nbsp;*&nbsp;TARGET_CHAR_BIT</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_float_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005ffloat_005fbit-339"></a>Number of bits in a float; defaults to <code>4&nbsp;*&nbsp;TARGET_CHAR_BIT</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_int_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fint_005fbit-340"></a>Number of bits in an integer; defaults to <code>4&nbsp;*&nbsp;TARGET_CHAR_BIT</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_long_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005flong_005fbit-341"></a>Number of bits in a long integer; defaults to <code>4&nbsp;*&nbsp;TARGET_CHAR_BIT</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_long_double_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005flong_005fdouble_005fbit-342"></a>Number of bits in a long double float;
+defaults to <code>2&nbsp;*&nbsp;gdbarch_double_bit&nbsp;(</code><var>gdbarch</var><code>)</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_long_long_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005flong_005flong_005fbit-343"></a>Number of bits in a long long integer; defaults to
+<code>2&nbsp;*&nbsp;gdbarch_long_bit&nbsp;(</code><var>gdbarch</var><code>)</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_ptr_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fptr_005fbit-344"></a>Number of bits in a pointer; defaults to
+<code>gdbarch_int_bit&nbsp;(</code><var>gdbarch</var><code>)</code><!-- /@w -->.
+
+     <br><dt><code>int gdbarch_short_bit (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fshort_005fbit-345"></a>Number of bits in a short integer; defaults to <code>2&nbsp;*&nbsp;TARGET_CHAR_BIT</code><!-- /@w -->.
+
+     <br><dt><code>CORE_ADDR gdbarch_read_pc (</code><var>gdbarch</var><code>, </code><var>regcache</var><code>)</code><dd><a name="index-gdbarch_005fread_005fpc-346"></a><dt><code>gdbarch_write_pc (</code><var>gdbarch</var><code>, </code><var>regcache</var><code>, </code><var>val</var><code>)</code><dd><a name="index-gdbarch_005fwrite_005fpc-347"></a><a name="gdbarch_005fwrite_005fpc"></a><dt><code>TARGET_READ_SP</code><dd><a name="index-TARGET_005fREAD_005fSP-348"></a><dt><code>TARGET_READ_FP</code><dd><a name="index-TARGET_005fREAD_005fFP-349"></a><a name="index-gdbarch_005fread_005fpc-350"></a><a name="index-gdbarch_005fwrite_005fpc-351"></a><a name="index-read_005fsp-352"></a><a name="index-read_005ffp-353"></a><a name="TARGET_005fREAD_005fSP"></a>These change the behavior of <code>gdbarch_read_pc</code>,
+<code>gdbarch_write_pc</code>, and <code>read_sp</code>.  For most targets, these may be
+left undefined.  <span class="sc">gdb</span> will call the read and write register
+functions with the relevant <code>_REGNUM</code> argument.
+
+     <p>These macros and functions are useful when a target keeps one of these
+registers in a hard to get at place; for example, part in a segment register
+and part in an ordinary register.
+
+     <p>See <a href="gdbarch_005funwind_005fsp.html#gdbarch_005funwind_005fsp">gdbarch_unwind_sp</a>, which replaces <code>TARGET_READ_SP</code>.
+
+     <br><dt><code>void gdbarch_virtual_frame_pointer (</code><var>gdbarch</var><code>, </code><var>pc</var><code>, </code><var>frame_regnum</var><code>, </code><var>frame_offset</var><code>)</code><dd><a name="index-gdbarch_005fvirtual_005fframe_005fpointer-354"></a>Returns a <code>(</code><var>register</var><code>, </code><var>offset</var><code>)</code> pair representing the virtual
+frame pointer in use at the code address <var>pc</var>.  If virtual frame
+pointers are not used, a default definition simply returns
+<code>gdbarch_deprecated_fp_regnum</code> (or <code>gdbarch_sp_regnum</code>, if
+no frame pointer is defined), with an offset of zero.
+
+     <!-- need to explain virtual frame pointers, they are recorded in agent expressions -->
+     <!-- for tracepoints -->
+     <br><dt><code>TARGET_HAS_HARDWARE_WATCHPOINTS</code><dd>If non-zero, the target has support for hardware-assisted
+watchpoints.  See <a href="Algorithms.html#Algorithms">watchpoints</a>, for more details and
+other related macros.
+
+     <br><dt><code>int gdbarch_print_insn (</code><var>gdbarch</var><code>, </code><var>vma</var><code>, </code><var>info</var><code>)</code><dd><a name="index-gdbarch_005fprint_005finsn-355"></a>This is the function used by <span class="sc">gdb</span> to print an assembly
+instruction.  It prints the instruction at address <var>vma</var> in
+debugged memory and returns the length of the instruction, in bytes. 
+This usually points to a function in the <code>opcodes</code> library
+(see <a href="Support-Libraries.html#Support-Libraries">Opcodes</a>).  <var>info</var> is a structure (of
+type <code>disassemble_info</code>) defined in the header file
+<samp><span class="file">include/dis-asm.h</span></samp>, and used to pass information to the
+instruction decoding routine.
+
+     <br><dt><code>frame_id gdbarch_dummy_id (</code><var>gdbarch</var><code>, </code><var>frame</var><code>)</code><dd><a name="index-gdbarch_005fdummy_005fid-356"></a><a name="gdbarch_005fdummy_005fid"></a>Given <var>frame</var> return a <code>struct&nbsp;frame_id</code><!-- /@w --> that uniquely identifies an inferior function call's dummy
+frame.  The value returned must match the dummy frame stack value
+previously saved by <code>call_function_by_hand</code>.
+
+     <br><dt><code>void gdbarch_value_to_register (</code><var>gdbarch</var><code>, </code><var>frame</var><code>, </code><var>type</var><code>, </code><var>buf</var><code>)</code><dd><a name="index-gdbarch_005fvalue_005fto_005fregister-357"></a>Convert a value of type <var>type</var> into the raw contents of a register. 
+See <a href="Target-Architecture-Definition.html#Target-Architecture-Definition">Using Different Register and Memory Data Representations</a>.
+
+   </dl>
+
+   <p>Motorola M68K target conditionals.
+
+     <dl>
+<dt><code>BPT_VECTOR</code><a name="index-BPT_005fVECTOR-358"></a><dd>Define this to be the 4-bit location of the breakpoint trap vector.  If
+not defined, it will default to <code>0xf</code>.
+
+     <br><dt><code>REMOTE_BPT_VECTOR</code><a name="index-REMOTE_005fBPT_005fVECTOR-359"></a><dd>Defaults to <code>1</code>.
+
+     <br><dt><code>const char *gdbarch_name_of_malloc (</code><var>gdbarch</var><code>)</code><a name="index-const-char-_002agdbarch_005fname_005fof_005fmalloc-_0028_0040var_007bgdbarch_007d_0029-360"></a><dd><a name="index-gdbarch_005fname_005fof_005fmalloc-361"></a>A string containing the name of the function to call in order to
+allocate some memory in the inferior. The default value is "malloc".
+
+   </dl>
+
+   </body></html>
+

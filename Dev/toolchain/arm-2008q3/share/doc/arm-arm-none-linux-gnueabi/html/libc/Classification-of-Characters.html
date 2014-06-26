@@ -1,0 +1,223 @@
+<html lang="en">
+<head>
+<title>Classification of Characters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Character-Handling.html#Character-Handling" title="Character Handling">
+<link rel="next" href="Case-Conversion.html#Case-Conversion" title="Case Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Classification-of-Characters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Case-Conversion.html#Case-Conversion">Case Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Character-Handling.html#Character-Handling">Character Handling</a>
+<hr>
+</div>
+
+<h3 class="section">4.1 Classification of Characters</h3>
+
+<p><a name="index-character-testing-363"></a><a name="index-classification-of-characters-364"></a><a name="index-predicates-on-characters-365"></a><a name="index-character-predicates-366"></a>
+This section explains the library functions for classifying characters. 
+For example, <code>isalpha</code> is the function to test for an alphabetic
+character.  It takes one argument, the character to test, and returns a
+nonzero integer if the character is alphabetic, and zero otherwise.  You
+would use it like this:
+
+<pre class="smallexample">     if (isalpha (c))
+       printf ("The character `%c' is alphabetic.\n", c);
+</pre>
+   <p>Each of the functions in this section tests for membership in a
+particular class of characters; each has a name starting with &lsquo;<samp><span class="samp">is</span></samp>&rsquo;. 
+Each of them takes one argument, which is a character to test, and
+returns an <code>int</code> which is treated as a boolean value.  The
+character argument is passed as an <code>int</code>, and it may be the
+constant value <code>EOF</code> instead of a real character.
+
+   <p>The attributes of any given character can vary between locales. 
+See <a href="Locales.html#Locales">Locales</a>, for more information on locales.
+
+   <p>These functions are declared in the header file <samp><span class="file">ctype.h</span></samp>. 
+<a name="index-ctype_002eh-367"></a>
+<a name="index-lower_002dcase-character-368"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>islower</b> (<var>int c</var>)<var><a name="index-islower-369"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a lower-case letter.  The letter need not be
+from the Latin alphabet, any alphabet representable is valid. 
+</p></blockquote></div>
+
+   <p><a name="index-upper_002dcase-character-370"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isupper</b> (<var>int c</var>)<var><a name="index-isupper-371"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is an upper-case letter.  The letter need not be
+from the Latin alphabet, any alphabet representable is valid. 
+</p></blockquote></div>
+
+   <p><a name="index-alphabetic-character-372"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isalpha</b> (<var>int c</var>)<var><a name="index-isalpha-373"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is an alphabetic character (a letter).  If
+<code>islower</code> or <code>isupper</code> is true of a character, then
+<code>isalpha</code> is also true.
+
+        <p>In some locales, there may be additional characters for which
+<code>isalpha</code> is true&mdash;letters which are neither upper case nor lower
+case.  But in the standard <code>"C"</code> locale, there are no such
+additional characters. 
+</p></blockquote></div>
+
+   <p><a name="index-digit-character-374"></a><a name="index-decimal-digit-character-375"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isdigit</b> (<var>int c</var>)<var><a name="index-isdigit-376"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a decimal digit (&lsquo;<samp><span class="samp">0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">9</span></samp>&rsquo;). 
+</p></blockquote></div>
+
+   <p><a name="index-alphanumeric-character-377"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isalnum</b> (<var>int c</var>)<var><a name="index-isalnum-378"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is an alphanumeric character (a letter or
+number); in other words, if either <code>isalpha</code> or <code>isdigit</code> is
+true of a character, then <code>isalnum</code> is also true. 
+</p></blockquote></div>
+
+   <p><a name="index-hexadecimal-digit-character-379"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isxdigit</b> (<var>int c</var>)<var><a name="index-isxdigit-380"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a hexadecimal digit. 
+Hexadecimal digits include the normal decimal digits &lsquo;<samp><span class="samp">0</span></samp>&rsquo; through
+&lsquo;<samp><span class="samp">9</span></samp>&rsquo; and the letters &lsquo;<samp><span class="samp">A</span></samp>&rsquo; through &lsquo;<samp><span class="samp">F</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">a</span></samp>&rsquo; through &lsquo;<samp><span class="samp">f</span></samp>&rsquo;. 
+</p></blockquote></div>
+
+   <p><a name="index-punctuation-character-381"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>ispunct</b> (<var>int c</var>)<var><a name="index-ispunct-382"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a punctuation character. 
+This means any printing character that is not alphanumeric or a space
+character. 
+</p></blockquote></div>
+
+   <p><a name="index-whitespace-character-383"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isspace</b> (<var>int c</var>)<var><a name="index-isspace-384"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a <dfn>whitespace</dfn> character.  In the standard
+<code>"C"</code> locale, <code>isspace</code> returns true for only the standard
+whitespace characters:
+
+          <dl>
+<dt><code>' '</code><dd>space
+
+          <br><dt><code>'\f'</code><dd>formfeed
+
+          <br><dt><code>'\n'</code><dd>newline
+
+          <br><dt><code>'\r'</code><dd>carriage return
+
+          <br><dt><code>'\t'</code><dd>horizontal tab
+
+          <br><dt><code>'\v'</code><dd>vertical tab
+</dl>
+        </p></blockquote></div>
+
+   <p><a name="index-blank-character-385"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isblank</b> (<var>int c</var>)<var><a name="index-isblank-386"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a blank character; that is, a space or a tab. 
+This function was originally a GNU extension, but was added in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+   <p><a name="index-graphic-character-387"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isgraph</b> (<var>int c</var>)<var><a name="index-isgraph-388"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a graphic character; that is, a character
+that has a glyph associated with it.  The whitespace characters are not
+considered graphic. 
+</p></blockquote></div>
+
+   <p><a name="index-printing-character-389"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>isprint</b> (<var>int c</var>)<var><a name="index-isprint-390"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a printing character.  Printing characters
+include all the graphic characters, plus the space (&lsquo;<samp> </samp>&rsquo;) character. 
+</p></blockquote></div>
+
+   <p><a name="index-control-character-391"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iscntrl</b> (<var>int c</var>)<var><a name="index-iscntrl-392"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a control character (that is, a character that
+is not a printing character). 
+</p></blockquote></div>
+
+   <p><a name="index-ASCII-character-393"></a><!-- ctype.h -->
+<!-- SVID, BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>isascii</b> (<var>int c</var>)<var><a name="index-isascii-394"></a></var><br>
+<blockquote><p>Returns true if <var>c</var> is a 7-bit <code>unsigned char</code> value that fits
+into the US/UK ASCII character set.  This function is a BSD extension
+and is also an SVID extension. 
+</p></blockquote></div>
+
+   </body></html>
+

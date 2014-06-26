@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+<title>Charset conversion in gettext - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link rel="prev" href="Advanced-gettext-functions.html#Advanced-gettext-functions" title="Advanced gettext functions">
+<link rel="next" href="GUI-program-problems.html#GUI-program-problems" title="GUI program problems">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Charset-conversion-in-gettext"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="GUI-program-problems.html#GUI-program-problems">GUI program problems</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Advanced-gettext-functions.html#Advanced-gettext-functions">Advanced gettext functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">8.2.1.4 How to specify the output character set <code>gettext</code> uses</h5>
+
+<p><code>gettext</code> not only looks up a translation in a message catalog.  It
+also converts the translation on the fly to the desired output character
+set.  This is useful if the user is working in a different character set
+than the translator who created the message catalog, because it avoids
+distributing variants of message catalogs which differ only in the
+character set.
+
+   <p>The output character set is, by default, the value of <code>nl_langinfo
+(CODESET)</code>, which depends on the <code>LC_CTYPE</code> part of the current
+locale.  But programs which store strings in a locale independent way
+(e.g. UTF-8) can request that <code>gettext</code> and related functions
+return the translations in that encoding, by use of the
+<code>bind_textdomain_codeset</code> function.
+
+   <p>Note that the <var>msgid</var> argument to <code>gettext</code> is not subject to
+character set conversion.  Also, when <code>gettext</code> does not find a
+translation for <var>msgid</var>, it returns <var>msgid</var> unchanged &ndash;
+independently of the current output character set.  It is therefore
+recommended that all <var>msgid</var>s be US-ASCII strings.
+
+<!-- libintl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>bind_textdomain_codeset</b> (<var>const char *domainname, const char *codeset</var>)<var><a name="index-bind_005ftextdomain_005fcodeset-815"></a></var><br>
+<blockquote><p>The <code>bind_textdomain_codeset</code> function can be used to specify the
+output character set for message catalogs for domain <var>domainname</var>. 
+The <var>codeset</var> argument must be a valid codeset name which can be used
+for the <code>iconv_open</code> function, or a null pointer.
+
+        <p>If the <var>codeset</var> parameter is the null pointer,
+<code>bind_textdomain_codeset</code> returns the currently selected codeset
+for the domain with the name <var>domainname</var>. It returns <code>NULL</code> if
+no codeset has yet been selected.
+
+        <p>The <code>bind_textdomain_codeset</code> function can be used several times. 
+If used multiple times with the same <var>domainname</var> argument, the
+later call overrides the settings made by the earlier one.
+
+        <p>The <code>bind_textdomain_codeset</code> function returns a pointer to a
+string containing the name of the selected codeset.  The string is
+allocated internally in the function and must not be changed by the
+user.  If the system went out of core during the execution of
+<code>bind_textdomain_codeset</code>, the return value is <code>NULL</code> and the
+global variable <var>errno</var> is set accordingly.  </p></blockquote></div>
+
+   </body></html>
+

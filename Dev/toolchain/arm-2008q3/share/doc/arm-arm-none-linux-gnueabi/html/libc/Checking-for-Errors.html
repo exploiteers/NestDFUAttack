@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Checking for Errors - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Error-Reporting.html#Error-Reporting" title="Error Reporting">
+<link rel="next" href="Error-Codes.html#Error-Codes" title="Error Codes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Checking-for-Errors"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Error-Codes.html#Error-Codes">Error Codes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Error-Reporting.html#Error-Reporting">Error Reporting</a>
+<hr>
+</div>
+
+<h3 class="section">2.1 Checking for Errors</h3>
+
+<p>Most library functions return a special value to indicate that they have
+failed.  The special value is typically <code>-1</code>, a null pointer, or a
+constant such as <code>EOF</code> that is defined for that purpose.  But this
+return value tells you only that an error has occurred.  To find out
+what kind of error it was, you need to look at the error code stored in the
+variable <code>errno</code>.  This variable is declared in the header file
+<samp><span class="file">errno.h</span></samp>. 
+<a name="index-errno_002eh-59"></a>
+<!-- errno.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Variable: volatile int <b>errno</b><var><a name="index-errno-60"></a></var><br>
+<blockquote><p>The variable <code>errno</code> contains the system error number.  You can
+change the value of <code>errno</code>.
+
+        <p>Since <code>errno</code> is declared <code>volatile</code>, it might be changed
+asynchronously by a signal handler; see <a href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>. 
+However, a properly written signal handler saves and restores the value
+of <code>errno</code>, so you generally do not need to worry about this
+possibility except when writing signal handlers.
+
+        <p>The initial value of <code>errno</code> at program startup is zero.  Many
+library functions are guaranteed to set it to certain nonzero values
+when they encounter certain kinds of errors.  These error conditions are
+listed for each function.  These functions do not change <code>errno</code>
+when they succeed; thus, the value of <code>errno</code> after a successful
+call is not necessarily zero, and you should not use <code>errno</code> to
+determine <em>whether</em> a call failed.  The proper way to do that is
+documented for each function.  <em>If</em> the call failed, you can
+examine <code>errno</code>.
+
+        <p>Many library functions can set <code>errno</code> to a nonzero value as a
+result of calling other library functions which might fail.  You should
+assume that any library function might alter <code>errno</code> when the
+function returns an error.
+
+        <p><strong>Portability Note:</strong> ISO&nbsp;C<!-- /@w --> specifies <code>errno</code> as a
+&ldquo;modifiable lvalue&rdquo; rather than as a variable, permitting it to be
+implemented as a macro.  For example, its expansion might involve a
+function call, like <code>*_errno&nbsp;()</code><!-- /@w -->.  In fact, that is what it is
+on the GNU system itself.  The GNU library, on non-GNU systems, does
+whatever is right for the particular system.
+
+        <p>There are a few library functions, like <code>sqrt</code> and <code>atan</code>,
+that return a perfectly legitimate value in case of an error, but also
+set <code>errno</code>.  For these functions, if you want to check to see
+whether an error occurred, the recommended method is to set <code>errno</code>
+to zero before calling the function, and then check its value afterward. 
+</p></blockquote></div>
+
+   <p><a name="index-errno_002eh-61"></a>All the error codes have symbolic names; they are macros defined in
+<samp><span class="file">errno.h</span></samp>.  The names start with &lsquo;<samp><span class="samp">E</span></samp>&rsquo; and an upper-case
+letter or digit; you should consider names of this form to be
+reserved names.  See <a href="Reserved-Names.html#Reserved-Names">Reserved Names</a>.
+
+   <p>The error code values are all positive integers and are all distinct,
+with one exception: <code>EWOULDBLOCK</code> and <code>EAGAIN</code> are the same. 
+Since the values are distinct, you can use them as labels in a
+<code>switch</code> statement; just don't use both <code>EWOULDBLOCK</code> and
+<code>EAGAIN</code>.  Your program should not make any other assumptions about
+the specific values of these symbolic constants.
+
+   <p>The value of <code>errno</code> doesn't necessarily have to correspond to any
+of these macros, since some library functions might return other error
+codes of their own for other situations.  The only values that are
+guaranteed to be meaningful for a particular library function are the
+ones that this manual lists for that function.
+
+   <p>On non-GNU systems, almost any system call can return <code>EFAULT</code> if
+it is given an invalid pointer as an argument.  Since this could only
+happen as a result of a bug in your program, and since it will not
+happen on the GNU system, we have saved space by not mentioning
+<code>EFAULT</code> in the descriptions of individual functions.
+
+   <p>In some Unix systems, many system calls can also return <code>EFAULT</code> if
+given as an argument a pointer into the stack, and the kernel for some
+obscure reason fails in its attempt to extend the stack.  If this ever
+happens, you should probably try using statically or dynamically
+allocated memory instead of stack memory on that system.
+
+   </body></html>
+

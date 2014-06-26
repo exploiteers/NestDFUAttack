@@ -1,0 +1,205 @@
+2009-08-20 19:05  toby
+
+	* cryptocteon/Makefile, ep80579/Makefile:
+	Add some makefile
+	changes to let a linux-2.4 build from head work when doing 'make
+	dep'.
+
+2009-08-12 21:42  davidm
+
+	* cryptodev.c:
+	
+	if crypto_dispatch fails,  make sure we bail immediately rather
+	than go on to do other error checking that we should only do if
+	crypto_dispatch worked.
+
+2009-08-12 21:30  davidm
+
+	* crypto.c:
+	
+	To avoid a race while we have the Q's unlcked we must stage the
+	blocking of the driver, so,  we assume the driver to be blocked, 
+	but if any unblocks come in while we are unlocked,  we do not block
+	the driver.
+	
+	At worst this means we will try again and get another block.
+	
+	Without this change we can lose an unblock request and give up on
+	the driver.
+
+2009-08-12 21:04  davidm
+
+	* crypto.c:
+	
+	kill_proc needs to be defined for kernels at or after 2.6.27
+
+2009-08-12 21:03  davidm
+
+	* ep80579/environment.mk:
+	
+	Allow OCF to be with the kernel,  or within the uClinux-dist
+	modules dir.
+
+2009-08-12 20:52  davidm
+
+	* ocf-compat.h:
+	
+	if IS_ERR_VALUE is not defined,  try and get it,  if it doesn't
+	exist, make our own.
+
+2009-05-27 01:52  davidm
+
+	* cryptodev.c:
+	
+	Order a crd combination of cipher/hmac just as ipsec would.  That
+	way it's easier to test results against cryptosoft and the HW
+	drivers that automatically fix this.
+	
+	cryptosoft processes algs in crd order,  thus they get different
+	results to when compared to cryptosoft.
+	
+	encrypt = cipher then hmac decrypt = hmac then cipher
+
+2009-05-27 01:48  davidm
+
+	* ocf-compat.h:
+	
+	Make sure we have an late_initcall macro even on old systems.
+
+2009-05-27 01:47  davidm
+
+	* cryptosoft.c:
+	
+	make sure that cryptosoft it started after the kernel crypto, 
+	otherwise it will not detect the kernels algs correctly.
+
+2009-05-27 01:41  davidm
+
+	* cryptocteon/: cavium_crypto.c, cryptocteon.c:
+	
+	aes/des/3des + md5/sha1 working with ipsec.
+
+2009-05-20 19:11  davidm
+
+	* cryptocteon/: README.txt, cavium_crypto.c, cryptocteon.c:
+	
+	Complete rework of the driver to setup a framework that can handle
+	all the combinations we need properly.
+	
+	Currently only DES is working.	Need to knock out a DES-MD5 version
+	so we can bench ipsec, then cleanup the AES/SHA bits.
+
+2009-05-14 20:53  asallawa
+
+	* ixp4xx/ixp4xx.c:
+	
+	Remove call to flush_scheduled_work(). Doesn't appear to be
+	necessary and can cause 'scheduling while atomic' kernel errors.
+
+2009-05-14 01:17  asallawa
+
+	* crypto.c:
+	
+	In particular situations, the crypto kernel thread can run forever
+	without ever calling wait_event_interruptible() which meant that it
+	could starve the rest of the system of CPU time.  To fix this, set
+	a maximum number of crypto operations to do consecutively before
+	calling schedule(). Default value is 1000, which should be less
+	than a second on most of our platforms.
+
+2009-05-08 20:10  davidm
+
+	* crypto.c:
+	
+	Currently we are queuing requests that fail for callback.  The
+	callback will never happen because the request failed.	This can
+	cause "busy loops" in the crypto support threads.
+	
+	Make sure we track the error status when processing a request to
+	the driver and only return 0 if everything worked.
+	
+	The original code had this right,  just bad locking,  the locking
+	fixes broke the error reporting.
+
+2009-03-31 20:41  davidm
+
+	* crypto.c:
+	
+	We cannot use sys_kill (not experted),	so switch to using send_sig
+	and the appropriate task finding functions.
+
+2009-03-27 03:50  gerg
+
+	* crypto.c:
+	
+	From linux-2.6.29 onwards there is no kill_proc() routine.  On
+	these newer systems call direct to the sys_kill() system call.
+
+2009-03-14 07:00  davidm
+
+	* ep80579/Makefile:
+	
+	merge makefile fix from head so that make clean works properly.
+
+2009-03-10 22:57  davidm
+
+	* hifn/hifn7751.c:
+	
+	Fix up cache line size for hifns,  not all get it right.  Patch
+	suggested and tested by Donald Lai <dlai@hifn.com>.
+
+2009-03-10 21:36  davidm
+
+	* ep80579/Makefile:
+	
+	Make sure we do not break non-tolapai builds (when running clean
+	etc)
+
+2009-02-07 00:32  davidm
+
+	* Kconfig, Makefile, cryptocteon/Makefile, cryptocteon/README.txt,
+	cryptocteon/cavium_crypto.c, cryptocteon/cryptocteon.c:
+	
+	First pass slightly working (3des/aes) crypto driver for the cavium
+	5010.
+	
+	Still a fair bit needed here (hmac+cipher and hash processing). 
+	Need to revisit the faster cavium example ipsec code.
+
+2009-01-20 01:06  gerg
+
+	* cryptosoft.c:
+	
+	Include linux/scatterlist.h instead of asm/scatterlist.h. Otherwise
+	we don't get the generic sg macros (only the asm specific
+	difinitions).
+
+2009-01-16 20:05  davidm
+
+	* cryptosoft.c:
+	
+	clean up some debug output (sign extension fo chars)
+
+2008-11-20 22:50  davidm
+
+	* ocf-compat.h:
+	
+	We need to include mm.h to get page_address on some kernels. 
+	reported by Paul Wouters <paul@xelerance.com>
+
+2008-11-14 06:14  davidm
+
+	* patches/linux-2.6.26-ocf.patch:
+	
+	make sure we patch into the kernel properly.  Paul Wouters
+	<paul@xelerance.com>
+
+2008-09-20 02:20  davidm
+
+	* crypto.c, cryptodev.h:
+	
+	Fix up session migration so that a driver can be removed while
+	ipsec is up and running and the tunnel will auto-migrate to a
+	backup driver (ie., cryptosoft).
+	
+	Brad Vrabete <brad.vrabete@intel.com>

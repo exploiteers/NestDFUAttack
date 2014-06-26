@@ -1,0 +1,342 @@
+<html lang="en">
+<head>
+<title>Limits on Resources - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation" title="Resource Usage And Limitation">
+<link rel="prev" href="Resource-Usage.html#Resource-Usage" title="Resource Usage">
+<link rel="next" href="Priority.html#Priority" title="Priority">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Limits-on-Resources"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Priority.html#Priority">Priority</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Resource-Usage.html#Resource-Usage">Resource Usage</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">Resource Usage And Limitation</a>
+<hr>
+</div>
+
+<h3 class="section">22.2 Limiting Resource Usage</h3>
+
+<p><a name="index-resource-limits-2704"></a><a name="index-limits-on-resource-usage-2705"></a><a name="index-usage-limits-2706"></a>
+You can specify limits for the resource usage of a process.  When the
+process tries to exceed a limit, it may get a signal, or the system call
+by which it tried to do so may fail, depending on the resource.  Each
+process initially inherits its limit values from its parent, but it can
+subsequently change them.
+
+   <p>There are two per-process limits associated with a resource:
+<a name="index-limit-2707"></a>
+     <dl>
+<dt><dfn>current limit</dfn><dd>The current limit is the value the system will not allow usage to
+exceed.  It is also called the &ldquo;soft limit&rdquo; because the process being
+limited can generally raise the current limit at will. 
+<a name="index-current-limit-2708"></a><a name="index-soft-limit-2709"></a>
+<br><dt><dfn>maximum limit</dfn><dd>The maximum limit is the maximum value to which a process is allowed to
+set its current limit.  It is also called the &ldquo;hard limit&rdquo; because
+there is no way for a process to get around it.  A process may lower
+its own maximum limit, but only the superuser may increase a maximum
+limit. 
+<a name="index-maximum-limit-2710"></a><a name="index-hard-limit-2711"></a></dl>
+
+   <p><a name="index-sys_002fresource_002eh-2712"></a>The symbols for use with <code>getrlimit</code>, <code>setrlimit</code>,
+<code>getrlimit64</code>, and <code>setrlimit64</code> are defined in
+<samp><span class="file">sys/resource.h</span></samp>.
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getrlimit</b> (<var>int resource, struct rlimit *rlp</var>)<var><a name="index-getrlimit-2713"></a></var><br>
+<blockquote><p>Read the current and maximum limits for the resource <var>resource</var>
+and store them in <code>*</code><var>rlp</var>.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  The
+only possible <code>errno</code> error condition is <code>EFAULT</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is in fact <code>getrlimit64</code>.  Thus, the
+LFS interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- sys/resource.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>getrlimit64</b> (<var>int resource, struct rlimit64 *rlp</var>)<var><a name="index-getrlimit64-2714"></a></var><br>
+<blockquote><p>This function is similar to <code>getrlimit</code> but its second parameter is
+a pointer to a variable of type <code>struct rlimit64</code>, which allows it
+to read values which wouldn't fit in the member of a <code>struct
+rlimit</code>.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit machine, this function is available under the name
+<code>getrlimit</code> and so transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setrlimit</b> (<var>int resource, const struct rlimit *rlp</var>)<var><a name="index-setrlimit-2715"></a></var><br>
+<blockquote><p>Store the current and maximum limits for the resource <var>resource</var>
+in <code>*</code><var>rlp</var>.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  The
+following <code>errno</code> error condition is possible:
+
+          <dl>
+<dt><code>EPERM</code><dd>
+               <ul>
+<li>The process tried to raise a current limit beyond the maximum limit.
+
+               <li>The process tried to raise a maximum limit, but is not superuser. 
+</ul>
+          </dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit system this function is in fact <code>setrlimit64</code>.  Thus, the
+LFS interface transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- sys/resource.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>setrlimit64</b> (<var>int resource, const struct rlimit64 *rlp</var>)<var><a name="index-setrlimit64-2716"></a></var><br>
+<blockquote><p>This function is similar to <code>setrlimit</code> but its second parameter is
+a pointer to a variable of type <code>struct rlimit64</code> which allows it
+to set values which wouldn't fit in the member of a <code>struct
+rlimit</code>.
+
+        <p>If the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32-bit machine this function is available under the name
+<code>setrlimit</code> and so transparently replaces the old interface. 
+</p></blockquote></div>
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct rlimit</b><var><a name="index-struct-rlimit-2717"></a></var><br>
+<blockquote><p>This structure is used with <code>getrlimit</code> to receive limit values,
+and with <code>setrlimit</code> to specify limit values for a particular process
+and resource.  It has two fields:
+
+          <dl>
+<dt><code>rlim_t rlim_cur</code><dd>The current limit
+
+          <br><dt><code>rlim_t rlim_max</code><dd>The maximum limit. 
+</dl>
+
+        <p>For <code>getrlimit</code>, the structure is an output; it receives the current
+values.  For <code>setrlimit</code>, it specifies the new values. 
+</p></blockquote></div>
+
+   <p>For the LFS functions a similar type is defined in <samp><span class="file">sys/resource.h</span></samp>.
+
+<!-- sys/resource.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Data Type: <b>struct rlimit64</b><var><a name="index-struct-rlimit64-2718"></a></var><br>
+<blockquote><p>This structure is analogous to the <code>rlimit</code> structure above, but
+its components have wider ranges.  It has two fields:
+
+          <dl>
+<dt><code>rlim64_t rlim_cur</code><dd>This is analogous to <code>rlimit.rlim_cur</code>, but with a different type.
+
+          <br><dt><code>rlim64_t rlim_max</code><dd>This is analogous to <code>rlimit.rlim_max</code>, but with a different type. 
+</dl>
+
+        </blockquote></div>
+
+   <p>Here is a list of resources for which you can specify a limit.  Memory
+and file sizes are measured in bytes.
+
+     <dl>
+<!-- sys/resource.h -->
+<!-- BSD -->
+<dt><code>RLIMIT_CPU</code><dd><a name="index-RLIMIT_005fCPU-2719"></a>The maximum amount of CPU time the process can use.  If it runs for
+longer than this, it gets a signal: <code>SIGXCPU</code>.  The value is
+measured in seconds.  See <a href="Operation-Error-Signals.html#Operation-Error-Signals">Operation Error Signals</a>.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_FSIZE</code><dd><a name="index-RLIMIT_005fFSIZE-2720"></a>The maximum size of file the process can create.  Trying to write a
+larger file causes a signal: <code>SIGXFSZ</code>.  See <a href="Operation-Error-Signals.html#Operation-Error-Signals">Operation Error Signals</a>.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_DATA</code><dd><a name="index-RLIMIT_005fDATA-2721"></a>The maximum size of data memory for the process.  If the process tries
+to allocate data memory beyond this amount, the allocation function
+fails.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_STACK</code><dd><a name="index-RLIMIT_005fSTACK-2722"></a>The maximum stack size for the process.  If the process tries to extend
+its stack past this size, it gets a <code>SIGSEGV</code> signal. 
+See <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_CORE</code><dd><a name="index-RLIMIT_005fCORE-2723"></a>The maximum size core file that this process can create.  If the process
+terminates and would dump a core file larger than this, then no core
+file is created.  So setting this limit to zero prevents core files from
+ever being created.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_RSS</code><dd><a name="index-RLIMIT_005fRSS-2724"></a>The maximum amount of physical memory that this process should get. 
+This parameter is a guide for the system's scheduler and memory
+allocator; the system may give the process more memory when there is a
+surplus.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_MEMLOCK</code><dd>The maximum amount of memory that can be locked into physical memory (so
+it will never be paged out).
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_NPROC</code><dd>The maximum number of processes that can be created with the same user ID. 
+If you have reached the limit for your user ID, <code>fork</code> will fail
+with <code>EAGAIN</code>.  See <a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIMIT_NOFILE</code><dd><a name="index-RLIMIT_005fNOFILE-2725"></a><dt><code>RLIMIT_OFILE</code><dd><a name="index-RLIMIT_005fOFILE-2726"></a>The maximum number of files that the process can open.  If it tries to
+open more files than this, its open attempt fails with <code>errno</code>
+<code>EMFILE</code>.  See <a href="Error-Codes.html#Error-Codes">Error Codes</a>.  Not all systems support this limit;
+GNU does, and 4.4 BSD does.
+
+     <!-- sys/resource.h -->
+     <!-- Unix98 -->
+     <br><dt><code>RLIMIT_AS</code><dd><a name="index-RLIMIT_005fAS-2727"></a>The maximum size of total memory that this process should get.  If the
+process tries to allocate more memory beyond this amount with, for
+example, <code>brk</code>, <code>malloc</code>, <code>mmap</code> or <code>sbrk</code>, the
+allocation function fails.
+
+     <!-- sys/resource.h -->
+     <!-- BSD -->
+     <br><dt><code>RLIM_NLIMITS</code><dd><a name="index-RLIM_005fNLIMITS-2728"></a>The number of different resource limits.  Any valid <var>resource</var>
+operand must be less than <code>RLIM_NLIMITS</code>. 
+</dl>
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Constant: int <b>RLIM_INFINITY</b><var><a name="index-RLIM_005fINFINITY-2729"></a></var><br>
+<blockquote><p>This constant stands for a value of &ldquo;infinity&rdquo; when supplied as
+the limit value in <code>setrlimit</code>. 
+</p></blockquote></div>
+
+   <p>The following are historical functions to do some of what the functions
+above do.  The functions above are better choices.
+
+   <p><code>ulimit</code> and the command symbols are declared in <samp><span class="file">ulimit.h</span></samp>. 
+<a name="index-ulimit_002eh-2730"></a>
+<!-- ulimit.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>ulimit</b> (<var>int cmd, ...</var>)<var><a name="index-ulimit-2731"></a></var><br>
+<blockquote>
+        <p><code>ulimit</code> gets the current limit or sets the current and maximum
+limit for a particular resource for the calling process according to the
+command <var>cmd</var>.a
+
+        <p>If you are getting a limit, the command argument is the only argument. 
+If you are setting a limit, there is a second argument:
+<code>long int</code> <var>limit</var> which is the value to which you are setting
+the limit.
+
+        <p>The <var>cmd</var> values and the operations they specify are:
+          <dl>
+<dt><code>GETFSIZE</code><dd>Get the current limit on the size of a file, in units of 512 bytes.
+
+          <br><dt><code>SETFSIZE</code><dd>Set the current and maximum limit on the size of a file to <var>limit</var> *
+512 bytes.
+
+        </dl>
+
+        <p>There are also some other <var>cmd</var> values that may do things on some
+systems, but they are not supported.
+
+        <p>Only the superuser may increase a maximum limit.
+
+        <p>When you successfully get a limit, the return value of <code>ulimit</code> is
+that limit, which is never negative.  When you successfully set a limit,
+the return value is zero.  When the function fails, the return value is
+<code>-1</code> and <code>errno</code> is set according to the reason:
+
+          <dl>
+<dt><code>EPERM</code><dd>A process tried to increase a maximum limit, but is not superuser. 
+</dl>
+
+        </blockquote></div>
+
+   <p><code>vlimit</code> and its resource symbols are declared in <samp><span class="file">sys/vlimit.h</span></samp>. 
+<a name="index-sys_002fvlimit_002eh-2732"></a>
+<!-- sys/vlimit.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>vlimit</b> (<var>int resource, int limit</var>)<var><a name="index-vlimit-2733"></a></var><br>
+<blockquote>
+        <p><code>vlimit</code> sets the current limit for a resource for a process.
+
+        <p><var>resource</var> identifies the resource:
+
+          <dl>
+<dt><code>LIM_CPU</code><dd>Maximum CPU time.  Same as <code>RLIMIT_CPU</code> for <code>setrlimit</code>. 
+<br><dt><code>LIM_FSIZE</code><dd>Maximum file size.  Same as <code>RLIMIT_FSIZE</code> for <code>setrlimit</code>. 
+<br><dt><code>LIM_DATA</code><dd>Maximum data memory.  Same as <code>RLIMIT_DATA</code> for <code>setrlimit</code>. 
+<br><dt><code>LIM_STACK</code><dd>Maximum stack size.  Same as <code>RLIMIT_STACK</code> for <code>setrlimit</code>. 
+<br><dt><code>LIM_CORE</code><dd>Maximum core file size.  Same as <code>RLIMIT_COR</code> for <code>setrlimit</code>. 
+<br><dt><code>LIM_MAXRSS</code><dd>Maximum physical memory.  Same as <code>RLIMIT_RSS</code> for <code>setrlimit</code>. 
+</dl>
+
+        <p>The return value is zero for success, and <code>-1</code> with <code>errno</code> set
+accordingly for failure:
+
+          <dl>
+<dt><code>EPERM</code><dd>The process tried to set its current limit beyond its maximum limit. 
+</dl>
+
+        </blockquote></div>
+
+   </body></html>
+

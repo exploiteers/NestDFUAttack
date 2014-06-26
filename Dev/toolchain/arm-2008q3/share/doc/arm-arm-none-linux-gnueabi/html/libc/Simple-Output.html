@@ -1,0 +1,258 @@
+<html lang="en">
+<head>
+<title>Simple Output - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Streams-and-I18N.html#Streams-and-I18N" title="Streams and I18N">
+<link rel="next" href="Character-Input.html#Character-Input" title="Character Input">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Simple-Output"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Character-Input.html#Character-Input">Character Input</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Streams-and-I18N.html#Streams-and-I18N">Streams and I18N</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.7 Simple Output by Characters or Lines</h3>
+
+<p><a name="index-writing-to-a-stream_002c-by-characters-956"></a>This section describes functions for performing character- and
+line-oriented output.
+
+   <p>These narrow streams functions are declared in the header file
+<samp><span class="file">stdio.h</span></samp> and the wide stream functions in <samp><span class="file">wchar.h</span></samp>. 
+<a name="index-stdio_002eh-957"></a><a name="index-wchar_002eh-958"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>fputc</b> (<var>int c, FILE *stream</var>)<var><a name="index-fputc-959"></a></var><br>
+<blockquote><p>The <code>fputc</code> function converts the character <var>c</var> to type
+<code>unsigned char</code>, and writes it to the stream <var>stream</var>. 
+<code>EOF</code> is returned if a write error occurs; otherwise the
+character <var>c</var> is returned. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>fputwc</b> (<var>wchar_t wc, FILE *stream</var>)<var><a name="index-fputwc-960"></a></var><br>
+<blockquote><p>The <code>fputwc</code> function writes the wide character <var>wc</var> to the
+stream <var>stream</var>.  <code>WEOF</code> is returned if a write error occurs;
+otherwise the character <var>wc</var> is returned. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>fputc_unlocked</b> (<var>int c, FILE *stream</var>)<var><a name="index-fputc_005funlocked-961"></a></var><br>
+<blockquote><p>The <code>fputc_unlocked</code> function is equivalent to the <code>fputc</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: wint_t <b>fputwc_unlocked</b> (<var>wint_t wc, FILE *stream</var>)<var><a name="index-fputwc_005funlocked-962"></a></var><br>
+<blockquote><p>The <code>fputwc_unlocked</code> function is equivalent to the <code>fputwc</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>putc</b> (<var>int c, FILE *stream</var>)<var><a name="index-putc-963"></a></var><br>
+<blockquote><p>This is just like <code>fputc</code>, except that most systems implement it as
+a macro, making it faster.  One consequence is that it may evaluate the
+<var>stream</var> argument more than once, which is an exception to the
+general rule for macros.  <code>putc</code> is usually the best function to
+use for writing a single character. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>putwc</b> (<var>wchar_t wc, FILE *stream</var>)<var><a name="index-putwc-964"></a></var><br>
+<blockquote><p>This is just like <code>fputwc</code>, except that it can be implement as
+a macro, making it faster.  One consequence is that it may evaluate the
+<var>stream</var> argument more than once, which is an exception to the
+general rule for macros.  <code>putwc</code> is usually the best function to
+use for writing a single wide character. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>putc_unlocked</b> (<var>int c, FILE *stream</var>)<var><a name="index-putc_005funlocked-965"></a></var><br>
+<blockquote><p>The <code>putc_unlocked</code> function is equivalent to the <code>putc</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wint_t <b>putwc_unlocked</b> (<var>wchar_t wc, FILE *stream</var>)<var><a name="index-putwc_005funlocked-966"></a></var><br>
+<blockquote><p>The <code>putwc_unlocked</code> function is equivalent to the <code>putwc</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>putchar</b> (<var>int c</var>)<var><a name="index-putchar-967"></a></var><br>
+<blockquote><p>The <code>putchar</code> function is equivalent to <code>putc</code> with
+<code>stdout</code> as the value of the <var>stream</var> argument. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>putwchar</b> (<var>wchar_t wc</var>)<var><a name="index-putwchar-968"></a></var><br>
+<blockquote><p>The <code>putwchar</code> function is equivalent to <code>putwc</code> with
+<code>stdout</code> as the value of the <var>stream</var> argument. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>putchar_unlocked</b> (<var>int c</var>)<var><a name="index-putchar_005funlocked-969"></a></var><br>
+<blockquote><p>The <code>putchar_unlocked</code> function is equivalent to the <code>putchar</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wint_t <b>putwchar_unlocked</b> (<var>wchar_t wc</var>)<var><a name="index-putwchar_005funlocked-970"></a></var><br>
+<blockquote><p>The <code>putwchar_unlocked</code> function is equivalent to the <code>putwchar</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fputs</b> (<var>const char *s, FILE *stream</var>)<var><a name="index-fputs-971"></a></var><br>
+<blockquote><p>The function <code>fputs</code> writes the string <var>s</var> to the stream
+<var>stream</var>.  The terminating null character is not written. 
+This function does <em>not</em> add a newline character, either. 
+It outputs only the characters in the string.
+
+        <p>This function returns <code>EOF</code> if a write error occurs, and otherwise
+a non-negative value.
+
+        <p>For example:
+
+     <pre class="smallexample">          fputs ("Are ", stdout);
+          fputs ("you ", stdout);
+          fputs ("hungry?\n", stdout);
+</pre>
+        <p class="noindent">outputs the text &lsquo;<samp><span class="samp">Are you hungry?</span></samp>&rsquo; followed by a newline. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fputws</b> (<var>const wchar_t *ws, FILE *stream</var>)<var><a name="index-fputws-972"></a></var><br>
+<blockquote><p>The function <code>fputws</code> writes the wide character string <var>ws</var> to
+the stream <var>stream</var>.  The terminating null character is not written. 
+This function does <em>not</em> add a newline character, either.  It
+outputs only the characters in the string.
+
+        <p>This function returns <code>WEOF</code> if a write error occurs, and otherwise
+a non-negative value. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fputs_unlocked</b> (<var>const char *s, FILE *stream</var>)<var><a name="index-fputs_005funlocked-973"></a></var><br>
+<blockquote><p>The <code>fputs_unlocked</code> function is equivalent to the <code>fputs</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fputws_unlocked</b> (<var>const wchar_t *ws, FILE *stream</var>)<var><a name="index-fputws_005funlocked-974"></a></var><br>
+<blockquote><p>The <code>fputws_unlocked</code> function is equivalent to the <code>fputws</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>puts</b> (<var>const char *s</var>)<var><a name="index-puts-975"></a></var><br>
+<blockquote><p>The <code>puts</code> function writes the string <var>s</var> to the stream
+<code>stdout</code> followed by a newline.  The terminating null character of
+the string is not written.  (Note that <code>fputs</code> does <em>not</em>
+write a newline as this function does.)
+
+        <p><code>puts</code> is the most convenient function for printing simple
+messages.  For example:
+
+     <pre class="smallexample">          puts ("This is a message.");
+</pre>
+        <p class="noindent">outputs the text &lsquo;<samp><span class="samp">This is a message.</span></samp>&rsquo; followed by a newline. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>putw</b> (<var>int w, FILE *stream</var>)<var><a name="index-putw-976"></a></var><br>
+<blockquote><p>This function writes the word <var>w</var> (that is, an <code>int</code>) to
+<var>stream</var>.  It is provided for compatibility with SVID, but we
+recommend you use <code>fwrite</code> instead (see <a href="Block-Input_002fOutput.html#Block-Input_002fOutput">Block Input/Output</a>). 
+</p></blockquote></div>
+
+   </body></html>
+

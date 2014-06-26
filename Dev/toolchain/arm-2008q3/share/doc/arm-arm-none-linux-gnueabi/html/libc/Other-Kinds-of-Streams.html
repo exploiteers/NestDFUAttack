@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+<title>Other Kinds of Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Stream-Buffering.html#Stream-Buffering" title="Stream Buffering">
+<link rel="next" href="Formatted-Messages.html#Formatted-Messages" title="Formatted Messages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Other-Kinds-of-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatted-Messages.html#Formatted-Messages">Formatted Messages</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stream-Buffering.html#Stream-Buffering">Stream Buffering</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.21 Other Kinds of Streams</h3>
+
+<p>The GNU library provides ways for you to define additional kinds of
+streams that do not necessarily correspond to an open file.
+
+   <p>One such type of stream takes input from or writes output to a string. 
+These kinds of streams are used internally to implement the
+<code>sprintf</code> and <code>sscanf</code> functions.  You can also create such a
+stream explicitly, using the functions described in <a href="String-Streams.html#String-Streams">String Streams</a>.
+
+   <p>More generally, you can define streams that do input/output to arbitrary
+objects using functions supplied by your program.  This protocol is
+discussed in <a href="Custom-Streams.html#Custom-Streams">Custom Streams</a>.
+
+   <p><strong>Portability Note:</strong> The facilities described in this section are
+specific to GNU.  Other systems or C implementations might or might not
+provide equivalent functionality.
+
+<ul class="menu">
+<li><a accesskey="1" href="String-Streams.html#String-Streams">String Streams</a>:               Streams that get data from or put data in
+                                 a string or memory buffer. 
+<li><a accesskey="2" href="Obstack-Streams.html#Obstack-Streams">Obstack Streams</a>: 		Streams that store data in an obstack. 
+<li><a accesskey="3" href="Custom-Streams.html#Custom-Streams">Custom Streams</a>:               Defining your own streams with an arbitrary
+                                 input data source and/or output data sink. 
+</ul>
+
+   </body></html>
+

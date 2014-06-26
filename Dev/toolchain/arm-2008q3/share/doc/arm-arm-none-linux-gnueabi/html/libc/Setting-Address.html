@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Setting Address - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Socket-Addresses.html#Socket-Addresses" title="Socket Addresses">
+<link rel="prev" href="Address-Formats.html#Address-Formats" title="Address Formats">
+<link rel="next" href="Reading-Address.html#Reading-Address" title="Reading Address">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Setting-Address"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Reading-Address.html#Reading-Address">Reading Address</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Address-Formats.html#Address-Formats">Address Formats</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.3.2 Setting the Address of a Socket</h4>
+
+<p><a name="index-sys_002fsocket_002eh-1661"></a>Use the <code>bind</code> function to assign an address to a socket.  The
+prototype for <code>bind</code> is in the header file <samp><span class="file">sys/socket.h</span></samp>. 
+For examples of use, see <a href="Local-Socket-Example.html#Local-Socket-Example">Local Socket Example</a>, or see <a href="Inet-Example.html#Inet-Example">Inet Example</a>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>bind</b> (<var>int socket, struct sockaddr *addr, socklen_t length</var>)<var><a name="index-bind-1662"></a></var><br>
+<blockquote><p>The <code>bind</code> function assigns an address to the socket
+<var>socket</var>.  The <var>addr</var> and <var>length</var> arguments specify the
+address; the detailed format of the address depends on the namespace. 
+The first part of the address is always the format designator, which
+specifies a namespace, and says that the address is in the format of
+that namespace.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>socket</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The descriptor <var>socket</var> is not a socket.
+
+          <br><dt><code>EADDRNOTAVAIL</code><dd>The specified address is not available on this machine.
+
+          <br><dt><code>EADDRINUSE</code><dd>Some other socket is already using the specified address.
+
+          <br><dt><code>EINVAL</code><dd>The socket <var>socket</var> already has an address.
+
+          <br><dt><code>EACCES</code><dd>You do not have permission to access the requested address.  (In the
+Internet domain, only the super-user is allowed to specify a port number
+in the range 0 through <code>IPPORT_RESERVED</code> minus one; see
+<a href="Ports.html#Ports">Ports</a>.) 
+</dl>
+
+        <p>Additional conditions may be possible depending on the particular namespace
+of the socket. 
+</p></blockquote></div>
+
+   </body></html>
+

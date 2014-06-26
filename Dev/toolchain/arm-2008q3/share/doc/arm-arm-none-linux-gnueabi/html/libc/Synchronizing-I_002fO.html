@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Synchronizing I/O - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Waiting-for-I_002fO.html#Waiting-for-I_002fO" title="Waiting for I/O">
+<link rel="next" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO" title="Asynchronous I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Synchronizing-I%2fO"></a>
+<a name="Synchronizing-I_002fO"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.9 Synchronizing I/O operations</h3>
+
+<p><a name="index-synchronizing-1282"></a>In most modern operating systems, the normal I/O operations are not
+executed synchronously.  I.e., even if a <code>write</code> system call
+returns, this does not mean the data is actually written to the media,
+e.g., the disk.
+
+   <p>In situations where synchronization points are necessary, you can use
+special functions which ensure that all operations finish before
+they return.
+
+<!-- unistd.h -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Function: int <b>sync</b> (<var>void</var>)<var><a name="index-sync-1283"></a></var><br>
+<blockquote><p>A call to this function will not return as long as there is data which
+has not been written to the device.  All dirty buffers in the kernel will
+be written and so an overall consistent system can be achieved (if no
+other process in parallel writes data).
+
+        <p>A prototype for <code>sync</code> can be found in <samp><span class="file">unistd.h</span></samp>.
+
+        <p>The return value is zero to indicate no error. 
+</p></blockquote></div>
+
+   <p>Programs more often want to ensure that data written to a given file is
+committed, rather than all data in the system.  For this, <code>sync</code> is overkill.
+
+<!-- unistd.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>fsync</b> (<var>int fildes</var>)<var><a name="index-fsync-1284"></a></var><br>
+<blockquote><p>The <code>fsync</code> function can be used to make sure all data associated with
+the open file <var>fildes</var> is written to the device associated with the
+descriptor.  The function call does not return unless all actions have
+finished.
+
+        <p>A prototype for <code>fsync</code> can be found in <samp><span class="file">unistd.h</span></samp>.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>fsync</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this, calls to <code>fsync</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The return value of the function is zero if no error occurred.  Otherwise
+it is -1 and the global variable <var>errno</var> is set to the
+following values:
+          <dl>
+<dt><code>EBADF</code><dd>The descriptor <var>fildes</var> is not valid.
+
+          <br><dt><code>EINVAL</code><dd>No synchronization is possible since the system does not implement this. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Sometimes it is not even necessary to write all data associated with a
+file descriptor.  E.g., in database files which do not change in size it
+is enough to write all the file content data to the device. 
+Meta-information, like the modification time etc., are not that important
+and leaving such information uncommitted does not prevent a successful
+recovering of the file in case of a problem.
+
+<!-- unistd.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>fdatasync</b> (<var>int fildes</var>)<var><a name="index-fdatasync-1285"></a></var><br>
+<blockquote><p>When a call to the <code>fdatasync</code> function returns, it is ensured
+that all of the file data is written to the device.  For all pending I/O
+operations, the parts guaranteeing data integrity finished.
+
+        <p>Not all systems implement the <code>fdatasync</code> operation.  On systems
+missing this functionality <code>fdatasync</code> is emulated by a call to
+<code>fsync</code> since the performed actions are a superset of those
+required by <code>fdatasync</code>.
+
+        <p>The prototype for <code>fdatasync</code> is in <samp><span class="file">unistd.h</span></samp>.
+
+        <p>The return value of the function is zero if no error occurred.  Otherwise
+it is -1 and the global variable <var>errno</var> is set to the
+following values:
+          <dl>
+<dt><code>EBADF</code><dd>The descriptor <var>fildes</var> is not valid.
+
+          <br><dt><code>EINVAL</code><dd>No synchronization is possible since the system does not implement this. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

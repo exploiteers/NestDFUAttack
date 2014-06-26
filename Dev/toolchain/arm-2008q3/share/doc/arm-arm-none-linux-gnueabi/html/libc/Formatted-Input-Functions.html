@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Formatted Input Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Other-Input-Conversions.html#Other-Input-Conversions" title="Other Input Conversions">
+<link rel="next" href="Variable-Arguments-Input.html#Variable-Arguments-Input" title="Variable Arguments Input">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatted-Input-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variable-Arguments-Input.html#Variable-Arguments-Input">Variable Arguments Input</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.8 Formatted Input Functions</h4>
+
+<p>Here are the descriptions of the functions for performing formatted
+input. 
+Prototypes for these functions are in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1081"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>scanf</b> (<var>const char *template, <small class="dots">...</small></var>)<var><a name="index-scanf-1082"></a></var><br>
+<blockquote><p>The <code>scanf</code> function reads formatted input from the stream
+<code>stdin</code> under the control of the template string <var>template</var>. 
+The optional arguments are pointers to the places which receive the
+resulting values.
+
+        <p>The return value is normally the number of successful assignments.  If
+an end-of-file condition is detected before any matches are performed,
+including matches against whitespace and literal characters in the
+template, then <code>EOF</code> is returned. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wscanf</b> (<var>const wchar_t *template, <small class="dots">...</small></var>)<var><a name="index-wscanf-1083"></a></var><br>
+<blockquote><p>The <code>wscanf</code> function reads formatted input from the stream
+<code>stdin</code> under the control of the template string <var>template</var>. 
+The optional arguments are pointers to the places which receive the
+resulting values.
+
+        <p>The return value is normally the number of successful assignments.  If
+an end-of-file condition is detected before any matches are performed,
+including matches against whitespace and literal characters in the
+template, then <code>WEOF</code> is returned. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fscanf</b> (<var>FILE *stream, const char *template, <small class="dots">...</small></var>)<var><a name="index-fscanf-1084"></a></var><br>
+<blockquote><p>This function is just like <code>scanf</code>, except that the input is read
+from the stream <var>stream</var> instead of <code>stdin</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fwscanf</b> (<var>FILE *stream, const wchar_t *template, <small class="dots">...</small></var>)<var><a name="index-fwscanf-1085"></a></var><br>
+<blockquote><p>This function is just like <code>wscanf</code>, except that the input is read
+from the stream <var>stream</var> instead of <code>stdin</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>sscanf</b> (<var>const char *s, const char *template, <small class="dots">...</small></var>)<var><a name="index-sscanf-1086"></a></var><br>
+<blockquote><p>This is like <code>scanf</code>, except that the characters are taken from the
+null-terminated string <var>s</var> instead of from a stream.  Reaching the
+end of the string is treated as an end-of-file condition.
+
+        <p>The behavior of this function is undefined if copying takes place
+between objects that overlap&mdash;for example, if <var>s</var> is also given
+as an argument to receive a string read under control of the &lsquo;<samp><span class="samp">%s</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%S</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">%[</span></samp>&rsquo; conversion. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>swscanf</b> (<var>const wchar_t *ws, const char *template, <small class="dots">...</small></var>)<var><a name="index-swscanf-1087"></a></var><br>
+<blockquote><p>This is like <code>wscanf</code>, except that the characters are taken from the
+null-terminated string <var>ws</var> instead of from a stream.  Reaching the
+end of the string is treated as an end-of-file condition.
+
+        <p>The behavior of this function is undefined if copying takes place
+between objects that overlap&mdash;for example, if <var>ws</var> is also given as
+an argument to receive a string read under control of the &lsquo;<samp><span class="samp">%s</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%S</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">%[</span></samp>&rsquo; conversion. 
+</p></blockquote></div>
+
+   </body></html>
+

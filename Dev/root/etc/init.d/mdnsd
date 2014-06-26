@@ -1,0 +1,68 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2011 Nest, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the mDNS/DNS-SD
+#      daemon, avahi-daemon.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+MDNSD=${USRSBINDIR}/avahi-daemon
+RUNDIR=${VARDIR}/run/avahi-daemon
+MDNSDUSER=avahi
+MDNSDGROUP=avahi
+CHOWN=${BINDIR}/chown
+
+pre_start () {
+    ${MKDIR} -p -m 0775 ${RUNDIR}
+    ${CHOWN} ${MDNSDUSER}:${MDNSDGROUP} ${RUNDIR}
+}
+
+start_mdnsd () {
+	if test -x ${MDNSD}; then
+		if ! ${MDNSD} --check ; then
+			pre_start
+
+			${MDNSD} `${CAT} ${CONFDIR}/mdnsd.options 2> ${NULL}` &
+			${ECHO} " avahi-daemon\c"
+		fi
+	fi
+}
+
+stop_mdnsd () {
+	test -x ${MDNSD} && ${MDNSD} --kill
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "MDNS/DNS-SD daemon:\c"
+
+	if ${CHECK} mdnds; then
+	    start_mdnsd
+	fi
+
+	${ECHO} "."
+
+	;;
+
+'stop')
+	stop_mdnsd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

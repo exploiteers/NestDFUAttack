@@ -1,0 +1,17 @@
+#
+# ALS drivers
+#
+
+
+menu "ALS sensor support"
+
+config SENSORS_SI1143
+	tristate "SiLabs 1143 ambient light sensor"
+	help
+	  If you say yes here you get support for the SiLabs 1143
+	  ambient light sensor.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called si1143.
+
+endmenu

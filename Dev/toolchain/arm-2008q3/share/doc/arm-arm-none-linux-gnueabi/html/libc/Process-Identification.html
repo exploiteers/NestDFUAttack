@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Process Identification - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="prev" href="Process-Creation-Concepts.html#Process-Creation-Concepts" title="Process Creation Concepts">
+<link rel="next" href="Creating-a-Process.html#Creating-a-Process" title="Creating a Process">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Process-Identification"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.3 Process Identification</h3>
+
+<p>The <code>pid_t</code> data type represents process IDs.  You can get the
+process ID of a process by calling <code>getpid</code>.  The function
+<code>getppid</code> returns the process ID of the parent of the current
+process (this is also known as the <dfn>parent process ID</dfn>).  Your
+program should include the header files <samp><span class="file">unistd.h</span></samp> and
+<samp><span class="file">sys/types.h</span></samp> to use these functions. 
+<a name="index-sys_002ftypes_002eh-3160"></a><a name="index-unistd_002eh-3161"></a>
+<!-- sys/types.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>pid_t</b><var><a name="index-pid_005ft-3162"></a></var><br>
+<blockquote><p>The <code>pid_t</code> data type is a signed integer type which is capable
+of representing a process ID.  In the GNU library, this is an <code>int</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: pid_t <b>getpid</b> (<var>void</var>)<var><a name="index-getpid-3163"></a></var><br>
+<blockquote><p>The <code>getpid</code> function returns the process ID of the current process. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: pid_t <b>getppid</b> (<var>void</var>)<var><a name="index-getppid-3164"></a></var><br>
+<blockquote><p>The <code>getppid</code> function returns the process ID of the parent of the
+current process. 
+</p></blockquote></div>
+
+   </body></html>
+

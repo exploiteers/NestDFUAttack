@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Random Access Directory - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Accessing-Directories.html#Accessing-Directories" title="Accessing Directories">
+<link rel="prev" href="Simple-Directory-Lister.html#Simple-Directory-Lister" title="Simple Directory Lister">
+<link rel="next" href="Scanning-Directory-Content.html#Scanning-Directory-Content" title="Scanning Directory Content">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Random-Access-Directory"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scanning-Directory-Content.html#Scanning-Directory-Content">Scanning Directory Content</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Simple-Directory-Lister.html#Simple-Directory-Lister">Simple Directory Lister</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.2.5 Random Access in a Directory Stream</h4>
+
+<p><a name="index-dirent_002eh-1421"></a>This section describes how to reread parts of a directory that you have
+already read from an open directory stream.  All the symbols are
+declared in the header file <samp><span class="file">dirent.h</span></samp>.
+
+<!-- dirent.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: void <b>rewinddir</b> (<var>DIR *dirstream</var>)<var><a name="index-rewinddir-1422"></a></var><br>
+<blockquote><p>The <code>rewinddir</code> function is used to reinitialize the directory
+stream <var>dirstream</var>, so that if you call <code>readdir</code> it
+returns information about the first entry in the directory again.  This
+function also notices if files have been added or removed to the
+directory since it was opened with <code>opendir</code>.  (Entries for these
+files might or might not be returned by <code>readdir</code> if they were
+added or removed since you last called <code>opendir</code> or
+<code>rewinddir</code>.) 
+</p></blockquote></div>
+
+<!-- dirent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long <b>int</b><var> telldir </var>(<var>DIR *dirstream</var>)<var><a name="index-int-1423"></a></var><br>
+<blockquote><p>The <code>telldir</code> function returns the file position of the directory
+stream <var>dirstream</var>.  You can use this value with <code>seekdir</code> to
+restore the directory stream to that position. 
+</p></blockquote></div>
+
+<!-- dirent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>seekdir</b> (<var>DIR *dirstream, long int pos</var>)<var><a name="index-seekdir-1424"></a></var><br>
+<blockquote><p>The <code>seekdir</code> function sets the file position of the directory
+stream <var>dirstream</var> to <var>pos</var>.  The value <var>pos</var> must be the
+result of a previous call to <code>telldir</code> on this particular stream;
+closing and reopening the directory can invalidate values returned by
+<code>telldir</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

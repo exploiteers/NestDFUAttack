@@ -1,0 +1,214 @@
+<html lang="en">
+<head>
+<title>Setting Groups - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Setting-User-ID.html#Setting-User-ID" title="Setting User ID">
+<link rel="next" href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid" title="Enable/Disable Setuid">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Setting-Groups"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">Enable/Disable Setuid</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Setting-User-ID.html#Setting-User-ID">Setting User ID</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.7 Setting the Group IDs</h3>
+
+<p>This section describes the functions for altering the group IDs (real
+and effective) of a process.  To use these facilities, you must include
+the header files <samp><span class="file">sys/types.h</span></samp> and <samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-3318"></a><a name="index-sys_002ftypes_002eh-3319"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>setegid</b> (<var>gid_t newgid</var>)<var><a name="index-setegid-3320"></a></var><br>
+<blockquote><p>This function sets the effective group ID of the process to
+<var>newgid</var>, provided that the process is allowed to change its group
+ID.  Just as with <code>seteuid</code>, if the process is privileged it may
+change its effective group ID to any value; if it isn't, but it has a
+file group ID, then it may change to its real group ID or file group ID;
+otherwise it may not change its effective group ID.
+
+        <p>Note that a process is only privileged if its effective <em>user</em> ID
+is zero.  The effective group ID only affects access permissions.
+
+        <p>The return values and error conditions for <code>setegid</code> are the same
+as those for <code>seteuid</code>.
+
+        <p>This function is only present if <code>_POSIX_SAVED_IDS</code> is defined. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>setgid</b> (<var>gid_t newgid</var>)<var><a name="index-setgid-3321"></a></var><br>
+<blockquote><p>This function sets both the real and effective group ID of the process
+to <var>newgid</var>, provided that the process is privileged.  It also
+deletes the file group ID, if any.
+
+        <p>If the process is not privileged, then <code>setgid</code> behaves like
+<code>setegid</code>.
+
+        <p>The return values and error conditions for <code>setgid</code> are the same
+as those for <code>seteuid</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setregid</b> (<var>gid_t rgid, gid_t egid</var>)<var><a name="index-setregid-3322"></a></var><br>
+<blockquote><p>This function sets the real group ID of the process to <var>rgid</var> and
+the effective group ID to <var>egid</var>.  If <var>rgid</var> is <code>-1</code>, it
+means not to change the real group ID; likewise if <var>egid</var> is
+<code>-1</code>, it means not to change the effective group ID.
+
+        <p>The <code>setregid</code> function is provided for compatibility with 4.3 BSD
+Unix, which does not support file IDs.  You can use this function to
+swap the effective and real group IDs of the process.  (Privileged
+processes are not limited to this usage.)  If file IDs are supported,
+you should use that feature instead of using this function. 
+See <a href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">Enable/Disable Setuid</a>.
+
+        <p>The return values and error conditions for <code>setregid</code> are the same
+as those for <code>setreuid</code>. 
+</p></blockquote></div>
+
+   <p><code>setuid</code> and <code>setgid</code> behave differently depending on whether
+the effective user ID at the time is zero.  If it is not zero, they
+behave like <code>seteuid</code> and <code>setegid</code>.  If it is, they change
+both effective and real IDs and delete the file ID.  To avoid confusion,
+we recommend you always use <code>seteuid</code> and <code>setegid</code> except
+when you know the effective user ID is zero and your intent is to change
+the persona permanently.  This case is rare&mdash;most of the programs that
+need it, such as <code>login</code> and <code>su</code>, have already been written.
+
+   <p>Note that if your program is setuid to some user other than <code>root</code>,
+there is no way to drop privileges permanently.
+
+   <p>The system also lets privileged processes change their supplementary
+group IDs.  To use <code>setgroups</code> or <code>initgroups</code>, your programs
+should include the header file <samp><span class="file">grp.h</span></samp>. 
+<a name="index-grp_002eh-3323"></a>
+<!-- grp.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>setgroups</b> (<var>size_t count, gid_t *groups</var>)<var><a name="index-setgroups-3324"></a></var><br>
+<blockquote><p>This function sets the process's supplementary group IDs.  It can only
+be called from privileged processes.  The <var>count</var> argument specifies
+the number of group IDs in the array <var>groups</var>.
+
+        <p>This function returns <code>0</code> if successful and <code>-1</code> on error. 
+The following <code>errno</code> error conditions are defined for this
+function:
+
+          <dl>
+<dt><code>EPERM</code><dd>The calling process is not privileged. 
+</dl>
+        </p></blockquote></div>
+
+<!-- grp.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>initgroups</b> (<var>const char *user, gid_t group</var>)<var><a name="index-initgroups-3325"></a></var><br>
+<blockquote><p>The <code>initgroups</code> function sets the process's supplementary group
+IDs to be the normal default for the user name <var>user</var>.  The group
+<var>group</var> is automatically included.
+
+        <p>This function works by scanning the group database for all the groups
+<var>user</var> belongs to.  It then calls <code>setgroups</code> with the list it
+has constructed.
+
+        <p>The return values and error conditions are the same as for
+<code>setgroups</code>. 
+</p></blockquote></div>
+
+   <p>If you are interested in the groups a particular user belongs to, but do
+not want to change the process's supplementary group IDs, you can use
+<code>getgrouplist</code>.  To use <code>getgrouplist</code>, your programs should
+include the header file <samp><span class="file">grp.h</span></samp>. 
+<a name="index-grp_002eh-3326"></a>
+<!-- grp.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>getgrouplist</b> (<var>const char *user, gid_t group, gid_t *groups, int *ngroups</var>)<var><a name="index-getgrouplist-3327"></a></var><br>
+<blockquote><p>The <code>getgrouplist</code> function scans the group database for all the
+groups <var>user</var> belongs to.  Up to *<var>ngroups</var> group IDs
+corresponding to these groups are stored in the array <var>groups</var>; the
+return value from the function is the number of group IDs actually
+stored.  If *<var>ngroups</var> is smaller than the total number of groups
+found, then <code>getgrouplist</code> returns a value of <code>-1</code> and stores
+the actual number of groups in *<var>ngroups</var>.  The group <var>group</var> is
+automatically included in the list of groups returned by
+<code>getgrouplist</code>.
+
+        <p>Here's how to use <code>getgrouplist</code> to read all supplementary groups
+for <var>user</var>:
+
+     <pre class="smallexample">          gid_t *
+          supplementary_groups (char *user)
+          {
+            int ngroups = 16;
+            gid_t *groups
+              = (gid_t *) xmalloc (ngroups * sizeof (gid_t));
+            struct passwd *pw = getpwnam (user);
+          
+            if (pw == NULL)
+              return NULL;
+          
+            if (getgrouplist (pw-&gt;pw_name, pw-&gt;pw_gid, groups, &amp;ngroups) &lt; 0)
+              {
+                groups = xrealloc (ngroups * sizeof (gid_t));
+                getgrouplist (pw-&gt;pw_name, pw-&gt;pw_gid, groups, &amp;ngroups);
+              }
+            return groups;
+          }
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

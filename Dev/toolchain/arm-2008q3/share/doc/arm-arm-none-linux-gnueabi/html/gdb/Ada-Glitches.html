@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>Ada Glitches - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Ada.html#Ada" title="Ada">
+<link rel="prev" href="Stopping-Before-Main-Program.html#Stopping-Before-Main-Program" title="Stopping Before Main Program">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Ada-Glitches"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stopping-Before-Main-Program.html#Stopping-Before-Main-Program">Stopping Before Main Program</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Ada.html#Ada">Ada</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">13.4.6.5 Known Peculiarities of Ada Mode</h5>
+
+<p><a name="index-Ada_002c-problems-748"></a>
+Besides the omissions listed previously (see <a href="Omissions-from-Ada.html#Omissions-from-Ada">Omissions from Ada</a>),
+we know of several problems with and limitations of Ada mode in
+<span class="sc">gdb</span>,
+some of which will be fixed with planned future releases of the debugger
+and the GNU Ada compiler.
+
+     <ul>
+<li>Currently, the debugger
+has insufficient information to determine whether certain pointers represent
+pointers to objects or the objects themselves. 
+Thus, the user may have to tack an extra <code>.all</code> after an expression
+to get it printed properly.
+
+     <li>Static constants that the compiler chooses not to materialize as objects in
+storage are invisible to the debugger.
+
+     <li>Named parameter associations in function argument lists are ignored (the
+argument lists are treated as positional).
+
+     <li>Many useful library packages are currently invisible to the debugger.
+
+     <li>Fixed-point arithmetic, conversions, input, and output is carried out using
+floating-point arithmetic, and may give results that only approximate those on
+the host machine.
+
+     <li>The type of the <tt>'Address</tt> attribute may not be <code>System.Address</code>.
+
+     <li>The GNAT compiler never generates the prefix <code>Standard</code> for any of
+the standard symbols defined by the Ada language.  <span class="sc">gdb</span> knows about
+this: it will strip the prefix from names when you use it, and will never
+look for a name you have so qualified among local symbols, nor match against
+symbols in other packages or subprograms.  If you have
+defined entities anywhere in your program other than parameters and
+local variables whose simple names match names in <code>Standard</code>,
+GNAT's lack of qualification here can cause confusion.  When this happens,
+you can usually resolve the confusion
+by qualifying the problematic names with package
+<code>Standard</code> explicitly. 
+</ul>
+
+   </body></html>
+

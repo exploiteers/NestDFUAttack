@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Traditional Scheduling Intro - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Traditional-Scheduling.html#Traditional-Scheduling" title="Traditional Scheduling">
+<link rel="next" href="Traditional-Scheduling-Functions.html#Traditional-Scheduling-Functions" title="Traditional Scheduling Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Traditional-Scheduling-Intro"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Traditional-Scheduling-Functions.html#Traditional-Scheduling-Functions">Traditional Scheduling Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">22.3.4.1 Introduction To Traditional Scheduling</h5>
+
+<p>Long before there was absolute priority (See <a href="Absolute-Priority.html#Absolute-Priority">Absolute Priority</a>),
+Unix systems were scheduling the CPU using this system.  When Posix came
+in like the Romans and imposed absolute priorities to accommodate the
+needs of realtime processing, it left the indigenous Absolute Priority
+Zero processes to govern themselves by their own familiar scheduling
+policy.
+
+   <p>Indeed, absolute priorities higher than zero are not available on many
+systems today and are not typically used when they are, being intended
+mainly for computers that do realtime processing.  So this section
+describes the only scheduling many programmers need to be concerned
+about.
+
+   <p>But just to be clear about the scope of this scheduling: Any time a
+process with a absolute priority of 0 and a process with an absolute
+priority higher than 0 are ready to run at the same time, the one with
+absolute priority 0 does not run.  If it's already running when the
+higher priority ready-to-run process comes into existence, it stops
+immediately.
+
+   <p>In addition to its absolute priority of zero, every process has another
+priority, which we will refer to as "dynamic priority" because it changes
+over time.  The dynamic priority is meaningless for processes with
+an absolute priority higher than zero.
+
+   <p>The dynamic priority sometimes determines who gets the next turn on the
+CPU.  Sometimes it determines how long turns last.  Sometimes it
+determines whether a process can kick another off the CPU.
+
+   <p>In Linux, the value is a combination of these things, but mostly it is
+just determines the length of the time slice.  The higher a process'
+dynamic priority, the longer a shot it gets on the CPU when it gets one. 
+If it doesn't use up its time slice before giving up the CPU to do
+something like wait for I/O, it is favored for getting the CPU back when
+it's ready for it, to finish out its time slice.  Other than that,
+selection of processes for new time slices is basically round robin. 
+But the scheduler does throw a bone to the low priority processes: A
+process' dynamic priority rises every time it is snubbed in the
+scheduling process.  In Linux, even the fat kid gets to play.
+
+   <p>The fluctuation of a process' dynamic priority is regulated by another
+value: The &ldquo;nice&rdquo; value.  The nice value is an integer, usually in the
+range -20 to 20, and represents an upper limit on a process' dynamic
+priority.  The higher the nice number, the lower that limit.
+
+   <p>On a typical Linux system, for example, a process with a nice value of
+20 can get only 10 milliseconds on the CPU at a time, whereas a process
+with a nice value of -20 can achieve a high enough priority to get 400
+milliseconds.
+
+   <p>The idea of the nice value is deferential courtesy.  In the beginning,
+in the Unix garden of Eden, all processes shared equally in the bounty
+of the computer system.  But not all processes really need the same
+share of CPU time, so the nice value gave a courteous process the
+ability to refuse its equal share of CPU time that others might prosper. 
+Hence, the higher a process' nice value, the nicer the process is. 
+(Then a snake came along and offered some process a negative nice value
+and the system became the crass resource allocation system we know
+today).
+
+   <p>Dynamic priorities tend upward and downward with an objective of
+smoothing out allocation of CPU time and giving quick response time to
+infrequent requests.  But they never exceed their nice limits, so on a
+heavily loaded CPU, the nice value effectively determines how fast a
+process runs.
+
+   <p>In keeping with the socialistic heritage of Unix process priority, a
+process begins life with the same nice value as its parent process and
+can raise it at will.  A process can also raise the nice value of any
+other process owned by the same user (or effective user).  But only a
+privileged process can lower its nice value.  A privileged process can
+also raise or lower another process' nice value.
+
+   <p>GNU C Library functions for getting and setting nice values are described in
+See <a href="Traditional-Scheduling-Functions.html#Traditional-Scheduling-Functions">Traditional Scheduling Functions</a>.
+
+   </body></html>
+

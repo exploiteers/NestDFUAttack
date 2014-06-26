@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Adding another Service to NSS - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Extending-NSS.html#Extending-NSS" title="Extending NSS">
+<link rel="prev" href="Extending-NSS.html#Extending-NSS" title="Extending NSS">
+<link rel="next" href="NSS-Module-Function-Internals.html#NSS-Module-Function-Internals" title="NSS Module Function Internals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Adding-another-Service-to-NSS"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="NSS-Module-Function-Internals.html#NSS-Module-Function-Internals">NSS Module Function Internals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Extending-NSS.html#Extending-NSS">Extending NSS</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Extending-NSS.html#Extending-NSS">Extending NSS</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.4.1 Adding another Service to NSS</h4>
+
+<p>The sources for a new service need not (and should not) be part of the
+GNU C Library itself.  The developer retains complete control over the
+sources and its development.  The links between the C library and the
+new service module consists solely of the interface functions.
+
+   <p>Each module is designed following a specific interface specification. 
+For now the version is 2 (the interface in version 1 was not adequate)
+and this manifests in the version number of the shared library object of
+the NSS modules: they have the extension <code>.2</code>.  If the interface
+changes again in an incompatible way, this number will be increased. 
+Modules using the old interface will still be usable.
+
+   <p>Developers of a new service will have to make sure that their module is
+created using the correct interface number.  This means the file itself
+must have the correct name and on ELF systems the <dfn>soname</dfn> (Shared
+Object Name) must also have this number.  Building a module from a bunch
+of object files on an ELF system using GNU CC could be done like this:
+
+<pre class="smallexample">     gcc -shared -o libnss_NAME.so.2 -Wl,-soname,libnss_NAME.so.2 OBJECTS
+</pre>
+   <p class="noindent"><a href="../gcc/Link-Options.html#Link-Options">Options for Linking</a>, to learn
+more about this command line.
+
+   <p>To use the new module the library must be able to find it.  This can be
+achieved by using options for the dynamic linker so that it will search
+the directory where the binary is placed.  For an ELF system this could be
+done by adding the wanted directory to the value of
+<code>LD_LIBRARY_PATH</code>.
+
+   <p>But this is not always possible since some programs (those which run
+under IDs which do not belong to the user) ignore this variable. 
+Therefore the stable version of the module should be placed into a
+directory which is searched by the dynamic linker.  Normally this should
+be the directory <samp><span class="file">$prefix/lib</span></samp>, where <samp><span class="file">$prefix</span></samp> corresponds to
+the value given to configure using the <code>--prefix</code> option.  But be
+careful: this should only be done if it is clear the module does not
+cause any harm.  System administrators should be careful.
+
+   </body></html>
+

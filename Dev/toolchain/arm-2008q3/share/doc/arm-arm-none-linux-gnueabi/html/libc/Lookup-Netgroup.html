@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Lookup Netgroup - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Netgroup-Database.html#Netgroup-Database" title="Netgroup Database">
+<link rel="prev" href="Netgroup-Data.html#Netgroup-Data" title="Netgroup Data">
+<link rel="next" href="Netgroup-Membership.html#Netgroup-Membership" title="Netgroup Membership">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Lookup-Netgroup"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Netgroup-Membership.html#Netgroup-Membership">Netgroup Membership</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Netgroup-Data.html#Netgroup-Data">Netgroup Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.16.2 Looking up one Netgroup</h4>
+
+<p>The lookup functions for netgroups are a bit different to all other
+system database handling functions.  Since a single netgroup can contain
+many entries a two-step process is needed.  First a single netgroup is
+selected and then one can iterate over all entries in this netgroup. 
+These functions are declared in <samp><span class="file">netdb.h</span></samp>.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setnetgrent</b> (<var>const char *netgroup</var>)<var><a name="index-setnetgrent-3424"></a></var><br>
+<blockquote><p>A call to this function initializes the internal state of the library to
+allow following calls of the <code>getnetgrent</code> to iterate over all entries
+in the netgroup with name <var>netgroup</var>.
+
+        <p>When the call is successful (i.e., when a netgroup with this name exists)
+the return value is <code>1</code>.  When the return value is <code>0</code> no
+netgroup of this name is known or some other error occurred. 
+</p></blockquote></div>
+
+   <p>It is important to remember that there is only one single state for
+iterating the netgroups.  Even if the programmer uses the
+<code>getnetgrent_r</code> function the result is not really reentrant since
+always only one single netgroup at a time can be processed.  If the
+program needs to process more than one netgroup simultaneously she
+must protect this by using external locking.  This problem was
+introduced in the original netgroups implementation in SunOS and since
+we must stay compatible it is not possible to change this.
+
+   <p>Some other functions also use the netgroups state.  Currently these are
+the <code>innetgr</code> function and parts of the implementation of the
+<code>compat</code> service part of the NSS implementation.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getnetgrent</b> (<var>char **hostp, char **userp, char **domainp</var>)<var><a name="index-getnetgrent-3425"></a></var><br>
+<blockquote><p>This function returns the next unprocessed entry of the currently
+selected netgroup.  The string pointers, in which addresses are passed in
+the arguments <var>hostp</var>, <var>userp</var>, and <var>domainp</var>, will contain
+after a successful call pointers to appropriate strings.  If the string
+in the next entry is empty the pointer has the value <code>NULL</code>. 
+The returned string pointers are only valid if none of the netgroup
+related functions are called.
+
+        <p>The return value is <code>1</code> if the next entry was successfully read.  A
+value of <code>0</code> means no further entries exist or internal errors occurred. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getnetgrent_r</b> (<var>char **hostp, char **userp, char **domainp, char *buffer, int buflen</var>)<var><a name="index-getnetgrent_005fr-3426"></a></var><br>
+<blockquote><p>This function is similar to <code>getnetgrent</code> with only one exception:
+the strings the three string pointers <var>hostp</var>, <var>userp</var>, and
+<var>domainp</var> point to, are placed in the buffer of <var>buflen</var> bytes
+starting at <var>buffer</var>.  This means the returned values are valid
+even after other netgroup related functions are called.
+
+        <p>The return value is <code>1</code> if the next entry was successfully read and
+the buffer contains enough room to place the strings in it.  <code>0</code> is
+returned in case no more entries are found, the buffer is too small, or
+internal errors occurred.
+
+        <p>This function is a GNU extension.  The original implementation in the
+SunOS libc does not provide this function. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>endnetgrent</b> (<var>void</var>)<var><a name="index-endnetgrent-3427"></a></var><br>
+<blockquote><p>This function frees all buffers which were allocated to process the last
+selected netgroup.  As a result all string pointers returned by calls
+to <code>getnetgrent</code> are invalid afterwards. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+<title>Standard Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Streams.html#Streams" title="Streams">
+<link rel="next" href="Opening-Streams.html#Opening-Streams" title="Opening Streams">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Standard-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Opening-Streams.html#Opening-Streams">Opening Streams</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Streams.html#Streams">Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.2 Standard Streams</h3>
+
+<p><a name="index-standard-streams-917"></a><a name="index-streams_002c-standard-918"></a>
+When the <code>main</code> function of your program is invoked, it already has
+three predefined streams open and available for use.  These represent
+the &ldquo;standard&rdquo; input and output channels that have been established
+for the process.
+
+   <p>These streams are declared in the header file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-919"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Variable: FILE * <b>stdin</b><var><a name="index-stdin-920"></a></var><br>
+<blockquote><p>The <dfn>standard input</dfn> stream, which is the normal source of input for the
+program. 
+</p></blockquote></div>
+   <a name="index-standard-input-stream-921"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Variable: FILE * <b>stdout</b><var><a name="index-stdout-922"></a></var><br>
+<blockquote><p>The <dfn>standard output</dfn> stream, which is used for normal output from
+the program. 
+</p></blockquote></div>
+   <a name="index-standard-output-stream-923"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Variable: FILE * <b>stderr</b><var><a name="index-stderr-924"></a></var><br>
+<blockquote><p>The <dfn>standard error</dfn> stream, which is used for error messages and
+diagnostics issued by the program. 
+</p></blockquote></div>
+   <a name="index-standard-error-stream-925"></a>
+In the GNU system, you can specify what files or processes correspond to
+these streams using the pipe and redirection facilities provided by the
+shell.  (The primitives shells use to implement these facilities are
+described in <a href="File-System-Interface.html#File-System-Interface">File System Interface</a>.)  Most other operating systems
+provide similar mechanisms, but the details of how to use them can vary.
+
+   <p>In the GNU C library, <code>stdin</code>, <code>stdout</code>, and <code>stderr</code> are
+normal variables which you can set just like any others.  For example,
+to redirect the standard output to a file, you could do:
+
+<pre class="smallexample">     fclose (stdout);
+     stdout = fopen ("standard-output-file", "w");
+</pre>
+   <p>Note however, that in other systems <code>stdin</code>, <code>stdout</code>, and
+<code>stderr</code> are macros that you cannot assign to in the normal way. 
+But you can use <code>freopen</code> to get the effect of closing one and
+reopening it.  See <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>.
+
+   <p>The three streams <code>stdin</code>, <code>stdout</code>, and <code>stderr</code> are not
+unoriented at program start (see <a href="Streams-and-I18N.html#Streams-and-I18N">Streams and I18N</a>).
+
+   </body></html>
+

@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>Suboptions Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments" title="Parsing Program Arguments">
+<link rel="prev" href="Suboptions.html#Suboptions" title="Suboptions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Suboptions-Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Suboptions.html#Suboptions">Suboptions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.13 Parsing of Suboptions Example</h4>
+
+<p>The code which might appear in the <code>mount</code>(8) program is a perfect
+example of the use of <code>getsubopt</code>:
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;unistd.h&gt;
+     
+     int do_all;
+     const char *type;
+     int read_size;
+     int write_size;
+     int read_only;
+     
+     enum
+     {
+       RO_OPTION = 0,
+       RW_OPTION,
+       READ_SIZE_OPTION,
+       WRITE_SIZE_OPTION,
+       THE_END
+     };
+     
+     const char *mount_opts[] =
+     {
+       [RO_OPTION] = "ro",
+       [RW_OPTION] = "rw",
+       [READ_SIZE_OPTION] = "rsize",
+       [WRITE_SIZE_OPTION] = "wsize",
+       [THE_END] = NULL
+     };
+     
+     int
+     main (int argc, char *argv[])
+     {
+       char *subopts, *value;
+       int opt;
+     
+       while ((opt = getopt (argc, argv, "at:o:")) != -1)
+         switch (opt)
+           {
+           case 'a':
+             do_all = 1;
+             break;
+           case 't':
+             type = optarg;
+             break;
+           case 'o':
+             subopts = optarg;
+             while (*subopts != '\0')
+               switch (getsubopt (&amp;subopts, mount_opts, &amp;value))
+                 {
+                 case RO_OPTION:
+                   read_only = 1;
+                   break;
+                 case RW_OPTION:
+                   read_only = 0;
+                   break;
+                 case READ_SIZE_OPTION:
+                   if (value == NULL)
+                     abort ();
+                   read_size = atoi (value);
+                   break;
+                 case WRITE_SIZE_OPTION:
+                   if (value == NULL)
+                     abort ();
+                   write_size = atoi (value);
+                   break;
+                 default:
+                   /* <span class="roman">Unknown suboption.</span> */
+                   printf ("Unknown suboption `%s'\n", value);
+                   break;
+                 }
+             break;
+           default:
+             abort ();
+           }
+     
+       /* <span class="roman">Do the real work.</span> */
+     
+       return 0;
+     }
+</pre>
+   </body></html>
+

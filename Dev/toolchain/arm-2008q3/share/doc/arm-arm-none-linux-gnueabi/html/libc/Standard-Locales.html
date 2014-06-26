@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Standard Locales - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locales.html#Locales" title="Locales">
+<link rel="prev" href="Setting-the-Locale.html#Setting-the-Locale" title="Setting the Locale">
+<link rel="next" href="Locale-Information.html#Locale-Information" title="Locale Information">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Standard-Locales"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Locale-Information.html#Locale-Information">Locale Information</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Setting-the-Locale.html#Setting-the-Locale">Setting the Locale</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locales.html#Locales">Locales</a>
+<hr>
+</div>
+
+<h3 class="section">7.5 Standard Locales</h3>
+
+<p>The only locale names you can count on finding on all operating systems
+are these three standard ones:
+
+     <dl>
+<dt><code>"C"</code><dd>This is the standard C locale.  The attributes and behavior it provides
+are specified in the ISO&nbsp;C<!-- /@w --> standard.  When your program starts up, it
+initially uses this locale by default.
+
+     <br><dt><code>"POSIX"</code><dd>This is the standard POSIX locale.  Currently, it is an alias for the
+standard C locale.
+
+     <br><dt><code>""</code><dd>The empty name says to select a locale based on environment variables. 
+See <a href="Locale-Categories.html#Locale-Categories">Locale Categories</a>. 
+</dl>
+
+   <p>Defining and installing named locales is normally a responsibility of
+the system administrator at your site (or the person who installed the
+GNU C library).  It is also possible for the user to create private
+locales.  All this will be discussed later when describing the tool to
+do so. 
+<!-- (@pxref{Building Locale Files}). -->
+
+   <p>If your program needs to use something other than the &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale,
+it will be more portable if you use whatever locale the user specifies
+with the environment, rather than trying to specify some non-standard
+locale explicitly by name.  Remember, different machines might have
+different sets of locales installed.
+
+   </body></html>
+

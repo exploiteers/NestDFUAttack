@@ -1,0 +1,201 @@
+<html lang="en">
+<head>
+<title>Process Group Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Functions-for-Job-Control.html#Functions-for-Job-Control" title="Functions for Job Control">
+<link rel="prev" href="Identifying-the-Terminal.html#Identifying-the-Terminal" title="Identifying the Terminal">
+<link rel="next" href="Terminal-Access-Functions.html#Terminal-Access-Functions" title="Terminal Access Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Process-Group-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Terminal-Access-Functions.html#Terminal-Access-Functions">Terminal Access Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Identifying-the-Terminal.html#Identifying-the-Terminal">Identifying the Terminal</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Functions-for-Job-Control.html#Functions-for-Job-Control">Functions for Job Control</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.7.2 Process Group Functions</h4>
+
+<p>Here are descriptions of the functions for manipulating process groups. 
+Your program should include the header files <samp><span class="file">sys/types.h</span></samp> and
+<samp><span class="file">unistd.h</span></samp> to use these functions. 
+<a name="index-unistd_002eh-3231"></a><a name="index-sys_002ftypes_002eh-3232"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: pid_t <b>setsid</b> (<var>void</var>)<var><a name="index-setsid-3233"></a></var><br>
+<blockquote><p>The <code>setsid</code> function creates a new session.  The calling process
+becomes the session leader, and is put in a new process group whose
+process group ID is the same as the process ID of that process.  There
+are initially no other processes in the new process group, and no other
+process groups in the new session.
+
+        <p>This function also makes the calling process have no controlling terminal.
+
+        <p>The <code>setsid</code> function returns the new process group ID of the
+calling process if successful.  A return value of <code>-1</code> indicates an
+error.  The following <code>errno</code> error conditions are defined for this
+function:
+
+          <dl>
+<dt><code>EPERM</code><dd>The calling process is already a process group leader, or there is
+already another process group around that has the same process group ID. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: pid_t <b>getsid</b> (<var>pid_t pid</var>)<var><a name="index-getsid-3234"></a></var><br>
+<blockquote>
+        <p>The <code>getsid</code> function returns the process group ID of the session
+leader of the specified process.  If a <var>pid</var> is <code>0</code>, the
+process group ID of the session leader of the current process is
+returned.
+
+        <p>In case of error <code>-1</code> is returned and <code>errno</code> is set.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>ESRCH</code><dd>There is no process with the given process ID <var>pid</var>. 
+<br><dt><code>EPERM</code><dd>The calling process and the process specified by <var>pid</var> are in
+different sessions, and the implementation doesn't allow to access the
+process group ID of the session leader of the process with ID <var>pid</var>
+from the calling process. 
+</dl>
+        </p></blockquote></div>
+
+   <p>The <code>getpgrp</code> function has two definitions: one derived from BSD
+Unix, and one from the POSIX.1 standard.  The feature test macros you
+have selected (see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>) determine which definition
+you get.  Specifically, you get the BSD version if you define
+<code>_BSD_SOURCE</code>; otherwise, you get the POSIX version if you define
+<code>_POSIX_SOURCE</code> or <code>_GNU_SOURCE</code>.  Programs written for old
+BSD systems will not include <samp><span class="file">unistd.h</span></samp>, which defines
+<code>getpgrp</code> specially under <code>_BSD_SOURCE</code>.  You must link such
+programs with the <code>-lbsd-compat</code> option to get the BSD definition. 
+<a name="index-g_t_002dlbsd_002dcompat-3235"></a><a name="index-bsd_002dcompat-3236"></a><a name="index-BSD-compatibility-library-3237"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; POSIX.1 Function: pid_t <b>getpgrp</b> (<var>void</var>)<var><a name="index-getpgrp-3238"></a></var><br>
+<blockquote><p>The POSIX.1 definition of <code>getpgrp</code> returns the process group ID of
+the calling process. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; BSD Function: pid_t <b>getpgrp</b> (<var>pid_t pid</var>)<var><a name="index-getpgrp-3239"></a></var><br>
+<blockquote><p>The BSD definition of <code>getpgrp</code> returns the process group ID of the
+process <var>pid</var>.  You can supply a value of <code>0</code> for the <var>pid</var>
+argument to get information about the calling process. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; System V Function: int <b>getpgid</b> (<var>pid_t pid</var>)<var><a name="index-getpgid-3240"></a></var><br>
+<blockquote>
+        <p><code>getpgid</code> is the same as the BSD function <code>getpgrp</code>.  It
+returns the process group ID of the process <var>pid</var>.  You can supply a
+value of <code>0</code> for the <var>pid</var> argument to get information about
+the calling process.
+
+        <p>In case of error <code>-1</code> is returned and <code>errno</code> is set.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>ESRCH</code><dd>There is no process with the given process ID <var>pid</var>. 
+The calling process and the process specified by <var>pid</var> are in
+different sessions, and the implementation doesn't allow to access the
+process group ID of the process with ID <var>pid</var> from the calling
+process. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>setpgid</b> (<var>pid_t pid, pid_t pgid</var>)<var><a name="index-setpgid-3241"></a></var><br>
+<blockquote><p>The <code>setpgid</code> function puts the process <var>pid</var> into the process
+group <var>pgid</var>.  As a special case, either <var>pid</var> or <var>pgid</var> can
+be zero to indicate the process ID of the calling process.
+
+        <p>This function fails on a system that does not support job control. 
+See <a href="Job-Control-is-Optional.html#Job-Control-is-Optional">Job Control is Optional</a>, for more information.
+
+        <p>If the operation is successful, <code>setpgid</code> returns zero.  Otherwise
+it returns <code>-1</code>.  The following <code>errno</code> error conditions are
+defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>The child process named by <var>pid</var> has executed an <code>exec</code>
+function since it was forked.
+
+          <br><dt><code>EINVAL</code><dd>The value of the <var>pgid</var> is not valid.
+
+          <br><dt><code>ENOSYS</code><dd>The system doesn't support job control.
+
+          <br><dt><code>EPERM</code><dd>The process indicated by the <var>pid</var> argument is a session leader,
+or is not in the same session as the calling process, or the value of
+the <var>pgid</var> argument doesn't match a process group ID in the same
+session as the calling process.
+
+          <br><dt><code>ESRCH</code><dd>The process indicated by the <var>pid</var> argument is not the calling
+process or a child of the calling process. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setpgrp</b> (<var>pid_t pid, pid_t pgid</var>)<var><a name="index-setpgrp-3242"></a></var><br>
+<blockquote><p>This is the BSD Unix name for <code>setpgid</code>.  Both functions do exactly
+the same thing. 
+</p></blockquote></div>
+
+   </body></html>
+

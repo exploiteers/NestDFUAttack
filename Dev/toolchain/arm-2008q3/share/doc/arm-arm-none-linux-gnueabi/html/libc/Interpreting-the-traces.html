@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Interpreting the traces - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Allocation-Debugging.html#Allocation-Debugging" title="Allocation Debugging">
+<link rel="prev" href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger" title="Tips for the Memory Debugger">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Interpreting-the-traces"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger">Tips for the Memory Debugger</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.3.4 Interpreting the traces</h5>
+
+<p>If you take a look at the output it will look similar to this:
+
+<pre class="example">     = Start
+      [0x8048209] - 0x8064cc8
+      [0x8048209] - 0x8064ce0
+      [0x8048209] - 0x8064cf8
+      [0x80481eb] + 0x8064c48 0x14
+      [0x80481eb] + 0x8064c60 0x14
+      [0x80481eb] + 0x8064c78 0x14
+      [0x80481eb] + 0x8064c90 0x14
+     = End
+</pre>
+   <p>What this all means is not really important since the trace file is not
+meant to be read by a human.  Therefore no attention is given to
+readability.  Instead there is a program which comes with the GNU C
+library which interprets the traces and outputs a summary in an
+user-friendly way.  The program is called <code>mtrace</code> (it is in fact a
+Perl script) and it takes one or two arguments.  In any case the name of
+the file with the trace output must be specified.  If an optional
+argument precedes the name of the trace file this must be the name of
+the program which generated the trace.
+
+<pre class="example">     drepper$ mtrace tst-mtrace log
+     No memory leaks.
+</pre>
+   <p>In this case the program <code>tst-mtrace</code> was run and it produced a
+trace file <samp><span class="file">log</span></samp>.  The message printed by <code>mtrace</code> shows there
+are no problems with the code, all allocated memory was freed
+afterwards.
+
+   <p>If we call <code>mtrace</code> on the example trace given above we would get a
+different outout:
+
+<pre class="example">     drepper$ mtrace errlog
+     - 0x08064cc8 Free 2 was never alloc'd 0x8048209
+     - 0x08064ce0 Free 3 was never alloc'd 0x8048209
+     - 0x08064cf8 Free 4 was never alloc'd 0x8048209
+     
+     Memory not freed:
+     -----------------
+        Address     Size     Caller
+     0x08064c48     0x14  at 0x80481eb
+     0x08064c60     0x14  at 0x80481eb
+     0x08064c78     0x14  at 0x80481eb
+     0x08064c90     0x14  at 0x80481eb
+</pre>
+   <p>We have called <code>mtrace</code> with only one argument and so the script
+has no chance to find out what is meant with the addresses given in the
+trace.  We can do better:
+
+<pre class="example">     drepper$ mtrace tst errlog
+     - 0x08064cc8 Free 2 was never alloc'd /home/drepper/tst.c:39
+     - 0x08064ce0 Free 3 was never alloc'd /home/drepper/tst.c:39
+     - 0x08064cf8 Free 4 was never alloc'd /home/drepper/tst.c:39
+     
+     Memory not freed:
+     -----------------
+        Address     Size     Caller
+     0x08064c48     0x14  at /home/drepper/tst.c:33
+     0x08064c60     0x14  at /home/drepper/tst.c:33
+     0x08064c78     0x14  at /home/drepper/tst.c:33
+     0x08064c90     0x14  at /home/drepper/tst.c:33
+</pre>
+   <p>Suddenly the output makes much more sense and the user can see
+immediately where the function calls causing the trouble can be found.
+
+   <p>Interpreting this output is not complicated.  There are at most two
+different situations being detected.  First, <code>free</code> was called for
+pointers which were never returned by one of the allocation functions. 
+This is usually a very bad problem and what this looks like is shown in
+the first three lines of the output.  Situations like this are quite
+rare and if they appear they show up very drastically: the program
+normally crashes.
+
+   <p>The other situation which is much harder to detect are memory leaks.  As
+you can see in the output the <code>mtrace</code> function collects all this
+information and so can say that the program calls an allocation function
+from line 33 in the source file <samp><span class="file">/home/drepper/tst-mtrace.c</span></samp> four
+times without freeing this memory before the program terminates. 
+Whether this is a real problem remains to be investigated.
+
+   </body></html>
+

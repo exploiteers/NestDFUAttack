@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+<title>Priority - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation" title="Resource Usage And Limitation">
+<link rel="prev" href="Limits-on-Resources.html#Limits-on-Resources" title="Limits on Resources">
+<link rel="next" href="Memory-Resources.html#Memory-Resources" title="Memory Resources">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Priority"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Memory-Resources.html#Memory-Resources">Memory Resources</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">Resource Usage And Limitation</a>
+<hr>
+</div>
+
+<h3 class="section">22.3 Process CPU Priority And Scheduling</h3>
+
+<p><a name="index-process-priority-2734"></a><a name="index-cpu-priority-2735"></a><a name="index-priority-of-a-process-2736"></a>
+When multiple processes simultaneously require CPU time, the system's
+scheduling policy and process CPU priorities determine which processes
+get it.  This section describes how that determination is made and
+GNU C library functions to control it.
+
+   <p>It is common to refer to CPU scheduling simply as scheduling and a
+process' CPU priority simply as the process' priority, with the CPU
+resource being implied.  Bear in mind, though, that CPU time is not the
+only resource a process uses or that processes contend for.  In some
+cases, it is not even particularly important.  Giving a process a high
+&ldquo;priority&rdquo; may have very little effect on how fast a process runs with
+respect to other processes.  The priorities discussed in this section
+apply only to CPU time.
+
+   <p>CPU scheduling is a complex issue and different systems do it in wildly
+different ways.  New ideas continually develop and find their way into
+the intricacies of the various systems' scheduling algorithms.  This
+section discusses the general concepts, some specifics of systems
+that commonly use the GNU C library, and some standards.
+
+   <p>For simplicity, we talk about CPU contention as if there is only one CPU
+in the system.  But all the same principles apply when a processor has
+multiple CPUs, and knowing that the number of processes that can run at
+any one time is equal to the number of CPUs, you can easily extrapolate
+the information.
+
+   <p>The functions described in this section are all defined by the POSIX.1
+and POSIX.1b standards (the <code>sched...</code> functions are POSIX.1b). 
+However, POSIX does not define any semantics for the values that these
+functions get and set.  In this chapter, the semantics are based on the
+Linux kernel's implementation of the POSIX standard.  As you will see,
+the Linux implementation is quite the inverse of what the authors of the
+POSIX syntax had in mind.
+
+<ul class="menu">
+<li><a accesskey="1" href="Absolute-Priority.html#Absolute-Priority">Absolute Priority</a>:                The first tier of priority.  Posix
+<li><a accesskey="2" href="Realtime-Scheduling.html#Realtime-Scheduling">Realtime Scheduling</a>:              Scheduling among the process nobility
+<li><a accesskey="3" href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">Basic Scheduling Functions</a>:       Get/set scheduling policy, priority
+<li><a accesskey="4" href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>:           Scheduling among the vulgar masses
+<li><a accesskey="5" href="CPU-Affinity.html#CPU-Affinity">CPU Affinity</a>:                     Limiting execution to certain CPUs
+</ul>
+
+   </body></html>
+

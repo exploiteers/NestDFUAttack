@@ -1,0 +1,214 @@
+<html lang="en">
+<head>
+<title>Asynchronous I/O - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Synchronizing-I_002fO.html#Synchronizing-I_002fO" title="Synchronizing I/O">
+<link rel="next" href="Control-Operations.html#Control-Operations" title="Control Operations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Asynchronous-I%2fO"></a>
+<a name="Asynchronous-I_002fO"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Control-Operations.html#Control-Operations">Control Operations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">Synchronizing I/O</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.10 Perform I/O Operations in Parallel</h3>
+
+<p>The POSIX.1b standard defines a new set of I/O operations which can
+significantly reduce the time an application spends waiting at I/O.  The
+new functions allow a program to initiate one or more I/O operations and
+then immediately resume normal work while the I/O operations are
+executed in parallel.  This functionality is available if the
+<samp><span class="file">unistd.h</span></samp> file defines the symbol <code>_POSIX_ASYNCHRONOUS_IO</code>.
+
+   <p>These functions are part of the library with realtime functions named
+<samp><span class="file">librt</span></samp>.  They are not actually part of the <samp><span class="file">libc</span></samp> binary. 
+The implementation of these functions can be done using support in the
+kernel (if available) or using an implementation based on threads at
+userlevel.  In the latter case it might be necessary to link applications
+with the thread library <samp><span class="file">libpthread</span></samp> in addition to <samp><span class="file">librt</span></samp>.
+
+   <p>All AIO operations operate on files which were opened previously.  There
+might be arbitrarily many operations running for one file.  The
+asynchronous I/O operations are controlled using a data structure named
+<code>struct aiocb</code> (<dfn>AIO control block</dfn>).  It is defined in
+<samp><span class="file">aio.h</span></samp> as follows.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Data Type: <b>struct aiocb</b><var><a name="index-struct-aiocb-1286"></a></var><br>
+<blockquote><p>The POSIX.1b standard mandates that the <code>struct aiocb</code> structure
+contains at least the members described in the following table.  There
+might be more elements which are used by the implementation, but
+depending upon these elements is not portable and is highly deprecated.
+
+          <dl>
+<dt><code>int aio_fildes</code><dd>This element specifies the file descriptor to be used for the
+operation.  It must be a legal descriptor, otherwise the operation will
+fail.
+
+          <p>The device on which the file is opened must allow the seek operation. 
+I.e., it is not possible to use any of the AIO operations on devices
+like terminals where an <code>lseek</code> call would lead to an error.
+
+          <br><dt><code>off_t aio_offset</code><dd>This element specifies the offset in the file at which the operation (input
+or output) is performed.  Since the operations are carried out in arbitrary
+order and more than one operation for one file descriptor can be
+started, one cannot expect a current read/write position of the file
+descriptor.
+
+          <br><dt><code>volatile void *aio_buf</code><dd>This is a pointer to the buffer with the data to be written or the place
+where the read data is stored.
+
+          <br><dt><code>size_t aio_nbytes</code><dd>This element specifies the length of the buffer pointed to by <code>aio_buf</code>.
+
+          <br><dt><code>int aio_reqprio</code><dd>If the platform has defined <code>_POSIX_PRIORITIZED_IO</code> and
+<code>_POSIX_PRIORITY_SCHEDULING</code>, the AIO requests are
+processed based on the current scheduling priority.  The
+<code>aio_reqprio</code> element can then be used to lower the priority of the
+AIO operation.
+
+          <br><dt><code>struct sigevent aio_sigevent</code><dd>This element specifies how the calling process is notified once the
+operation terminates.  If the <code>sigev_notify</code> element is
+<code>SIGEV_NONE</code>, no notification is sent.  If it is <code>SIGEV_SIGNAL</code>,
+the signal determined by <code>sigev_signo</code> is sent.  Otherwise,
+<code>sigev_notify</code> must be <code>SIGEV_THREAD</code>.  In this case, a thread
+is created which starts executing the function pointed to by
+<code>sigev_notify_function</code>.
+
+          <br><dt><code>int aio_lio_opcode</code><dd>This element is only used by the <code>lio_listio</code> and
+<code>lio_listio64</code> functions.  Since these functions allow an
+arbitrary number of operations to start at once, and each operation can be
+input or output (or nothing), the information must be stored in the
+control block.  The possible values are:
+
+               <dl>
+<dt><code>LIO_READ</code><a name="index-LIO_005fREAD-1287"></a><dd>Start a read operation.  Read from the file at position
+<code>aio_offset</code> and store the next <code>aio_nbytes</code> bytes in the
+buffer pointed to by <code>aio_buf</code>.
+
+               <br><dt><code>LIO_WRITE</code><a name="index-LIO_005fWRITE-1288"></a><dd>Start a write operation.  Write <code>aio_nbytes</code> bytes starting at
+<code>aio_buf</code> into the file starting at position <code>aio_offset</code>.
+
+               <br><dt><code>LIO_NOP</code><a name="index-LIO_005fNOP-1289"></a><dd>Do nothing for this control block.  This value is useful sometimes when
+an array of <code>struct aiocb</code> values contains holes, i.e., some of the
+values must not be handled although the whole array is presented to the
+<code>lio_listio</code> function. 
+</dl>
+          </dl>
+
+        <p>When the sources are compiled using <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit machine, this type is in fact <code>struct aiocb64</code>, since the LFS
+interface transparently replaces the <code>struct aiocb</code> definition. 
+</p></blockquote></div>
+
+   <p>For use with the AIO functions defined in the LFS, there is a similar type
+defined which replaces the types of the appropriate members with larger
+types but otherwise is equivalent to <code>struct aiocb</code>.  Particularly,
+all member names are the same.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Data Type: <b>struct aiocb64</b><var><a name="index-struct-aiocb64-1290"></a></var><br>
+<blockquote><dl>
+<dt><code>int aio_fildes</code><dd>This element specifies the file descriptor which is used for the
+operation.  It must be a legal descriptor since otherwise the operation
+fails for obvious reasons.
+
+          <p>The device on which the file is opened must allow the seek operation. 
+I.e., it is not possible to use any of the AIO operations on devices
+like terminals where an <code>lseek</code> call would lead to an error.
+
+          <br><dt><code>off64_t aio_offset</code><dd>This element specifies at which offset in the file the operation (input
+or output) is performed.  Since the operation are carried in arbitrary
+order and more than one operation for one file descriptor can be
+started, one cannot expect a current read/write position of the file
+descriptor.
+
+          <br><dt><code>volatile void *aio_buf</code><dd>This is a pointer to the buffer with the data to be written or the place
+where the read data is stored.
+
+          <br><dt><code>size_t aio_nbytes</code><dd>This element specifies the length of the buffer pointed to by <code>aio_buf</code>.
+
+          <br><dt><code>int aio_reqprio</code><dd>If for the platform <code>_POSIX_PRIORITIZED_IO</code> and
+<code>_POSIX_PRIORITY_SCHEDULING</code> are defined the AIO requests are
+processed based on the current scheduling priority.  The
+<code>aio_reqprio</code> element can then be used to lower the priority of the
+AIO operation.
+
+          <br><dt><code>struct sigevent aio_sigevent</code><dd>This element specifies how the calling process is notified once the
+operation terminates.  If the <code>sigev_notify</code>, element is
+<code>SIGEV_NONE</code> no notification is sent.  If it is <code>SIGEV_SIGNAL</code>,
+the signal determined by <code>sigev_signo</code> is sent.  Otherwise,
+<code>sigev_notify</code> must be <code>SIGEV_THREAD</code> in which case a thread
+which starts executing the function pointed to by
+<code>sigev_notify_function</code>.
+
+          <br><dt><code>int aio_lio_opcode</code><dd>This element is only used by the <code>lio_listio</code> and
+<code>[lio_listio64</code> functions.  Since these functions allow an
+arbitrary number of operations to start at once, and since each operation can be
+input or output (or nothing), the information must be stored in the
+control block.  See the description of <code>struct aiocb</code> for a description
+of the possible values. 
+</dl>
+
+        <p>When the sources are compiled using <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit machine, this type is available under the name <code>struct
+aiocb64</code>, since the LFS transparently replaces the old interface. 
+</p></blockquote></div>
+
+<ul class="menu">
+<li><a accesskey="1" href="Asynchronous-Reads_002fWrites.html#Asynchronous-Reads_002fWrites">Asynchronous Reads/Writes</a>:     Asynchronous Read and Write Operations. 
+<li><a accesskey="2" href="Status-of-AIO-Operations.html#Status-of-AIO-Operations">Status of AIO Operations</a>:      Getting the Status of AIO Operations. 
+<li><a accesskey="3" href="Synchronizing-AIO-Operations.html#Synchronizing-AIO-Operations">Synchronizing AIO Operations</a>:  Getting into a consistent state. 
+<li><a accesskey="4" href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>:         Cancellation of AIO Operations. 
+<li><a accesskey="5" href="Configuration-of-AIO.html#Configuration-of-AIO">Configuration of AIO</a>:          How to optimize the AIO implementation. 
+</ul>
+
+   </body></html>
+

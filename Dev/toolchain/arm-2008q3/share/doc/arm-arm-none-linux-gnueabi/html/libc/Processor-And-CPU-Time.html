@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Processor And CPU Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Date-and-Time.html#Date-and-Time" title="Date and Time">
+<link rel="prev" href="Elapsed-Time.html#Elapsed-Time" title="Elapsed Time">
+<link rel="next" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Processor-And-CPU-Time"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Date-and-Time.html#Date-and-Time">Date and Time</a>
+<hr>
+</div>
+
+<h3 class="section">21.3 Processor And CPU Time</h3>
+
+<p>If you're trying to optimize your program or measure its efficiency,
+it's very useful to know how much processor time it uses.  For that,
+calendar time and elapsed times are useless because a process may spend
+time waiting for I/O or for other processes to use the CPU.  However,
+you can get the information with the functions in this section.
+
+   <p>CPU time (see <a href="Time-Basics.html#Time-Basics">Time Basics</a>) is represented by the data type
+<code>clock_t</code>, which is a number of <dfn>clock ticks</dfn>.  It gives the
+total amount of time a process has actively used a CPU since some
+arbitrary event.  On the GNU system, that event is the creation of the
+process.  While arbitrary in general, the event is always the same event
+for any particular process, so you can always measure how much time on
+the CPU a particular computation takes by examining the process' CPU
+time before and after the computation. 
+<a name="index-CPU-time-2602"></a><a name="index-clock-ticks-2603"></a><a name="index-ticks_002c-clock-2604"></a>
+In the GNU system, <code>clock_t</code> is equivalent to <code>long int</code> and
+<code>CLOCKS_PER_SEC</code> is an integer value.  But in other systems, both
+<code>clock_t</code> and the macro <code>CLOCKS_PER_SEC</code> can be either integer
+or floating-point types.  Casting CPU time values to <code>double</code>, as
+in the example above, makes sure that operations such as arithmetic and
+printing work properly and consistently no matter what the underlying
+representation is.
+
+   <p>Note that the clock can wrap around.  On a 32bit system with
+<code>CLOCKS_PER_SEC</code> set to one million this function will return the
+same value approximately every 72 minutes.
+
+   <p>For additional functions to examine a process' use of processor time,
+and to control it, see <a href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">Resource Usage And Limitation</a>.
+
+<ul class="menu">
+<li><a accesskey="1" href="CPU-Time.html#CPU-Time">CPU Time</a>:                     The <code>clock</code> function. 
+<li><a accesskey="2" href="Processor-Time.html#Processor-Time">Processor Time</a>:               The <code>times</code> function. 
+</ul>
+
+   </body></html>
+

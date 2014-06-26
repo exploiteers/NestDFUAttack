@@ -1,0 +1,128 @@
+<html lang="en">
+<head>
+<title>Getting File Status Flags - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Status-Flags.html#File-Status-Flags" title="File Status Flags">
+<link rel="prev" href="Operating-Modes.html#Operating-Modes" title="Operating Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Getting-File-Status-Flags"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Operating-Modes.html#Operating-Modes">Operating Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.14.4 Getting and Setting File Status Flags</h4>
+
+<p>The <code>fcntl</code> function can fetch or change file status flags.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>F_GETFL</b><var><a name="index-F_005fGETFL-1361"></a></var><br>
+<blockquote><p>This macro is used as the <var>command</var> argument to <code>fcntl</code>, to
+read the file status flags for the open file with descriptor
+<var>filedes</var>.
+
+        <p>The normal return value from <code>fcntl</code> with this command is a
+nonnegative number which can be interpreted as the bitwise OR of the
+individual flags.  Since the file access modes are not single-bit values,
+you can mask off other bits in the returned flags with <code>O_ACCMODE</code>
+to compare them.
+
+        <p>In case of an error, <code>fcntl</code> returns -1.  The following
+<code>errno</code> error conditions are defined for this command:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is invalid. 
+</dl>
+        </p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>F_SETFL</b><var><a name="index-F_005fSETFL-1362"></a></var><br>
+<blockquote><p>This macro is used as the <var>command</var> argument to <code>fcntl</code>, to set
+the file status flags for the open file corresponding to the
+<var>filedes</var> argument.  This command requires a third <code>int</code>
+argument to specify the new flags, so the call looks like this:
+
+     <pre class="smallexample">          fcntl (<var>filedes</var>, F_SETFL, <var>new-flags</var>)
+</pre>
+        <p>You can't change the access mode for the file in this way; that is,
+whether the file descriptor was opened for reading or writing.
+
+        <p>The normal return value from <code>fcntl</code> with this command is an
+unspecified value other than -1, which indicates an error.  The
+error conditions are the same as for the <code>F_GETFL</code> command. 
+</p></blockquote></div>
+
+   <p>If you want to modify the file status flags, you should get the current
+flags with <code>F_GETFL</code> and modify the value.  Don't assume that the
+flags listed here are the only ones that are implemented; your program
+may be run years from now and more flags may exist then.  For example,
+here is a function to set or clear the flag <code>O_NONBLOCK</code> without
+altering any other flags:
+
+<pre class="smallexample">     /* <span class="roman">Set the </span><code>O_NONBLOCK</code><span class="roman"> flag of </span><var>desc</var><span class="roman"> if </span><var>value</var><span class="roman"> is nonzero,</span>
+        <span class="roman">or clear the flag if </span><var>value</var><span class="roman"> is 0.</span>
+        <span class="roman">Return 0 on success, or -1 on error with </span><code>errno</code><span class="roman"> set.</span> */
+     
+     int
+     set_nonblock_flag (int desc, int value)
+     {
+       int oldflags = fcntl (desc, F_GETFL, 0);
+       /* <span class="roman">If reading the flags failed, return error indication now.</span> */
+       if (oldflags == -1)
+         return -1;
+       /* <span class="roman">Set just the flag we want to set.</span> */
+       if (value != 0)
+         oldflags |= O_NONBLOCK;
+       else
+         oldflags &amp;= ~O_NONBLOCK;
+       /* <span class="roman">Store modified flag word in the descriptor.</span> */
+       return fcntl (desc, F_SETFL, oldflags);
+     }
+</pre>
+   </body></html>
+

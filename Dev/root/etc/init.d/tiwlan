@@ -1,0 +1,285 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to calibrate/start/stop the Texas
+#      Instruments Wireless LAN subsystem.
+#
+#      This script only brings hardware up to a usable state by
+#      loading firmware, configuration and NVRAM settings. Actual
+#      network configuration occurs elsewhere.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+# Export fallback shared library search path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:}${NESTLABSLIBDIR}
+
+# Common executables
+BOOTENV="${SBINDIR}/fw_printenv -n"
+
+# TI WLAN executables
+TIWLANLOADER="${USRSBINDIR}/tiwlan_loader"
+TIWLANCU="${USRSBINDIR}/wlan_cu"
+
+# TI WLAN module
+TIWLANMOD=wilink
+
+# Other executables
+TIWLANNVSEDIT="${NESTLABSSBINDIR}/tiwlan_nvsedit"
+
+IFACE=tiwlan0
+TIWLANCONF="${CONFDIR}/tiwlan.ini"
+FWDIR="${LIBDIR}/firmware"
+TIWLANFW="${FWDIR}/wl1271-fw.bin"
+TIWLANNVS="${ROOTDIR}media/system-config/wl1271-nvs.bin"
+TIWLANCALSEQ="/ w p 1 / w l 2 / w f 2 / t r h 0 7 / t b b 375 128 0 / t b t 1 0 0 0 0 0 0 0"
+TIWLANNVSTMP="${TMPDIR}/nvs_map.bin"
+
+tiwlan_insert () {
+	${MODPROBE} ${TIWLANMOD}.ko
+}
+
+tiwlan_remove () {
+	${MODPROBE} -r ${TIWLANMOD}
+}
+
+tiwlan_up () {
+	test -x ${IP} && ${IP} link set dev ${IFACE} up
+}
+
+tiwlan_down () {
+	test -x ${IP} && ${IP} link set dev ${IFACE} down
+}
+
+tiwlan_mac () {
+	${IP} -o link show dev ${IFACE} | ${SED} -ne 's#[[:digit:]]\+:.\+link/ether \([[:xdigit:]]\{2,2\}\(:[[:xdigit:]]\{2,2\}\)\{5,5\}\) brd.\+$#\1#gp' | ${TOLOWER}
+}
+
+tiwlan_loaded () {
+	tiwlan_mac | ${GREP} -v '00:00:00:00:00:00' > ${NULL} 2>&1
+}
+
+tiwlan_load () {
+	if [ -n "${1}" ]; then
+		firmware="-f ${1}"
+	fi
+
+	if [ -n "${2}" ]; then
+		config="-i ${2}"
+	fi
+
+	if [ -n "${3}" ]; then
+		nvram="-e ${3}"
+	fi
+    
+	test -x ${TIWLANLOADER} && ${TIWLANLOADER} ${firmware} ${config} ${nvram}
+}
+
+tiwlan_stop () {
+	tiwlan_down
+	tiwlan_remove
+}
+
+#
+# tiwlan_mac_update <TI WLAN NVS Path>
+#
+# Update the MAC address in the specified TI WLAN non-volatile storage
+# (NVS file by trying u-boot environment 'ethaddr*' variables
+# one-by-one until one is found that isn't in conflict with an
+# existing interface.
+#
+# We explictly and intentionally start with ethaddr1 rather than
+# ethaddr. On development boards, ethaddr1 should be chosen first;
+# otherwise, this will end up "stealing" ethaddr from the wired
+# interface. On production boards, ethaddr1 should not be defined and
+# ethaddr should succeed, conflict-free.
+#
+tiwlan_mac_update () {
+	local inuse=`tiwlan_mac`
+	local keys="ethaddr1 ethaddr ethaddr2"
+	local address
+	local conflict
+	local status
+
+	# Check one of several boot environment variables for a possible
+	# address to assign.
+
+	for key in ${keys}; do
+		address=`${BOOTENV} "${key}" | ${TOLOWER}` 2> ${NULL}
+		conflict=0
+
+		if [ -n "${address}" ]; then
+			if [ -n "${inuse}" ]; then
+				# Check the address against any
+				# already-in-use addresses.
+
+				for used in ${inuse}; do
+					if [ "${address}" = "${used}" ]; then
+						conflict=1
+						break
+					fi
+				done
+			fi
+
+			# If there were no conflicts for the current
+			# address, then we can use it for this device.
+
+			if [ ${conflict} -eq 0 ]; then
+				break
+			fi
+		fi
+	done
+
+	if [ ${conflict} -ne 1 ] && [ -n "${address}" ]; then
+		${TIWLANNVSEDIT} --verbose --force -i "${1}" -o "${1}" -m "${address}"
+		status=${?}
+	else
+		${ECHO} " Could not find a unique MAC address for the device."
+		${ECHO} "Please ensure that one of '${keys}' \c"
+		${ECHO} "has been set, using 'fw_setenv', uniquely for the device."
+		status=1
+	fi
+
+	return ${status}
+}
+
+tiwlan_calibrate () {
+    local status=1
+    local i=0
+    local retries=4
+
+    # First, insert the required modules
+    tiwlan_insert	
+
+    # Second, load the firmware and the configuration.
+    tiwlan_load ${TIWLANFW} ${TIWLANCONF}
+
+    # Then, bring the interface up.
+    tiwlan_up
+
+    # Next, execute the calibration sequence. This will generate a
+    # non-volatile storage file.
+    #
+    # The WiLink utility is exceptionally poor about returning proper
+    # status. Consequently, the only way to know whether or not
+    # calibration succeeded is the generation of the temporary NVS
+    # file in the working directory calibration was run in, in this
+    # case, /tmp.
+    #
+    # Occassionally, calibration will transiently fail; retry a few
+    # times.
+
+    while [ ${i} -lt ${retries} ]; do
+        (cd "${TMPDIR}" && ${ECHO} "${TIWLANCALSEQ}" | ${TIWLANCU} -b)
+
+        # If there is a temporary NVS file, calibration succeeded.
+        # Replace the default interface MAC address with a unique
+        # address.
+
+        if [ -r "${TIWLANNVSTMP}" ]; then
+            tiwlan_mac_update "${TIWLANNVSTMP}"
+            status=${?}
+
+            # Finally, move the temporary non-volatile storage file
+            # into its final resting place in the system configuration
+            # partition on success; otherwise, remove the temporary
+            # file on failure.
+
+            if [ ${status} -ne 0 ]; then
+                ${RM} -f "${TIWLANNVSTMP}"
+
+            else
+                ${MV} -f "${TIWLANNVSTMP}" "${TIWLANNVS}"
+
+                break
+
+            fi
+        fi
+
+        i=$((i + 1))
+
+        ${ECHO} " failed, retrying;\c"
+    done
+
+    return ${status}
+}
+
+case "${1}" in
+
+'calibrate')
+	${ECHO} "Calibrating:\c"
+
+	if tiwlan_calibrate ; then
+	    ${ECHO} " done."
+
+	    exec ${0} restart
+
+	    exit 0
+	else
+	    ${ECHO} " failed!"
+
+	    tiwlan_stop
+
+	    exit 1
+	fi
+	;;
+
+'start')
+	${ECHO} "Texas Instruments Wireless LAN:\c"
+
+	if ${CHECK} tiwlan && test -x ${TIWLANLOADER}; then
+		if [ ! -r "${TIWLANNVS}" ]; then
+			${ECHO} " The device has not been calibrated.\n"
+
+			${ECHO} "The interface will be calibrated.\n"
+
+			exec ${0} calibrate
+
+			exit 1
+
+		else
+			tiwlan_insert
+
+			if ! tiwlan_loaded ; then
+				if [ -r "${TIWLANFW}" ] && [ -r "${TIWLANCONF}" ]; then
+
+					# Load the firmware, configuration and
+					# non-volatile settings.
+
+					tiwlan_load ${TIWLANFW} ${TIWLANCONF} ${TIWLANNVS}
+
+					tiwlan_up
+
+				fi
+
+			fi
+		fi
+
+		result=`${IP} link show | ${SED} -n -e "s,^[[:digit:]]\+:[[:space:]]\(${IFACE}\):[[:space:]].\+$,\1,gp"`
+
+		${ECHO} " ${result}\c"
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	tiwlan_stop
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <calibrate | start | stop | restart>"
+	exit 1
+	;;
+
+esac

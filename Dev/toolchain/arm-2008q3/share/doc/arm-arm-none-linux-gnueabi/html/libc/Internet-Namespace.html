@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Internet Namespace - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sockets.html#Sockets" title="Sockets">
+<link rel="prev" href="Local-Namespace.html#Local-Namespace" title="Local Namespace">
+<link rel="next" href="Misc-Namespaces.html#Misc-Namespaces" title="Misc Namespaces">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Internet-Namespace"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Misc-Namespaces.html#Misc-Namespaces">Misc Namespaces</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Local-Namespace.html#Local-Namespace">Local Namespace</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sockets.html#Sockets">Sockets</a>
+<hr>
+</div>
+
+<h3 class="section">16.6 The Internet Namespace</h3>
+
+<p><a name="index-Internet-namespace_002c-for-sockets-1679"></a>
+This section describes the details of the protocols and socket naming
+conventions used in the Internet namespace.
+
+   <p>Originally the Internet namespace used only IP version 4 (IPv4).  With
+the growing number of hosts on the Internet, a new protocol with a
+larger address space was necessary: IP version 6 (IPv6).  IPv6
+introduces 128-bit addresses (IPv4 has 32-bit addresses) and other
+features, and will eventually replace IPv4.
+
+   <p>To create a socket in the IPv4 Internet namespace, use the symbolic name
+<code>PF_INET</code> of this namespace as the <var>namespace</var> argument to
+<code>socket</code> or <code>socketpair</code>.  For IPv6 addresses you need the
+macro <code>PF_INET6</code>. These macros are defined in <samp><span class="file">sys/socket.h</span></samp>. 
+<a name="index-sys_002fsocket_002eh-1680"></a>
+<!-- sys/socket.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Macro: int <b>PF_INET</b><var><a name="index-PF_005fINET-1681"></a></var><br>
+<blockquote><p>This designates the IPv4 Internet namespace and associated family of
+protocols. 
+</p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Macro: int <b>PF_INET6</b><var><a name="index-PF_005fINET6-1682"></a></var><br>
+<blockquote><p>This designates the IPv6 Internet namespace and associated family of
+protocols. 
+</p></blockquote></div>
+
+   <p>A socket address for the Internet namespace includes the following components:
+
+     <ul>
+<li>The address of the machine you want to connect to.  Internet addresses
+can be specified in several ways; these are discussed in <a href="Internet-Address-Formats.html#Internet-Address-Formats">Internet Address Formats</a>, <a href="Host-Addresses.html#Host-Addresses">Host Addresses</a> and <a href="Host-Names.html#Host-Names">Host Names</a>.
+
+     <li>A port number for that machine.  See <a href="Ports.html#Ports">Ports</a>. 
+</ul>
+
+   <p>You must ensure that the address and port number are represented in a
+canonical format called <dfn>network byte order</dfn>.  See <a href="Byte-Order.html#Byte-Order">Byte Order</a>,
+for information about this.
+
+<ul class="menu">
+<li><a accesskey="1" href="Internet-Address-Formats.html#Internet-Address-Formats">Internet Address Formats</a>:     How socket addresses are specified in the
+                                 Internet namespace. 
+<li><a accesskey="2" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>: 	        All about host addresses of Internet host. 
+<li><a accesskey="3" href="Protocols-Database.html#Protocols-Database">Protocols Database</a>: 		Referring to protocols by name. 
+<li><a accesskey="4" href="Ports.html#Ports">Ports</a>: 			Internet port numbers. 
+<li><a accesskey="5" href="Services-Database.html#Services-Database">Services Database</a>:            Ports may have symbolic names. 
+<li><a accesskey="6" href="Byte-Order.html#Byte-Order">Byte Order</a>: 		        Different hosts may use different byte
+                                 ordering conventions; you need to
+                                 canonicalize host address and port number. 
+<li><a accesskey="7" href="Inet-Example.html#Inet-Example">Inet Example</a>: 	        Putting it all together. 
+</ul>
+
+   </body></html>
+

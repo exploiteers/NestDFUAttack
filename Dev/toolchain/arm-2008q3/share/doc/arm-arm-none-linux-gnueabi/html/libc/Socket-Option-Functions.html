@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Socket Option Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Socket-Options.html#Socket-Options" title="Socket Options">
+<link rel="next" href="Socket_002dLevel-Options.html#Socket_002dLevel-Options" title="Socket-Level Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Socket-Option-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Socket_002dLevel-Options.html#Socket_002dLevel-Options">Socket-Level Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Socket-Options.html#Socket-Options">Socket Options</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.12.1 Socket Option Functions</h4>
+
+<p><a name="index-sys_002fsocket_002eh-1827"></a>Here are the functions for examining and modifying socket options. 
+They are declared in <samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getsockopt</b> (<var>int socket, int level, int optname, void *optval, socklen_t *optlen-ptr</var>)<var><a name="index-getsockopt-1828"></a></var><br>
+<blockquote><p>The <code>getsockopt</code> function gets information about the value of
+option <var>optname</var> at level <var>level</var> for socket <var>socket</var>.
+
+        <p>The option value is stored in a buffer that <var>optval</var> points to. 
+Before the call, you should supply in <code>*</code><var>optlen-ptr</var> the
+size of this buffer; on return, it contains the number of bytes of
+information actually stored in the buffer.
+
+        <p>Most options interpret the <var>optval</var> buffer as a single <code>int</code>
+value.
+
+        <p>The actual return value of <code>getsockopt</code> is <code>0</code> on success
+and <code>-1</code> on failure.  The following <code>errno</code> error conditions
+are defined:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>socket</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The descriptor <var>socket</var> is not a socket.
+
+          <br><dt><code>ENOPROTOOPT</code><dd>The <var>optname</var> doesn't make sense for the given <var>level</var>. 
+</dl>
+        </p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setsockopt</b> (<var>int socket, int level, int optname, void *optval, socklen_t optlen</var>)<var><a name="index-setsockopt-1829"></a></var><br>
+<blockquote><p>This function is used to set the socket option <var>optname</var> at level
+<var>level</var> for socket <var>socket</var>.  The value of the option is passed
+in the buffer <var>optval</var> of size <var>optlen</var>.
+
+     <!-- Argh. -zw -->
+        </blockquote></div>
+
+   </body></html>
+

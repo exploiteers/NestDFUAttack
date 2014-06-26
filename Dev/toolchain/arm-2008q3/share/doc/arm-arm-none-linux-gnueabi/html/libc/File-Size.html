@@ -1,0 +1,235 @@
+<html lang="en">
+<head>
+<title>File Size - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="File-Times.html#File-Times" title="File Times">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Size"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Times.html#File-Times">File Times</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.10 File Size</h4>
+
+<p>Normally file sizes are maintained automatically.  A file begins with a
+size of 0 and is automatically extended when data is written past
+its end.  It is also possible to empty a file completely by an
+<code>open</code> or <code>fopen</code> call.
+
+   <p>However, sometimes it is necessary to <em>reduce</em> the size of a file. 
+This can be done with the <code>truncate</code> and <code>ftruncate</code> functions. 
+They were introduced in BSD Unix.  <code>ftruncate</code> was later added to
+POSIX.1.
+
+   <p>Some systems allow you to extend a file (creating holes) with these
+functions.  This is useful when using memory-mapped I/O
+(see <a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>), where files are not automatically extended. 
+However, it is not portable but must be implemented if <code>mmap</code>
+allows mapping of files (i.e., <code>_POSIX_MAPPED_FILES</code> is defined).
+
+   <p>Using these functions on anything other than a regular file gives
+<em>undefined</em> results.  On many systems, such a call will appear to
+succeed, without actually accomplishing anything.
+
+<!-- unistd.h -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Function: int <b>truncate</b> (<var>const char *filename, off_t length</var>)<var><a name="index-truncate-1591"></a></var><br>
+<blockquote>
+        <p>The <code>truncate</code> function changes the size of <var>filename</var> to
+<var>length</var>.  If <var>length</var> is shorter than the previous length, data
+at the end will be lost.  The file must be writable by the user to
+perform this operation.
+
+        <p>If <var>length</var> is longer, holes will be added to the end.  However, some
+systems do not support this feature and will leave the file unchanged.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> the
+<code>truncate</code> function is in fact <code>truncate64</code> and the type
+<code>off_t</code> has 64 bits which makes it possible to handle files up to
+2^63 bytes in length.
+
+        <p>The return value is 0 for success, or -1 for an error.  In
+addition to the usual file name errors, the following errors may occur:
+
+          <dl>
+<dt><code>EACCES</code><dd>The file is a directory or not writable.
+
+          <br><dt><code>EINVAL</code><dd><var>length</var> is negative.
+
+          <br><dt><code>EFBIG</code><dd>The operation would extend the file beyond the limits of the operating system.
+
+          <br><dt><code>EIO</code><dd>A hardware I/O error occurred.
+
+          <br><dt><code>EPERM</code><dd>The file is "append-only" or "immutable".
+
+          <br><dt><code>EINTR</code><dd>The operation was interrupted by a signal.
+
+        </dl>
+
+        </blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>truncate64</b> (<var>const char *name, off64_t length</var>)<var><a name="index-truncate64-1592"></a></var><br>
+<blockquote><p>This function is similar to the <code>truncate</code> function.  The
+difference is that the <var>length</var> argument is 64 bits wide even on 32
+bits machines, which allows the handling of files with sizes up to
+2^63 bytes.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bits machine this function is actually available under the name
+<code>truncate</code> and so transparently replaces the 32 bits interface. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>ftruncate</b> (<var>int fd, off_t length</var>)<var><a name="index-ftruncate-1593"></a></var><br>
+<blockquote>
+        <p>This is like <code>truncate</code>, but it works on a file descriptor <var>fd</var>
+for an opened file instead of a file name to identify the object.  The
+file must be opened for writing to successfully carry out the operation.
+
+        <p>The POSIX standard leaves it implementation defined what happens if the
+specified new <var>length</var> of the file is bigger than the original size. 
+The <code>ftruncate</code> function might simply leave the file alone and do
+nothing or it can increase the size to the desired size.  In this later
+case the extended area should be zero-filled.  So using <code>ftruncate</code>
+is no reliable way to increase the file size but if it is possible it is
+probably the fastest way.  The function also operates on POSIX shared
+memory segments if these are implemented by the system.
+
+        <p><code>ftruncate</code> is especially useful in combination with <code>mmap</code>. 
+Since the mapped region must have a fixed size one cannot enlarge the
+file by writing something beyond the last mapped page.  Instead one has
+to enlarge the file itself and then remap the file with the new size. 
+The example below shows how this works.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> the
+<code>ftruncate</code> function is in fact <code>ftruncate64</code> and the type
+<code>off_t</code> has 64 bits which makes it possible to handle files up to
+2^63 bytes in length.
+
+        <p>The return value is 0 for success, or -1 for an error.  The
+following errors may occur:
+
+          <dl>
+<dt><code>EBADF</code><dd><var>fd</var> does not correspond to an open file.
+
+          <br><dt><code>EACCES</code><dd><var>fd</var> is a directory or not open for writing.
+
+          <br><dt><code>EINVAL</code><dd><var>length</var> is negative.
+
+          <br><dt><code>EFBIG</code><dd>The operation would extend the file beyond the limits of the operating system. 
+<!-- or the open() call - with the not-yet-discussed feature of opening -->
+<!-- files with extra-large offsets. -->
+
+          <br><dt><code>EIO</code><dd>A hardware I/O error occurred.
+
+          <br><dt><code>EPERM</code><dd>The file is "append-only" or "immutable".
+
+          <br><dt><code>EINTR</code><dd>The operation was interrupted by a signal.
+
+          <!-- ENOENT is also possible on Linux - however it only occurs if the file -->
+          <!-- descriptor has a `file' structure but no `inode' structure.  I'm not -->
+          <!-- sure how such an fd could be created.  Perhaps it's a bug. -->
+        </dl>
+
+        </blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>ftruncate64</b> (<var>int id, off64_t length</var>)<var><a name="index-ftruncate64-1594"></a></var><br>
+<blockquote><p>This function is similar to the <code>ftruncate</code> function.  The
+difference is that the <var>length</var> argument is 64 bits wide even on 32
+bits machines which allows the handling of files with sizes up to
+2^63 bytes.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bits machine this function is actually available under the name
+<code>ftruncate</code> and so transparently replaces the 32 bits interface. 
+</p></blockquote></div>
+
+   <p>As announced here is a little example of how to use <code>ftruncate</code> in
+combination with <code>mmap</code>:
+
+<pre class="smallexample">     int fd;
+     void *start;
+     size_t len;
+     
+     int
+     add (off_t at, void *block, size_t size)
+     {
+       if (at + size &gt; len)
+         {
+           /* Resize the file and remap.  */
+           size_t ps = sysconf (_SC_PAGESIZE);
+           size_t ns = (at + size + ps - 1) &amp; ~(ps - 1);
+           void *np;
+           if (ftruncate (fd, ns) &lt; 0)
+             return -1;
+           np = mmap (NULL, ns, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+           if (np == MAP_FAILED)
+             return -1;
+           start = np;
+           len = ns;
+         }
+       memcpy ((char *) start + at, block, size);
+       return 0;
+     }
+</pre>
+   <p>The function <code>add</code> writes a block of memory at an arbitrary
+position in the file.  If the current size of the file is too small it
+is extended.  Note the it is extended by a round number of pages.  This
+is a requirement of <code>mmap</code>.  The program has to keep track of the
+real size, and when it has finished a final <code>ftruncate</code> call should
+set the real size of the file.
+
+   </body></html>
+

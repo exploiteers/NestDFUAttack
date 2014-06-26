@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Exit Status - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Termination.html#Program-Termination" title="Program Termination">
+<link rel="prev" href="Normal-Termination.html#Normal-Termination" title="Normal Termination">
+<link rel="next" href="Cleanups-on-Exit.html#Cleanups-on-Exit" title="Cleanups on Exit">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Exit-Status"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Cleanups-on-Exit.html#Cleanups-on-Exit">Cleanups on Exit</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Normal-Termination.html#Normal-Termination">Normal Termination</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Termination.html#Program-Termination">Program Termination</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.6.2 Exit Status</h4>
+
+<p><a name="index-exit-status-3134"></a>
+When a program exits, it can return to the parent process a small
+amount of information about the cause of termination, using the
+<dfn>exit status</dfn>.  This is a value between 0 and 255 that the exiting
+process passes as an argument to <code>exit</code>.
+
+   <p>Normally you should use the exit status to report very broad information
+about success or failure.  You can't provide a lot of detail about the
+reasons for the failure, and most parent processes would not want much
+detail anyway.
+
+   <p>There are conventions for what sorts of status values certain programs
+should return.  The most common convention is simply 0 for success and 1
+for failure.  Programs that perform comparison use a different
+convention: they use status 1 to indicate a mismatch, and status 2 to
+indicate an inability to compare.  Your program should follow an
+existing convention if an existing convention makes sense for it.
+
+   <p>A general convention reserves status values 128 and up for special
+purposes.  In particular, the value 128 is used to indicate failure to
+execute another program in a subprocess.  This convention is not
+universally obeyed, but it is a good idea to follow it in your programs.
+
+   <p><strong>Warning:</strong> Don't try to use the number of errors as the exit
+status.  This is actually not very useful; a parent process would
+generally not care how many errors occurred.  Worse than that, it does
+not work, because the status value is truncated to eight bits. 
+Thus, if the program tried to report 256 errors, the parent would
+receive a report of 0 errors&mdash;that is, success.
+
+   <p>For the same reason, it does not work to use the value of <code>errno</code>
+as the exit status&mdash;these can exceed 255.
+
+   <p><strong>Portability note:</strong> Some non-POSIX systems use different
+conventions for exit status values.  For greater portability, you can
+use the macros <code>EXIT_SUCCESS</code> and <code>EXIT_FAILURE</code> for the
+conventional status value for success and failure, respectively.  They
+are declared in the file <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-3135"></a>
+<!-- stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Macro: int <b>EXIT_SUCCESS</b><var><a name="index-EXIT_005fSUCCESS-3136"></a></var><br>
+<blockquote><p>This macro can be used with the <code>exit</code> function to indicate
+successful program completion.
+
+        <p>On POSIX systems, the value of this macro is <code>0</code>.  On other
+systems, the value might be some other (possibly non-constant) integer
+expression. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>EXIT_FAILURE</b><var><a name="index-EXIT_005fFAILURE-3137"></a></var><br>
+<blockquote><p>This macro can be used with the <code>exit</code> function to indicate
+unsuccessful program completion in a general sense.
+
+        <p>On POSIX systems, the value of this macro is <code>1</code>.  On other
+systems, the value might be some other (possibly non-constant) integer
+expression.  Other nonzero status values also indicate failures.  Certain
+programs use different nonzero status values to indicate particular
+kinds of "non-success".  For example, <code>diff</code> uses status value
+<code>1</code> to mean that the files are different, and <code>2</code> or more to
+mean that there was difficulty in opening the files. 
+</p></blockquote></div>
+
+   <p>Don't confuse a program's exit status with a process' termination status. 
+There are lots of ways a process can terminate besides having it's program
+finish.  In the event that the process termination <em>is</em> caused by program
+termination (i.e., <code>exit</code>), though, the program's exit status becomes
+part of the process' termination status.
+
+   </body></html>
+

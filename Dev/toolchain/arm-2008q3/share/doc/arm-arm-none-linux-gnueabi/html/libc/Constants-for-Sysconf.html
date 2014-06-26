@@ -1,0 +1,602 @@
+<html lang="en">
+<head>
+<title>Constants for Sysconf - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sysconf.html#Sysconf" title="Sysconf">
+<link rel="prev" href="Sysconf-Definition.html#Sysconf-Definition" title="Sysconf Definition">
+<link rel="next" href="Examples-of-Sysconf.html#Examples-of-Sysconf" title="Examples of Sysconf">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Constants-for-Sysconf"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Examples-of-Sysconf.html#Examples-of-Sysconf">Examples of Sysconf</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sysconf-Definition.html#Sysconf-Definition">Sysconf Definition</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sysconf.html#Sysconf">Sysconf</a>
+<hr>
+</div>
+
+<h4 class="subsection">31.4.2 Constants for <code>sysconf</code> Parameters</h4>
+
+<p>Here are the symbolic constants for use as the <var>parameter</var> argument
+to <code>sysconf</code>.  The values are all integer constants (more
+specifically, enumeration type values).
+
+     <dl>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<dt><code>_SC_ARG_MAX</code><a name="index-g_t_005fSC_005fARG_005fMAX-3524"></a><dd>Inquire about the parameter corresponding to <code>ARG_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_CHILD_MAX</code><a name="index-g_t_005fSC_005fCHILD_005fMAX-3525"></a><dd>Inquire about the parameter corresponding to <code>CHILD_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_OPEN_MAX</code><a name="index-g_t_005fSC_005fOPEN_005fMAX-3526"></a><dd>Inquire about the parameter corresponding to <code>OPEN_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_STREAM_MAX</code><a name="index-g_t_005fSC_005fSTREAM_005fMAX-3527"></a><dd>Inquire about the parameter corresponding to <code>STREAM_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_TZNAME_MAX</code><a name="index-g_t_005fSC_005fTZNAME_005fMAX-3528"></a><dd>Inquire about the parameter corresponding to <code>TZNAME_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_NGROUPS_MAX</code><a name="index-g_t_005fSC_005fNGROUPS_005fMAX-3529"></a><dd>Inquire about the parameter corresponding to <code>NGROUPS_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_JOB_CONTROL</code><a name="index-g_t_005fSC_005fJOB_005fCONTROL-3530"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_JOB_CONTROL</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SAVED_IDS</code><a name="index-g_t_005fSC_005fSAVED_005fIDS-3531"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SAVED_IDS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_VERSION</code><a name="index-g_t_005fSC_005fVERSION-3532"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_VERSION</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_CLK_TCK</code><a name="index-g_t_005fSC_005fCLK_005fTCK-3533"></a><dd>Inquire about the parameter corresponding to <code>CLOCKS_PER_SEC</code>;
+see <a href="CPU-Time.html#CPU-Time">CPU Time</a>.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_CHARCLASS_NAME_MAX</code><a name="index-g_t_005fSC_005fCHARCLASS_005fNAME_005fMAX-3534"></a><dd>Inquire about the parameter corresponding to maximal length allowed for
+a character class name in an extended locale specification.  These
+extensions are not yet standardized and so this option is not standardized
+as well.
+
+     <!-- unistdh.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_REALTIME_SIGNALS</code><a name="index-g_t_005fSC_005fREALTIME_005fSIGNALS-3535"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_REALTIME_SIGNALS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_PRIORITY_SCHEDULING</code><a name="index-g_t_005fSC_005fPRIORITY_005fSCHEDULING-3536"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PRIORITY_SCHEDULING</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_TIMERS</code><a name="index-g_t_005fSC_005fTIMERS-3537"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_TIMERS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_ASYNCHRONOUS_IO</code><a name="index-g_t_005fSC_005fASYNCHRONOUS_005fIO-3538"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_ASYNCHRONOUS_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_PRIORITIZED_IO</code><a name="index-g_t_005fSC_005fPRIORITIZED_005fIO-3539"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PRIORITIZED_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SYNCHRONIZED_IO</code><a name="index-g_t_005fSC_005fSYNCHRONIZED_005fIO-3540"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SYNCHRONIZED_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_FSYNC</code><a name="index-g_t_005fSC_005fFSYNC-3541"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_FSYNC</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MAPPED_FILES</code><a name="index-g_t_005fSC_005fMAPPED_005fFILES-3542"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MAPPED_FILES</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MEMLOCK</code><a name="index-g_t_005fSC_005fMEMLOCK-3543"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MEMLOCK</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MEMLOCK_RANGE</code><a name="index-g_t_005fSC_005fMEMLOCK_005fRANGE-3544"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MEMLOCK_RANGE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MEMORY_PROTECTION</code><a name="index-g_t_005fSC_005fMEMORY_005fPROTECTION-3545"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MEMORY_PROTECTION</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MESSAGE_PASSING</code><a name="index-g_t_005fSC_005fMESSAGE_005fPASSING-3546"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MESSAGE_PASSING</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SEMAPHORES</code><a name="index-g_t_005fSC_005fSEMAPHORES-3547"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SEMAPHORES</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SHARED_MEMORY_OBJECTS</code><a name="index-g_t_005fSC_005fSHARED_005fMEMORY_005fOBJECTS-3548"></a><dd>Inquire about the parameter corresponding to<br>
+<code>_POSIX_SHARED_MEMORY_OBJECTS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_AIO_LISTIO_MAX</code><a name="index-g_t_005fSC_005fAIO_005fLISTIO_005fMAX-3549"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_AIO_LISTIO_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_AIO_MAX</code><a name="index-g_t_005fSC_005fAIO_005fMAX-3550"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_AIO_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_AIO_PRIO_DELTA_MAX</code><a name="index-g_t_005fSC_005fAIO_005fPRIO_005fDELTA_005fMAX-3551"></a><dd>Inquire the value by which a process can decrease its asynchronous I/O
+priority level from its own scheduling priority.  This corresponds to the
+run-time invariant value <code>AIO_PRIO_DELTA_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_DELAYTIMER_MAX</code><a name="index-g_t_005fSC_005fDELAYTIMER_005fMAX-3552"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_DELAYTIMER_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MQ_OPEN_MAX</code><a name="index-g_t_005fSC_005fMQ_005fOPEN_005fMAX-3553"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MQ_OPEN_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_MQ_PRIO_MAX</code><a name="index-g_t_005fSC_005fMQ_005fPRIO_005fMAX-3554"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_MQ_PRIO_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_RTSIG_MAX</code><a name="index-g_t_005fSC_005fRTSIG_005fMAX-3555"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_RTSIG_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SEM_NSEMS_MAX</code><a name="index-g_t_005fSC_005fSEM_005fNSEMS_005fMAX-3556"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SEM_NSEMS_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SEM_VALUE_MAX</code><a name="index-g_t_005fSC_005fSEM_005fVALUE_005fMAX-3557"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SEM_VALUE_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_SIGQUEUE_MAX</code><a name="index-g_t_005fSC_005fSIGQUEUE_005fMAX-3558"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SIGQUEUE_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_TIMER_MAX</code><a name="index-g_t_005fSC_005fTIMER_005fMAX-3559"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_TIMER_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII</code><a name="index-g_t_005fSC_005fPII-3560"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_XTI</code><a name="index-g_t_005fSC_005fPII_005fXTI-3561"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_XTI</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_SOCKET</code><a name="index-g_t_005fSC_005fPII_005fSOCKET-3562"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_SOCKET</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_INTERNET</code><a name="index-g_t_005fSC_005fPII_005fINTERNET-3563"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_INTERNET</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_OSI</code><a name="index-g_t_005fSC_005fPII_005fOSI-3564"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_OSI</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_SELECT</code><a name="index-g_t_005fSC_005fSELECT-3565"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_SELECT</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_UIO_MAXIOV</code><a name="index-g_t_005fSC_005fUIO_005fMAXIOV-3566"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_UIO_MAXIOV</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_INTERNET_STREAM</code><a name="index-g_t_005fSC_005fPII_005fINTERNET_005fSTREAM-3567"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_INTERNET_STREAM</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_INTERNET_DGRAM</code><a name="index-g_t_005fSC_005fPII_005fINTERNET_005fDGRAM-3568"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_INTERNET_DGRAM</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_OSI_COTS</code><a name="index-g_t_005fSC_005fPII_005fOSI_005fCOTS-3569"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_OSI_COTS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_OSI_CLTS</code><a name="index-g_t_005fSC_005fPII_005fOSI_005fCLTS-3570"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_OSI_CLTS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_PII_OSI_M</code><a name="index-g_t_005fSC_005fPII_005fOSI_005fM-3571"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_PII_OSI_M</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1g -->
+     <br><dt><code>_SC_T_IOV_MAX</code><a name="index-g_t_005fSC_005fT_005fIOV_005fMAX-3572"></a><dd>Inquire the value of the value associated with the <code>T_IOV_MAX</code>
+variable.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREADS</code><a name="index-g_t_005fSC_005fTHREADS-3573"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREADS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_SAFE_FUNCTIONS</code><a name="index-g_t_005fSC_005fTHREAD_005fSAFE_005fFUNCTIONS-3574"></a><dd>Inquire about the parameter corresponding to<br>
+<code>_POSIX_THREAD_SAFE_FUNCTIONS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_GETGR_R_SIZE_MAX</code><a name="index-g_t_005fSC_005fGETGR_005fR_005fSIZE_005fMAX-3575"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_GETGR_R_SIZE_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_GETPW_R_SIZE_MAX</code><a name="index-g_t_005fSC_005fGETPW_005fR_005fSIZE_005fMAX-3576"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_GETPW_R_SIZE_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_LOGIN_NAME_MAX</code><a name="index-g_t_005fSC_005fLOGIN_005fNAME_005fMAX-3577"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_LOGIN_NAME_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_TTY_NAME_MAX</code><a name="index-g_t_005fSC_005fTTY_005fNAME_005fMAX-3578"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_TTY_NAME_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_DESTRUCTOR_ITERATIONS</code><a name="index-g_t_005fSC_005fTHREAD_005fDESTRUCTOR_005fITERATIONS-3579"></a><dd>Inquire about the parameter corresponding to
+<code>_POSIX_THREAD_DESTRUCTOR_ITERATIONS</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_KEYS_MAX</code><a name="index-g_t_005fSC_005fTHREAD_005fKEYS_005fMAX-3580"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREAD_KEYS_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_STACK_MIN</code><a name="index-g_t_005fSC_005fTHREAD_005fSTACK_005fMIN-3581"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREAD_STACK_MIN</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_THREADS_MAX</code><a name="index-g_t_005fSC_005fTHREAD_005fTHREADS_005fMAX-3582"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREAD_THREADS_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_ATTR_STACKADDR</code><a name="index-g_t_005fSC_005fTHREAD_005fATTR_005fSTACKADDR-3583"></a><dd>Inquire about the parameter corresponding to<br>a
+<code>_POSIX_THREAD_ATTR_STACKADDR</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_ATTR_STACKSIZE</code><a name="index-g_t_005fSC_005fTHREAD_005fATTR_005fSTACKSIZE-3584"></a><dd>Inquire about the parameter corresponding to<br>
+<code>_POSIX_THREAD_ATTR_STACKSIZE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_PRIORITY_SCHEDULING</code><a name="index-g_t_005fSC_005fTHREAD_005fPRIORITY_005fSCHEDULING-3585"></a><dd>Inquire about the parameter corresponding to
+<code>_POSIX_THREAD_PRIORITY_SCHEDULING</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_PRIO_INHERIT</code><a name="index-g_t_005fSC_005fTHREAD_005fPRIO_005fINHERIT-3586"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREAD_PRIO_INHERIT</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_PRIO_PROTECT</code><a name="index-g_t_005fSC_005fTHREAD_005fPRIO_005fPROTECT-3587"></a><dd>Inquire about the parameter corresponding to <code>_POSIX_THREAD_PRIO_PROTECT</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_SC_THREAD_PROCESS_SHARED</code><a name="index-g_t_005fSC_005fTHREAD_005fPROCESS_005fSHARED-3588"></a><dd>Inquire about the parameter corresponding to
+<code>_POSIX_THREAD_PROCESS_SHARED</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_C_DEV</code><a name="index-g_t_005fSC_005f2_005fC_005fDEV-3589"></a><dd>Inquire about whether the system has the POSIX.2 C compiler command,
+<code>c89</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_FORT_DEV</code><a name="index-g_t_005fSC_005f2_005fFORT_005fDEV-3590"></a><dd>Inquire about whether the system has the POSIX.2 Fortran compiler
+command, <code>fort77</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_FORT_RUN</code><a name="index-g_t_005fSC_005f2_005fFORT_005fRUN-3591"></a><dd>Inquire about whether the system has the POSIX.2 <code>asa</code> command to
+interpret Fortran carriage control.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_LOCALEDEF</code><a name="index-g_t_005fSC_005f2_005fLOCALEDEF-3592"></a><dd>Inquire about whether the system has the POSIX.2 <code>localedef</code>
+command.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_SW_DEV</code><a name="index-g_t_005fSC_005f2_005fSW_005fDEV-3593"></a><dd>Inquire about whether the system has the POSIX.2 commands <code>ar</code>,
+<code>make</code>, and <code>strip</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_BC_BASE_MAX</code><a name="index-g_t_005fSC_005fBC_005fBASE_005fMAX-3594"></a><dd>Inquire about the maximum value of <code>obase</code> in the <code>bc</code>
+utility.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_BC_DIM_MAX</code><a name="index-g_t_005fSC_005fBC_005fDIM_005fMAX-3595"></a><dd>Inquire about the maximum size of an array in the <code>bc</code>
+utility.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_BC_SCALE_MAX</code><a name="index-g_t_005fSC_005fBC_005fSCALE_005fMAX-3596"></a><dd>Inquire about the maximum value of <code>scale</code> in the <code>bc</code>
+utility.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_BC_STRING_MAX</code><a name="index-g_t_005fSC_005fBC_005fSTRING_005fMAX-3597"></a><dd>Inquire about the maximum size of a string constant in the
+<code>bc</code> utility.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_COLL_WEIGHTS_MAX</code><a name="index-g_t_005fSC_005fCOLL_005fWEIGHTS_005fMAX-3598"></a><dd>Inquire about the maximum number of weights that can necessarily
+be used in defining the collating sequence for a locale.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_EXPR_NEST_MAX</code><a name="index-g_t_005fSC_005fEXPR_005fNEST_005fMAX-3599"></a><dd>Inquire about the maximum number of expressions nested within
+parentheses when using the <code>expr</code> utility.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_LINE_MAX</code><a name="index-g_t_005fSC_005fLINE_005fMAX-3600"></a><dd>Inquire about the maximum size of a text line that the POSIX.2 text
+utilities can handle.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_EQUIV_CLASS_MAX</code><a name="index-g_t_005fSC_005fEQUIV_005fCLASS_005fMAX-3601"></a><dd>Inquire about the maximum number of weights that can be assigned to an
+entry of the <code>LC_COLLATE</code> category &lsquo;<samp><span class="samp">order</span></samp>&rsquo; keyword in a locale
+definition.  The GNU C library does not presently support locale
+definitions.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_VERSION</code><a name="index-g_t_005fSC_005fVERSION-3602"></a><dd>Inquire about the version number of POSIX.1 that the library and kernel
+support.
+
+     <!-- unistd.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_SC_2_VERSION</code><a name="index-g_t_005fSC_005f2_005fVERSION-3603"></a><dd>Inquire about the version number of POSIX.2 that the system utilities
+support.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_PAGESIZE</code><a name="index-g_t_005fSC_005fPAGESIZE-3604"></a><dd>Inquire about the virtual memory page size of the machine. 
+<code>getpagesize</code> returns the same value (see <a href="Query-Memory-Parameters.html#Query-Memory-Parameters">Query Memory Parameters</a>).
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_NPROCESSORS_CONF</code><a name="index-g_t_005fSC_005fNPROCESSORS_005fCONF-3605"></a><dd>Inquire about the number of configured processors.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_NPROCESSORS_ONLN</code><a name="index-g_t_005fSC_005fNPROCESSORS_005fONLN-3606"></a><dd>Inquire about the number of processors online.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_PHYS_PAGES</code><a name="index-g_t_005fSC_005fPHYS_005fPAGES-3607"></a><dd>Inquire about the number of physical pages in the system.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_AVPHYS_PAGES</code><a name="index-g_t_005fSC_005fAVPHYS_005fPAGES-3608"></a><dd>Inquire about the number of available physical pages in the system.
+
+     <!-- unistd.h -->
+     <!-- GNU -->
+     <br><dt><code>_SC_ATEXIT_MAX</code><a name="index-g_t_005fSC_005fATEXIT_005fMAX-3609"></a><dd>Inquire about the number of functions which can be registered as termination
+functions for <code>atexit</code>; see <a href="Cleanups-on-Exit.html#Cleanups-on-Exit">Cleanups on Exit</a>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_VERSION</code><a name="index-g_t_005fSC_005fXOPEN_005fVERSION-3610"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_VERSION</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_XCU_VERSION</code><a name="index-g_t_005fSC_005fXOPEN_005fXCU_005fVERSION-3611"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_XCU_VERSION</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_UNIX</code><a name="index-g_t_005fSC_005fXOPEN_005fUNIX-3612"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_UNIX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_REALTIME</code><a name="index-g_t_005fSC_005fXOPEN_005fREALTIME-3613"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_REALTIME</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_REALTIME_THREADS</code><a name="index-g_t_005fSC_005fXOPEN_005fREALTIME_005fTHREADS-3614"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_REALTIME_THREADS</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_LEGACY</code><a name="index-g_t_005fSC_005fXOPEN_005fLEGACY-3615"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_LEGACY</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_CRYPT</code><a name="index-g_t_005fSC_005fXOPEN_005fCRYPT-3616"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_CRYPT</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_ENH_I18N</code><a name="index-g_t_005fSC_005fXOPEN_005fENH_005fI18N-3617"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_ENH_I18N</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_SHM</code><a name="index-g_t_005fSC_005fXOPEN_005fSHM-3618"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_SHM</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_XPG2</code><a name="index-g_t_005fSC_005fXOPEN_005fXPG2-3619"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_XPG2</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_XPG3</code><a name="index-g_t_005fSC_005fXOPEN_005fXPG3-3620"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_XPG3</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_XOPEN_XPG4</code><a name="index-g_t_005fSC_005fXOPEN_005fXPG4-3621"></a><dd>Inquire about the parameter corresponding to <code>_XOPEN_XPG4</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_CHAR_BIT</code><a name="index-g_t_005fSC_005fCHAR_005fBIT-3622"></a><dd>Inquire about the number of bits in a variable of type <code>char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_CHAR_MAX</code><a name="index-g_t_005fSC_005fCHAR_005fMAX-3623"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_CHAR_MIN</code><a name="index-g_t_005fSC_005fCHAR_005fMIN-3624"></a><dd>Inquire about the minimum value which can be stored in a variable of type
+<code>char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_INT_MAX</code><a name="index-g_t_005fSC_005fINT_005fMAX-3625"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_INT_MIN</code><a name="index-g_t_005fSC_005fINT_005fMIN-3626"></a><dd>Inquire about the minimum value which can be stored in a variable of type
+<code>int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_LONG_BIT</code><a name="index-g_t_005fSC_005fLONG_005fBIT-3627"></a><dd>Inquire about the number of bits in a variable of type <code>long int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_WORD_BIT</code><a name="index-g_t_005fSC_005fWORD_005fBIT-3628"></a><dd>Inquire about the number of bits in a variable of a register word.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_MB_LEN_MAX</code><a name="index-g_t_005fSC_005fMB_005fLEN_005fMAX-3629"></a><dd>Inquire the maximum length of a multi-byte representation of a wide
+character value.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NZERO</code><a name="index-g_t_005fSC_005fNZERO-3630"></a><dd>Inquire about the value used to internally represent the zero priority level for
+the process execution.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>SC_SSIZE_MAX</code><a name="index-SC_005fSSIZE_005fMAX-3631"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>ssize_t</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_SCHAR_MAX</code><a name="index-g_t_005fSC_005fSCHAR_005fMAX-3632"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>signed char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_SCHAR_MIN</code><a name="index-g_t_005fSC_005fSCHAR_005fMIN-3633"></a><dd>Inquire about the minimum value which can be stored in a variable of type
+<code>signed char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_SHRT_MAX</code><a name="index-g_t_005fSC_005fSHRT_005fMAX-3634"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>short int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_SHRT_MIN</code><a name="index-g_t_005fSC_005fSHRT_005fMIN-3635"></a><dd>Inquire about the minimum value which can be stored in a variable of type
+<code>short int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_UCHAR_MAX</code><a name="index-g_t_005fSC_005fUCHAR_005fMAX-3636"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>unsigned char</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_UINT_MAX</code><a name="index-g_t_005fSC_005fUINT_005fMAX-3637"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>unsigned int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_ULONG_MAX</code><a name="index-g_t_005fSC_005fULONG_005fMAX-3638"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>unsigned long int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_USHRT_MAX</code><a name="index-g_t_005fSC_005fUSHRT_005fMAX-3639"></a><dd>Inquire about the maximum value which can be stored in a variable of type
+<code>unsigned short int</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_ARGMAX</code><a name="index-g_t_005fSC_005fNL_005fARGMAX-3640"></a><dd>Inquire about the parameter corresponding to <code>NL_ARGMAX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_LANGMAX</code><a name="index-g_t_005fSC_005fNL_005fLANGMAX-3641"></a><dd>Inquire about the parameter corresponding to <code>NL_LANGMAX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_MSGMAX</code><a name="index-g_t_005fSC_005fNL_005fMSGMAX-3642"></a><dd>Inquire about the parameter corresponding to <code>NL_MSGMAX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_NMAX</code><a name="index-g_t_005fSC_005fNL_005fNMAX-3643"></a><dd>Inquire about  the parameter corresponding to <code>NL_NMAX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_SETMAX</code><a name="index-g_t_005fSC_005fNL_005fSETMAX-3644"></a><dd>Inquire about the parameter corresponding to <code>NL_SETMAX</code>.
+
+     <!-- unistd.h -->
+     <!-- X/Open -->
+     <br><dt><code>_SC_NL_TEXTMAX</code><a name="index-g_t_005fSC_005fNL_005fTEXTMAX-3645"></a><dd>Inquire about the parameter corresponding to <code>NL_TEXTMAX</code>. 
+</dl>
+
+   </body></html>
+

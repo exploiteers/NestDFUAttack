@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Customizing Printf - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="next" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Customizing-Printf"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.13 Customizing <code>printf</code></h3>
+
+<p><a name="index-customizing-_0040code_007bprintf_007d-1060"></a><a name="index-defining-new-_0040code_007bprintf_007d-conversions-1061"></a><a name="index-extending-_0040code_007bprintf_007d-1062"></a>
+The GNU C library lets you define your own custom conversion specifiers
+for <code>printf</code> template strings, to teach <code>printf</code> clever ways
+to print the important data structures of your program.
+
+   <p>The way you do this is by registering the conversion with the function
+<code>register_printf_function</code>; see <a href="Registering-New-Conversions.html#Registering-New-Conversions">Registering New Conversions</a>. 
+One of the arguments you pass to this function is a pointer to a handler
+function that produces the actual output; see <a href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">Defining the Output Handler</a>, for information on how to write this function.
+
+   <p>You can also install a function that just returns information about the
+number and type of arguments expected by the conversion specifier. 
+See <a href="Parsing-a-Template-String.html#Parsing-a-Template-String">Parsing a Template String</a>, for information about this.
+
+   <p>The facilities of this section are declared in the header file
+<samp><span class="file">printf.h</span></samp>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Registering-New-Conversions.html#Registering-New-Conversions">Registering New Conversions</a>:          Using <code>register_printf_function</code>
+                                         to register a new output conversion. 
+<li><a accesskey="2" href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">Conversion Specifier Options</a>:         The handler must be able to get
+                                         the options specified in the
+                                         template when it is called. 
+<li><a accesskey="3" href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">Defining the Output Handler</a>:          Defining the handler and arginfo
+                                         functions that are passed as arguments
+                                         to <code>register_printf_function</code>. 
+<li><a accesskey="4" href="Printf-Extension-Example.html#Printf-Extension-Example">Printf Extension Example</a>:             How to define a <code>printf</code>
+                                         handler function. 
+<li><a accesskey="5" href="Predefined-Printf-Handlers.html#Predefined-Printf-Handlers">Predefined Printf Handlers</a>:           Predefined <code>printf</code> handlers. 
+</ul>
+
+   <p><strong>Portability Note:</strong> The ability to extend the syntax of
+<code>printf</code> template strings is a GNU extension.  ISO standard C has
+nothing similar.
+
+   </body></html>
+

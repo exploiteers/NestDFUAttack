@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>Helper programs for gettext - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-Uniforum-approach.html#The-Uniforum-approach" title="The Uniforum approach">
+<link rel="prev" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext" title="Message catalogs with gettext">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Helper-programs-for-gettext"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-Uniforum-approach.html#The-Uniforum-approach">The Uniforum approach</a>
+<hr>
+</div>
+
+<h4 class="subsection">8.2.2 Programs to handle message catalogs for <code>gettext</code></h4>
+
+<p>The GNU C Library does not contain the source code for the programs to
+handle message catalogs for the <code>gettext</code> functions.  As part of
+the GNU project the GNU gettext package contains everything the
+developer needs.  The functionality provided by the tools in this
+package by far exceeds the abilities of the <code>gencat</code> program
+described above for the <code>catgets</code> functions.
+
+   <p>There is a program <code>msgfmt</code> which is the equivalent program to the
+<code>gencat</code> program.  It generates from the human-readable and
+-editable form of the message catalog a binary file which can be used by
+the <code>gettext</code> functions.  But there are several more programs
+available.
+
+   <p>The <code>xgettext</code> program can be used to automatically extract the
+translatable messages from a source file.  I.e., the programmer need not
+take care for the translations and the list of messages which have to be
+translated.  S/He will simply wrap the translatable string in calls to
+<code>gettext</code> et.al and the rest will be done by <code>xgettext</code>.  This
+program has a lot of option which help to customize the output or do
+help to understand the input better.
+
+   <p>Other programs help to manage development cycle when new messages appear
+in the source files or when a new translation of the messages appear. 
+Here it should only be noted that using all the tools in GNU gettext it
+is possible to <em>completely</em> automate the handling of message
+catalog.  Beside marking the translatable string in the source code and
+generating the translations the developers do not have anything to do
+themselves.
+
+   </body></html>
+

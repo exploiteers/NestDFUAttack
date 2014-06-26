@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>How Unread - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unreading.html#Unreading" title="Unreading">
+<link rel="prev" href="Unreading-Idea.html#Unreading-Idea" title="Unreading Idea">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="How-Unread"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Unreading-Idea.html#Unreading-Idea">Unreading Idea</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unreading.html#Unreading">Unreading</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.10.2 Using <code>ungetc</code> To Do Unreading</h4>
+
+<p>The function to unread a character is called <code>ungetc</code>, because it
+reverses the action of <code>getc</code>.
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>ungetc</b> (<var>int c, FILE *stream</var>)<var><a name="index-ungetc-1003"></a></var><br>
+<blockquote><p>The <code>ungetc</code> function pushes back the character <var>c</var> onto the
+input stream <var>stream</var>.  So the next input from <var>stream</var> will
+read <var>c</var> before anything else.
+
+        <p>If <var>c</var> is <code>EOF</code>, <code>ungetc</code> does nothing and just returns
+<code>EOF</code>.  This lets you call <code>ungetc</code> with the return value of
+<code>getc</code> without needing to check for an error from <code>getc</code>.
+
+        <p>The character that you push back doesn't have to be the same as the last
+character that was actually read from the stream.  In fact, it isn't
+necessary to actually read any characters from the stream before
+unreading them with <code>ungetc</code>!  But that is a strange way to write a
+program; usually <code>ungetc</code> is used only to unread a character that
+was just read from the same stream.  The GNU C library supports this
+even on files opened in binary mode, but other systems might not.
+
+        <p>The GNU C library only supports one character of pushback&mdash;in other
+words, it does not work to call <code>ungetc</code> twice without doing input
+in between.  Other systems might let you push back multiple characters;
+then reading from the stream retrieves the characters in the reverse
+order that they were pushed.
+
+        <p>Pushing back characters doesn't alter the file; only the internal
+buffering for the stream is affected.  If a file positioning function
+(such as <code>fseek</code>, <code>fseeko</code> or <code>rewind</code>; see <a href="File-Positioning.html#File-Positioning">File Positioning</a>) is called, any pending pushed-back characters are
+discarded.
+
+        <p>Unreading a character on a stream that is at end of file clears the
+end-of-file indicator for the stream, because it makes the character of
+input available.  After you read that character, trying to read again
+will encounter end of file. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>ungetwc</b> (<var>wint_t wc, FILE *stream</var>)<var><a name="index-ungetwc-1004"></a></var><br>
+<blockquote><p>The <code>ungetwc</code> function behaves just like <code>ungetc</code> just that it
+pushes back a wide character. 
+</p></blockquote></div>
+
+   <p>Here is an example showing the use of <code>getc</code> and <code>ungetc</code> to
+skip over whitespace characters.  When this function reaches a
+non-whitespace character, it unreads that character to be seen again on
+the next read operation on the stream.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;ctype.h&gt;
+     
+     void
+     skip_whitespace (FILE *stream)
+     {
+       int c;
+       do
+         /* <span class="roman">No need to check for </span><code>EOF</code><span class="roman"> because it is not</span>
+            <code>isspace</code><span class="roman">, and </span><code>ungetc</code><span class="roman"> ignores </span><code>EOF</code><span class="roman">.</span>  */
+         c = getc (stream);
+       while (isspace (c));
+       ungetc (c, stream);
+     }
+</pre>
+   </body></html>
+

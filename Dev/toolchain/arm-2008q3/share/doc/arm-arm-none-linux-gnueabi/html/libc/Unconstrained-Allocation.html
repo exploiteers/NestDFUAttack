@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Unconstrained Allocation - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Allocation.html#Memory-Allocation" title="Memory Allocation">
+<link rel="prev" href="Memory-Allocation-and-C.html#Memory-Allocation-and-C" title="Memory Allocation and C">
+<link rel="next" href="Allocation-Debugging.html#Allocation-Debugging" title="Allocation Debugging">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Unconstrained-Allocation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">Memory Allocation and C</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.2.2 Unconstrained Allocation</h4>
+
+<p><a name="index-unconstrained-memory-allocation-253"></a><a name="index-g_t_0040code_007bmalloc_007d-function-254"></a><a name="index-heap_002c-dynamic-allocation-from-255"></a>
+The most general dynamic allocation facility is <code>malloc</code>.  It
+allows you to allocate blocks of memory of any size at any time, make
+them bigger or smaller at any time, and free the blocks individually at
+any time (or never).
+
+<ul class="menu">
+<li><a accesskey="1" href="Basic-Allocation.html#Basic-Allocation">Basic Allocation</a>:             Simple use of <code>malloc</code>. 
+<li><a accesskey="2" href="Malloc-Examples.html#Malloc-Examples">Malloc Examples</a>:              Examples of <code>malloc</code>.  <code>xmalloc</code>. 
+<li><a accesskey="3" href="Freeing-after-Malloc.html#Freeing-after-Malloc">Freeing after Malloc</a>:         Use <code>free</code> to free a block you
+				 got with <code>malloc</code>. 
+<li><a accesskey="4" href="Changing-Block-Size.html#Changing-Block-Size">Changing Block Size</a>:          Use <code>realloc</code> to make a block
+				 bigger or smaller. 
+<li><a accesskey="5" href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>:     Use <code>calloc</code> to allocate a
+				 block and clear it. 
+<li><a accesskey="6" href="Efficiency-and-Malloc.html#Efficiency-and-Malloc">Efficiency and Malloc</a>:        Efficiency considerations in use of
+				 these functions. 
+<li><a accesskey="7" href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>:        Allocating specially aligned memory. 
+<li><a accesskey="8" href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters">Malloc Tunable Parameters</a>:    Use <code>mallopt</code> to adjust allocation
+                                 parameters. 
+<li><a accesskey="9" href="Heap-Consistency-Checking.html#Heap-Consistency-Checking">Heap Consistency Checking</a>:    Automatic checking for errors. 
+<li><a href="Hooks-for-Malloc.html#Hooks-for-Malloc">Hooks for Malloc</a>:             You can use these hooks for debugging
+				 programs that use <code>malloc</code>. 
+<li><a href="Statistics-of-Malloc.html#Statistics-of-Malloc">Statistics of Malloc</a>:         Getting information about how much
+				 memory your program is using. 
+<li><a href="Summary-of-Malloc.html#Summary-of-Malloc">Summary of Malloc</a>:            Summary of <code>malloc</code> and related functions. 
+</ul>
+
+   </body></html>
+

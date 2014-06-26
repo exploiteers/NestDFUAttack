@@ -1,0 +1,68 @@
+<html lang="en">
+<head>
+<title>Listing Tracepoints - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Set-Tracepoints.html#Set-Tracepoints" title="Set Tracepoints">
+<link rel="prev" href="Tracepoint-Actions.html#Tracepoint-Actions" title="Tracepoint Actions">
+<link rel="next" href="Starting-and-Stopping-Trace-Experiments.html#Starting-and-Stopping-Trace-Experiments" title="Starting and Stopping Trace Experiments">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Listing-Tracepoints"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Starting-and-Stopping-Trace-Experiments.html#Starting-and-Stopping-Trace-Experiments">Starting and Stopping Trace Experiments</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tracepoint-Actions.html#Tracepoint-Actions">Tracepoint Actions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Set-Tracepoints.html#Set-Tracepoints">Set Tracepoints</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.1.5 Listing Tracepoints</h4>
+
+     
+<a name="index-info-tracepoints-617"></a>
+<a name="index-info-tp-618"></a>
+<a name="index-information-about-tracepoints-619"></a>
+<dl><dt><code>info tracepoints </code><span class="roman">[</span><var>num</var><span class="roman">]</span><dd>Display information about the tracepoint <var>num</var>.  If you don't specify
+a tracepoint number, displays information about all the tracepoints
+defined so far.  For each tracepoint, the following information is
+shown:
+
+          <ul>
+<li>its number
+<li>whether it is enabled or disabled
+<li>its address
+<li>its passcount as given by the <code>passcount </code><var>n</var> command
+<li>its step count as given by the <code>while-stepping </code><var>n</var> command
+<li>where in the source files is the tracepoint set
+<li>its action list as given by the <code>actions</code> command
+</ul>
+
+     <pre class="smallexample">          (gdb) <b>info trace</b>
+          Num Enb Address    PassC StepC What
+          1   y   0x002117c4 0     0     &lt;gdb_asm&gt;
+          2   y   0x0020dc64 0     0     in g_test at g_test.c:1375
+          3   y   0x0020b1f4 0     0     in get_data at ../foo.c:41
+          (gdb)
+</pre>
+     <p class="noindent">This command can be abbreviated <code>info tp</code>. 
+</dl>
+
+   </body></html>
+

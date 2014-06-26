@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Predefined Printf Handlers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link rel="prev" href="Printf-Extension-Example.html#Printf-Extension-Example" title="Printf Extension Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Predefined-Printf-Handlers"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Printf-Extension-Example.html#Printf-Extension-Example">Printf Extension Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.13.5 Predefined <code>printf</code> Handlers</h4>
+
+<p>The GNU libc also contains a concrete and useful application of the
+<code>printf</code> handler extension.  There are two functions available
+which implement a special way to print floating-point numbers.
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>printf_size</b> (<var>FILE *fp, const struct printf_info *info, const void *const *args</var>)<var><a name="index-printf_005fsize-1069"></a></var><br>
+<blockquote><p>Print a given floating point number as for the format <code>%f</code> except
+that there is a postfix character indicating the divisor for the
+number to make this less than 1000.  There are two possible divisors:
+powers of 1024 or powers of 1000.  Which one is used depends on the
+format character specified while registered this handler.  If the
+character is of lower case, 1024 is used.  For upper case characters,
+1000 is used.
+
+        <p>The postfix tag corresponds to bytes, kilobytes, megabytes, gigabytes,
+etc.  The full table is:
+
+        <p>The default precision is 3, i.e., 1024 is printed with a lower-case
+format character as if it were <code>%.3fk</code> and will yield <code>1.000k</code>. 
+</p></blockquote></div>
+
+   <p>Due to the requirements of <code>register_printf_function</code> we must also
+provide the function which returns information about the arguments.
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>printf_size_info</b> (<var>const struct printf_info *info, size_t n, int *argtypes</var>)<var><a name="index-printf_005fsize_005finfo-1070"></a></var><br>
+<blockquote><p>This function will return in <var>argtypes</var> the information about the
+used parameters in the way the <code>vfprintf</code> implementation expects
+it.  The format always takes one argument. 
+</p></blockquote></div>
+
+   <p>To use these functions both functions must be registered with a call like
+
+<pre class="smallexample">     register_printf_function ('B', printf_size, printf_size_info);
+</pre>
+   <p>Here we register the functions to print numbers as powers of 1000 since
+the format character <code>'B'</code> is an upper-case character.  If we
+would additionally use <code>'b'</code> in a line like
+
+<pre class="smallexample">     register_printf_function ('b', printf_size, printf_size_info);
+</pre>
+   <p class="noindent">we could also print using a power of 1024.  Please note that all that is
+different in these two lines is the format specifier.  The
+<code>printf_size</code> function knows about the difference between lower and upper
+case format specifiers.
+
+   <p>The use of <code>'B'</code> and <code>'b'</code> is no coincidence.  Rather it is
+the preferred way to use this functionality since it is available on
+some other systems which also use format specifiers.
+
+   </body></html>
+

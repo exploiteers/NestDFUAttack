@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Running a Command - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="next" href="Process-Creation-Concepts.html#Process-Creation-Concepts" title="Process Creation Concepts">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Running-a-Command"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.1 Running a Command</h3>
+
+<p><a name="index-running-a-command-3149"></a>
+The easy way to run another program is to use the <code>system</code>
+function.  This function does all the work of running a subprogram, but
+it doesn't give you much control over the details: you have to wait
+until the subprogram terminates before you can do anything else.
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>system</b> (<var>const char *command</var>)<var><a name="index-system-3150"></a></var><br>
+<blockquote><p><a name="index-sh-3151"></a>This function executes <var>command</var> as a shell command.  In the GNU C
+library, it always uses the default shell <code>sh</code> to run the command. 
+In particular, it searches the directories in <code>PATH</code> to find
+programs to execute.  The return value is <code>-1</code> if it wasn't
+possible to create the shell process, and otherwise is the status of the
+shell process.  See <a href="Process-Completion.html#Process-Completion">Process Completion</a>, for details on how this
+status code can be interpreted.
+
+        <p>If the <var>command</var> argument is a null pointer, a return value of zero
+indicates that no command processor is available.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>system</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this calls to <code>system</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p><a name="index-stdlib_002eh-3152"></a>The <code>system</code> function is declared in the header file
+<samp><span class="file">stdlib.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><strong>Portability Note:</strong> Some C implementations may not have any
+notion of a command processor that can execute other programs.  You can
+determine whether a command processor exists by executing
+<code>system&nbsp;(NULL)</code><!-- /@w -->; if the return value is nonzero, a command
+processor is available.
+
+   <p>The <code>popen</code> and <code>pclose</code> functions (see <a href="Pipe-to-a-Subprocess.html#Pipe-to-a-Subprocess">Pipe to a Subprocess</a>) are closely related to the <code>system</code> function.  They
+allow the parent process to communicate with the standard input and
+output channels of the command being executed.
+
+   </body></html>
+

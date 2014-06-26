@@ -1,0 +1,206 @@
+<html lang="en">
+<head>
+<title>Printing Formatted Messages - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Messages.html#Formatted-Messages" title="Formatted Messages">
+<link rel="next" href="Adding-Severity-Classes.html#Adding-Severity-Classes" title="Adding Severity Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Printing-Formatted-Messages"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Adding-Severity-Classes.html#Adding-Severity-Classes">Adding Severity Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Messages.html#Formatted-Messages">Formatted Messages</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.22.1 Printing Formatted Messages</h4>
+
+<p>Messages can be printed to standard error and/or to the console.  To
+select the destination the programmer can use the following two values,
+bitwise OR combined if wanted, for the <var>classification</var> parameter of
+<code>fmtmsg</code>:
+
+     <dl>
+<dt><code>MM_PRINT</code><a name="index-MM_005fPRINT-1171"></a><dd>Display the message in standard error. 
+<br><dt><code>MM_CONSOLE</code><a name="index-MM_005fCONSOLE-1172"></a><dd>Display the message on the system console. 
+</dl>
+
+   <p>The erroneous piece of the system can be signalled by exactly one of the
+following values which also is bitwise ORed with the
+<var>classification</var> parameter to <code>fmtmsg</code>:
+
+     <dl>
+<dt><code>MM_HARD</code><a name="index-MM_005fHARD-1173"></a><dd>The source of the condition is some hardware. 
+<br><dt><code>MM_SOFT</code><a name="index-MM_005fSOFT-1174"></a><dd>The source of the condition is some software. 
+<br><dt><code>MM_FIRM</code><a name="index-MM_005fFIRM-1175"></a><dd>The source of the condition is some firmware. 
+</dl>
+
+   <p>A third component of the <var>classification</var> parameter to <code>fmtmsg</code>
+can describe the part of the system which detects the problem.  This is
+done by using exactly one of the following values:
+
+     <dl>
+<dt><code>MM_APPL</code><a name="index-MM_005fAPPL-1176"></a><dd>The erroneous condition is detected by the application. 
+<br><dt><code>MM_UTIL</code><a name="index-MM_005fUTIL-1177"></a><dd>The erroneous condition is detected by a utility. 
+<br><dt><code>MM_OPSYS</code><a name="index-MM_005fOPSYS-1178"></a><dd>The erroneous condition is detected by the operating system. 
+</dl>
+
+   <p>A last component of <var>classification</var> can signal the results of this
+message.  Exactly one of the following values can be used:
+
+     <dl>
+<dt><code>MM_RECOVER</code><a name="index-MM_005fRECOVER-1179"></a><dd>It is a recoverable error. 
+<br><dt><code>MM_NRECOV</code><a name="index-MM_005fNRECOV-1180"></a><dd>It is a non-recoverable error. 
+</dl>
+
+<!-- fmtmsg.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: int <b>fmtmsg</b> (<var>long int classification, const char *label, int severity, const char *text, const char *action, const char *tag</var>)<var><a name="index-fmtmsg-1181"></a></var><br>
+<blockquote><p>Display a message described by its parameters on the device(s) specified
+in the <var>classification</var> parameter.  The <var>label</var> parameter
+identifies the source of the message.  The string should consist of two
+colon separated parts where the first part has not more than 10 and the
+second part not more than 14 characters.  The <var>text</var> parameter
+describes the condition of the error, the <var>action</var> parameter possible
+steps to recover from the error and the <var>tag</var> parameter is a
+reference to the online documentation where more information can be
+found.  It should contain the <var>label</var> value and a unique
+identification number.
+
+        <p>Each of the parameters can be a special value which means this value
+is to be omitted.  The symbolic names for these values are:
+
+          <dl>
+<dt><code>MM_NULLLBL</code><a name="index-MM_005fNULLLBL-1182"></a><dd>Ignore <var>label</var> parameter. 
+<br><dt><code>MM_NULLSEV</code><a name="index-MM_005fNULLSEV-1183"></a><dd>Ignore <var>severity</var> parameter. 
+<br><dt><code>MM_NULLMC</code><a name="index-MM_005fNULLMC-1184"></a><dd>Ignore <var>classification</var> parameter.  This implies that nothing is
+actually printed. 
+<br><dt><code>MM_NULLTXT</code><a name="index-MM_005fNULLTXT-1185"></a><dd>Ignore <var>text</var> parameter. 
+<br><dt><code>MM_NULLACT</code><a name="index-MM_005fNULLACT-1186"></a><dd>Ignore <var>action</var> parameter. 
+<br><dt><code>MM_NULLTAG</code><a name="index-MM_005fNULLTAG-1187"></a><dd>Ignore <var>tag</var> parameter. 
+</dl>
+
+        <p>There is another way certain fields can be omitted from the output to
+standard error.  This is described below in the description of
+environment variables influencing the behavior.
+
+        <p>The <var>severity</var> parameter can have one of the values in the following
+table:
+<a name="index-severity-class-1188"></a>
+          <dl>
+<dt><code>MM_NOSEV</code><a name="index-MM_005fNOSEV-1189"></a><dd>Nothing is printed, this value is the same as <code>MM_NULLSEV</code>. 
+<br><dt><code>MM_HALT</code><a name="index-MM_005fHALT-1190"></a><dd>This value is printed as <code>HALT</code>. 
+<br><dt><code>MM_ERROR</code><a name="index-MM_005fERROR-1191"></a><dd>This value is printed as <code>ERROR</code>. 
+<br><dt><code>MM_WARNING</code><a name="index-MM_005fWARNING-1192"></a><dd>This value is printed as <code>WARNING</code>. 
+<br><dt><code>MM_INFO</code><a name="index-MM_005fINFO-1193"></a><dd>This value is printed as <code>INFO</code>. 
+</dl>
+
+        <p>The numeric value of these five macros are between <code>0</code> and
+<code>4</code>.  Using the environment variable <code>SEV_LEVEL</code> or using the
+<code>addseverity</code> function one can add more severity levels with their
+corresponding string to print.  This is described below
+(see <a href="Adding-Severity-Classes.html#Adding-Severity-Classes">Adding Severity Classes</a>).
+
+     <p class="noindent">If no parameter is ignored the output looks like this:
+
+     <pre class="smallexample">          <var>label</var>: <var>severity-string</var>: <var>text</var>
+          TO FIX: <var>action</var> <var>tag</var>
+</pre>
+        <p>The colons, new line characters and the <code>TO FIX</code> string are
+inserted if necessary, i.e., if the corresponding parameter is not
+ignored.
+
+        <p>This function is specified in the X/Open Portability Guide.  It is also
+available on all systems derived from System V.
+
+        <p>The function returns the value <code>MM_OK</code> if no error occurred.  If
+only the printing to standard error failed, it returns <code>MM_NOMSG</code>. 
+If printing to the console fails, it returns <code>MM_NOCON</code>.  If
+nothing is printed <code>MM_NOTOK</code> is returned.  Among situations where
+all outputs fail this last value is also returned if a parameter value
+is incorrect. 
+</p></blockquote></div>
+
+   <p>There are two environment variables which influence the behavior of
+<code>fmtmsg</code>.  The first is <code>MSGVERB</code>.  It is used to control the
+output actually happening on standard error (<em>not</em> the console
+output).  Each of the five fields can explicitly be enabled.  To do
+this the user has to put the <code>MSGVERB</code> variable with a format like
+the following in the environment before calling the <code>fmtmsg</code> function
+the first time:
+
+<pre class="smallexample">     MSGVERB=<var>keyword</var>[:<var>keyword</var>[:...]]
+</pre>
+   <p>Valid <var>keyword</var>s are <code>label</code>, <code>severity</code>, <code>text</code>,
+<code>action</code>, and <code>tag</code>.  If the environment variable is not given
+or is the empty string, a not supported keyword is given or the value is
+somehow else invalid, no part of the message is masked out.
+
+   <p>The second environment variable which influences the behavior of
+<code>fmtmsg</code> is <code>SEV_LEVEL</code>.  This variable and the change in the
+behavior of <code>fmtmsg</code> is not specified in the X/Open Portability
+Guide.  It is available in System V systems, though.  It can be used to
+introduce new severity levels.  By default, only the five severity levels
+described above are available.  Any other numeric value would make
+<code>fmtmsg</code> print nothing.
+
+   <p>If the user puts <code>SEV_LEVEL</code> with a format like
+
+<pre class="smallexample">     SEV_LEVEL=[<var>description</var>[:<var>description</var>[:...]]]
+</pre>
+   <p class="noindent">in the environment of the process before the first call to
+<code>fmtmsg</code>, where <var>description</var> has a value of the form
+
+<pre class="smallexample">     <var>severity-keyword</var>,<var>level</var>,<var>printstring</var>
+</pre>
+   <p>The <var>severity-keyword</var> part is not used by <code>fmtmsg</code> but it has
+to be present.  The <var>level</var> part is a string representation of a
+number.  The numeric value must be a number greater than 4.  This value
+must be used in the <var>severity</var> parameter of <code>fmtmsg</code> to select
+this class.  It is not possible to overwrite any of the predefined
+classes.  The <var>printstring</var> is the string printed when a message of
+this class is processed by <code>fmtmsg</code> (see above, <code>fmtsmg</code> does
+not print the numeric value but instead the string representation).
+
+   </body></html>
+

@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Math Error Reporting - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link rel="prev" href="Status-bit-operations.html#Status-bit-operations" title="Status bit operations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Math-Error-Reporting"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Status-bit-operations.html#Status-bit-operations">Status bit operations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.5.4 Error Reporting by Mathematical Functions</h4>
+
+<p><a name="index-errors_002c-mathematical-2382"></a><a name="index-domain-error-2383"></a><a name="index-range-error-2384"></a>
+Many of the math functions are defined only over a subset of the real or
+complex numbers.  Even if they are mathematically defined, their result
+may be larger or smaller than the range representable by their return
+type.  These are known as <dfn>domain errors</dfn>, <dfn>overflows</dfn>, and
+<dfn>underflows</dfn>, respectively.  Math functions do several things when
+one of these errors occurs.  In this manual we will refer to the
+complete response as <dfn>signalling</dfn> a domain error, overflow, or
+underflow.
+
+   <p>When a math function suffers a domain error, it raises the invalid
+exception and returns NaN.  It also sets <var>errno</var> to <code>EDOM</code>;
+this is for compatibility with old systems that do not support IEEE&nbsp;754<!-- /@w --> exception handling.  Likewise, when overflow occurs, math
+functions raise the overflow exception and return &amp;infin; or
+-&amp;infin; as appropriate.  They also set <var>errno</var> to
+<code>ERANGE</code>.  When underflow occurs, the underflow exception is
+raised, and zero (appropriately signed) is returned.  <var>errno</var> may be
+set to <code>ERANGE</code>, but this is not guaranteed.
+
+   <p>Some of the math functions are defined mathematically to result in a
+complex value over parts of their domains.  The most familiar example of
+this is taking the square root of a negative number.  The complex math
+functions, such as <code>csqrt</code>, will return the appropriate complex value
+in this case.  The real-valued functions, such as <code>sqrt</code>, will
+signal a domain error.
+
+   <p>Some older hardware does not support infinities.  On that hardware,
+overflows instead return a particular very large number (usually the
+largest representable number).  <samp><span class="file">math.h</span></samp> defines macros you can use
+to test for overflow on both old and new hardware.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: double <b>HUGE_VAL</b><var><a name="index-HUGE_005fVAL-2385"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Macro: float <b>HUGE_VALF</b><var><a name="index-HUGE_005fVALF-2386"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Macro: long double <b>HUGE_VALL</b><var><a name="index-HUGE_005fVALL-2387"></a></var><br>
+<blockquote><p>An expression representing a particular very large number.  On machines
+that use IEEE&nbsp;754<!-- /@w --> floating point format, <code>HUGE_VAL</code> is infinity. 
+On other machines, it's typically the largest positive number that can
+be represented.
+
+        <p>Mathematical functions return the appropriately typed version of
+<code>HUGE_VAL</code> or <code>&minus;HUGE_VAL</code> when the result is too large
+to be represented. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,186 @@
+<html lang="en">
+<head>
+<title>Pathconf - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="File-Minimums.html#File-Minimums" title="File Minimums">
+<link rel="next" href="Utility-Limits.html#Utility-Limits" title="Utility Limits">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pathconf"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Utility-Limits.html#Utility-Limits">Utility Limits</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Minimums.html#File-Minimums">File Minimums</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.9 Using <code>pathconf</code></h3>
+
+<p>When your machine allows different files to have different values for a
+file system parameter, you can use the functions in this section to find
+out the value that applies to any particular file.
+
+   <p>These functions and the associated constants for the <var>parameter</var>
+argument are declared in the header file <samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: long int <b>pathconf</b> (<var>const char *filename, int parameter</var>)<var><a name="index-pathconf-3664"></a></var><br>
+<blockquote><p>This function is used to inquire about the limits that apply to
+the file named <var>filename</var>.
+
+        <p>The <var>parameter</var> argument should be one of the &lsquo;<samp><span class="samp">_PC_</span></samp>&rsquo; constants
+listed below.
+
+        <p>The normal return value from <code>pathconf</code> is the value you requested. 
+A value of <code>-1</code> is returned both if the implementation does not
+impose a limit, and in case of an error.  In the former case,
+<code>errno</code> is not set, while in the latter case, <code>errno</code> is set
+to indicate the cause of the problem.  So the only way to use this
+function robustly is to store <code>0</code> into <code>errno</code> just before
+calling it.
+
+        <p>Besides the usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>),
+the following error condition is defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The value of <var>parameter</var> is invalid, or the implementation doesn't
+support the <var>parameter</var> for the specific file. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: long int <b>fpathconf</b> (<var>int filedes, int parameter</var>)<var><a name="index-fpathconf-3665"></a></var><br>
+<blockquote><p>This is just like <code>pathconf</code> except that an open file descriptor
+is used to specify the file for which information is requested, instead
+of a file name.
+
+        <p>The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EINVAL</code><dd>The value of <var>parameter</var> is invalid, or the implementation doesn't
+support the <var>parameter</var> for the specific file. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Here are the symbolic constants that you can use as the <var>parameter</var>
+argument to <code>pathconf</code> and <code>fpathconf</code>.  The values are all
+integer constants.
+
+     <dl>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<dt><code>_PC_LINK_MAX</code><dd>Inquire about the value of <code>LINK_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_MAX_CANON</code><dd>Inquire about the value of <code>MAX_CANON</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_MAX_INPUT</code><dd>Inquire about the value of <code>MAX_INPUT</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_NAME_MAX</code><dd>Inquire about the value of <code>NAME_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_PATH_MAX</code><dd>Inquire about the value of <code>PATH_MAX</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_PIPE_BUF</code><dd>Inquire about the value of <code>PIPE_BUF</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_CHOWN_RESTRICTED</code><dd>Inquire about the value of <code>_POSIX_CHOWN_RESTRICTED</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_NO_TRUNC</code><dd>Inquire about the value of <code>_POSIX_NO_TRUNC</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_VDISABLE</code><dd>Inquire about the value of <code>_POSIX_VDISABLE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_SYNC_IO</code><dd>Inquire about the value of <code>_POSIX_SYNC_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_ASYNC_IO</code><dd>Inquire about the value of <code>_POSIX_ASYNC_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_PRIO_IO</code><dd>Inquire about the value of <code>_POSIX_PRIO_IO</code>.
+
+     <!-- unistd.h -->
+     <!-- LFS -->
+     <br><dt><code>_PC_FILESIZEBITS</code><dd>Inquire about the availability of large files on the filesystem.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_REC_INCR_XFER_SIZE</code><dd>Inquire about the value of <code>POSIX_REC_INCR_XFER_SIZE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_REC_MAX_XFER_SIZE</code><dd>Inquire about the value of <code>POSIX_REC_MAX_XFER_SIZE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_REC_MIN_XFER_SIZE</code><dd>Inquire about the value of <code>POSIX_REC_MIN_XFER_SIZE</code>.
+
+     <!-- unistd.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_PC_REC_XFER_ALIGN</code><dd>Inquire about the value of <code>POSIX_REC_XFER_ALIGN</code>. 
+</dl>
+
+   </body></html>
+

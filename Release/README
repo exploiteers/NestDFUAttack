@@ -1,0 +1,23 @@
+  ██████ ████████╗██╗   ██╗██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ 
+ ██╔════╝╚══██╔══╝██║   ██║██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+ ██║  ███╗  ██║   ██║   ██║███████║███████║██║     █████╔╝ █████╗  ██████╔╝
+ ██║   ██║  ██║   ╚██╗ ██╔╝██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+ ╚██████╔╝  ██║    ╚████╔╝ ██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║
+  ╚═════╝   ╚═╝     ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                                                                            
+This package contains everything needed to root a nest.
+
+Instructions
+################
+1.) Run All-In-One Nest Attack Script
+        For Linux: ./NestAttack-Linux.sh
+
+Troubleshooting
+################
+You can receive assistance from us at one of the following places
+
+Wiki - http://wiki.gtvhacker.com
+Forums - http://forum.gtvhacker.com
+Blog - http://blog.gtvhacker.com
+
+You can also chat with us on IRC at irc.Freenode.net #GTVHacker

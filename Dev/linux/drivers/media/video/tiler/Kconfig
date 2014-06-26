@@ -1,0 +1,126 @@
+config HAVE_TI_TILER
+        bool
+        default y
+        depends on ARCH_OMAP4 || ARCH_TI81XX
+
+menuconfig TI_TILER
+	tristate "TI TILER support"
+	default y
+        depends on HAVE_TI_TILER
+	help
+           TILER and TILER-DMM driver for TI chips.  The TI TILER device
+           enables video rotation on certain TI chips such as OMAP4 or
+           TI816X.  Video rotation will be limited without TILER support.
+
+config TILER_GRANULARITY
+        int "Allocation granularity (2^n)"
+        range 1 4096
+        default 128
+        depends on TI_TILER
+        help
+           This option sets the default TILER allocation granularity.  It can
+           be overriden by the tiler.grain boot argument.
+
+           The allocation granularity is the smallest TILER block size (in
+           bytes) managed distinctly by the TILER driver.  TILER blocks of any
+           size are managed in chunks of at least this size.
+
+           Must be a 2^n in the range of 1 to 4096; however, the TILER driver
+           may use a larger supported granularity.
+
+           Supported values are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+           2048, 4096.
+
+config TILER_ALIGNMENT
+        int "Allocation alignment (2^n)"
+        range 1 4096
+        default 4096
+        depends on TI_TILER
+        help
+           This option sets the default TILER allocation alignment.  It can
+           be overriden by the tiler.align boot argument.
+
+           Must be a 2^n in the range of 1 to 4096; however, it is naturally
+           aligned to the TILER granularity.
+
+           Supported values are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024,
+           2048, 4096.
+
+config TILER_CACHE_LIMIT
+        int "Memory limit to cache free pages in MBytes"
+        range 0 128
+        default 40
+        depends on TI_TILER
+        help
+           This option sets the minimum memory that TILER retains even if
+           there is less TILER allocated memory is use.  The unused memory is
+           instead stored in a cache to speed up allocation and freeing of
+           physical pages.
+
+           This option can be overriden by the tiler.cache boot argument.
+
+           While initially TILER will use less memory than this limit (0), it
+           will not release any memory used until it reaches this limit.
+           Thereafter, TILER will release any unused memory immediately as
+           long as there it is above this threshold.
+
+config TILER_SECURITY
+        int "Process security"
+        range 0 1
+        default 1
+        depends on TI_TILER
+        help
+           This option sets the default TILER process security.  It can be
+           overriden by the tiler.secure boot argument.
+
+           If process security is enabled (1), the TILER driver uses a separate
+           TILER buffer address spaces (for mmap purposes) for each process.
+           This means that one process cannot simply map another process's
+           TILER buffer into its memory, even for sharing.  However, it can
+           recreate the buffer by knowing the id-s and secret keys for the
+           TILER blocks involved.  This is the preferred configuration.
+
+           Disabling security (0) allows sharing buffers simply by sharing the
+           mmap offset and size.  However, because buffers can potentially be
+           shared between processes, it delays resource cleanup while any
+           process has an open TILER device.
+
+config TILER_SSPTR_ID
+        int "Use SSPtr for id"
+        range 0 1
+        default 0
+        depends on TI_TILER
+        help
+           This option sets the default behavior for TILER block ids.  It can
+           be overriden by the tiler.ssptr_id boot argument.
+
+           If true, TILER driver uses the system-space (physical) address
+           (SSPtr) of a TILER block as its unique id.  This may help sharing
+           TILER blocks between co-processors if using a constant key for each
+           block.
+
+           Note that the SSPtr is unique for each TILER block.
+
+config TILER_SECURE
+        bool "Secure TILER build"
+        default n
+        depends on TI_TILER
+        help
+           This option forces TILER security features that bypasses module
+           parameters.
+
+           If set, process security will be hardwired and ssptr and offset
+           lookup APIs are removed.
+
+config TILER_EXPOSE_SSPTR
+        bool "Expose SSPtr to userspace"
+        default y
+        depends on TI_TILER
+        help
+           This option sets whether SSPtr-s for blocks are exposed
+           during TILIOC_GBLK ioctls (MemMgr_Alloc APIs).  In a secure
+           TILER build, this may be the only way for the userspace code
+           to learn the system-space addresses of TILER blocks.
+
+           You can use this flag to see if the userspace is relying on
+           having access to the SSPtr.

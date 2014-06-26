@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+<title>Argp Help - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp.html#Argp" title="Argp">
+<link rel="prev" href="Argp-Flags.html#Argp-Flags" title="Argp Flags">
+<link rel="next" href="Argp-Examples.html#Argp-Examples" title="Argp Examples">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Help"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Examples.html#Argp-Examples">Argp Examples</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Flags.html#Argp-Flags">Argp Flags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp.html#Argp">Argp</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.9 The <code>argp_help</code> Function</h4>
+
+<p>Normally programs using argp need not be written with particular
+printing argument-usage-type help messages in mind as the standard
+&lsquo;<samp><span class="samp">--help</span></samp>&rsquo; option is handled automatically by argp.  Typical error
+cases can be handled using <code>argp_usage</code> and
+<code>argp_error</code>.  See <a href="Argp-Helper-Functions.html#Argp-Helper-Functions">Argp Helper Functions</a>.  However, if it's
+desirable to print a help message in some context other than parsing the
+program options, argp offers the <code>argp_help</code> interface.
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>argp_help</b> (<var>const struct argp *argp, FILE *stream, unsigned flags, char *name</var>)<var><a name="index-argp_005fhelp-3080"></a></var><br>
+<blockquote><p>This outputs a help message for the argp parser <var>argp</var> to
+<var>stream</var>.  The type of messages printed will be determined by
+<var>flags</var>.
+
+        <p>Any options such as &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; that are implemented automatically by
+argp itself will <em>not</em> be present in the help output; for this
+reason it is best to use <code>argp_state_help</code> if calling from within
+an argp parser function.  See <a href="Argp-Helper-Functions.html#Argp-Helper-Functions">Argp Helper Functions</a>. 
+</p></blockquote></div>
+
+<ul class="menu">
+<li><a accesskey="1" href="Argp-Help-Flags.html#Argp-Help-Flags">Flags</a>:        Specifying what sort of help message to print. 
+</ul>
+
+   </body></html>
+

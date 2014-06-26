@@ -1,0 +1,107 @@
+<html lang="en">
+<head>
+<title>Obstack Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Freeing-Obstack-Objects.html#Freeing-Obstack-Objects" title="Freeing Obstack Objects">
+<link rel="next" href="Growing-Objects.html#Growing-Objects" title="Growing Objects">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Obstack-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Growing-Objects.html#Growing-Objects">Growing Objects</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Freeing-Obstack-Objects.html#Freeing-Obstack-Objects">Freeing Obstack Objects</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.5 Obstack Functions and Macros</h5>
+
+<p><a name="index-macros-312"></a>
+The interfaces for using obstacks may be defined either as functions or
+as macros, depending on the compiler.  The obstack facility works with
+all C compilers, including both ISO&nbsp;C<!-- /@w --> and traditional C, but there are
+precautions you must take if you plan to use compilers other than GNU C.
+
+   <p>If you are using an old-fashioned non-ISO&nbsp;C<!-- /@w --> compiler, all the obstack
+&ldquo;functions&rdquo; are actually defined only as macros.  You can call these
+macros like functions, but you cannot use them in any other way (for
+example, you cannot take their address).
+
+   <p>Calling the macros requires a special precaution: namely, the first
+operand (the obstack pointer) may not contain any side effects, because
+it may be computed more than once.  For example, if you write this:
+
+<pre class="smallexample">     obstack_alloc (get_obstack (), 4);
+</pre>
+   <p class="noindent">you will find that <code>get_obstack</code> may be called several times. 
+If you use <code>*obstack_list_ptr++</code> as the obstack pointer argument,
+you will get very strange results since the incrementation may occur
+several times.
+
+   <p>In ISO&nbsp;C<!-- /@w -->, each function has both a macro definition and a function
+definition.  The function definition is used if you take the address of the
+function without calling it.  An ordinary call uses the macro definition by
+default, but you can request the function definition instead by writing the
+function name in parentheses, as shown here:
+
+<pre class="smallexample">     char *x;
+     void *(*funcp) ();
+     /* <span class="roman">Use the macro</span>.  */
+     x = (char *) obstack_alloc (obptr, size);
+     /* <span class="roman">Call the function</span>.  */
+     x = (char *) (obstack_alloc) (obptr, size);
+     /* <span class="roman">Take the address of the function</span>.  */
+     funcp = obstack_alloc;
+</pre>
+   <p class="noindent">This is the same situation that exists in ISO&nbsp;C<!-- /@w --> for the standard library
+functions.  See <a href="Macro-Definitions.html#Macro-Definitions">Macro Definitions</a>.
+
+   <p><strong>Warning:</strong> When you do use the macros, you must observe the
+precaution of avoiding side effects in the first operand, even in ISO&nbsp;C<!-- /@w -->.
+
+   <p>If you use the GNU C compiler, this precaution is not necessary, because
+various language extensions in GNU C permit defining the macros so as to
+compute each argument only once.
+
+   </body></html>
+

@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+<title>Formatted Output - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Block-Input_002fOutput.html#Block-Input_002fOutput" title="Block Input/Output">
+<link rel="next" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatted-Output"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Block-Input_002fOutput.html#Block-Input_002fOutput">Block Input/Output</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.12 Formatted Output</h3>
+
+<p><a name="index-format-string_002c-for-_0040code_007bprintf_007d-1014"></a><a name="index-template_002c-for-_0040code_007bprintf_007d-1015"></a><a name="index-formatted-output-to-a-stream-1016"></a><a name="index-writing-to-a-stream_002c-formatted-1017"></a>The functions described in this section (<code>printf</code> and related
+functions) provide a convenient way to perform formatted output.  You
+call <code>printf</code> with a <dfn>format string</dfn> or <dfn>template string</dfn>
+that specifies how to format the values of the remaining arguments.
+
+   <p>Unless your program is a filter that specifically performs line- or
+character-oriented processing, using <code>printf</code> or one of the other
+related functions described in this section is usually the easiest and
+most concise way to perform output.  These functions are especially
+useful for printing error messages, tables of data, and the like.
+
+<ul class="menu">
+<li><a accesskey="1" href="Formatted-Output-Basics.html#Formatted-Output-Basics">Formatted Output Basics</a>:      Some examples to get you started. 
+<li><a accesskey="2" href="Output-Conversion-Syntax.html#Output-Conversion-Syntax">Output Conversion Syntax</a>:     General syntax of conversion
+                                 specifications. 
+<li><a accesskey="3" href="Table-of-Output-Conversions.html#Table-of-Output-Conversions">Table of Output Conversions</a>:  Summary of output conversions and
+                                 what they do. 
+<li><a accesskey="4" href="Integer-Conversions.html#Integer-Conversions">Integer Conversions</a>:          Details about formatting of integers. 
+<li><a accesskey="5" href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions">Floating-Point Conversions</a>:   Details about formatting of
+                                 floating-point numbers. 
+<li><a accesskey="6" href="Other-Output-Conversions.html#Other-Output-Conversions">Other Output Conversions</a>:     Details about formatting of strings,
+                                 characters, pointers, and the like. 
+<li><a accesskey="7" href="Formatted-Output-Functions.html#Formatted-Output-Functions">Formatted Output Functions</a>:   Descriptions of the actual functions. 
+<li><a accesskey="8" href="Dynamic-Output.html#Dynamic-Output">Dynamic Output</a>: 		Functions that allocate memory for the output. 
+<li><a accesskey="9" href="Variable-Arguments-Output.html#Variable-Arguments-Output">Variable Arguments Output</a>:    <code>vprintf</code> and friends. 
+<li><a href="Parsing-a-Template-String.html#Parsing-a-Template-String">Parsing a Template String</a>:    What kinds of args does a given template
+                                 call for? 
+<li><a href="Example-of-Parsing.html#Example-of-Parsing">Example of Parsing</a>:           Sample program using <code>parse_printf_format</code>. 
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Hard Links - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Working-with-Directory-Trees.html#Working-with-Directory-Trees" title="Working with Directory Trees">
+<link rel="next" href="Symbolic-Links.html#Symbolic-Links" title="Symbolic Links">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Hard-Links"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Working-with-Directory-Trees.html#Working-with-Directory-Trees">Working with Directory Trees</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.4 Hard Links</h3>
+
+<p><a name="index-hard-link-1455"></a><a name="index-link_002c-hard-1456"></a><a name="index-multiple-names-for-one-file-1457"></a><a name="index-file-names_002c-multiple-1458"></a>
+In POSIX systems, one file can have many names at the same time.  All of
+the names are equally real, and no one of them is preferred to the
+others.
+
+   <p>To add a name to a file, use the <code>link</code> function.  (The new name is
+also called a <dfn>hard link</dfn> to the file.)  Creating a new link to a
+file does not copy the contents of the file; it simply makes a new name
+by which the file can be known, in addition to the file's existing name
+or names.
+
+   <p>One file can have names in several directories, so the organization
+of the file system is not a strict hierarchy or tree.
+
+   <p>In most implementations, it is not possible to have hard links to the
+same file in multiple file systems.  <code>link</code> reports an error if you
+try to make a hard link to the file from another file system when this
+cannot be done.
+
+   <p>The prototype for the <code>link</code> function is declared in the header
+file <samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-1459"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>link</b> (<var>const char *oldname, const char *newname</var>)<var><a name="index-link-1460"></a></var><br>
+<blockquote><p>The <code>link</code> function makes a new link to the existing file named by
+<var>oldname</var>, under the new name <var>newname</var>.
+
+        <p>This function returns a value of <code>0</code> if it is successful and
+<code>-1</code> on failure.  In addition to the usual file name errors
+(see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>) for both <var>oldname</var> and <var>newname</var>, the
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>You are not allowed to write to the directory in which the new link is
+to be written.
+
+          <br><dt><code>EEXIST</code><dd>There is already a file named <var>newname</var>.  If you want to replace
+this link with a new link, you must remove the old link explicitly first.
+
+          <br><dt><code>EMLINK</code><dd>There are already too many links to the file named by <var>oldname</var>. 
+(The maximum number of links to a file is <code>LINK_MAX</code><!-- /@w -->; see
+<a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>.)
+
+          <br><dt><code>ENOENT</code><dd>The file named by <var>oldname</var> doesn't exist.  You can't make a link to
+a file that doesn't exist.
+
+          <br><dt><code>ENOSPC</code><dd>The directory or file system that would contain the new link is full
+and cannot be extended.
+
+          <br><dt><code>EPERM</code><dd>In the GNU system and some others, you cannot make links to directories. 
+Many systems allow only privileged users to do so.  This error
+is used to report the problem.
+
+          <br><dt><code>EROFS</code><dd>The directory containing the new link can't be modified because it's on
+a read-only file system.
+
+          <br><dt><code>EXDEV</code><dd>The directory specified in <var>newname</var> is on a different file system
+than the existing file.
+
+          <br><dt><code>EIO</code><dd>A hardware error occurred while trying to read or write the to filesystem. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

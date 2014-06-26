@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>Signal Actions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Handling.html#Signal-Handling" title="Signal Handling">
+<link rel="prev" href="Standard-Signals.html#Standard-Signals" title="Standard Signals">
+<link rel="next" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Actions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Standard-Signals.html#Standard-Signals">Standard Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Handling.html#Signal-Handling">Signal Handling</a>
+<hr>
+</div>
+
+<h3 class="section">24.3 Specifying Signal Actions</h3>
+
+<p><a name="index-signal-actions-2904"></a><a name="index-establishing-a-handler-2905"></a>
+The simplest way to change the action for a signal is to use the
+<code>signal</code> function.  You can specify a built-in action (such as to
+ignore the signal), or you can <dfn>establish a handler</dfn>.
+
+   <p>The GNU library also implements the more versatile <code>sigaction</code>
+facility.  This section describes both facilities and gives suggestions
+on which to use when.
+
+<ul class="menu">
+<li><a accesskey="1" href="Basic-Signal-Handling.html#Basic-Signal-Handling">Basic Signal Handling</a>:        The simple <code>signal</code> function. 
+<li><a accesskey="2" href="Advanced-Signal-Handling.html#Advanced-Signal-Handling">Advanced Signal Handling</a>:     The more powerful <code>sigaction</code> function. 
+<li><a accesskey="3" href="Signal-and-Sigaction.html#Signal-and-Sigaction">Signal and Sigaction</a>:         How those two functions interact. 
+<li><a accesskey="4" href="Sigaction-Function-Example.html#Sigaction-Function-Example">Sigaction Function Example</a>:   An example of using the sigaction function. 
+<li><a accesskey="5" href="Flags-for-Sigaction.html#Flags-for-Sigaction">Flags for Sigaction</a>:          Specifying options for signal handling. 
+<li><a accesskey="6" href="Initial-Signal-Actions.html#Initial-Signal-Actions">Initial Signal Actions</a>:       How programs inherit signal actions. 
+</ul>
+
+   </body></html>
+

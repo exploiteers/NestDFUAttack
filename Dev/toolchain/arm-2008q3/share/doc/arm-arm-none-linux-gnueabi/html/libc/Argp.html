@@ -1,0 +1,127 @@
+<html lang="en">
+<head>
+<title>Argp - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments" title="Parsing Program Arguments">
+<link rel="prev" href="Getopt.html#Getopt" title="Getopt">
+<link rel="next" href="Suboptions.html#Suboptions" title="Suboptions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Suboptions.html#Suboptions">Suboptions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Getopt.html#Getopt">Getopt</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>
+<hr>
+</div>
+
+<h3 class="section">25.3 Parsing Program Options with Argp</h3>
+
+<p><a name="index-argp-_0028program-argument-parser_0029-3031"></a><a name="index-argument-parsing-with-argp-3032"></a><a name="index-option-parsing-with-argp-3033"></a>
+<dfn>Argp</dfn> is an interface for parsing unix-style argument vectors. 
+See <a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>.
+
+   <p>Argp provides features unavailable in the more commonly used
+<code>getopt</code> interface.  These features include automatically producing
+output in response to the &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; and &lsquo;<samp><span class="samp">--version</span></samp>&rsquo; options, as
+described in the GNU coding standards.  Using argp makes it less likely
+that programmers will neglect to implement these additional options or
+keep them up to date.
+
+   <p>Argp also provides the ability to merge several independently defined
+option parsers into one, mediating conflicts between them and making the
+result appear seamless.  A library can export an argp option parser that
+user programs might employ in conjunction with their own option parsers,
+resulting in less work for the user programs.  Some programs may use only
+argument parsers exported by libraries, thereby achieving consistent and
+efficient option-parsing for abstractions implemented by the libraries.
+
+   <p><a name="index-argp_002eh-3034"></a>The header file <samp><span class="file">&lt;argp.h&gt;</span></samp> should be included to use argp.
+
+<h4 class="subsection">25.3.1 The <code>argp_parse</code> Function</h4>
+
+<p>The main interface to argp is the <code>argp_parse</code> function.  In many
+cases, calling <code>argp_parse</code> is the only argument-parsing code
+needed in <code>main</code>. 
+See <a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>.
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: error_t <b>argp_parse</b> (<var>const struct argp *argp, int argc, char **argv, unsigned flags, int *arg_index, void *input</var>)<var><a name="index-argp_005fparse-3035"></a></var><br>
+<blockquote><p>The <code>argp_parse</code> function parses the arguments in <var>argv</var>, of
+length <var>argc</var>, using the argp parser <var>argp</var>.  See <a href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>.
+
+        <p>A value of zero is the same as a <code>struct argp</code>containing all
+zeros.  <var>flags</var> is a set of flag bits that modify the parsing
+behavior.  See <a href="Argp-Flags.html#Argp-Flags">Argp Flags</a>.  <var>input</var> is passed through to the argp
+parser <var>argp</var>, and has meaning defined by <var>argp</var>.  A typical
+usage is to pass a pointer to a structure which is used for specifying
+parameters to the parser and passing back the results.
+
+        <p>Unless the <code>ARGP_NO_EXIT</code> or <code>ARGP_NO_HELP</code> flags are included
+in <var>flags</var>, calling <code>argp_parse</code> may result in the program
+exiting.  This behavior is true if an error is detected, or when an
+unknown option is encountered.  See <a href="Program-Termination.html#Program-Termination">Program Termination</a>.
+
+        <p>If <var>arg_index</var> is non-null, the index of the first unparsed option
+in <var>argv</var> is returned as a value.
+
+        <p>The return value is zero for successful parsing, or an error code
+(see <a href="Error-Codes.html#Error-Codes">Error Codes</a>) if an error is detected.  Different argp parsers
+may return arbitrary error codes, but the standard error codes are:
+<code>ENOMEM</code> if a memory allocation error occurred, or <code>EINVAL</code> if
+an unknown option or option argument is encountered. 
+</p></blockquote></div>
+
+<ul class="menu">
+<li><a accesskey="1" href="Argp-Global-Variables.html#Argp-Global-Variables">Globals</a>:   Global argp parameters. 
+<li><a accesskey="2" href="Argp-Parsers.html#Argp-Parsers">Parsers</a>:         Defining parsers for use with <code>argp_parse</code>. 
+<li><a accesskey="3" href="Argp-Flags.html#Argp-Flags">Flags</a>:             Flags that modify the behavior of <code>argp_parse</code>. 
+<li><a accesskey="4" href="Argp-Help.html#Argp-Help">Help</a>:               Printing help messages when not parsing. 
+<li><a accesskey="5" href="Argp-Examples.html#Argp-Examples">Examples</a>:       Simple examples of programs using argp. 
+<li><a accesskey="6" href="Argp-User-Customization.html#Argp-User-Customization">Customization</a>
+                                Users may control the &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; output format. 
+</ul>
+
+   </body></html>
+

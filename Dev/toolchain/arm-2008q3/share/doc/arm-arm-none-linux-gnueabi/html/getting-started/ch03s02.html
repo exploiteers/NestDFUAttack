@@ -1,0 +1,413 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using Sourcery G++ Lite for ARM GNU/Linux</title><link rel="stylesheet" href="cs.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Sourcery G++ Lite"><link rel="up" href="chap-release.html" title="Chapter 3. Sourcery G++ Lite for ARM GNU/Linux"><link rel="prev" href="chap-release.html" title="Chapter 3. Sourcery G++ Lite for ARM GNU/Linux"><link rel="next" href="ch03s03.html" title="Sourcery G++ Lite Release Notes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using Sourcery G++ Lite for ARM GNU/Linux</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="chap-release.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Sourcery G++ Lite for ARM GNU/Linux</th><td width="20%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id297691"></a>Using Sourcery G++ Lite for ARM GNU/Linux</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id297697"></a>Target Kernel Requirements</h3></div></div></div><p>
+      The GNU C library supplied with Sourcery G++ Lite uses the new EABI-based
+      kernel syscall interface.  This means applications compiled with Sourcery G++
+      require at least a 2.6.16 kernel with EABI syscalls enabled.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id297709"></a>Compiling for ARMv4t systems</h3></div></div></div><p>
+	By default Sourcery G++ generates Linux binaries that require
+	an ARMv5 or later CPU.  To build applications or libraries capable
+	of running on ARMv4t CPUs, use the <code class="option">-march=armv4t</code>
+	command-line option.
+    </p><p>
+	Runtime libraries suitable for ARMv4t systems are supplied in the
+	<code class="filename">armv4t</code> subdirectory.
+    </p><p>
+	Code compiled for ARMv4t is ABI compatible with ARMv5 code. Code and
+	binaries compiled for different architectures may be mixed freely.
+    </p><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3><p>
+	  There are several other ways to tell the compiler to generate
+	  ARMv4t code.  However <code class="option">-march=armv4t</code> must be used
+	  when linking to ensure the correct libraries and startup code are
+	  selected.
+	</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id297751"></a>NEON SIMD Code</h3></div></div></div><p>
+    Sourcery G++ includes support for automatic generation of NEON
+    SIMD vector code.  Autovectorization is a compiler optimization
+    in which loops involving normal integer or floating-point code are 
+    transformed to use NEON SIMD instructions to process several data
+    elements at once.
+  </p><p>
+    To enable generation of NEON vector code, use the command-line options
+    <code class="option">-ftree-vectorize -mfpu=neon -mfloat-abi=softfp</code>.
+    The <code class="option">-mfpu=neon</code> option 
+    also enables generation of VFPv3 scalar floating-point code.
+  </p><p>
+    Sourcery G++ also includes support for manual generation
+    of NEON SIMD code using C intrinsic functions.  These intrinsics,
+    the same as those supported by the ARM 
+    <span class="trademark">RealView</span>® compiler, are defined
+    in the <code class="filename">arm_neon.h</code> header
+    and are documented in the 'ARM NEON Intrinsics' section of the GCC
+    manual.  The command-line options <code class="option">-mfpu=neon
+    -mfloat-abi=softfp</code> must be specified to use these
+    intrinsics; <code class="option">-ftree-vectorize</code> is not required.
+  </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sec-arm-fp16"></a>Half-Precision Floating Point</h3></div></div></div><p>
+    Sourcery G++ for ARM GNU/Linux includes support for half-precision 
+   (16-bit) floating point, including the new <span class="type">__fp16</span> data 
+   type in C and C++, support for generating conversion instructions when
+   compiling for processors that support them, and library functions for
+   use in other cases.  
+   
+  </p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id297822"></a>Representations</h4></div></div></div><p>
+      ARM supports two incompatible representations for half-precision
+      floating-point values.  You must choose one of the representations
+      and use it consistently in your program.  The linker gives an error
+      if objects compiled or assembled with different half-precision 
+      float attributes are combined in the same executable.
+    </p><p>
+      Compiling or assembling with <code class="option">-mfp16-format=ieee</code>
+      selects the representation defined in the
+      <em class="citetitle">IEEE 754-2008</em> standard, 
+      with 1 sign bit, 5 exponent bits, and 10 significand bits 
+      (11 bits of significand precision, approximately 3 decimal digits).  
+      This format is capable of representing normalized values in the range of 
+      2<sup>-14</sup> to 65504.  It includes support for
+      infinities and NaNs, following the usual IEEE 754 rules.
+    </p><p>
+      ARM also supports an alternative half-precision representation,
+      which you can select with
+      <code class="option">-mfp16-format=alternative</code>.  This format does not
+      include support for infinities and NaNs.  Instead, the range of
+      exponent values is extended, so that this format can represent 
+      normalized values in the range of 2<sup>-14</sup>
+      to 131008.
+    </p><p>
+      The default for this option is <code class="option">-mfp16-format=none</code>,
+      which disables support for half-precision floats.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id297873"></a>C and C++ Usage</h4></div></div></div><p>
+      When you compile with <code class="option">-mfp16-format=ieee</code> or
+      <code class="option">-mfp16-format=alternative</code>, GCC defines the
+      <span class="type">__fp16</span> data type to represent half-precision
+      float values.  Objects of this type have a size of 2 bytes and
+      a natural alignment of 2 bytes.
+    </p><p>
+      The <span class="type">__fp16</span> type is a storage format only.  For purposes
+      of arithmetic and other operations, <span class="type">__fp16</span> values
+      are automatically promoted to <span class="type">float</span>.  In addition,
+      you cannot declare a function with a return value or parameters 
+      of type <span class="type">__fp16</span>.
+    </p><p>
+      Note that conversions from <span class="type">double</span> to <span class="type">__fp16</span>
+      involve an intermediate conversion to <span class="type">float</span>.  Because
+      of rounding, this can sometimes produce a different result than a
+      direct conversion.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id297932"></a>Hardware and Library Support</h4></div></div></div><p>
+      ARM provides hardware support for conversions between 
+      <span class="type">__fp16</span> and <span class="type">float</span> values
+      as an extension to VFP and NEON (Advanced SIMD).  GCC generates
+      code using the instructions provided by this extension if you compile
+      with the options <code class="option">-mfpu=neon-fp16 -mfloat-abi=softfp</code>,
+      in addition to the <code class="option">-mfp16-format</code> option to select
+      a half-precision format.
+    </p><p>
+      In other cases, conversions between 
+      <span class="type">__fp16</span> and <span class="type">float</span> values are implemented
+      as library calls.
+    </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id297972"></a>ABI Compatibility</h3></div></div></div><p>
+    The Application Binary Interface (ABI) for the ARM Architecture is
+    a collection of standards, published by ARM Ltd. and other
+    organizations.  The ABI makes it possible to combine tools
+    from different vendors, including Sourcery G++ and ARM
+    <span class="trademark">RealView</span>®.
+  </p><p>
+    Sourcery G++ implements the ABI as described in these documents,
+    which are available from the <a href="http://infocenter.arm.com" target="_top">
+    ARM Information Center</a>:
+  </p><div class="itemizedlist"><ul type="disc"><li>BSABI - ARM IHI 0036A (25 October 2007)</li><li>BPABI - ARM IHI 0037A (25 October 2007)</li><li>EHABI - ARM IHI 0038A (25 October 2007)</li><li>CLIBABI - ARM IHI 0039A (25 October 2007)</li><li>AADWARF - ARM IHI 0040A (25 October 2007)</li><li>CPPABI - ARM IHI 0041A (25 October 2007)</li><li>AAPCS - ARM IHI 0042B (2 April 2008)</li><li>RTABI - ARM IHI 0043A (25 October 2007)</li><li>AAELF - ARM IHI 0044B (2 April 2008)</li><li>ABI Addenda - ARM IHI 0045A (13 November 2007)</li></ul></div><p>
+    Sourcery G++ currently produces DWARF version 2, rather than DWARF
+    version 3 as specified in AADWARF.
+  </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="portable-objects"></a>Object File Portability</h3></div></div></div><p>
+    It is possible to create object files using Sourcery G++ for
+    ARM EABI that are link-compatible with the
+    GNU C library provided with Sourcery G++ for ARM
+    GNU/Linux as well as with the Newlib C library provided with the
+    ARM EABI toolchain.
+    <span>
+      These object files are additionally link-compatible with
+      other ARM C Library ABI-compliant static linking environments
+      and toolchains.
+    </span>
+    
+  </p><p>
+    To use this feature, when compiling your files with the bare-metal 
+    ARM EABI toolchain define the preprocessor constant 
+    <code class="constant">_AEABI_PORTABILITY_LEVEL</code> to 1 
+    before including any system header files.
+    For example, pass the option <code class="option">-D_AEABI_PORTABILITY_LEVEL=1</code> 
+    on your compilation command line.  
+    No special options are required when linking the resulting object files.
+    When building applications for ARM EABI,
+    files compiled with this definition may be linked freely with those
+    compiled without it.
+  </p><p>
+    Files compiled in this manner may not use the
+    functions <code class="function">fgetpos</code>
+    or <code class="function">fsetpos</code>, or reference the
+    type <span class="type">fpos_t</span>.  This is because Newlib assumes a
+    representation for <span class="type">fpos_t</span> that is not AEABI-compliant.
+  </p><p>
+    Note that object files are only portable from EABI to GNU/Linux, and
+    not vice versa; object files compiled for ARM 
+    GNU/Linux targets cannot be linked into ARM EABI
+    executables.
+  </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="included-libraries"></a>Using Sourcery G++ Lite on GNU/Linux Targets</h3></div></div></div><p>
+In order to run and debug programs produced by Sourcery G++ on a GNU/Linux
+target, you must install runtime support files on the target.  You may also
+need to set appropriate build options so that your executables can find
+the correct dynamic linker and libraries at runtime.
+
+</p><p>
+The runtime support files, referred to as the <em class="firstterm">sysroot</em>,
+are found in the <code class="filename">arm-none-linux-gnueabi/libc</code> directory of your
+Sourcery G++ Lite installation.  The sysroot consists of the contents of the 
+<code class="filename">etc</code>, <code class="filename">lib</code>, <code class="filename">sbin</code>, 
+and <code class="filename">usr</code> directories.  There may be other
+directories in <code class="filename">arm-none-linux-gnueabi/libc</code> that contain 
+additional sysroots customized for particular combinations of 
+command-line compiler flags, or <em class="firstterm">multilibs</em>.
+Refer to <a href="chap-release.html#sec-multilibs" title="Library Configurations">the section called &#8220;Library Configurations&#8221;</a> for a list of the included multilibs
+in this version of Sourcery G++ Lite.
+</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note for Windows Host Users</h3><p>
+   The sysroots provided in Windows host packages for Sourcery G++ are not 
+   directly usable on the Linux target because of differences between the
+   Windows and Linux file systems.
+   Some files that are hard links, or copies, in the sysroot 
+   as installed on the Windows file system should be symbolic links 
+   on the Linux target.  
+   Additionally, some files in the sysroot which should be marked 
+   executable on the Linux target are not marked executable on Windows.
+   If you intend to use the sysroot provided with Sourcery G++ on a 
+   Windows host system as the basis for your Linux target filesystem, 
+   you must correct these issues after copying the sysroot to the target.
+   If you are a Professional Edition customer and need assistance with
+   these modifications, please contact CodeSourcery's support team.
+ </p></div><p>
+There are three choices for installing the sysroot on the target:
+</p><div class="itemizedlist"><ul type="disc"><li><p>
+    You can install the files in the filesystem root, replacing the
+    system-provided files.  All applications automatically use the
+    Sourcery G++ libraries.  This method is primarily useful when you are
+    building a GNU/Linux system from scratch.  Otherwise, overwriting your
+    existing C library may break other applications on your system, or cause
+    it to fail to boot.
+  </p></li><li><p>
+    You can install the sysroot in an alternate location and build your
+    application with the <code class="option">-rpath</code> and 
+    <code class="option">--dynamic-linker</code> linker options to specify the sysroot
+    location.
+  </p></li><li><p>
+    You can install the sysroot in an alternate location and explicitly
+    invoke your application through the dynamic linker to specify the
+    sysroot location.
+    If you are just getting started with Sourcery G++ Lite, this may be the easiest
+    way to get your application running, but this method does not support use
+    of the debugger.
+    
+  </p></li></ul></div><p>
+Setting the environment variable <code class="envar">LD_LIBRARY_PATH</code> 
+on the target is not sufficient, since executables produced by Sourcery G++
+depend on the Sourcery G++ dynamic linker included in the sysroot as well 
+as the Sourcery G++ runtime libraries.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="sec-installing-sysroot"></a>Installing the Sysroot</h4></div></div></div><p>
+If you are modifying an existing system, rather than creating a new
+system from scratch, you should place the sysroot files in a new directory,
+rather than in the root directory of your target system.
+</p><p>
+If you choose to overwrite your existing C library, you may not be
+able to boot your system.  You should back up your existing system
+before overwriting the C library and ensure that you can restore the
+backup even with your system offline. 
+</p><p>
+When running Sourcery G++ on a GNU/Linux host,
+you have the alternative of installing the sysroot on the
+target at the same pathname where it is installed on the host system.
+One way to accomplish this is to NFS-mount the installation directory
+on both machines in the same location, rather than to copy files.
+</p><p>
+In many cases, you do not need to copy all of the files in the sysroot.
+For example, the <code class="filename">usr/include</code> subdirectory contains 
+files that are only needed if you will actually be running the compiler 
+on your target system.  You do not need these files for non-native compilers.
+You also do not need any <code class="filename">.o</code> or <code class="filename">.a</code>
+files; these are used by the compiler when linking programs, but are not 
+needed to run programs.  You should definitely copy all 
+<code class="filename">.so</code> files and the executable files in
+<code class="filename">usr/bin</code> and <code class="filename">sbin</code>.
+</p><p>
+You need to install the sysroot(s) corresponding to 
+the compiler options you are using for your applications.  The tables in
+<a href="chap-release.html#sec-multilibs" title="Library Configurations">the section called &#8220;Library Configurations&#8221;</a> tell you which sysroot directories correspond
+to which compiler options.  If you are unsure what sysroot is being referenced
+when you build your program, you can
+identify the sysroot by adding <code class="option">-v</code> to your compiler
+command-line options, and looking at the <code class="option">--sysroot=</code> pathname
+in the compiler output.  
+
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="sec-linker-sysroot"></a>Using Linker Options to Specify the Sysroot Location</h4></div></div></div><p>
+If you have installed the sysroot on the target in a location other than
+the file system root, you can use the <code class="option">-rpath</code> and
+<code class="option">--dynamic-linker</code> linker options to specify the sysroot
+location.
+</p><p>
+If you are using Sourcery G++ from the command line, follow these steps:
+</p><div class="orderedlist"><ol type="1"><li><p>
+  First find the correct sysroot directory, dynamic linker, and library
+  subdirectory for your
+  selected multilib.  Refer to <a href="chap-release.html#sec-multilibs" title="Library Configurations">the section called &#8220;Library Configurations&#8221;</a>.
+  In the following steps,
+  <em class="replaceable"><code>sysroot</code></em> is the absolute path to the
+  sysroot directory on the target corresponding to your selected multilib.
+  For the default multilib, the dynamic linker path relative to the sysroot is
+  <code class="filename">lib/ld-linux.so.3</code>, and the library subdirectory is
+  <code class="filename">lib</code>.
+  This is used in the example below.
+  </p></li><li><p>
+  When invoking <span><strong class="command">arm-none-linux-gnueabi-gcc</strong></span> to link your executable,
+  include the command-line options:
+
+  </p><pre class="screen">-Wl,-rpath=<em class="replaceable"><code>sysroot</code></em>/lib:<em class="replaceable"><code>sysroot</code></em>/usr/lib \
+-Wl,--dynamic-linker=<em class="replaceable"><code>sysroot</code></em>/lib/ld-linux.so.3</pre><p>
+
+  where <em class="replaceable"><code>sysroot</code></em> is the absolute path to the
+  sysroot directory on the target corresponding to your selected multilib.
+  </p></li><li><p>
+  Copy the executable to the target and execute it normally.
+  </p></li></ol></div><p>
+Note that if you specify an incorrect path for 
+<code class="option">--dynamic-linker</code>, the common failure mode seen when running
+your application on the target is similar to
+</p><pre class="screen">&gt; ./hello
+./hello: No such file or directory</pre><p>
+
+or
+
+</p><pre class="screen">&gt; ./hello
+./hello: bad ELF interpreter: No such file or directory</pre><p>
+
+This can be quite confusing since it appears from the error message 
+as if it is the  <code class="filename">./hello</code> executable that is 
+missing rather than the dynamic linker it references.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="sec-runtime-sysroot"></a>Specifying the Sysroot Location at Runtime</h4></div></div></div><p>
+You can invoke the Sourcery G++ dynamic linker on the target to run your 
+application without having to compile it with specific linker options.  
+
+</p><p>
+To do this, follow these steps:
+</p><div class="orderedlist"><ol type="1"><li><p>
+  Build your application on the host, without any additional linker options,
+  and copy the executable to your target system.
+  </p></li><li><p>
+  Find the correct sysroot directory, dynamic linker, and library
+  subdirectory for your
+  selected multilib.  Refer to <a href="chap-release.html#sec-multilibs" title="Library Configurations">the section called &#8220;Library Configurations&#8221;</a>.
+  In the following steps,
+  <em class="replaceable"><code>sysroot</code></em> is the absolute path to the
+  sysroot directory on the target corresponding to your selected multilib.
+  For the default multilib, the dynamic linker is
+  <code class="filename">lib/ld-linux.so.3</code>, and the library subdirectory is
+  <code class="filename">lib</code>.
+  This is used in the example below.
+  </p></li><li><p>
+  On the target system, invoke the dynamic linker with your executable as:
+
+  </p><pre class="screen">&gt; <em class="replaceable"><code>sysroot</code></em>/lib/ld-linux.so.3 \
+  --library-path <em class="replaceable"><code>sysroot</code></em>/lib:<em class="replaceable"><code>sysroot</code></em>/usr/lib \
+  <em class="replaceable"><code>/path/to/your-executable</code></em></pre><p>
+
+  where <em class="replaceable"><code>sysroot</code></em> is the absolute path to the
+  sysroot directory on the target corresponding to your selected
+  multilib.
+  </p><p>Invoking the linker in this manner requires that
+  you provide either an absolute pathname to your executable, or a relative
+  pathname prefixed with <code class="filename">./</code>.  Specifying only the name
+  of a file in the current directory does not work.
+  </p></li></ol></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id298574"></a>Using GDB Server for Debugging</h3></div></div></div><p>
+The GDB server utility provided with Sourcery G++ Lite can be used to debug 
+a GNU/Linux application.  While Sourcery G++ runs on your host system, 
+<span><strong class="command">gdbserver</strong></span> and the target application 
+run on your target system. Even though Sourcery G++ and your application 
+run on different systems, the debugging experience when using 
+<span><strong class="command">gdbserver</strong></span> is very similar to debugging a native application.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="sec-running-gdbserver"></a>Running GDB Server</h4></div></div></div><p>
+  The GDB server executables are included in the sysroot in ABI-specific
+  subdirectories of 
+  <code class="filename"><em class="replaceable"><code>sysroot</code></em>/usr</code>.  Use the
+  executable from the sysroot and library subdirectory 
+  that match your program.  
+  See <a href="chap-release.html#sec-multilibs" title="Library Configurations">the section called &#8220;Library Configurations&#8221;</a> for details.
+  </p><p>
+  You must copy the sysroot to your target system as described 
+  in <a href="ch03s02.html#sec-installing-sysroot" title="Installing the Sysroot">the section called &#8220;Installing the Sysroot&#8221;</a>.
+  You must also copy the executable you want to debug to your target system.
+  </p><p>
+  If you have installed the sysroot in the root directory of the filesystem
+  on the target, you can invoke <span><strong class="command">gdbserver</strong></span> as:
+
+  </p><pre class="screen">&gt; gdbserver :10000 <em class="replaceable"><code>program arg1 arg2 ...</code></em></pre><p>
+
+  where <em class="replaceable"><code>program</code></em> is the path to the program you
+  want to debug and <em class="replaceable"><code>arg1 arg2 ...</code></em> are the arguments
+  you want to pass to it.  The <code class="literal">:10000</code> argument indicates
+  that <span><strong class="command">gdbserver</strong></span> should listen for connections from GDB
+  on port 10000.
+  
+  You can use a different port, if you prefer.
+  </p><p>
+  If you have installed the sysroot in an alternate directory, invoking
+  <span><strong class="command">gdbserver</strong></span> becomes more complicated.  You must build
+  your application using the link-time options to specify the location of
+  the sysroot, as described in <a href="ch03s02.html#sec-linker-sysroot" title="Using Linker Options to Specify the Sysroot Location">the section called &#8220;Using Linker Options to Specify the Sysroot Location&#8221;</a>.  You
+  must also invoke <span><strong class="command">gdbserver</strong></span> itself using the dynamic
+  linker provided in the Sourcery G++ sysroot, as described in
+  <a href="ch03s02.html#sec-runtime-sysroot" title="Specifying the Sysroot Location at Runtime">the section called &#8220;Specifying the Sysroot Location at Runtime&#8221;</a>.  In other words, the command to
+  invoke <span><strong class="command">gdbserver</strong></span> in this case would be similar to:
+
+  </p><pre class="screen">&gt; <em class="replaceable"><code>sysroot</code></em>/lib/ld-linux.so.3 \
+  --library-path <em class="replaceable"><code>sysroot</code></em>/lib:<em class="replaceable"><code>sysroot</code></em>/usr/lib \
+  <em class="replaceable"><code>sysroot</code></em>/usr/lib/bin/gdbserver :10000 <em class="replaceable"><code>program arg1 arg2 ...</code></em></pre><p>
+  </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="id298738"></a>Connecting to GDB Server from the Debugger</h4></div></div></div><p>
+  You can connect to GDB server by using the following command from 
+  within GDB:
+
+  </p><pre class="screen">(gdb) target remote <em class="replaceable"><code>target</code></em>:10000</pre><p>
+
+  where <em class="replaceable"><code>target</code></em> is the host name or IP address 
+  of your target system.
+  </p><p>
+  When your program exits, <span><strong class="command">gdbserver</strong></span> exits too.
+  If you want to debug the program again, you must restart 
+  <span><strong class="command">gdbserver</strong></span> on the target.
+  Then, in GDB, reissue the <code class="literal">target</code> command shown above.
+  </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="sec-gdb-sysroot"></a>Setting the Sysroot in the Debugger</h4></div></div></div><p>
+  In order to debug shared libraries, GDB needs to map
+  the pathnames of shared libraries on the target to the pathnames of
+  equivalent files on the host system.  Debugging of multi-threaded
+  applications also depends on correctly locating copies of the 
+  libraries provided in the sysroot on the host system.
+  </p><p>
+  In some situations, the target pathnames are valid on the host system.
+  
+  Otherwise, you must tell GDB how to map target pathnames onto the
+  equivalent host pathnames.
+  </p><p>
+  In the general case, there are two GDB commands required to set up the
+  mapping:
+
+  </p><pre class="screen">(gdb) set sysroot-on-target <em class="replaceable"><code>target-pathname</code></em>
+(gdb) set sysroot <em class="replaceable"><code>host-pathname</code></em></pre><p>
+
+  This causes GDB to replace all instances of the
+  <em class="replaceable"><code>target-pathname</code></em> prefix in shared library
+  pathnames reported by the target with 
+  <em class="replaceable"><code>host-pathname</code></em> to get the location of the
+  equivalent library on the host.
+  </p><p>
+  If you have installed the sysroot in the root filesystem on the target,
+  you can omit the <span><strong class="command">set sysroot-on-target</strong></span> command, and
+  use only <span><strong class="command">set sysroot</strong></span> to specify the location on the
+  host system.
+  </p><p>
+  Refer to <a href="ch03s02.html#sec-installing-sysroot" title="Installing the Sysroot">the section called &#8220;Installing the Sysroot&#8221;</a> for more information
+  about installing the sysroot on the target.
+  Note that if you have installed a stripped copy of the provided libraries 
+  on the target, you should give GDB the location of an unstripped 
+  copy on the host.
+  </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="chap-release.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="chap-release.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. Sourcery G++ Lite for ARM GNU/Linux </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Sourcery G++ Lite Release Notes</td></tr></table></div></body></html>

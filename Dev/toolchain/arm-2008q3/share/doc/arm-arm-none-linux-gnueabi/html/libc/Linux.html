@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Linux - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Tools-for-Compilation.html#Tools-for-Compilation" title="Tools for Compilation">
+<link rel="next" href="Reporting-Bugs.html#Reporting-Bugs" title="Reporting Bugs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Linux"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Reporting-Bugs.html#Reporting-Bugs">Reporting Bugs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tools-for-Compilation.html#Tools-for-Compilation">Tools for Compilation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="appendixsec">C.4 Specific advice for GNU/Linux systems</h3>
+
+<p><a name="index-upgrading-from-libc5-3817"></a><a name="index-kernel-header-files-3818"></a>
+If you are installing GNU libc on a GNU/Linux system, you need to have the
+header files from a 2.2 or newer kernel around for reference.  For some
+architectures, like ia64, sh and hppa, you need at least headers from
+kernel 2.3.99 (sh and hppa) or 2.4.0 (ia64).  You do not need to use
+that kernel, just have its headers where glibc can access at them.  The
+easiest way to do this is to unpack it in a directory such as
+<samp><span class="file">/usr/src/linux-2.2.1</span></samp>.  In that directory, run &lsquo;<samp><span class="samp">make config</span></samp>&rsquo;
+and accept all the defaults.  Then run &lsquo;<samp><span class="samp">make
+include/linux/version.h</span></samp>&rsquo;.  Finally, configure glibc with the option
+&lsquo;<samp><span class="samp">--with-headers=/usr/src/linux-2.2.1/include</span></samp>&rsquo;.  Use the most recent
+kernel you can get your hands on.
+
+   <p>An alternate tactic is to unpack the 2.2 kernel and run &lsquo;<samp><span class="samp">make
+config</span></samp>&rsquo; as above; then, rename or delete <samp><span class="file">/usr/include</span></samp>, create a
+new <samp><span class="file">/usr/include</span></samp>, and make symbolic links of
+<samp><span class="file">/usr/include/linux</span></samp> and <samp><span class="file">/usr/include/asm</span></samp> into the kernel
+sources.  You can then configure glibc with no special options.  This
+tactic is recommended if you are upgrading from libc5, since you need to
+get rid of the old header files anyway.
+
+   <p>After installing GNU libc, you may need to remove or rename
+<samp><span class="file">/usr/include/linux</span></samp> and <samp><span class="file">/usr/include/asm</span></samp>, and replace them
+with copies of <samp><span class="file">include/linux</span></samp> and
+<samp><span class="file">include/asm-$</span><var>ARCHITECTURE</var></samp> taken from the Linux source
+package which supplied kernel headers for building the library. 
+<var>ARCHITECTURE</var> will be the machine architecture for which the
+library was built, such as &lsquo;<samp><span class="samp">i386</span></samp>&rsquo; or &lsquo;<samp><span class="samp">alpha</span></samp>&rsquo;.  You do not need
+to do this if you did not specify an alternate kernel header source
+using &lsquo;<samp><span class="samp">--with-headers</span></samp>&rsquo;.  The intent here is that these directories
+should be copies of, <strong>not</strong> symlinks to, the kernel headers used to
+build the library.
+
+   <p>Note that <samp><span class="file">/usr/include/net</span></samp> and <samp><span class="file">/usr/include/scsi</span></samp> should
+<strong>not</strong> be symlinks into the kernel sources.  GNU libc provides its
+own versions of these files.
+
+   <p>GNU/Linux expects some components of the libc installation to be in
+<samp><span class="file">/lib</span></samp> and some in <samp><span class="file">/usr/lib</span></samp>.  This is handled automatically
+if you configure glibc with &lsquo;<samp><span class="samp">--prefix=/usr</span></samp>&rsquo;.  If you set some other
+prefix or allow it to default to <samp><span class="file">/usr/local</span></samp>, then all the
+components are installed there.
+
+   <p>If you are upgrading from libc5, you need to recompile every shared
+library on your system against the new library for the sake of new code,
+but keep the old libraries around for old binaries to use.  This is
+complicated and difficult.  Consult the Glibc2 HOWTO at
+<a href="http://www.imaxx.net/~thrytis/glibc">http://www.imaxx.net/~thrytis/glibc</a> for details.
+
+   <p>You cannot use <code>nscd</code> with 2.0 kernels, due to bugs in the
+kernel-side thread support.  <code>nscd</code> happens to hit these bugs
+particularly hard, but you might have problems with any threaded
+program.
+
+   </body></html>
+

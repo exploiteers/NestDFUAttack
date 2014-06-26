@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Minimums - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Sysconf.html#Sysconf" title="Sysconf">
+<link rel="next" href="Limits-for-Files.html#Limits-for-Files" title="Limits for Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Minimums"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sysconf.html#Sysconf">Sysconf</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.5 Minimum Values for General Capacity Limits</h3>
+
+<p>Here are the names for the POSIX minimum upper bounds for the system
+limit parameters.  The significance of these values is that you can
+safely push to these limits without checking whether the particular
+system you are using can go that far.
+
+     <dl>
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<dt><code>_POSIX_AIO_LISTIO_MAX</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+I/O operations that can be specified in a list I/O call.  The value of
+this constant is <code>2</code>; thus you can add up to two new entries
+of the list of outstanding operations.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_AIO_MAX</code><dd>The most restrictive limit permitted by POSIX for the maximum number of
+outstanding asynchronous I/O operations.  The value of this constant is
+<code>1</code>.  So you cannot expect that you can issue more than one
+operation and immediately continue with the normal work, receiving the
+notifications asynchronously.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_ARG_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum combined length of the <var>argv</var> and <var>environ</var>
+arguments that can be passed to the <code>exec</code> functions. 
+Its value is <code>4096</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_CHILD_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum number of simultaneous processes per real user ID.  Its
+value is <code>6</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_NGROUPS_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum number of supplementary group IDs per process.  Its
+value is <code>0</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_OPEN_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum number of files that a single process can have open
+simultaneously.  Its value is <code>16</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_SSIZE_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum value that can be stored in an object of type
+<code>ssize_t</code>.  Its value is <code>32767</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_STREAM_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum number of streams that a single process can have open
+simultaneously.  Its value is <code>8</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.1 -->
+     <br><dt><code>_POSIX_TZNAME_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the maximum length of a time zone name.  Its value is <code>3</code>.
+
+     <!-- limits.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>_POSIX2_RE_DUP_MAX</code><dd>The value of this macro is the most restrictive limit permitted by POSIX
+for the numbers used in the &lsquo;<samp><span class="samp">\{</span><var>min</var><span class="samp">,</span><var>max</var><span class="samp">\}</span></samp>&rsquo; construct
+in a regular expression.  Its value is <code>255</code>. 
+</dl>
+
+   </body></html>
+

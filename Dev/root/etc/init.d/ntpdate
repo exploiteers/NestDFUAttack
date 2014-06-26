@@ -1,0 +1,45 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2011 Nest, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a start/stop script to pick up the
+#      time-of-day via NTP.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+NTPDATE="${USRSBINDIR}/ntpd"
+NTPDATEOPTIONS="-g -q"
+NTPCONF="${CONFDIR}/ntp.conf"
+XARGS="${USRBINDIR}/xargs"
+
+case "${1}" in
+
+start)
+	${ECHO} "Network Time:\c"
+
+		NTPSERVERS=`${CAT} ${NTPCONF} | ${SED} -ne 's,^server[[:space:]]\+\(.\+\)$,\1,gp' | ${XARGS}`
+
+		if [ -n "${NTPSERVERS}" ]; then
+			${NTPDATE} ${NTPDATEOPTIONS} -c ${NTPCONF} > ${NULL}
+			if [ ${?} -eq 0 ]; then
+				${ECHO} " ${NTPSERVERS}\c"
+			fi
+		fi
+
+	${ECHO} "."
+	;;
+
+stop)
+	;;
+
+*)
+	echo "Usage: ${0} <start>"
+	exit 1
+	;;
+
+esac

@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+<title>Getopt Long Option Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getopt.html#Getopt" title="Getopt">
+<link rel="prev" href="Getopt-Long-Options.html#Getopt-Long-Options" title="Getopt Long Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Getopt-Long-Option-Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Getopt-Long-Options.html#Getopt-Long-Options">Getopt Long Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getopt.html#Getopt">Getopt</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.2.4 Example of Parsing Long Options with <code>getopt_long</code></h4>
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;getopt.h&gt;
+     
+     /* <span class="roman">Flag set by &lsquo;</span><samp><span class="samp">--verbose</span></samp><span class="roman">&rsquo;.</span> */
+     static int verbose_flag;
+     
+     int
+     main (argc, argv)
+          int argc;
+          char **argv;
+     {
+       int c;
+     
+       while (1)
+         {
+           static struct option long_options[] =
+             {
+               /* <span class="roman">These options set a flag.</span> */
+               {"verbose", no_argument,       &amp;verbose_flag, 1},
+               {"brief",   no_argument,       &amp;verbose_flag, 0},
+               /* <span class="roman">These options don't set a flag.
+                  We distinguish them by their indices.</span> */
+               {"add",     no_argument,       0, 'a'},
+               {"append",  no_argument,       0, 'b'},
+               {"delete",  required_argument, 0, 'd'},
+               {"create",  required_argument, 0, 'c'},
+               {"file",    required_argument, 0, 'f'},
+               {0, 0, 0, 0}
+             };
+           /* <code>getopt_long</code><span class="roman"> stores the option index here.</span> */
+           int option_index = 0;
+     
+           c = getopt_long (argc, argv, "abc:d:f:",
+                            long_options, &amp;option_index);
+     
+           /* <span class="roman">Detect the end of the options.</span> */
+           if (c == -1)
+             break;
+     
+           switch (c)
+             {
+             case 0:
+               /* <span class="roman">If this option set a flag, do nothing else now.</span> */
+               if (long_options[option_index].flag != 0)
+                 break;
+               printf ("option %s", long_options[option_index].name);
+               if (optarg)
+                 printf (" with arg %s", optarg);
+               printf ("\n");
+               break;
+     
+             case 'a':
+               puts ("option -a\n");
+               break;
+     
+             case 'b':
+               puts ("option -b\n");
+               break;
+     
+             case 'c':
+               printf ("option -c with value `%s'\n", optarg);
+               break;
+     
+             case 'd':
+               printf ("option -d with value `%s'\n", optarg);
+               break;
+     
+             case 'f':
+               printf ("option -f with value `%s'\n", optarg);
+               break;
+     
+             case '?':
+               /* <code>getopt_long</code><span class="roman"> already printed an error message.</span> */
+               break;
+     
+             default:
+               abort ();
+             }
+         }
+     
+       /* <span class="roman">Instead of reporting &lsquo;</span><samp><span class="samp">--verbose</span></samp><span class="roman">&rsquo;
+          and &lsquo;</span><samp><span class="samp">--brief</span></samp><span class="roman">&rsquo; as they are encountered,
+          we report the final status resulting from them.</span> */
+       if (verbose_flag)
+         puts ("verbose flag is set");
+     
+       /* <span class="roman">Print any remaining command line arguments (not options).</span> */
+       if (optind &lt; argc)
+         {
+           printf ("non-option ARGV-elements: ");
+           while (optind &lt; argc)
+             printf ("%s ", argv[optind++]);
+           putchar ('\n');
+         }
+     
+       exit (0);
+     }
+</pre>
+   </body></html>
+

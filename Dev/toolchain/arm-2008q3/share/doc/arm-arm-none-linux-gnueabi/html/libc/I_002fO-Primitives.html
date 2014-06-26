@@ -1,0 +1,370 @@
+<html lang="en">
+<head>
+<title>I/O Primitives - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Opening-and-Closing-Files.html#Opening-and-Closing-Files" title="Opening and Closing Files">
+<link rel="next" href="File-Position-Primitive.html#File-Position-Primitive" title="File Position Primitive">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="I%2fO-Primitives"></a>
+<a name="I_002fO-Primitives"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.2 Input and Output Primitives</h3>
+
+<p>This section describes the functions for performing primitive input and
+output operations on file descriptors: <code>read</code>, <code>write</code>, and
+<code>lseek</code>.  These functions are declared in the header file
+<samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-1205"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>ssize_t</b><var><a name="index-ssize_005ft-1206"></a></var><br>
+<blockquote><p>This data type is used to represent the sizes of blocks that can be
+read or written in a single operation.  It is similar to <code>size_t</code>,
+but must be a signed type. 
+</p></blockquote></div>
+
+   <p><a name="index-reading-from-a-file-descriptor-1207"></a><!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: ssize_t <b>read</b> (<var>int filedes, void *buffer, size_t size</var>)<var><a name="index-read-1208"></a></var><br>
+<blockquote><p>The <code>read</code> function reads up to <var>size</var> bytes from the file
+with descriptor <var>filedes</var>, storing the results in the <var>buffer</var>. 
+(This is not necessarily a character string, and no terminating null
+character is added.)
+
+        <p><a name="index-end_002dof_002dfile_002c-on-a-file-descriptor-1209"></a>The return value is the number of bytes actually read.  This might be
+less than <var>size</var>; for example, if there aren't that many bytes left
+in the file or if there aren't that many bytes immediately available. 
+The exact behavior depends on what kind of file it is.  Note that
+reading less than <var>size</var> bytes is not an error.
+
+        <p>A value of zero indicates end-of-file (except if the value of the
+<var>size</var> argument is also zero).  This is not considered an error. 
+If you keep calling <code>read</code> while at end-of-file, it will keep
+returning zero and doing nothing else.
+
+        <p>If <code>read</code> returns at least one character, there is no way you can
+tell whether end-of-file was reached.  But if you did reach the end, the
+next read will return zero.
+
+        <p>In case of an error, <code>read</code> returns -1.  The following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>Normally, when no input is immediately available, <code>read</code> waits for
+some input.  But if the <code>O_NONBLOCK</code> flag is set for the file
+(see <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>), <code>read</code> returns immediately without
+reading any data, and reports this error.
+
+          <p><strong>Compatibility Note:</strong> Most versions of BSD Unix use a different
+error code for this: <code>EWOULDBLOCK</code>.  In the GNU library,
+<code>EWOULDBLOCK</code> is an alias for <code>EAGAIN</code>, so it doesn't matter
+which name you use.
+
+          <p>On some systems, reading a large amount of data from a character special
+file can also fail with <code>EAGAIN</code> if the kernel cannot find enough
+physical memory to lock down the user's pages.  This is limited to
+devices that transfer with direct memory access into the user's memory,
+which means it does not include terminals, since they always use
+separate buffers inside the kernel.  This problem never happens in the
+GNU system.
+
+          <p>Any condition that could result in <code>EAGAIN</code> can instead result in a
+successful <code>read</code> which returns fewer bytes than requested. 
+Calling <code>read</code> again immediately would result in <code>EAGAIN</code>.
+
+          <br><dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor,
+or is not open for reading.
+
+          <br><dt><code>EINTR</code><dd><code>read</code> was interrupted by a signal while it was waiting for input. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.  A signal will not necessary cause
+<code>read</code> to return <code>EINTR</code>; it may instead result in a
+successful <code>read</code> which returns fewer bytes than requested.
+
+          <br><dt><code>EIO</code><dd>For many devices, and for disk files, this error code indicates
+a hardware error.
+
+          <p><code>EIO</code> also occurs when a background process tries to read from the
+controlling terminal, and the normal action of stopping the process by
+sending it a <code>SIGTTIN</code> signal isn't working.  This might happen if
+the signal is being blocked or ignored, or because the process group is
+orphaned.  See <a href="Job-Control.html#Job-Control">Job Control</a>, for more information about job control,
+and <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for information about signals.
+
+          <br><dt><code>EINVAL</code><dd>In some systems, when reading from a character or block device, position
+and size offsets must be aligned to a particular block size.  This error
+indicates that the offsets were not properly aligned. 
+</dl>
+
+        <p>Please note that there is no function named <code>read64</code>.  This is not
+necessary since this function does not directly modify or handle the
+possibly wide file offset.  Since the kernel handles this state
+internally, the <code>read</code> function can be used for all cases.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>read</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this, calls to <code>read</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The <code>read</code> function is the underlying primitive for all of the
+functions that read from streams, such as <code>fgetc</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: ssize_t <b>pread</b> (<var>int filedes, void *buffer, size_t size, off_t offset</var>)<var><a name="index-pread-1210"></a></var><br>
+<blockquote><p>The <code>pread</code> function is similar to the <code>read</code> function.  The
+first three arguments are identical, and the return values and error
+codes also correspond.
+
+        <p>The difference is the fourth argument and its handling.  The data block
+is not read from the current position of the file descriptor
+<code>filedes</code>.  Instead the data is read from the file starting at
+position <var>offset</var>.  The position of the file descriptor itself is
+not affected by the operation.  The value is the same as before the call.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> the
+<code>pread</code> function is in fact <code>pread64</code> and the type
+<code>off_t</code> has 64 bits, which makes it possible to handle files up to
+2^63 bytes in length.
+
+        <p>The return value of <code>pread</code> describes the number of bytes read. 
+In the error case it returns -1 like <code>read</code> does and the
+error codes are also the same, with these additions:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The value given for <var>offset</var> is negative and therefore illegal.
+
+          <br><dt><code>ESPIPE</code><dd>The file descriptor <var>filedes</var> is associate with a pipe or a FIFO and
+this device does not allow positioning of the file pointer. 
+</dl>
+
+        <p>The function is an extension defined in the Unix Single Specification
+version 2. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: ssize_t <b>pread64</b> (<var>int filedes, void *buffer, size_t size, off64_t offset</var>)<var><a name="index-pread64-1211"></a></var><br>
+<blockquote><p>This function is similar to the <code>pread</code> function.  The difference
+is that the <var>offset</var> parameter is of type <code>off64_t</code> instead of
+<code>off_t</code> which makes it possible on 32 bit machines to address
+files larger than 2^31 bytes and up to 2^63 bytes.  The
+file descriptor <code>filedes</code> must be opened using <code>open64</code> since
+otherwise the large offsets possible with <code>off64_t</code> will lead to
+errors with a descriptor in small file mode.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit machine this function is actually available under the name
+<code>pread</code> and so transparently replaces the 32 bit interface. 
+</p></blockquote></div>
+
+   <p><a name="index-writing-to-a-file-descriptor-1212"></a><!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: ssize_t <b>write</b> (<var>int filedes, const void *buffer, size_t size</var>)<var><a name="index-write-1213"></a></var><br>
+<blockquote><p>The <code>write</code> function writes up to <var>size</var> bytes from
+<var>buffer</var> to the file with descriptor <var>filedes</var>.  The data in
+<var>buffer</var> is not necessarily a character string and a null character is
+output like any other character.
+
+        <p>The return value is the number of bytes actually written.  This may be
+<var>size</var>, but can always be smaller.  Your program should always call
+<code>write</code> in a loop, iterating until all the data is written.
+
+        <p>Once <code>write</code> returns, the data is enqueued to be written and can be
+read back right away, but it is not necessarily written out to permanent
+storage immediately.  You can use <code>fsync</code> when you need to be sure
+your data has been permanently stored before continuing.  (It is more
+efficient for the system to batch up consecutive writes and do them all
+at once when convenient.  Normally they will always be written to disk
+within a minute or less.)  Modern systems provide another function
+<code>fdatasync</code> which guarantees integrity only for the file data and
+is therefore faster. 
+<!-- !!! xref fsync, fdatasync -->
+You can use the <code>O_FSYNC</code> open mode to make <code>write</code> always
+store the data to disk before returning; see <a href="Operating-Modes.html#Operating-Modes">Operating Modes</a>.
+
+        <p>In the case of an error, <code>write</code> returns -1.  The following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>Normally, <code>write</code> blocks until the write operation is complete. 
+But if the <code>O_NONBLOCK</code> flag is set for the file (see <a href="Control-Operations.html#Control-Operations">Control Operations</a>), it returns immediately without writing any data and
+reports this error.  An example of a situation that might cause the
+process to block on output is writing to a terminal device that supports
+flow control, where output has been suspended by receipt of a STOP
+character.
+
+          <p><strong>Compatibility Note:</strong> Most versions of BSD Unix use a different
+error code for this: <code>EWOULDBLOCK</code>.  In the GNU library,
+<code>EWOULDBLOCK</code> is an alias for <code>EAGAIN</code>, so it doesn't matter
+which name you use.
+
+          <p>On some systems, writing a large amount of data from a character special
+file can also fail with <code>EAGAIN</code> if the kernel cannot find enough
+physical memory to lock down the user's pages.  This is limited to
+devices that transfer with direct memory access into the user's memory,
+which means it does not include terminals, since they always use
+separate buffers inside the kernel.  This problem does not arise in the
+GNU system.
+
+          <br><dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor,
+or is not open for writing.
+
+          <br><dt><code>EFBIG</code><dd>The size of the file would become larger than the implementation can support.
+
+          <br><dt><code>EINTR</code><dd>The <code>write</code> operation was interrupted by a signal while it was
+blocked waiting for completion.  A signal will not necessarily cause
+<code>write</code> to return <code>EINTR</code>; it may instead result in a
+successful <code>write</code> which writes fewer bytes than requested. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.
+
+          <br><dt><code>EIO</code><dd>For many devices, and for disk files, this error code indicates
+a hardware error.
+
+          <br><dt><code>ENOSPC</code><dd>The device containing the file is full.
+
+          <br><dt><code>EPIPE</code><dd>This error is returned when you try to write to a pipe or FIFO that
+isn't open for reading by any process.  When this happens, a <code>SIGPIPE</code>
+signal is also sent to the process; see <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.
+
+          <br><dt><code>EINVAL</code><dd>In some systems, when writing to a character or block device, position
+and size offsets must be aligned to a particular block size.  This error
+indicates that the offsets were not properly aligned. 
+</dl>
+
+        <p>Unless you have arranged to prevent <code>EINTR</code> failures, you should
+check <code>errno</code> after each failing call to <code>write</code>, and if the
+error was <code>EINTR</code>, you should simply repeat the call. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.  The easy way to do this is with the
+macro <code>TEMP_FAILURE_RETRY</code>, as follows:
+
+     <pre class="smallexample">          nbytes = TEMP_FAILURE_RETRY (write (desc, buffer, count));
+</pre>
+        <p>Please note that there is no function named <code>write64</code>.  This is not
+necessary since this function does not directly modify or handle the
+possibly wide file offset.  Since the kernel handles this state
+internally the <code>write</code> function can be used for all cases.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>write</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this, calls to <code>write</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The <code>write</code> function is the underlying primitive for all of the
+functions that write to streams, such as <code>fputc</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: ssize_t <b>pwrite</b> (<var>int filedes, const void *buffer, size_t size, off_t offset</var>)<var><a name="index-pwrite-1214"></a></var><br>
+<blockquote><p>The <code>pwrite</code> function is similar to the <code>write</code> function.  The
+first three arguments are identical, and the return values and error codes
+also correspond.
+
+        <p>The difference is the fourth argument and its handling.  The data block
+is not written to the current position of the file descriptor
+<code>filedes</code>.  Instead the data is written to the file starting at
+position <var>offset</var>.  The position of the file descriptor itself is
+not affected by the operation.  The value is the same as before the call.
+
+        <p>When the source file is compiled with <code>_FILE_OFFSET_BITS == 64</code> the
+<code>pwrite</code> function is in fact <code>pwrite64</code> and the type
+<code>off_t</code> has 64 bits, which makes it possible to handle files up to
+2^63 bytes in length.
+
+        <p>The return value of <code>pwrite</code> describes the number of written bytes. 
+In the error case it returns -1 like <code>write</code> does and the
+error codes are also the same, with these additions:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The value given for <var>offset</var> is negative and therefore illegal.
+
+          <br><dt><code>ESPIPE</code><dd>The file descriptor <var>filedes</var> is associated with a pipe or a FIFO and
+this device does not allow positioning of the file pointer. 
+</dl>
+
+        <p>The function is an extension defined in the Unix Single Specification
+version 2. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: ssize_t <b>pwrite64</b> (<var>int filedes, const void *buffer, size_t size, off64_t offset</var>)<var><a name="index-pwrite64-1215"></a></var><br>
+<blockquote><p>This function is similar to the <code>pwrite</code> function.  The difference
+is that the <var>offset</var> parameter is of type <code>off64_t</code> instead of
+<code>off_t</code> which makes it possible on 32 bit machines to address
+files larger than 2^31 bytes and up to 2^63 bytes.  The
+file descriptor <code>filedes</code> must be opened using <code>open64</code> since
+otherwise the large offsets possible with <code>off64_t</code> will lead to
+errors with a descriptor in small file mode.
+
+        <p>When the source file is compiled using <code>_FILE_OFFSET_BITS == 64</code> on a
+32 bit machine this function is actually available under the name
+<code>pwrite</code> and so transparently replaces the 32 bit interface. 
+</p></blockquote></div>
+
+   </body></html>
+

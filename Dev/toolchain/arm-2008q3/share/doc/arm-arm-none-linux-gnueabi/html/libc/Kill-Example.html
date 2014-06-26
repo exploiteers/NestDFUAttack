@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Kill Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Generating-Signals.html#Generating-Signals" title="Generating Signals">
+<link rel="prev" href="Permission-for-kill.html#Permission-for-kill" title="Permission for kill">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Kill-Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Permission-for-kill.html#Permission-for-kill">Permission for kill</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.6.4 Using <code>kill</code> for Communication</h4>
+
+<p><a name="index-interprocess-communication_002c-with-signals-2954"></a>Here is a longer example showing how signals can be used for
+interprocess communication.  This is what the <code>SIGUSR1</code> and
+<code>SIGUSR2</code> signals are provided for.  Since these signals are fatal
+by default, the process that is supposed to receive them must trap them
+through <code>signal</code> or <code>sigaction</code>.
+
+   <p>In this example, a parent process forks a child process and then waits
+for the child to complete its initialization.  The child process tells
+the parent when it is ready by sending it a <code>SIGUSR1</code> signal, using
+the <code>kill</code> function.
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;sys/types.h&gt;
+     #include &lt;unistd.h&gt;
+     
+     /* <span class="roman">When a </span><code>SIGUSR1</code><span class="roman"> signal arrives, set this variable.</span> */
+     volatile sig_atomic_t usr_interrupt = 0;
+     
+     void
+     synch_signal (int sig)
+     {
+       usr_interrupt = 1;
+     }
+     
+     /* <span class="roman">The child process executes this function.</span> */
+     void
+     child_function (void)
+     {
+       /* <span class="roman">Perform initialization.</span> */
+       printf ("I'm here!!!  My pid is %d.\n", (int) getpid ());
+     
+       /* <span class="roman">Let parent know you're done.</span> */
+       kill (getppid (), SIGUSR1);
+     
+       /* <span class="roman">Continue with execution.</span> */
+       puts ("Bye, now....");
+       exit (0);
+     }
+     
+     int
+     main (void)
+     {
+       struct sigaction usr_action;
+       sigset_t block_mask;
+       pid_t child_id;
+     
+       /* <span class="roman">Establish the signal handler.</span> */
+       sigfillset (&amp;block_mask);
+       usr_action.sa_handler = synch_signal;
+       usr_action.sa_mask = block_mask;
+       usr_action.sa_flags = 0;
+       sigaction (SIGUSR1, &amp;usr_action, NULL);
+     
+       /* <span class="roman">Create the child process.</span> */
+       child_id = fork ();
+       if (child_id == 0)
+         child_function ();          /* <span class="roman">Does not return.</span> */
+     
+       /* <span class="roman">Busy wait for the child to send a signal.</span> */
+       while (!usr_interrupt)
+         ;
+     
+       /* <span class="roman">Now continue execution.</span> */
+       puts ("That's all, folks!");
+     
+       return 0;
+     }
+</pre>
+   <p>This example uses a busy wait, which is bad, because it wastes CPU
+cycles that other programs could otherwise use.  It is better to ask the
+system to wait until the signal arrives.  See the example in
+<a href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>.
+
+   </body></html>
+

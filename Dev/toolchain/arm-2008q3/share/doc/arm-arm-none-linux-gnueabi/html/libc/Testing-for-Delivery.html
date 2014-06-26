@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Testing for Delivery - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Process-Signal-Mask.html#Process-Signal-Mask" title="Process Signal Mask">
+<link rel="next" href="Blocking-for-Handler.html#Blocking-for-Handler" title="Blocking for Handler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Testing-for-Delivery"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.4 Blocking to Test for Delivery of a Signal</h4>
+
+<p>Now for a simple example.  Suppose you establish a handler for
+<code>SIGALRM</code> signals that sets a flag whenever a signal arrives, and
+your main program checks this flag from time to time and then resets it. 
+You can prevent additional <code>SIGALRM</code> signals from arriving in the
+meantime by wrapping the critical part of the code with calls to
+<code>sigprocmask</code>, like this:
+
+<pre class="smallexample">     /* <span class="roman">This variable is set by the SIGALRM signal handler.</span> */
+     volatile sig_atomic_t flag = 0;
+     
+     int
+     main (void)
+     {
+       sigset_t block_alarm;
+     
+       ...
+     
+       /* <span class="roman">Initialize the signal mask.</span> */
+       sigemptyset (&amp;block_alarm);
+       sigaddset (&amp;block_alarm, SIGALRM);
+     
+       while (1)
+         {
+           /* <span class="roman">Check if a signal has arrived; if so, reset the flag.</span> */
+           sigprocmask (SIG_BLOCK, &amp;block_alarm, NULL);
+           if (flag)
+             {
+               <var>actions-if-not-arrived</var>
+               flag = 0;
+             }
+           sigprocmask (SIG_UNBLOCK, &amp;block_alarm, NULL);
+     
+           ...
+         }
+     }
+</pre>
+   </body></html>
+

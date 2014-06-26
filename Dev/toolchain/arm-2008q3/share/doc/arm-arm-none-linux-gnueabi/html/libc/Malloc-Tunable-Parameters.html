@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Malloc Tunable Parameters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks" title="Aligned Memory Blocks">
+<link rel="next" href="Heap-Consistency-Checking.html#Heap-Consistency-Checking" title="Heap Consistency Checking">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Malloc-Tunable-Parameters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Heap-Consistency-Checking.html#Heap-Consistency-Checking">Heap Consistency Checking</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.8 Malloc Tunable Parameters</h5>
+
+<p>You can adjust some parameters for dynamic memory allocation with the
+<code>mallopt</code> function.  This function is the general SVID/XPG
+interface, defined in <samp><span class="file">malloc.h</span></samp>. 
+<a name="index-malloc_002eh-276"></a>
+
+<div class="defun">
+&mdash; Function: int <b>mallopt</b> (<var>int param, int value</var>)<var><a name="index-mallopt-277"></a></var><br>
+<blockquote><p>When calling <code>mallopt</code>, the <var>param</var> argument specifies the
+parameter to be set, and <var>value</var> the new value to be set.  Possible
+choices for <var>param</var>, as defined in <samp><span class="file">malloc.h</span></samp>, are:
+
+          <dl>
+<dt><code>M_TRIM_THRESHOLD</code><dd>This is the minimum size (in bytes) of the top-most, releasable chunk
+that will cause <code>sbrk</code> to be called with a negative argument in
+order to return memory to the system. 
+<br><dt><code>M_TOP_PAD</code><dd>This parameter determines the amount of extra memory to obtain from the
+system when a call to <code>sbrk</code> is required.  It also specifies the
+number of bytes to retain when shrinking the heap by calling <code>sbrk</code>
+with a negative argument.  This provides the necessary hysteresis in
+heap size such that excessive amounts of system calls can be avoided. 
+<br><dt><code>M_MMAP_THRESHOLD</code><dd>All chunks larger than this value are allocated outside the normal
+heap, using the <code>mmap</code> system call.  This way it is guaranteed
+that the memory for these chunks can be returned to the system on
+<code>free</code>.  Note that requests smaller than this threshold might still
+be allocated via <code>mmap</code>. 
+<br><dt><code>M_MMAP_MAX</code><dd>The maximum number of chunks to allocate with <code>mmap</code>.  Setting this
+to zero disables all use of <code>mmap</code>. 
+</dl>
+
+        </blockquote></div>
+
+   </body></html>
+

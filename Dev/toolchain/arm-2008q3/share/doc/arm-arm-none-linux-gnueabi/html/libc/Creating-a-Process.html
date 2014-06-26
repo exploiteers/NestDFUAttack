@@ -1,0 +1,149 @@
+<html lang="en">
+<head>
+<title>Creating a Process - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="prev" href="Process-Identification.html#Process-Identification" title="Process Identification">
+<link rel="next" href="Executing-a-File.html#Executing-a-File" title="Executing a File">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Creating-a-Process"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Executing-a-File.html#Executing-a-File">Executing a File</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Identification.html#Process-Identification">Process Identification</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.4 Creating a Process</h3>
+
+<p>The <code>fork</code> function is the primitive for creating a process. 
+It is declared in the header file <samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-3165"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: pid_t <b>fork</b> (<var>void</var>)<var><a name="index-fork-3166"></a></var><br>
+<blockquote><p>The <code>fork</code> function creates a new process.
+
+        <p>If the operation is successful, there are then both parent and child
+processes and both see <code>fork</code> return, but with different values: it
+returns a value of <code>0</code> in the child process and returns the child's
+process ID in the parent process.
+
+        <p>If process creation failed, <code>fork</code> returns a value of <code>-1</code> in
+the parent process.  The following <code>errno</code> error conditions are
+defined for <code>fork</code>:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>There aren't enough system resources to create another process, or the
+user already has too many processes running.  This means exceeding the
+<code>RLIMIT_NPROC</code> resource limit, which can usually be increased;
+see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>.
+
+          <br><dt><code>ENOMEM</code><dd>The process requires more space than the system can supply. 
+</dl>
+        </p></blockquote></div>
+
+   <p>The specific attributes of the child process that differ from the
+parent process are:
+
+     <ul>
+<li>The child process has its own unique process ID.
+
+     <li>The parent process ID of the child process is the process ID of its
+parent process.
+
+     <li>The child process gets its own copies of the parent process's open file
+descriptors.  Subsequently changing attributes of the file descriptors
+in the parent process won't affect the file descriptors in the child,
+and vice versa.  See <a href="Control-Operations.html#Control-Operations">Control Operations</a>.  However, the file position
+associated with each descriptor is shared by both processes;
+see <a href="File-Position.html#File-Position">File Position</a>.
+
+     <li>The elapsed processor times for the child process are set to zero;
+see <a href="Processor-Time.html#Processor-Time">Processor Time</a>.
+
+     <li>The child doesn't inherit file locks set by the parent process. 
+<!-- !!! flock locks shared -->
+See <a href="Control-Operations.html#Control-Operations">Control Operations</a>.
+
+     <li>The child doesn't inherit alarms set by the parent process. 
+See <a href="Setting-an-Alarm.html#Setting-an-Alarm">Setting an Alarm</a>.
+
+     <li>The set of pending signals (see <a href="Delivery-of-Signal.html#Delivery-of-Signal">Delivery of Signal</a>) for the child
+process is cleared.  (The child process inherits its mask of blocked
+signals and signal actions from the parent process.) 
+</ul>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: pid_t <b>vfork</b> (<var>void</var>)<var><a name="index-vfork-3167"></a></var><br>
+<blockquote><p>The <code>vfork</code> function is similar to <code>fork</code> but on some systems
+it is more efficient; however, there are restrictions you must follow to
+use it safely.
+
+        <p>While <code>fork</code> makes a complete copy of the calling process's address
+space and allows both the parent and child to execute independently,
+<code>vfork</code> does not make this copy.  Instead, the child process
+created with <code>vfork</code> shares its parent's address space until it
+calls <code>_exit</code> or one of the <code>exec</code> functions.  In the
+meantime, the parent process suspends execution.
+
+        <p>You must be very careful not to allow the child process created with
+<code>vfork</code> to modify any global data or even local variables shared
+with the parent.  Furthermore, the child process cannot return from (or
+do a long jump out of) the function that called <code>vfork</code>!  This
+would leave the parent process's control information very confused.  If
+in doubt, use <code>fork</code> instead.
+
+        <p>Some operating systems don't really implement <code>vfork</code>.  The GNU C
+library permits you to use <code>vfork</code> on all systems, but actually
+executes <code>fork</code> if <code>vfork</code> isn't available.  If you follow
+the proper precautions for using <code>vfork</code>, your program will still
+work even if the system uses <code>fork</code> instead. 
+</p></blockquote></div>
+
+   </body></html>
+

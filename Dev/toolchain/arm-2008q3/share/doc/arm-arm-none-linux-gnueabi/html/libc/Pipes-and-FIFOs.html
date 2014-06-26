@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Pipes and FIFOs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="next" href="Sockets.html#Sockets" title="Sockets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pipes-and-FIFOs"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sockets.html#Sockets">Sockets</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-System-Interface.html#File-System-Interface">File System Interface</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% A simple interprocess communication mechanism -->
+<h2 class="chapter">15 Pipes and FIFOs</h2>
+
+<p><a name="index-pipe-1613"></a>A <dfn>pipe</dfn> is a mechanism for interprocess communication; data written
+to the pipe by one process can be read by another process.  The data is
+handled in a first-in, first-out (FIFO) order.  The pipe has no name; it
+is created for one use and both ends must be inherited from the single
+process which created the pipe.
+
+   <p><a name="index-FIFO-special-file-1614"></a>A <dfn>FIFO special file</dfn> is similar to a pipe, but instead of being an
+anonymous, temporary connection, a FIFO has a name or names like any
+other file.  Processes open the FIFO by name in order to communicate
+through it.
+
+   <p>A pipe or FIFO has to be open at both ends simultaneously.  If you read
+from a pipe or FIFO file that doesn't have any processes writing to it
+(perhaps because they have all closed the file, or exited), the read
+returns end-of-file.  Writing to a pipe or FIFO that doesn't have a
+reading process is treated as an error condition; it generates a
+<code>SIGPIPE</code> signal, and fails with error code <code>EPIPE</code> if the
+signal is handled or blocked.
+
+   <p>Neither pipes nor FIFO special files allow file positioning.  Both
+reading and writing operations happen sequentially; reading from the
+beginning of the file and writing at the end.
+
+<ul class="menu">
+<li><a accesskey="1" href="Creating-a-Pipe.html#Creating-a-Pipe">Creating a Pipe</a>:              Making a pipe with the <code>pipe</code> function. 
+<li><a accesskey="2" href="Pipe-to-a-Subprocess.html#Pipe-to-a-Subprocess">Pipe to a Subprocess</a>:         Using a pipe to communicate with a
+				 child process. 
+<li><a accesskey="3" href="FIFO-Special-Files.html#FIFO-Special-Files">FIFO Special Files</a>:           Making a FIFO special file. 
+<li><a accesskey="4" href="Pipe-Atomicity.html#Pipe-Atomicity">Pipe Atomicity</a>: 		When pipe (or FIFO) I/O is atomic. 
+</ul>
+
+   </body></html>
+

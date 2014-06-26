@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Summary of Malloc - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Statistics-of-Malloc.html#Statistics-of-Malloc" title="Statistics of Malloc">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Summary-of-Malloc"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Statistics-of-Malloc.html#Statistics-of-Malloc">Statistics of Malloc</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.12 Summary of <code>malloc</code>-Related Functions</h5>
+
+<p>Here is a summary of the functions that work with <code>malloc</code>:
+
+     <dl>
+<dt><code>void *malloc (size_t </code><var>size</var><code>)</code><dd>Allocate a block of <var>size</var> bytes.  See <a href="Basic-Allocation.html#Basic-Allocation">Basic Allocation</a>.
+
+     <br><dt><code>void free (void *</code><var>addr</var><code>)</code><dd>Free a block previously allocated by <code>malloc</code>.  See <a href="Freeing-after-Malloc.html#Freeing-after-Malloc">Freeing after Malloc</a>.
+
+     <br><dt><code>void *realloc (void *</code><var>addr</var><code>, size_t </code><var>size</var><code>)</code><dd>Make a block previously allocated by <code>malloc</code> larger or smaller,
+possibly by copying it to a new location.  See <a href="Changing-Block-Size.html#Changing-Block-Size">Changing Block Size</a>.
+
+     <br><dt><code>void *calloc (size_t </code><var>count</var><code>, size_t </code><var>eltsize</var><code>)</code><dd>Allocate a block of <var>count</var> * <var>eltsize</var> bytes using
+<code>malloc</code>, and set its contents to zero.  See <a href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>.
+
+     <br><dt><code>void *valloc (size_t </code><var>size</var><code>)</code><dd>Allocate a block of <var>size</var> bytes, starting on a page boundary. 
+See <a href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>.
+
+     <br><dt><code>void *memalign (size_t </code><var>size</var><code>, size_t </code><var>boundary</var><code>)</code><dd>Allocate a block of <var>size</var> bytes, starting on an address that is a
+multiple of <var>boundary</var>.  See <a href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>.
+
+     <br><dt><code>int mallopt (int </code><var>param</var><code>, int </code><var>value</var><code>)</code><dd>Adjust a tunable parameter.  See <a href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters">Malloc Tunable Parameters</a>.
+
+     <br><dt><code>int mcheck (void (*</code><var>abortfn</var><code>) (void))</code><dd>Tell <code>malloc</code> to perform occasional consistency checks on
+dynamically allocated memory, and to call <var>abortfn</var> when an
+inconsistency is found.  See <a href="Heap-Consistency-Checking.html#Heap-Consistency-Checking">Heap Consistency Checking</a>.
+
+     <br><dt><code>void *(*__malloc_hook) (size_t </code><var>size</var><code>, const void *</code><var>caller</var><code>)</code><dd>A pointer to a function that <code>malloc</code> uses whenever it is called.
+
+     <br><dt><code>void *(*__realloc_hook) (void *</code><var>ptr</var><code>, size_t </code><var>size</var><code>, const void *</code><var>caller</var><code>)</code><dd>A pointer to a function that <code>realloc</code> uses whenever it is called.
+
+     <br><dt><code>void (*__free_hook) (void *</code><var>ptr</var><code>, const void *</code><var>caller</var><code>)</code><dd>A pointer to a function that <code>free</code> uses whenever it is called.
+
+     <br><dt><code>void (*__memalign_hook) (size_t </code><var>size</var><code>, size_t </code><var>alignment</var><code>, const void *</code><var>caller</var><code>)</code><dd>A pointer to a function that <code>memalign</code> uses whenever it is called.
+
+     <br><dt><code>struct mallinfo mallinfo (void)</code><dd>Return information about the current dynamic memory usage. 
+See <a href="Statistics-of-Malloc.html#Statistics-of-Malloc">Statistics of Malloc</a>. 
+</dl>
+
+   </body></html>
+

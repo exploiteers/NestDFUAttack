@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Control Operations - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO" title="Asynchronous I/O">
+<link rel="next" href="Duplicating-Descriptors.html#Duplicating-Descriptors" title="Duplicating Descriptors">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Control-Operations"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Duplicating-Descriptors.html#Duplicating-Descriptors">Duplicating Descriptors</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.11 Control Operations on Files</h3>
+
+<p><a name="index-control-operations-on-files-1310"></a><a name="index-g_t_0040code_007bfcntl_007d-function-1311"></a>This section describes how you can perform various other operations on
+file descriptors, such as inquiring about or setting flags describing
+the status of the file descriptor, manipulating record locks, and the
+like.  All of these operations are performed by the function <code>fcntl</code>.
+
+   <p>The second argument to the <code>fcntl</code> function is a command that
+specifies which operation to perform.  The function and macros that name
+various flags that are used with it are declared in the header file
+<samp><span class="file">fcntl.h</span></samp>.  Many of these flags are also used by the <code>open</code>
+function; see <a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>. 
+<a name="index-fcntl_002eh-1312"></a>
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>fcntl</b> (<var>int filedes, int command, <small class="dots">...</small></var>)<var><a name="index-fcntl-1313"></a></var><br>
+<blockquote><p>The <code>fcntl</code> function performs the operation specified by
+<var>command</var> on the file descriptor <var>filedes</var>.  Some commands
+require additional arguments to be supplied.  These additional arguments
+and the return value and error conditions are given in the detailed
+descriptions of the individual commands.
+
+        <p>Briefly, here is a list of what the various commands are.
+
+          <dl>
+<dt><code>F_DUPFD</code><dd>Duplicate the file descriptor (return another file descriptor pointing
+to the same open file).  See <a href="Duplicating-Descriptors.html#Duplicating-Descriptors">Duplicating Descriptors</a>.
+
+          <br><dt><code>F_GETFD</code><dd>Get flags associated with the file descriptor.  See <a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>.
+
+          <br><dt><code>F_SETFD</code><dd>Set flags associated with the file descriptor.  See <a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>.
+
+          <br><dt><code>F_GETFL</code><dd>Get flags associated with the open file.  See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>.
+
+          <br><dt><code>F_SETFL</code><dd>Set flags associated with the open file.  See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>.
+
+          <br><dt><code>F_GETLK</code><dd>Get a file lock.  See <a href="File-Locks.html#File-Locks">File Locks</a>.
+
+          <br><dt><code>F_SETLK</code><dd>Set or clear a file lock.  See <a href="File-Locks.html#File-Locks">File Locks</a>.
+
+          <br><dt><code>F_SETLKW</code><dd>Like <code>F_SETLK</code>, but wait for completion.  See <a href="File-Locks.html#File-Locks">File Locks</a>.
+
+          <br><dt><code>F_GETOWN</code><dd>Get process or process group ID to receive <code>SIGIO</code> signals. 
+See <a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>.
+
+          <br><dt><code>F_SETOWN</code><dd>Set process or process group ID to receive <code>SIGIO</code> signals. 
+See <a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>. 
+</dl>
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>fcntl</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this calls to <code>fcntl</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Cleaning Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions" title="Stream/Descriptor Precautions">
+<link rel="prev" href="Independent-Channels.html#Independent-Channels" title="Independent Channels">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Cleaning-Streams"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Independent-Channels.html#Independent-Channels">Independent Channels</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.5.3 Cleaning Streams</h4>
+
+<p>On the GNU system, you can clean up any stream with <code>fclean</code>:
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fclean</b> (<var>FILE *stream</var>)<var><a name="index-fclean-1248"></a></var><br>
+<blockquote><p>Clean up the stream <var>stream</var> so that its buffer is empty.  If
+<var>stream</var> is doing output, force it out.  If <var>stream</var> is doing
+input, give the data in the buffer back to the system, arranging to
+reread it. 
+</p></blockquote></div>
+
+   <p>On other systems, you can use <code>fflush</code> to clean a stream in most
+cases.
+
+   <p>You can skip the <code>fclean</code> or <code>fflush</code> if you know the stream
+is already clean.  A stream is clean whenever its buffer is empty.  For
+example, an unbuffered stream is always clean.  An input stream that is
+at end-of-file is clean.  A line-buffered stream is clean when the last
+character output was a newline.  However, a just-opened input stream
+might not be clean, as its input buffer might not be empty.
+
+   <p>There is one case in which cleaning a stream is impossible on most
+systems.  This is when the stream is doing input from a file that is not
+random-access.  Such streams typically read ahead, and when the file is
+not random access, there is no way to give back the excess data already
+read.  When an input stream reads from a random-access file,
+<code>fflush</code> does clean the stream, but leaves the file pointer at an
+unpredictable place; you must set the file pointer before doing any
+further I/O.  On the GNU system, using <code>fclean</code> avoids both of
+these problems.
+
+   <p>Closing an output-only stream also does <code>fflush</code>, so this is a
+valid way of cleaning an output stream.  On the GNU system, closing an
+input stream does <code>fclean</code>.
+
+   <p>You need not clean a stream before using its descriptor for control
+operations such as setting terminal modes; these operations don't affect
+the file position and are not affected by it.  You can use any
+descriptor for these operations, and all channels are affected
+simultaneously.  However, text already &ldquo;output&rdquo; to a stream but still
+buffered by the stream will be subject to the new terminal modes when
+subsequently flushed.  To make sure &ldquo;past&rdquo; output is covered by the
+terminal settings that were in effect at the time, flush the output
+streams for that terminal before setting the modes.  See <a href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>.
+
+   </body></html>
+

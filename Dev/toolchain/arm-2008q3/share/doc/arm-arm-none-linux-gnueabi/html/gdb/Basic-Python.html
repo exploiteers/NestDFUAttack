@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+<title>Basic Python - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Python-API.html#Python-API" title="Python API">
+<link rel="next" href="Exception-Handling.html#Exception-Handling" title="Exception Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Basic-Python"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Exception-Handling.html#Exception-Handling">Exception Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Python-API.html#Python-API">Python API</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">21.2.2.1 Basic Python</h5>
+
+<p><a name="index-python-functions-1394"></a><a name="index-python-module-1395"></a><a name="index-gdb-module-1396"></a><span class="sc">gdb</span> introduces a new Python module, named <code>gdb</code>.  All
+methods and classes added by <span class="sc">gdb</span> are placed in this module. 
+<span class="sc">gdb</span> automatically <code>import</code>s the <code>gdb</code> module for
+use in all scripts evaluated by the <code>python</code> command.
+
+   <p><a name="index-gdb_002eexecute-1397"></a>
+
+<div class="defun">
+&mdash; Function: <b>execute</b><var> command<a name="index-execute-1398"></a></var><br>
+<blockquote><p>Evaluate <var>command</var>, a string, as a <span class="sc">gdb</span> CLI command. 
+If a GDB exception happens while <var>command</var> runs, it is
+translated as described in <a href="Exception-Handling.html#Exception-Handling">Exception Handling</a>. 
+If no exceptions occur, this function returns <code>None</code>. 
+</p></blockquote></div>
+
+   <p><a name="index-gdb_002eget_005fparameter-1399"></a>
+
+<div class="defun">
+&mdash; Function: <b>get_parameter</b><var> parameter<a name="index-get_005fparameter-1400"></a></var><br>
+<blockquote><p>Return the value of a <span class="sc">gdb</span> parameter.  <var>parameter</var> is a
+string naming the parameter to look up; <var>parameter</var> may contain
+spaces if the parameter has a multi-part name.  For example,
+&lsquo;<samp><span class="samp">print object</span></samp>&rsquo; is a valid parameter name.
+
+        <p>If the named parameter does not exist, this function throws a
+<code>RuntimeError</code>.  Otherwise, the parameter's value is converted to
+a Python value of the appropriate type, and returned. 
+</p></blockquote></div>
+
+   <p><a name="index-gdb_002ewrite-1401"></a>
+
+<div class="defun">
+&mdash; Function: <b>write</b><var> string<a name="index-write-1402"></a></var><br>
+<blockquote><p>Print a string to <span class="sc">gdb</span>'s paginated standard output stream. 
+Writing to <code>sys.stdout</code> or <code>sys.stderr</code> will automatically
+call this function. 
+</p></blockquote></div>
+
+   <p><a name="index-gdb_002eflush-1403"></a>
+
+<div class="defun">
+&mdash; Function: <b>flush</b><var><a name="index-flush-1404"></a></var><br>
+<blockquote><p>Flush <span class="sc">gdb</span>'s paginated standard output stream.  Flushing
+<code>sys.stdout</code> or <code>sys.stderr</code> will automatically call this
+function. 
+</p></blockquote></div>
+
+   </body></html>
+

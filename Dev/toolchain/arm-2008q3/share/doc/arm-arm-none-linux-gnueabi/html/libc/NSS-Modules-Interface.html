@@ -1,0 +1,161 @@
+<html lang="en">
+<head>
+<title>NSS Modules Interface - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="NSS-Module-Internals.html#NSS-Module-Internals" title="NSS Module Internals">
+<link rel="prev" href="NSS-Module-Names.html#NSS-Module-Names" title="NSS Module Names">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="NSS-Modules-Interface"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="NSS-Module-Names.html#NSS-Module-Names">NSS Module Names</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="NSS-Module-Internals.html#NSS-Module-Internals">NSS Module Internals</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.3.2 The Interface of the Function in NSS Modules</h4>
+
+<p>Now we know about the functions contained in the modules.  It is now
+time to describe the types.  When we mentioned the reentrant versions of
+the functions above, this means there are some additional arguments
+(compared with the standard, non-reentrant version).  The prototypes for
+the non-reentrant and reentrant versions of our function above are:
+
+<pre class="smallexample">     struct hostent *gethostbyname (const char *name)
+     
+     int gethostbyname_r (const char *name, struct hostent *result_buf,
+                          char *buf, size_t buflen, struct hostent **result,
+                          int *h_errnop)
+</pre>
+   <p class="noindent">The actual prototype of the function in the NSS modules in this case is
+
+<pre class="smallexample">     enum nss_status _nss_files_gethostbyname_r (const char *name,
+                                                 struct hostent *result_buf,
+                                                 char *buf, size_t buflen,
+                                                 int *errnop, int *h_errnop)
+</pre>
+   <p>I.e., the interface function is in fact the reentrant function with the
+change of the return value and the omission of the <var>result</var>
+parameter.  While the user-level function returns a pointer to the
+result the reentrant function return an <code>enum nss_status</code> value:
+
+     <dl>
+<dt><code>NSS_STATUS_TRYAGAIN</code><a name="index-NSS_005fSTATUS_005fTRYAGAIN-3285"></a><dd>numeric value <code>-2</code>
+
+     <br><dt><code>NSS_STATUS_UNAVAIL</code><a name="index-NSS_005fSTATUS_005fUNAVAIL-3286"></a><dd>numeric value <code>-1</code>
+
+     <br><dt><code>NSS_STATUS_NOTFOUND</code><a name="index-NSS_005fSTATUS_005fNOTFOUND-3287"></a><dd>numeric value <code>0</code>
+
+     <br><dt><code>NSS_STATUS_SUCCESS</code><a name="index-NSS_005fSTATUS_005fSUCCESS-3288"></a><dd>numeric value <code>1</code>
+</dl>
+
+<p class="noindent">Now you see where the action items of the <samp><span class="file">/etc/nsswitch.conf</span></samp> file
+are used.
+
+   <p>If you study the source code you will find there is a fifth value:
+<code>NSS_STATUS_RETURN</code>.  This is an internal use only value, used by a
+few functions in places where none of the above value can be used.  If
+necessary the source code should be examined to learn about the details.
+
+   <p>In case the interface function has to return an error it is important
+that the correct error code is stored in <code>*</code><var>errnop</var>.  Some
+return status value have only one associated error code, others have
+more.
+
+   <p><table summary=""><tr align="left"><td valign="top" width="30%"><code>NSS_STATUS_TRYAGAIN</code> </td><td valign="top" width="20%">
+        <code>EAGAIN</code> </td><td valign="top" width="50%">One of the functions used ran temporarily out of
+resources or a service is currently not available. 
+<br></td></tr><tr align="left"><td valign="top" width="30%"></td><td valign="top" width="20%">
+        <code>ERANGE</code> </td><td valign="top" width="50%">The provided buffer is not large enough. 
+The function should be called again with a larger buffer. 
+<br></td></tr><tr align="left"><td valign="top" width="30%"><code>NSS_STATUS_UNAVAIL</code> </td><td valign="top" width="20%">
+        <code>ENOENT</code> </td><td valign="top" width="50%">A necessary input file cannot be found. 
+<br></td></tr><tr align="left"><td valign="top" width="30%"><code>NSS_STATUS_NOTFOUND</code> </td><td valign="top" width="20%">
+        <code>ENOENT</code> </td><td valign="top" width="50%">The requested entry is not available.
+   <br></td></tr></table>
+
+   <p>These are proposed values.  There can be other error codes and the
+described error codes can have different meaning.  <strong>With one
+exception:</strong> when returning <code>NSS_STATUS_TRYAGAIN</code> the error code
+<code>ERANGE</code> <em>must</em> mean that the user provided buffer is too
+small.  Everything is non-critical.
+
+   <p>The above function has something special which is missing for almost all
+the other module functions.  There is an argument <var>h_errnop</var>.  This
+points to a variable which will be filled with the error code in case
+the execution of the function fails for some reason.  The reentrant
+function cannot use the global variable <var>h_errno</var>;
+<code>gethostbyname</code> calls <code>gethostbyname_r</code> with the last argument
+set to <code>&amp;h_errno</code>.
+
+   <p>The <code>get</code><var>XXX</var><code>by</code><var>YYY</var> functions are the most important
+functions in the NSS modules.  But there are others which implement
+the other ways to access system databases (say for the
+password database, there are <code>setpwent</code>, <code>getpwent</code>, and
+<code>endpwent</code>).  These will be described in more detail later. 
+Here we give a general way to determine the
+signature of the module function:
+
+     <ul>
+<li>the return value is <code>int</code>;
+<li>the name is as explained in see <a href="NSS-Module-Names.html#NSS-Module-Names">NSS Module Names</a>;
+<li>the first arguments are identical to the arguments of the non-reentrant
+function;
+<li>the next three arguments are:
+
+          <dl>
+<dt><code>STRUCT_TYPE *result_buf</code><dd>pointer to buffer where the result is stored.  <code>STRUCT_TYPE</code> is
+normally a struct which corresponds to the database. 
+<br><dt><code>char *buffer</code><dd>pointer to a buffer where the function can store additional data for
+the result etc. 
+<br><dt><code>size_t buflen</code><dd>length of the buffer pointed to by <var>buffer</var>. 
+</dl>
+
+     <li>possibly a last argument <var>h_errnop</var>, for the host name and network
+name lookup functions. 
+</ul>
+
+<p class="noindent">This table is correct for all functions but the <code>set...ent</code>
+and <code>end...ent</code> functions.
+
+   </body></html>
+

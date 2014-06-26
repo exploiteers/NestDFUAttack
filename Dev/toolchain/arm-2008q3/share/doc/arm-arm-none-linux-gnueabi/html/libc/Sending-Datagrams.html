@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Sending Datagrams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Datagrams.html#Datagrams" title="Datagrams">
+<link rel="next" href="Receiving-Datagrams.html#Receiving-Datagrams" title="Receiving Datagrams">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Sending-Datagrams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Receiving-Datagrams.html#Receiving-Datagrams">Receiving Datagrams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Datagrams.html#Datagrams">Datagrams</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.10.1 Sending Datagrams</h4>
+
+<p><a name="index-sending-a-datagram-1817"></a><a name="index-transmitting-datagrams-1818"></a><a name="index-datagrams_002c-transmitting-1819"></a>
+<a name="index-sys_002fsocket_002eh-1820"></a>The normal way of sending data on a datagram socket is by using the
+<code>sendto</code> function, declared in <samp><span class="file">sys/socket.h</span></samp>.
+
+   <p>You can call <code>connect</code> on a datagram socket, but this only
+specifies a default destination for further data transmission on the
+socket.  When a socket has a default destination you can use
+<code>send</code> (see <a href="Sending-Data.html#Sending-Data">Sending Data</a>) or even <code>write</code> (see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>) to send a packet there.  You can cancel the default
+destination by calling <code>connect</code> using an address format of
+<code>AF_UNSPEC</code> in the <var>addr</var> argument.  See <a href="Connecting.html#Connecting">Connecting</a>, for
+more information about the <code>connect</code> function.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>sendto</b> (<var>int socket, void *buffer. size_t size, int flags, struct sockaddr *addr, socklen_t length</var>)<var><a name="index-sendto-1821"></a></var><br>
+<blockquote><p>The <code>sendto</code> function transmits the data in the <var>buffer</var>
+through the socket <var>socket</var> to the destination address specified
+by the <var>addr</var> and <var>length</var> arguments.  The <var>size</var> argument
+specifies the number of bytes to be transmitted.
+
+        <p>The <var>flags</var> are interpreted the same way as for <code>send</code>; see
+<a href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>.
+
+        <p>The return value and error conditions are also the same as for
+<code>send</code>, but you cannot rely on the system to detect errors and
+report them; the most common error is that the packet is lost or there
+is no-one at the specified address to receive it, and the operating
+system on your machine usually does not know this.
+
+        <p>It is also possible for one call to <code>sendto</code> to report an error
+owing to a problem related to a previous call.
+
+        <p>This function is defined as a cancellation point in multi-threaded
+programs, so one has to be prepared for this and make sure that
+allocated resources (like memory, files descriptors, semaphores or
+whatever) are freed even if the thread is canceled. 
+<!-- @xref{pthread_cleanup_push}, for a method how to do this. -->
+</p></blockquote></div>
+
+   </body></html>
+

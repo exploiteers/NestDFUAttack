@@ -1,0 +1,55 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the system logging
+#      daemons.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+KLOGD=${SBINDIR}/klogd
+SYSLOGD=${SBINDIR}/syslogd
+
+case "${1}" in
+
+'start')
+	${ECHO} "Log daemons:\c"
+
+	if $CHECK syslog; then
+	    ${KILLALL} syslogd
+	    if test -x ${SYSLOGD}; then
+		${SYSLOGD} `${CAT} ${CONFDIR}/syslogd.options 2> ${NULL}` &
+		${ECHO} " syslogd\c"
+	    fi
+
+	    ${KILLALL} klogd
+	    if test -x ${KLOGD}; then
+		${KLOGD} `${CAT} ${CONFDIR}/klogd.options 2> ${NULL}` &
+		${ECHO} " klogd\c"
+	    fi
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	${KILLALL} syslogd
+	${KILLALL} klogd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

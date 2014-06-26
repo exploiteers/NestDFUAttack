@@ -1,0 +1,83 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2012 Nest, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to manage 
+#      high level setup and configuration for the em357 radio
+#
+
+# Source common library
+. /etc/init.d/functions
+
+EM357_DIAGS="${NESTLABSBINDIR}/zb-diags"
+FORCE_BOOTLOAD_GPIO_NUMBER=181
+FORCE_BOOTLOAD_PADCONF=/sys/kernel/debug/omap_mux/mcspi2_cs0
+FORCE_BOOTLOAD_GPIO=/sys/class/gpio/gpio${FORCE_BOOTLOAD_GPIO_NUMBER}
+PADCONF_EXPORT=/sys/class/gpio/export
+PADCONF_UNEXPORT=/sys/class/gpio/unexport
+
+reset_em357 () {
+    if test -x ${EM357_DIAGS}; then
+        ${EM357_DIAGS} --power on
+    fi
+}
+                
+low_power () {
+    if test -x ${EM357_DIAGS}; then
+        ${EM357_DIAGS} --power sleep 4
+    fi
+}
+                                
+case "${1}" in
+'start')
+    ${ECHO} "Starting em357...\c"
+    # this is because the default value for Slave Select is wrong
+    # after the first transaction it fixes itself
+    ${EM357_DIAGS} --version > ${NULL}
+    ${0} reset > ${NULL}
+    ${0} lowpower > ${NULL}
+    ${ECHO} "done."
+    ;;
+    
+'reset')
+    ${ECHO} "Resetting em357...\c"
+    reset_em357
+    ${ECHO} "done."
+    ;;
+                                                
+'lowpower')
+    ${ECHO} "Putting em357 in low power...\c"
+    low_power
+    ${ECHO} "done."
+    ;;
+
+'bootloader')
+    ${ECHO} "Putting em357 in bootloader...\c"
+    
+    ${ECHO} ${FORCE_BOOTLOAD_GPIO_NUMBER} > ${PADCONF_EXPORT}
+
+    # set the pad config to mode 4 to be able to drive it low
+    ${ECHO} 0x4 > ${FORCE_BOOTLOAD_PADCONF} 
+
+    # output a zero
+    # echo "Forcing slave select to LOW"
+    ${ECHO} out > ${FORCE_BOOTLOAD_GPIO}/direction
+    ${ECHO} 0 > ${FORCE_BOOTLOAD_GPIO}/value 
+    
+    reset_em357
+    sleep 1
+
+    # set the pad config back to mode 0
+    ${ECHO} 0x0 > ${FORCE_BOOTLOAD_PADCONF} 
+    ${ECHO} ${FORCE_BOOTLOAD_GPIO_NUMBER} > ${PADCONF_UNEXPORT}
+    ${ECHO} "done."
+    ;;
+*)
+    echo "Usage: ${0} <start|reset|lowpower|bootloader>"
+    exit 1
+    ;;
+esac
+

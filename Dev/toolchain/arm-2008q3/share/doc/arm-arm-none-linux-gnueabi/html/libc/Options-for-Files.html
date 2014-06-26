@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+<title>Options for Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Limits-for-Files.html#Limits-for-Files" title="Limits for Files">
+<link rel="next" href="File-Minimums.html#File-Minimums" title="File Minimums">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Options-for-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Minimums.html#File-Minimums">File Minimums</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.7 Optional Features in File Support</h3>
+
+<p>POSIX defines certain system-specific options in the system calls for
+operating on files.  Some systems support these options and others do
+not.  Since these options are provided in the kernel, not in the
+library, simply using the GNU C library does not guarantee that any of these
+features is supported; it depends on the system you are using.  They can
+also vary between file systems on a single machine.
+
+   <p><a name="index-unistd_002eh-3659"></a>This section describes the macros you can test to determine whether a
+particular option is supported on your machine.  If a given macro is
+defined in <samp><span class="file">unistd.h</span></samp>, then its value says whether the
+corresponding feature is supported.  (A value of <code>-1</code> indicates no;
+any other value indicates yes.)  If the macro is undefined, it means
+particular files may or may not support the feature.
+
+   <p>Since all the machines that support the GNU C library also support NFS,
+one can never make a general statement about whether all file systems
+support the <code>_POSIX_CHOWN_RESTRICTED</code> and <code>_POSIX_NO_TRUNC</code>
+features.  So these names are never defined as macros in the GNU C
+library.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX_CHOWN_RESTRICTED</b><var><a name="index-g_t_005fPOSIX_005fCHOWN_005fRESTRICTED-3660"></a></var><br>
+<blockquote><p>If this option is in effect, the <code>chown</code> function is restricted so
+that the only changes permitted to nonprivileged processes is to change
+the group owner of a file to either be the effective group ID of the
+process, or one of its supplementary group IDs.  See <a href="File-Owner.html#File-Owner">File Owner</a>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>_POSIX_NO_TRUNC</b><var><a name="index-g_t_005fPOSIX_005fNO_005fTRUNC-3661"></a></var><br>
+<blockquote><p>If this option is in effect, file name components longer than
+<code>NAME_MAX</code> generate an <code>ENAMETOOLONG</code> error.  Otherwise, file
+name components that are too long are silently truncated. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: unsigned char <b>_POSIX_VDISABLE</b><var><a name="index-g_t_005fPOSIX_005fVDISABLE-3662"></a></var><br>
+<blockquote><p>This option is only meaningful for files that are terminal devices. 
+If it is enabled, then handling for special control characters can
+be disabled individually.  See <a href="Special-Characters.html#Special-Characters">Special Characters</a>. 
+</p></blockquote></div>
+
+   <p><a name="index-unistd_002eh-3663"></a>If one of these macros is undefined, that means that the option might be
+in effect for some files and not for others.  To inquire about a
+particular file, call <code>pathconf</code> or <code>fpathconf</code>. 
+See <a href="Pathconf.html#Pathconf">Pathconf</a>.
+
+   </body></html>
+

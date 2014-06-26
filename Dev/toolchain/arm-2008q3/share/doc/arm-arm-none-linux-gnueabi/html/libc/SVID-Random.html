@@ -1,0 +1,407 @@
+<html lang="en">
+<head>
+<title>SVID Random - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers" title="Pseudo-Random Numbers">
+<link rel="prev" href="BSD-Random.html#BSD-Random" title="BSD Random">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="SVID-Random"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="BSD-Random.html#BSD-Random">BSD Random</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">Pseudo-Random Numbers</a>
+<hr>
+</div>
+
+<h4 class="subsection">19.8.3 SVID Random Number Function</h4>
+
+<p>The C library on SVID systems contains yet another kind of random number
+generator functions.  They use a state of 48 bits of data.  The user can
+choose among a collection of functions which return the random bits
+in different forms.
+
+   <p>Generally there are two kinds of function.  The first uses a state of
+the random number generator which is shared among several functions and
+by all threads of the process.  The second requires the user to handle
+the state.
+
+   <p>All functions have in common that they use the same congruential
+formula with the same constants.  The formula is
+
+<pre class="smallexample">     Y = (a * X + c) mod m
+</pre>
+   <p class="noindent">where <var>X</var> is the state of the generator at the beginning and
+<var>Y</var> the state at the end.  <code>a</code> and <code>c</code> are constants
+determining the way the generator works.  By default they are
+
+<pre class="smallexample">     a = 0x5DEECE66D = 25214903917
+     c = 0xb = 11
+</pre>
+   <p class="noindent">but they can also be changed by the user.  <code>m</code> is of course 2^48
+since the state consists of a 48-bit array.
+
+   <p>The prototypes for these functions are in <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-2299"></a>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>drand48</b> (<var>void</var>)<var><a name="index-drand48-2300"></a></var><br>
+<blockquote><p>This function returns a <code>double</code> value in the range of <code>0.0</code>
+to <code>1.0</code> (exclusive).  The random bits are determined by the global
+state of the random number generator in the C library.
+
+        <p>Since the <code>double</code> type according to IEEE&nbsp;754<!-- /@w --> has a 52-bit
+mantissa this means 4 bits are not initialized by the random number
+generator.  These are (of course) chosen to be the least significant
+bits and they are initialized to <code>0</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>erand48</b> (<var>unsigned short int xsubi</var>[<var>3</var>])<var><a name="index-erand48-2301"></a></var><br>
+<blockquote><p>This function returns a <code>double</code> value in the range of <code>0.0</code>
+to <code>1.0</code> (exclusive), similarly to <code>drand48</code>.  The argument is
+an array describing the state of the random number generator.
+
+        <p>This function can be called subsequently since it updates the array to
+guarantee random numbers.  The array should have been initialized before
+initial use to obtain reproducible results. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: long int <b>lrand48</b> (<var>void</var>)<var><a name="index-lrand48-2302"></a></var><br>
+<blockquote><p>The <code>lrand48</code> function returns an integer value in the range of
+<code>0</code> to <code>2^31</code> (exclusive).  Even if the size of the <code>long
+int</code> type can take more than 32 bits, no higher numbers are returned. 
+The random bits are determined by the global state of the random number
+generator in the C library. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: long int <b>nrand48</b> (<var>unsigned short int xsubi</var>[<var>3</var>])<var><a name="index-nrand48-2303"></a></var><br>
+<blockquote><p>This function is similar to the <code>lrand48</code> function in that it
+returns a number in the range of <code>0</code> to <code>2^31</code> (exclusive) but
+the state of the random number generator used to produce the random bits
+is determined by the array provided as the parameter to the function.
+
+        <p>The numbers in the array are updated afterwards so that subsequent calls
+to this function yield different results (as is expected of a random
+number generator).  The array should have been initialized before the
+first call to obtain reproducible results. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: long int <b>mrand48</b> (<var>void</var>)<var><a name="index-mrand48-2304"></a></var><br>
+<blockquote><p>The <code>mrand48</code> function is similar to <code>lrand48</code>.  The only
+difference is that the numbers returned are in the range <code>-2^31</code> to
+<code>2^31</code> (exclusive). 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: long int <b>jrand48</b> (<var>unsigned short int xsubi</var>[<var>3</var>])<var><a name="index-jrand48-2305"></a></var><br>
+<blockquote><p>The <code>jrand48</code> function is similar to <code>nrand48</code>.  The only
+difference is that the numbers returned are in the range <code>-2^31</code> to
+<code>2^31</code> (exclusive).  For the <code>xsubi</code> parameter the same
+requirements are necessary. 
+</p></blockquote></div>
+
+   <p>The internal state of the random number generator can be initialized in
+several ways.  The methods differ in the completeness of the
+information provided.
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void <b>srand48</b> (<var>long int seedval</var>)<var><a name="index-srand48-2306"></a></var><br>
+<blockquote><p>The <code>srand48</code> function sets the most significant 32 bits of the
+internal state of the random number generator to the least
+significant 32 bits of the <var>seedval</var> parameter.  The lower 16 bits
+are initialized to the value <code>0x330E</code>.  Even if the <code>long
+int</code> type contains more than 32 bits only the lower 32 bits are used.
+
+        <p>Owing to this limitation, initialization of the state of this
+function is not very useful.  But it makes it easy to use a construct
+like <code>srand48 (time (0))</code>.
+
+        <p>A side-effect of this function is that the values <code>a</code> and <code>c</code>
+from the internal state, which are used in the congruential formula,
+are reset to the default values given above.  This is of importance once
+the user has called the <code>lcong48</code> function (see below). 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: unsigned short int * <b>seed48</b> (<var>unsigned short int seed16v</var>[<var>3</var>])<var><a name="index-seed48-2307"></a></var><br>
+<blockquote><p>The <code>seed48</code> function initializes all 48 bits of the state of the
+internal random number generator from the contents of the parameter
+<var>seed16v</var>.  Here the lower 16 bits of the first element of
+<var>see16v</var> initialize the least significant 16 bits of the internal
+state, the lower 16 bits of <var>seed16v</var><code>[1]</code> initialize the mid-order
+16 bits of the state and the 16 lower bits of <var>seed16v</var><code>[2]</code>
+initialize the most significant 16 bits of the state.
+
+        <p>Unlike <code>srand48</code> this function lets the user initialize all 48 bits
+of the state.
+
+        <p>The value returned by <code>seed48</code> is a pointer to an array containing
+the values of the internal state before the change.  This might be
+useful to restart the random number generator at a certain state. 
+Otherwise the value can simply be ignored.
+
+        <p>As for <code>srand48</code>, the values <code>a</code> and <code>c</code> from the
+congruential formula are reset to the default values. 
+</p></blockquote></div>
+
+   <p>There is one more function to initialize the random number generator
+which enables you to specify even more information by allowing you to
+change the parameters in the congruential formula.
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: void <b>lcong48</b> (<var>unsigned short int param</var>[<var>7</var>])<var><a name="index-lcong48-2308"></a></var><br>
+<blockquote><p>The <code>lcong48</code> function allows the user to change the complete state
+of the random number generator.  Unlike <code>srand48</code> and
+<code>seed48</code>, this function also changes the constants in the
+congruential formula.
+
+        <p>From the seven elements in the array <var>param</var> the least significant
+16 bits of the entries <var>param</var><code>[0]</code> to <var>param</var><code>[2]</code>
+determine the initial state, the least significant 16 bits of
+<var>param</var><code>[3]</code> to <var>param</var><code>[5]</code> determine the 48 bit
+constant <code>a</code> and <var>param</var><code>[6]</code> determines the 16-bit value
+<code>c</code>. 
+</p></blockquote></div>
+
+   <p>All the above functions have in common that they use the global
+parameters for the congruential formula.  In multi-threaded programs it
+might sometimes be useful to have different parameters in different
+threads.  For this reason all the above functions have a counterpart
+which works on a description of the random number generator in the
+user-supplied buffer instead of the global state.
+
+   <p>Please note that it is no problem if several threads use the global
+state if all threads use the functions which take a pointer to an array
+containing the state.  The random numbers are computed following the
+same loop but if the state in the array is different all threads will
+obtain an individual random number generator.
+
+   <p>The user-supplied buffer must be of type <code>struct drand48_data</code>. 
+This type should be regarded as opaque and not manipulated directly.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>drand48_r</b> (<var>struct drand48_data *buffer, double *result</var>)<var><a name="index-drand48_005fr-2309"></a></var><br>
+<blockquote><p>This function is equivalent to the <code>drand48</code> function with the
+difference that it does not modify the global random number generator
+parameters but instead the parameters in the buffer supplied through the
+pointer <var>buffer</var>.  The random number is returned in the variable
+pointed to by <var>result</var>.
+
+        <p>The return value of the function indicates whether the call succeeded. 
+If the value is less than <code>0</code> an error occurred and <var>errno</var> is
+set to indicate the problem.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>erand48_r</b> (<var>unsigned short int xsubi</var>[<var>3</var>]<var>, struct drand48_data *buffer, double *result</var>)<var><a name="index-erand48_005fr-2310"></a></var><br>
+<blockquote><p>The <code>erand48_r</code> function works like <code>erand48</code>, but in addition
+it takes an argument <var>buffer</var> which describes the random number
+generator.  The state of the random number generator is taken from the
+<code>xsubi</code> array, the parameters for the congruential formula from the
+global random number generator data.  The random number is returned in
+the variable pointed to by <var>result</var>.
+
+        <p>The return value is non-negative if the call succeeded.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>lrand48_r</b> (<var>struct drand48_data *buffer, double *result</var>)<var><a name="index-lrand48_005fr-2311"></a></var><br>
+<blockquote><p>This function is similar to <code>lrand48</code>, but in addition it takes a
+pointer to a buffer describing the state of the random number generator
+just like <code>drand48</code>.
+
+        <p>If the return value of the function is non-negative the variable pointed
+to by <var>result</var> contains the result.  Otherwise an error occurred.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>nrand48_r</b> (<var>unsigned short int xsubi</var>[<var>3</var>]<var>, struct drand48_data *buffer, long int *result</var>)<var><a name="index-nrand48_005fr-2312"></a></var><br>
+<blockquote><p>The <code>nrand48_r</code> function works like <code>nrand48</code> in that it
+produces a random number in the range <code>0</code> to <code>2^31</code>.  But instead
+of using the global parameters for the congruential formula it uses the
+information from the buffer pointed to by <var>buffer</var>.  The state is
+described by the values in <var>xsubi</var>.
+
+        <p>If the return value is non-negative the variable pointed to by
+<var>result</var> contains the result.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>mrand48_r</b> (<var>struct drand48_data *buffer, double *result</var>)<var><a name="index-mrand48_005fr-2313"></a></var><br>
+<blockquote><p>This function is similar to <code>mrand48</code> but like the other reentrant
+functions it uses the random number generator described by the value in
+the buffer pointed to by <var>buffer</var>.
+
+        <p>If the return value is non-negative the variable pointed to by
+<var>result</var> contains the result.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>jrand48_r</b> (<var>unsigned short int xsubi</var>[<var>3</var>]<var>, struct drand48_data *buffer, long int *result</var>)<var><a name="index-jrand48_005fr-2314"></a></var><br>
+<blockquote><p>The <code>jrand48_r</code> function is similar to <code>jrand48</code>.  Like the
+other reentrant functions of this function family it uses the
+congruential formula parameters from the buffer pointed to by
+<var>buffer</var>.
+
+        <p>If the return value is non-negative the variable pointed to by
+<var>result</var> contains the result.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+   <p>Before any of the above functions are used the buffer of type
+<code>struct drand48_data</code> should be initialized.  The easiest way to do
+this is to fill the whole buffer with null bytes, e.g. by
+
+<pre class="smallexample">     memset (buffer, '\0', sizeof (struct drand48_data));
+</pre>
+   <p class="noindent">Using any of the reentrant functions of this family now will
+automatically initialize the random number generator to the default
+values for the state and the parameters of the congruential formula.
+
+   <p>The other possibility is to use any of the functions which explicitly
+initialize the buffer.  Though it might be obvious how to initialize the
+buffer from looking at the parameter to the function, it is highly
+recommended to use these functions since the result might not always be
+what you expect.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>srand48_r</b> (<var>long int seedval, struct drand48_data *buffer</var>)<var><a name="index-srand48_005fr-2315"></a></var><br>
+<blockquote><p>The description of the random number generator represented by the
+information in <var>buffer</var> is initialized similarly to what the function
+<code>srand48</code> does.  The state is initialized from the parameter
+<var>seedval</var> and the parameters for the congruential formula are
+initialized to their default values.
+
+        <p>If the return value is non-negative the function call succeeded.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>seed48_r</b> (<var>unsigned short int seed16v</var>[<var>3</var>]<var>, struct drand48_data *buffer</var>)<var><a name="index-seed48_005fr-2316"></a></var><br>
+<blockquote><p>This function is similar to <code>srand48_r</code> but like <code>seed48</code> it
+initializes all 48 bits of the state from the parameter <var>seed16v</var>.
+
+        <p>If the return value is non-negative the function call succeeded.  It
+does not return a pointer to the previous state of the random number
+generator like the <code>seed48</code> function does.  If the user wants to
+preserve the state for a later re-run s/he can copy the whole buffer
+pointed to by <var>buffer</var>.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>lcong48_r</b> (<var>unsigned short int param</var>[<var>7</var>]<var>, struct drand48_data *buffer</var>)<var><a name="index-lcong48_005fr-2317"></a></var><br>
+<blockquote><p>This function initializes all aspects of the random number generator
+described in <var>buffer</var> with the data in <var>param</var>.  Here it is
+especially true that the function does more than just copying the
+contents of <var>param</var> and <var>buffer</var>.  More work is required and
+therefore it is important to use this function rather than initializing
+the random number generator directly.
+
+        <p>If the return value is non-negative the function call succeeded.
+
+        <p>This function is a GNU extension and should not be used in portable
+programs. 
+</p></blockquote></div>
+
+   </body></html>
+

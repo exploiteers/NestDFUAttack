@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Argp Children - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp-Parsers.html#Argp-Parsers" title="Argp Parsers">
+<link rel="prev" href="Argp-Parser-Functions.html#Argp-Parser-Functions" title="Argp Parser Functions">
+<link rel="next" href="Argp-Help-Filtering.html#Argp-Help-Filtering" title="Argp Help Filtering">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Children"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Help-Filtering.html#Argp-Help-Filtering">Argp Help Filtering</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Parser-Functions.html#Argp-Parser-Functions">Argp Parser Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.6 Combining Multiple Argp Parsers</h4>
+
+<p>The <code>children</code> field in a <code>struct argp</code> enables other argp
+parsers to be combined with the referencing one for the parsing of a
+single set of arguments.  This field should point to a vector of
+<code>struct argp_child</code>, which is terminated by an entry having a value
+of zero in the <code>argp</code> field.
+
+   <p>Where conflicts between combined parsers arise, as when two specify an
+option with the same name, the parser conflicts are resolved in favor of
+the parent argp parser(s), or the earlier of the argp parsers in the
+list of children.
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>struct argp_child</b><var><a name="index-struct-argp_005fchild-3065"></a></var><br>
+<blockquote><p>An entry in the list of subsidiary argp parsers pointed to by the
+<code>children</code> field in a <code>struct argp</code>.  The fields are as
+follows:
+
+          <dl>
+<dt><code>const struct argp *argp</code><dd>The child argp parser, or zero to end of the list.
+
+          <br><dt><code>int flags</code><dd>Flags for this child.
+
+          <br><dt><code>const char *header</code><dd>If non-zero, this is an optional header to be printed within help output
+before the child options.  As a side-effect, a non-zero value forces the
+child options to be grouped together.  To achieve this effect without
+actually printing a header string, use a value of <code>""</code>.  As with
+header strings specified in an option entry, the conventional value of
+the last character is &lsquo;<samp><span class="samp">:</span></samp>&rsquo;.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.
+
+          <br><dt><code>int group</code><dd>This is where the child options are grouped relative to the other
+`consolidated' options in the parent argp parser.  The values are the
+same as the <code>group</code> field in <code>struct argp_option</code>.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.  All child-groupings follow parent options at a
+particular group level.  If both this field and <code>header</code> are zero,
+then the child's options aren't grouped together, they are merged with
+parent options at the parent option group level.
+
+        </dl>
+        </p></blockquote></div>
+
+   </body></html>
+

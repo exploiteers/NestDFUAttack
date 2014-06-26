@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Character Handling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Memory.html#Memory" title="Memory">
+<link rel="next" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Character-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Memory.html#Memory">Memory</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Character testing and conversion functions -->
+<h2 class="chapter">4 Character Handling</h2>
+
+<p>Programs that work with characters and strings often need to classify a
+character&mdash;is it alphabetic, is it a digit, is it whitespace, and so
+on&mdash;and perform case conversion operations on characters.  The
+functions in the header file <samp><span class="file">ctype.h</span></samp> are provided for this
+purpose. 
+<a name="index-ctype_002eh-362"></a>
+Since the choice of locale and character set can alter the
+classifications of particular character codes, all of these functions
+are affected by the current locale.  (More precisely, they are affected
+by the locale currently selected for character classification&mdash;the
+<code>LC_CTYPE</code> category; see <a href="Locale-Categories.html#Locale-Categories">Locale Categories</a>.)
+
+   <p>The ISO&nbsp;C<!-- /@w --> standard specifies two different sets of functions.  The
+one set works on <code>char</code> type characters, the other one on
+<code>wchar_t</code> wide characters (see <a href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>).
+
+<ul class="menu">
+<li><a accesskey="1" href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>:        Testing whether characters are
+			                letters, digits, punctuation, etc.
+
+<li><a accesskey="2" href="Case-Conversion.html#Case-Conversion">Case Conversion</a>:                     Case mapping, and the like. 
+<li><a accesskey="3" href="Classification-of-Wide-Characters.html#Classification-of-Wide-Characters">Classification of Wide Characters</a>:   Character class determination for
+                                        wide characters. 
+<li><a accesskey="4" href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes">Using Wide Char Classes</a>:             Notes on using the wide character
+                                        classes. 
+<li><a accesskey="5" href="Wide-Character-Case-Conversion.html#Wide-Character-Case-Conversion">Wide Character Case Conversion</a>:      Mapping of wide characters. 
+</ul>
+
+   </body></html>
+

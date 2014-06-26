@@ -1,0 +1,52 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2011 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements daemon (i.e. service) monitoring abstractions
+#      that may be called by other initialization scripts.
+#
+
+# Source, if necessary, common library
+if [ -z "${ROOTDIR}" ]; then
+    . /etc/init.d/functions
+fi
+
+MONIT=${USRSBINDIR}/monit
+
+# Usage: monit_service_action ACTION SERVICE
+monit_service_action () {
+	local action="${1}"
+	local service="${2}"
+
+	if [ -n "${action}" ] && [ -n "${service}" ] && [ -x ${MONIT} ]; then
+		${MONIT} "${action}" "${service}" > ${NULL} 2>&1
+	fi
+}
+
+# Usage: start_service SERVICE
+start_service () {
+	monit_service_action start "${1}"
+}
+
+# Usage: stop_service SERVICE
+stop_service () {
+	monit_service_action stop "${1}"
+}
+
+# Usage: restart_service SERVICE
+restart_service () {
+	monit_service_action restart "${1}"
+}
+
+# Usage: monitor_service SERVICE
+monitor_service () {
+	monit_service_action monitor "${1}"
+}
+
+# Usage: unmonitor_service SERVICE
+unmonitor_service () {
+	monit_service_action unmonitor "${1}"
+}

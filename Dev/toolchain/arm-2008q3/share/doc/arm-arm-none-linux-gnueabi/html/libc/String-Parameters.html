@@ -1,0 +1,167 @@
+<html lang="en">
+<head>
+<title>String Parameters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Utility-Minimums.html#Utility-Minimums" title="Utility Minimums">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String-Parameters"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Utility-Minimums.html#Utility-Minimums">Utility Minimums</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.12 String-Valued Parameters</h3>
+
+<p>POSIX.2 defines a way to get string-valued parameters from the operating
+system with the function <code>confstr</code>:
+
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: size_t <b>confstr</b> (<var>int parameter, char *buf, size_t len</var>)<var><a name="index-confstr-3674"></a></var><br>
+<blockquote><p>This function reads the value of a string-valued system parameter,
+storing the string into <var>len</var> bytes of memory space starting at
+<var>buf</var>.  The <var>parameter</var> argument should be one of the
+&lsquo;<samp><span class="samp">_CS_</span></samp>&rsquo; symbols listed below.
+
+        <p>The normal return value from <code>confstr</code> is the length of the string
+value that you asked for.  If you supply a null pointer for <var>buf</var>,
+then <code>confstr</code> does not try to store the string; it just returns
+its length.  A value of <code>0</code> indicates an error.
+
+        <p>If the string you asked for is too long for the buffer (that is, longer
+than <var>len</var><code> - 1</code>), then <code>confstr</code> stores just that much
+(leaving room for the terminating null character).  You can tell that
+this has happened because <code>confstr</code> returns a value greater than or
+equal to <var>len</var>.
+
+        <p>The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The value of the <var>parameter</var> is invalid. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Currently there is just one parameter you can read with <code>confstr</code>:
+
+     <dl>
+<!-- unistd.h -->
+<!-- POSIX.2 -->
+<dt><code>_CS_PATH</code><dd>This parameter's value is the recommended default path for searching for
+executable files.  This is the path that a user has by default just
+after logging in.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS_CFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the C compiler if a source is compiled using the
+<code>_LARGEFILE_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS_LDFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the linker if a source is compiled using the
+<code>_LARGEFILE_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS_LIBS</code><dd>The returned string specifies which additional libraries must be linked
+to the application if a source is compiled using the
+<code>_LARGEFILE_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS_LINTFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the lint tool if a source is compiled using the
+<code>_LARGEFILE_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS64_CFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the C compiler if a source is compiled using the
+<code>_LARGEFILE64_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS64_LDFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the linker if a source is compiled using the
+<code>_LARGEFILE64_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS64_LIBS</code><dd>The returned string specifies which additional libraries must be linked
+to the application if a source is compiled using the
+<code>_LARGEFILE64_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>.
+
+     <!-- unistd.h -->
+     <!-- Unix98 -->
+     <br><dt><code>_CS_LFS64_LINTFLAGS</code><dd>The returned string specifies which additional flags must be given to
+the lint tool if a source is compiled using the
+<code>_LARGEFILE64_SOURCE</code> feature select macro; see <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>. 
+</dl>
+
+   <p>The way to use <code>confstr</code> without any arbitrary limit on string size
+is to call it twice: first call it to get the length, allocate the
+buffer accordingly, and then call <code>confstr</code> again to fill the
+buffer, like this:
+
+<pre class="smallexample">     char *
+     get_default_path (void)
+     {
+       size_t len = confstr (_CS_PATH, NULL, 0);
+       char *buffer = (char *) xmalloc (len);
+     
+       if (confstr (_CS_PATH, buf, len + 1) == 0)
+         {
+           free (buffer);
+           return NULL;
+         }
+     
+       return buffer;
+     }
+</pre>
+   <!-- This node must have no pointers. -->
+   </body></html>
+

@@ -1,0 +1,95 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to set the system host/network
+#      name.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+ORDERDEFAULTS="os serial# ethaddr file"
+ORDERFILE="${CONFDIR}/hostname.conf"
+NETNAMEFILE="${CONFDIR}/hostname"
+
+case "${1}" in
+
+'start')
+    # Attempt to source any system-specific host name resolution order
+    # from the host name resolution configuration file.
+    #
+    # Failing that, fall back to the defaults.
+
+    if [ -f "${ORDERFILE}" ]; then
+	NETNAMEORDER=`${SED} -ne 's,^order:[[:space:]]\+,,gp' < ${ORDERFILE}`
+
+    elif [ -z "${NETNAMEORDER}" ]; then
+	NETNAMEORDER="${ORDERDEFAULTS}"
+
+    fi
+
+    # For each host name specified in the order resolution list,
+    # attempt to identify a host name via that source until a usable
+    # host name is found.
+
+    for source in ${NETNAMEORDER}; do
+
+	case "${source}" in
+
+	'os')
+	    # The host name was already set as would be the case if
+	    # the system were net booted or if the host name were
+	    # otherwise set via kernel boot arguments.
+	    #
+	    # The Linux kernel can return '(none)' when no valid host
+	    # name is set, so filter that out.
+
+	    NETNAME=`${HOSTNAME} | ${SED} -e 's,^(none)$,,g'`
+	    ;;
+
+	eth*addr | 'serial#')
+	    # The host name one of the system's Ethernet MAC addresses
+	    # or its serial number, filtered to comply with valid network
+	    # host names.
+
+	    NETNAME=`${BOOTGETENV} -n ${source} | ${SED} -e 's,[^-[:alnum:]],,g' 2> ${NULL}`
+	    ;;
+
+	'file')
+	    # The host name as set in the host name configuration file
+	    # if it exists and contains a value.
+
+	    NETNAME=`${CAT} ${NETNAMEFILE} 2> ${NULL}`
+	    ;;
+
+	esac
+
+	# If a valid host name was identified, the search is over.
+
+	if [ -n "${NETNAME}" ]; then
+	    break
+	fi
+    done
+
+    # All attempts to resolve a host name failed, fall back to a default.
+
+    [ -z "${NETNAME}" ] && NETNAME="${LOCALHOST}"
+
+    ${HOSTNAME} "${NETNAME}"
+
+    ${ECHO} "Host name: ${NETNAME}"
+    ;;
+
+'stop')
+    ;;
+
+*)
+    echo "Usage: ${0} <start | stop>"
+    exit 1
+    ;;
+
+esac

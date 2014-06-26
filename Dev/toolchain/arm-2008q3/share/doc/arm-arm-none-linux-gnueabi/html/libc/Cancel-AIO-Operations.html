@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Cancel AIO Operations - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO" title="Asynchronous I/O">
+<link rel="prev" href="Synchronizing-AIO-Operations.html#Synchronizing-AIO-Operations" title="Synchronizing AIO Operations">
+<link rel="next" href="Configuration-of-AIO.html#Configuration-of-AIO" title="Configuration of AIO">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Cancel-AIO-Operations"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Configuration-of-AIO.html#Configuration-of-AIO">Configuration of AIO</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Synchronizing-AIO-Operations.html#Synchronizing-AIO-Operations">Synchronizing AIO Operations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.10.4 Cancellation of AIO Operations</h4>
+
+<p>When one or more requests are asynchronously processed, it might be
+useful in some situations to cancel a selected operation, e.g., if it
+becomes obvious that the written data is no longer accurate and would
+have to be overwritten soon.  As an example, assume an application, which
+writes data in files in a situation where new incoming data would have
+to be written in a file which will be updated by an enqueued request. 
+The POSIX AIO implementation provides such a function, but this function
+is not capable of forcing the cancellation of the request.  It is up to the
+implementation to decide whether it is possible to cancel the operation
+or not.  Therefore using this function is merely a hint.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>aio_cancel</b> (<var>int fildes, struct aiocb *aiocbp</var>)<var><a name="index-aio_005fcancel-1306"></a></var><br>
+<blockquote><p>The <code>aio_cancel</code> function can be used to cancel one or more
+outstanding requests.  If the <var>aiocbp</var> parameter is <code>NULL</code>, the
+function tries to cancel all of the outstanding requests which would process
+the file descriptor <var>fildes</var> (i.e., whose <code>aio_fildes</code> member
+is <var>fildes</var>).  If <var>aiocbp</var> is not <code>NULL</code>, <code>aio_cancel</code>
+attempts to cancel the specific request pointed to by <var>aiocbp</var>.
+
+        <p>For requests which were successfully canceled, the normal notification
+about the termination of the request should take place.  I.e., depending
+on the <code>struct sigevent</code> object which controls this, nothing
+happens, a signal is sent or a thread is started.  If the request cannot
+be canceled, it terminates the usual way after performing the operation.
+
+        <p>After a request is successfully canceled, a call to <code>aio_error</code> with
+a reference to this request as the parameter will return
+<code>ECANCELED</code> and a call to <code>aio_return</code> will return -1. 
+If the request wasn't canceled and is still running the error status is
+still <code>EINPROGRESS</code>.
+
+        <p>The return value of the function is <code>AIO_CANCELED</code> if there were
+requests which haven't terminated and which were successfully canceled. 
+If there is one or more requests left which couldn't be canceled, the
+return value is <code>AIO_NOTCANCELED</code>.  In this case <code>aio_error</code>
+must be used to find out which of the, perhaps multiple, requests (in
+<var>aiocbp</var> is <code>NULL</code>) weren't successfully canceled.  If all
+requests already terminated at the time <code>aio_cancel</code> is called the
+return value is <code>AIO_ALLDONE</code>.
+
+        <p>If an error occurred during the execution of <code>aio_cancel</code> the
+function returns -1 and sets <code>errno</code> to one of the following
+values.
+
+          <dl>
+<dt><code>EBADF</code><dd>The file descriptor <var>fildes</var> is not valid. 
+<br><dt><code>ENOSYS</code><dd><code>aio_cancel</code> is not implemented. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is in fact <code>aio_cancel64</code> since the LFS interface
+transparently replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>aio_cancel64</b> (<var>int fildes, struct aiocb64 *aiocbp</var>)<var><a name="index-aio_005fcancel64-1307"></a></var><br>
+<blockquote><p>This function is similar to <code>aio_cancel</code> with the only difference
+that the argument is a reference to a variable of type <code>struct
+aiocb64</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code>, this
+function is available under the name <code>aio_cancel</code> and so
+transparently replaces the interface for small files on 32 bit
+machines. 
+</p></blockquote></div>
+
+   </body></html>
+

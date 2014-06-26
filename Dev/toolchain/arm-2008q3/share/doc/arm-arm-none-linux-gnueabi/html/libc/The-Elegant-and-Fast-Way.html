@@ -1,0 +1,263 @@
+<html lang="en">
+<head>
+<title>The Elegant and Fast Way - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locale-Information.html#Locale-Information" title="Locale Information">
+<link rel="prev" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data" title="The Lame Way to Locale Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="The-Elegant-and-Fast-Way"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">The Lame Way to Locale Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locale-Information.html#Locale-Information">Locale Information</a>
+<hr>
+</div>
+
+<h4 class="subsection">7.6.2 Pinpoint Access to Locale Data</h4>
+
+<p>When writing the X/Open Portability Guide the authors realized that the
+<code>localeconv</code> function is not enough to provide reasonable access to
+locale information.  The information which was meant to be available
+in the locale (as later specified in the POSIX.1 standard) requires more
+ways to access it.  Therefore the <code>nl_langinfo</code> function
+was introduced.
+
+<!-- langinfo.h -->
+<!-- XOPEN -->
+<div class="defun">
+&mdash; Function: char * <b>nl_langinfo</b> (<var>nl_item item</var>)<var><a name="index-nl_005flanginfo-713"></a></var><br>
+<blockquote><p>The <code>nl_langinfo</code> function can be used to access individual
+elements of the locale categories.  Unlike the <code>localeconv</code>
+function, which returns all the information, <code>nl_langinfo</code>
+lets the caller select what information it requires.  This is very
+fast and it is not a problem to call this function multiple times.
+
+        <p>A second advantage is that in addition to the numeric and monetary
+formatting information, information from the
+<code>LC_TIME</code> and <code>LC_MESSAGES</code> categories is available.
+
+        <p><a name="index-langinfo_002eh-714"></a>The type <code>nl_type</code> is defined in <samp><span class="file">nl_types.h</span></samp>.  The argument
+<var>item</var> is a numeric value defined in the header <samp><span class="file">langinfo.h</span></samp>. 
+The X/Open standard defines the following values:
+
+          <dl>
+<dt><code>CODESET</code><a name="index-CODESET-715"></a><dd><code>nl_langinfo</code> returns a string with the name of the coded character
+set used in the selected locale.
+
+          <br><dt><code>ABDAY_1</code><a name="index-ABDAY_005f1-716"></a><dt><code>ABDAY_2</code><a name="index-ABDAY_005f2-717"></a><dt><code>ABDAY_3</code><a name="index-ABDAY_005f3-718"></a><dt><code>ABDAY_4</code><a name="index-ABDAY_005f4-719"></a><dt><code>ABDAY_5</code><a name="index-ABDAY_005f5-720"></a><dt><code>ABDAY_6</code><a name="index-ABDAY_005f6-721"></a><dt><code>ABDAY_7</code><a name="index-ABDAY_005f7-722"></a><dd><code>nl_langinfo</code> returns the abbreviated weekday name.  <code>ABDAY_1</code>
+corresponds to Sunday. 
+<br><dt><code>DAY_1</code><a name="index-DAY_005f1-723"></a><dt><code>DAY_2</code><a name="index-DAY_005f2-724"></a><dt><code>DAY_3</code><a name="index-DAY_005f3-725"></a><dt><code>DAY_4</code><a name="index-DAY_005f4-726"></a><dt><code>DAY_5</code><a name="index-DAY_005f5-727"></a><dt><code>DAY_6</code><a name="index-DAY_005f6-728"></a><dt><code>DAY_7</code><a name="index-DAY_005f7-729"></a><dd>Similar to <code>ABDAY_1</code> etc., but here the return value is the
+unabbreviated weekday name. 
+<br><dt><code>ABMON_1</code><a name="index-ABMON_005f1-730"></a><dt><code>ABMON_2</code><a name="index-ABMON_005f2-731"></a><dt><code>ABMON_3</code><a name="index-ABMON_005f3-732"></a><dt><code>ABMON_4</code><a name="index-ABMON_005f4-733"></a><dt><code>ABMON_5</code><a name="index-ABMON_005f5-734"></a><dt><code>ABMON_6</code><a name="index-ABMON_005f6-735"></a><dt><code>ABMON_7</code><a name="index-ABMON_005f7-736"></a><dt><code>ABMON_8</code><a name="index-ABMON_005f8-737"></a><dt><code>ABMON_9</code><a name="index-ABMON_005f9-738"></a><dt><code>ABMON_10</code><a name="index-ABMON_005f10-739"></a><dt><code>ABMON_11</code><a name="index-ABMON_005f11-740"></a><dt><code>ABMON_12</code><a name="index-ABMON_005f12-741"></a><dd>The return value is abbreviated name of the month.  <code>ABMON_1</code>
+corresponds to January. 
+<br><dt><code>MON_1</code><a name="index-MON_005f1-742"></a><dt><code>MON_2</code><a name="index-MON_005f2-743"></a><dt><code>MON_3</code><a name="index-MON_005f3-744"></a><dt><code>MON_4</code><a name="index-MON_005f4-745"></a><dt><code>MON_5</code><a name="index-MON_005f5-746"></a><dt><code>MON_6</code><a name="index-MON_005f6-747"></a><dt><code>MON_7</code><a name="index-MON_005f7-748"></a><dt><code>MON_8</code><a name="index-MON_005f8-749"></a><dt><code>MON_9</code><a name="index-MON_005f9-750"></a><dt><code>MON_10</code><a name="index-MON_005f10-751"></a><dt><code>MON_11</code><a name="index-MON_005f11-752"></a><dt><code>MON_12</code><a name="index-MON_005f12-753"></a><dd>Similar to <code>ABMON_1</code> etc., but here the month names are not abbreviated. 
+Here the first value <code>MON_1</code> also corresponds to January. 
+<br><dt><code>AM_STR</code><a name="index-AM_005fSTR-754"></a><dt><code>PM_STR</code><a name="index-PM_005fSTR-755"></a><dd>The return values are strings which can be used in the representation of time
+as an hour from 1 to 12 plus an am/pm specifier.
+
+          <p>Note that in locales which do not use this time representation
+these strings might be empty, in which case the am/pm format
+cannot be used at all. 
+<br><dt><code>D_T_FMT</code><a name="index-D_005fT_005fFMT-756"></a><dd>The return value can be used as a format string for <code>strftime</code> to
+represent time and date in a locale-specific way. 
+<br><dt><code>D_FMT</code><a name="index-D_005fFMT-757"></a><dd>The return value can be used as a format string for <code>strftime</code> to
+represent a date in a locale-specific way. 
+<br><dt><code>T_FMT</code><a name="index-T_005fFMT-758"></a><dd>The return value can be used as a format string for <code>strftime</code> to
+represent time in a locale-specific way. 
+<br><dt><code>T_FMT_AMPM</code><a name="index-T_005fFMT_005fAMPM-759"></a><dd>The return value can be used as a format string for <code>strftime</code> to
+represent time in the am/pm format.
+
+          <p>Note that if the am/pm format does not make any sense for the
+selected locale, the return value might be the same as the one for
+<code>T_FMT</code>. 
+<br><dt><code>ERA</code><a name="index-ERA-760"></a><dd>The return value represents the era used in the current locale.
+
+          <p>Most locales do not define this value.  An example of a locale which
+does define this value is the Japanese one.  In Japan, the traditional
+representation of dates includes the name of the era corresponding to
+the then-emperor's reign.
+
+          <p>Normally it should not be necessary to use this value directly. 
+Specifying the <code>E</code> modifier in their format strings causes the
+<code>strftime</code> functions to use this information.  The format of the
+returned string is not specified, and therefore you should not assume
+knowledge of it on different systems. 
+<br><dt><code>ERA_YEAR</code><a name="index-ERA_005fYEAR-761"></a><dd>The return value gives the year in the relevant era of the locale. 
+As for <code>ERA</code> it should not be necessary to use this value directly. 
+<br><dt><code>ERA_D_T_FMT</code><a name="index-ERA_005fD_005fT_005fFMT-762"></a><dd>This return value can be used as a format string for <code>strftime</code> to
+represent dates and times in a locale-specific era-based way. 
+<br><dt><code>ERA_D_FMT</code><a name="index-ERA_005fD_005fFMT-763"></a><dd>This return value can be used as a format string for <code>strftime</code> to
+represent a date in a locale-specific era-based way. 
+<br><dt><code>ERA_T_FMT</code><a name="index-ERA_005fT_005fFMT-764"></a><dd>This return value can be used as a format string for <code>strftime</code> to
+represent time in a locale-specific era-based way. 
+<br><dt><code>ALT_DIGITS</code><a name="index-ALT_005fDIGITS-765"></a><dd>The return value is a representation of up to 100 values used to
+represent the values 0 to 99.  As for <code>ERA</code> this
+value is not intended to be used directly, but instead indirectly
+through the <code>strftime</code> function.  When the modifier <code>O</code> is
+used in a format which would otherwise use numerals to represent hours,
+minutes, seconds, weekdays, months, or weeks, the appropriate value for
+the locale is used instead. 
+<br><dt><code>INT_CURR_SYMBOL</code><a name="index-INT_005fCURR_005fSYMBOL-766"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_curr_symbol</code> element of the <code>struct lconv</code>. 
+<br><dt><code>CURRENCY_SYMBOL</code><a name="index-CURRENCY_005fSYMBOL-767"></a><dt><code>CRNCYSTR</code><a name="index-CRNCYSTR-768"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>currency_symbol</code> element of the <code>struct lconv</code>.
+
+          <p><code>CRNCYSTR</code> is a deprecated alias still required by Unix98. 
+<br><dt><code>MON_DECIMAL_POINT</code><a name="index-MON_005fDECIMAL_005fPOINT-769"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>mon_decimal_point</code> element of the <code>struct lconv</code>. 
+<br><dt><code>MON_THOUSANDS_SEP</code><a name="index-MON_005fTHOUSANDS_005fSEP-770"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>mon_thousands_sep</code> element of the <code>struct lconv</code>. 
+<br><dt><code>MON_GROUPING</code><a name="index-MON_005fGROUPING-771"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>mon_grouping</code> element of the <code>struct lconv</code>. 
+<br><dt><code>POSITIVE_SIGN</code><a name="index-POSITIVE_005fSIGN-772"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>positive_sign</code> element of the <code>struct lconv</code>. 
+<br><dt><code>NEGATIVE_SIGN</code><a name="index-NEGATIVE_005fSIGN-773"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>negative_sign</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_FRAC_DIGITS</code><a name="index-INT_005fFRAC_005fDIGITS-774"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_frac_digits</code> element of the <code>struct lconv</code>. 
+<br><dt><code>FRAC_DIGITS</code><a name="index-FRAC_005fDIGITS-775"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>frac_digits</code> element of the <code>struct lconv</code>. 
+<br><dt><code>P_CS_PRECEDES</code><a name="index-P_005fCS_005fPRECEDES-776"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>p_cs_precedes</code> element of the <code>struct lconv</code>. 
+<br><dt><code>P_SEP_BY_SPACE</code><a name="index-P_005fSEP_005fBY_005fSPACE-777"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>p_sep_by_space</code> element of the <code>struct lconv</code>. 
+<br><dt><code>N_CS_PRECEDES</code><a name="index-N_005fCS_005fPRECEDES-778"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>n_cs_precedes</code> element of the <code>struct lconv</code>. 
+<br><dt><code>N_SEP_BY_SPACE</code><a name="index-N_005fSEP_005fBY_005fSPACE-779"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>n_sep_by_space</code> element of the <code>struct lconv</code>. 
+<br><dt><code>P_SIGN_POSN</code><a name="index-P_005fSIGN_005fPOSN-780"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>p_sign_posn</code> element of the <code>struct lconv</code>. 
+<br><dt><code>N_SIGN_POSN</code><a name="index-N_005fSIGN_005fPOSN-781"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>n_sign_posn</code> element of the <code>struct lconv</code>.
+
+          <br><dt><code>INT_P_CS_PRECEDES</code><a name="index-INT_005fP_005fCS_005fPRECEDES-782"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_p_cs_precedes</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_P_SEP_BY_SPACE</code><a name="index-INT_005fP_005fSEP_005fBY_005fSPACE-783"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_p_sep_by_space</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_N_CS_PRECEDES</code><a name="index-INT_005fN_005fCS_005fPRECEDES-784"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_n_cs_precedes</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_N_SEP_BY_SPACE</code><a name="index-INT_005fN_005fSEP_005fBY_005fSPACE-785"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_n_sep_by_space</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_P_SIGN_POSN</code><a name="index-INT_005fP_005fSIGN_005fPOSN-786"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_p_sign_posn</code> element of the <code>struct lconv</code>. 
+<br><dt><code>INT_N_SIGN_POSN</code><a name="index-INT_005fN_005fSIGN_005fPOSN-787"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>int_n_sign_posn</code> element of the <code>struct lconv</code>.
+
+          <br><dt><code>DECIMAL_POINT</code><a name="index-DECIMAL_005fPOINT-788"></a><dt><code>RADIXCHAR</code><a name="index-RADIXCHAR-789"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>decimal_point</code> element of the <code>struct lconv</code>.
+
+          <p>The name <code>RADIXCHAR</code> is a deprecated alias still used in Unix98. 
+<br><dt><code>THOUSANDS_SEP</code><a name="index-THOUSANDS_005fSEP-790"></a><dt><code>THOUSEP</code><a name="index-THOUSEP-791"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>thousands_sep</code> element of the <code>struct lconv</code>.
+
+          <p>The name <code>THOUSEP</code> is a deprecated alias still used in Unix98. 
+<br><dt><code>GROUPING</code><a name="index-GROUPING-792"></a><dd>The same as the value returned by <code>localeconv</code> in the
+<code>grouping</code> element of the <code>struct lconv</code>. 
+<br><dt><code>YESEXPR</code><a name="index-YESEXPR-793"></a><dd>The return value is a regular expression which can be used with the
+<code>regex</code> function to recognize a positive response to a yes/no
+question.  The GNU C library provides the <code>rpmatch</code> function for
+easier handling in applications. 
+<br><dt><code>NOEXPR</code><a name="index-NOEXPR-794"></a><dd>The return value is a regular expression which can be used with the
+<code>regex</code> function to recognize a negative response to a yes/no
+question. 
+<br><dt><code>YESSTR</code><a name="index-YESSTR-795"></a><dd>The return value is a locale-specific translation of the positive response
+to a yes/no question.
+
+          <p>Using this value is deprecated since it is a very special case of
+message translation, and is better handled by the message
+translation functions (see <a href="Message-Translation.html#Message-Translation">Message Translation</a>).
+
+          <p>The use of this symbol is deprecated.  Instead message translation
+should be used. 
+<br><dt><code>NOSTR</code><a name="index-NOSTR-796"></a><dd>The return value is a locale-specific translation of the negative response
+to a yes/no question.  What is said for <code>YESSTR</code> is also true here.
+
+          <p>The use of this symbol is deprecated.  Instead message translation
+should be used. 
+</dl>
+
+        <p>The file <samp><span class="file">langinfo.h</span></samp> defines a lot more symbols but none of them
+is official.  Using them is not portable, and the format of the
+return values might change.  Therefore we recommended you not use
+them.
+
+        <p>Note that the return value for any valid argument can be used for
+in all situations (with the possible exception of the am/pm time formatting
+codes).  If the user has not selected any locale for the
+appropriate category, <code>nl_langinfo</code> returns the information from the
+<code>"C"</code> locale.  It is therefore possible to use this function as
+shown in the example below.
+
+        <p>If the argument <var>item</var> is not valid, a pointer to an empty string is
+returned. 
+</p></blockquote></div>
+
+   <p>An example of <code>nl_langinfo</code> usage is a function which has to
+print a given date and time in a locale-specific way.  At first one
+might think that, since <code>strftime</code> internally uses the locale
+information, writing something like the following is enough:
+
+<pre class="smallexample">     size_t
+     i18n_time_n_data (char *s, size_t len, const struct tm *tp)
+     {
+       return strftime (s, len, "%X %D", tp);
+     }
+</pre>
+   <p>The format contains no weekday or month names and therefore is
+internationally usable.  Wrong!  The output produced is something like
+<code>"hh:mm:ss MM/DD/YY"</code>.  This format is only recognizable in the
+USA.  Other countries use different formats.  Therefore the function
+should be rewritten like this:
+
+<pre class="smallexample">     size_t
+     i18n_time_n_data (char *s, size_t len, const struct tm *tp)
+     {
+       return strftime (s, len, nl_langinfo (D_T_FMT), tp);
+     }
+</pre>
+   <p>Now it uses the date and time format of the locale
+selected when the program runs.  If the user selects the locale
+correctly there should never be a misunderstanding over the time and
+date format.
+
+   </body></html>
+

@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+<title>FP Exceptions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link rel="next" href="Infinity-and-NaN.html#Infinity-and-NaN" title="Infinity and NaN">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="FP-Exceptions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Infinity-and-NaN.html#Infinity-and-NaN">Infinity and NaN</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.5.1 FP Exceptions</h4>
+
+<p><a name="index-exception-2358"></a><a name="index-signal-2359"></a><a name="index-zero-divide-2360"></a><a name="index-division-by-zero-2361"></a><a name="index-inexact-exception-2362"></a><a name="index-invalid-exception-2363"></a><a name="index-overflow-exception-2364"></a><a name="index-underflow-exception-2365"></a>
+The IEEE&nbsp;754<!-- /@w --> standard defines five <dfn>exceptions</dfn> that can occur
+during a calculation.  Each corresponds to a particular sort of error,
+such as overflow.
+
+   <p>When exceptions occur (when exceptions are <dfn>raised</dfn>, in the language
+of the standard), one of two things can happen.  By default the
+exception is simply noted in the floating-point <dfn>status word</dfn>, and
+the program continues as if nothing had happened.  The operation
+produces a default value, which depends on the exception (see the table
+below).  Your program can check the status word to find out which
+exceptions happened.
+
+   <p>Alternatively, you can enable <dfn>traps</dfn> for exceptions.  In that case,
+when an exception is raised, your program will receive the <code>SIGFPE</code>
+signal.  The default action for this signal is to terminate the
+program.  See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>, for how you can change the effect of
+the signal.
+
+   <p><a name="index-matherr-2366"></a>In the System V math library, the user-defined function <code>matherr</code>
+is called when certain exceptions occur inside math library functions. 
+However, the Unix98 standard deprecates this interface.  We support it
+for historical compatibility, but recommend that you do not use it in
+new programs.
+
+<p class="noindent">The exceptions defined in IEEE&nbsp;754<!-- /@w --> are:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">Invalid Operation</span></samp>&rsquo;<dd>This exception is raised if the given operands are invalid for the
+operation to be performed.  Examples are
+(see IEEE&nbsp;754<!-- /@w -->, section&nbsp;7<!-- /@w -->):
+          <ol type=1 start=1>
+<li>Addition or subtraction: &amp;infin; - &amp;infin;.  (But
+&amp;infin; + &amp;infin; = &amp;infin;). 
+<li>Multiplication: 0 &amp;middot; &amp;infin;. 
+<li>Division: 0/0 or &amp;infin;/&amp;infin;. 
+<li>Remainder: x REM y, where y is zero or x is
+infinite. 
+<li>Square root if the operand is less then zero.  More generally, any
+mathematical function evaluated outside its domain produces this
+exception. 
+<li>Conversion of a floating-point number to an integer or decimal
+string, when the number cannot be represented in the target format (due
+to overflow, infinity, or NaN). 
+<li>Conversion of an unrecognizable input string. 
+<li>Comparison via predicates involving &lt; or &gt;, when one or
+other of the operands is NaN.  You can prevent this exception by using
+the unordered comparison functions instead; see <a href="FP-Comparison-Functions.html#FP-Comparison-Functions">FP Comparison Functions</a>.
+          </ol>
+
+     <p>If the exception does not trap, the result of the operation is NaN.
+
+     <br><dt>&lsquo;<samp><span class="samp">Division by Zero</span></samp>&rsquo;<dd>This exception is raised when a finite nonzero number is divided
+by zero.  If no trap occurs the result is either +&amp;infin; or
+-&amp;infin;, depending on the signs of the operands.
+
+     <br><dt>&lsquo;<samp><span class="samp">Overflow</span></samp>&rsquo;<dd>This exception is raised whenever the result cannot be represented
+as a finite value in the precision format of the destination.  If no trap
+occurs the result depends on the sign of the intermediate result and the
+current rounding mode (IEEE&nbsp;754<!-- /@w -->, section&nbsp;7.3<!-- /@w -->):
+          <ol type=1 start=1>
+<li>Round to nearest carries all overflows to &amp;infin;
+with the sign of the intermediate result. 
+<li>Round toward 0 carries all overflows to the largest representable
+finite number with the sign of the intermediate result. 
+<li>Round toward -&amp;infin; carries positive overflows to the
+largest representable finite number and negative overflows to
+-&amp;infin;.
+
+          <li>Round toward &amp;infin; carries negative overflows to the
+most negative representable finite number and positive overflows
+to &amp;infin;.
+          </ol>
+
+     <p>Whenever the overflow exception is raised, the inexact exception is also
+raised.
+
+     <br><dt>&lsquo;<samp><span class="samp">Underflow</span></samp>&rsquo;<dd>The underflow exception is raised when an intermediate result is too
+small to be calculated accurately, or if the operation's result rounded
+to the destination precision is too small to be normalized.
+
+     <p>When no trap is installed for the underflow exception, underflow is
+signaled (via the underflow flag) only when both tininess and loss of
+accuracy have been detected.  If no trap handler is installed the
+operation continues with an imprecise small value, or zero if the
+destination precision cannot hold the small exact result.
+
+     <br><dt>&lsquo;<samp><span class="samp">Inexact</span></samp>&rsquo;<dd>This exception is signalled if a rounded result is not exact (such as
+when calculating the square root of two) or a result overflows without
+an overflow trap. 
+</dl>
+
+   </body></html>
+

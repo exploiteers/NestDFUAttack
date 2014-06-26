@@ -1,0 +1,162 @@
+<html lang="en">
+<head>
+<title>Numeric Input Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Table-of-Input-Conversions.html#Table-of-Input-Conversions" title="Table of Input Conversions">
+<link rel="next" href="String-Input-Conversions.html#String-Input-Conversions" title="String Input Conversions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Numeric-Input-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Table-of-Input-Conversions.html#Table-of-Input-Conversions">Table of Input Conversions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.4 Numeric Input Conversions</h4>
+
+<p>This section describes the <code>scanf</code> conversions for reading numeric
+values.
+
+   <p>The &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; conversion matches an optionally signed integer in decimal
+radix.  The syntax that is recognized is the same as that for the
+<code>strtol</code> function (see <a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>) with the value
+<code>10</code> for the <var>base</var> argument.
+
+   <p>The &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversion matches an optionally signed integer in any of
+the formats that the C language defines for specifying an integer
+constant.  The syntax that is recognized is the same as that for the
+<code>strtol</code> function (see <a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>) with the value
+<code>0</code> for the <var>base</var> argument.  (You can print integers in this
+syntax with <code>printf</code> by using the &lsquo;<samp><span class="samp">#</span></samp>&rsquo; flag character with the
+&lsquo;<samp><span class="samp">%x</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%o</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; conversion.  See <a href="Integer-Conversions.html#Integer-Conversions">Integer Conversions</a>.)
+
+   <p>For example, any of the strings &lsquo;<samp><span class="samp">10</span></samp>&rsquo;, &lsquo;<samp><span class="samp">0xa</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">012</span></samp>&rsquo;
+could be read in as integers under the &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversion.  Each of
+these specifies a number with decimal value <code>10</code>.
+
+   <p>The &lsquo;<samp><span class="samp">%o</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%u</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; conversions match unsigned
+integers in octal, decimal, and hexadecimal radices, respectively.  The
+syntax that is recognized is the same as that for the <code>strtoul</code>
+function (see <a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>) with the appropriate value
+(<code>8</code>, <code>10</code>, or <code>16</code>) for the <var>base</var> argument.
+
+   <p>The &lsquo;<samp><span class="samp">%X</span></samp>&rsquo; conversion is identical to the &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; conversion.  They
+both permit either uppercase or lowercase letters to be used as digits.
+
+   <p>The default type of the corresponding argument for the <code>%d</code> and
+<code>%i</code> conversions is <code>int *</code>, and <code>unsigned int *</code> for the
+other integer conversions.  You can use the following type modifiers to
+specify other sizes of integer:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">hh</span></samp>&rsquo;<dd>Specifies that the argument is a <code>signed char *</code> or <code>unsigned
+char *</code>.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">h</span></samp>&rsquo;<dd>Specifies that the argument is a <code>short int *</code> or <code>unsigned
+short int *</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">j</span></samp>&rsquo;<dd>Specifies that the argument is a <code>intmax_t *</code> or <code>uintmax_t *</code>.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">l</span></samp>&rsquo;<dd>Specifies that the argument is a <code>long int *</code> or <code>unsigned
+long int *</code>.  Two &lsquo;<samp><span class="samp">l</span></samp>&rsquo; characters is like the &lsquo;<samp><span class="samp">L</span></samp>&rsquo; modifier, below.
+
+     <p>If used with &lsquo;<samp><span class="samp">%c</span></samp>&rsquo; or &lsquo;<samp><span class="samp">%s</span></samp>&rsquo; the corresponding parameter is
+considered as a pointer to a wide character or wide character string
+respectively.  This use of &lsquo;<samp><span class="samp">l</span></samp>&rsquo; was introduced in Amendment&nbsp;1<!-- /@w --> to
+ISO&nbsp;C90<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">ll</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">L</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">q</span></samp>&rsquo;<dd>Specifies that the argument is a <code>long long int *</code> or <code>unsigned long long int *</code>.  (The <code>long long</code> type is an extension supported by the
+GNU C compiler.  For systems that don't provide extra-long integers, this
+is the same as <code>long int</code>.)
+
+     <p>The &lsquo;<samp><span class="samp">q</span></samp>&rsquo; modifier is another name for the same thing, which comes
+from 4.4 BSD; a <code>long&nbsp;long&nbsp;int</code><!-- /@w --> is sometimes called a &ldquo;quad&rdquo;
+<code>int</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">t</span></samp>&rsquo;<dd>Specifies that the argument is a <code>ptrdiff_t *</code>.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">z</span></samp>&rsquo;<dd>Specifies that the argument is a <code>size_t *</code>.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</dl>
+
+   <p>All of the &lsquo;<samp><span class="samp">%e</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%f</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%g</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%E</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">%G</span></samp>&rsquo;
+input conversions are interchangeable.  They all match an optionally
+signed floating point number, in the same syntax as for the
+<code>strtod</code> function (see <a href="Parsing-of-Floats.html#Parsing-of-Floats">Parsing of Floats</a>).
+
+   <p>For the floating-point input conversions, the default argument type is
+<code>float *</code>.  (This is different from the corresponding output
+conversions, where the default type is <code>double</code>; remember that
+<code>float</code> arguments to <code>printf</code> are converted to <code>double</code>
+by the default argument promotions, but <code>float *</code> arguments are
+not promoted to <code>double *</code>.)  You can specify other sizes of float
+using these type modifiers:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">l</span></samp>&rsquo;<dd>Specifies that the argument is of type <code>double *</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">L</span></samp>&rsquo;<dd>Specifies that the argument is of type <code>long double *</code>. 
+</dl>
+
+   <p>For all the above number parsing formats there is an additional optional
+flag &lsquo;<samp><span class="samp">'</span></samp>&rsquo;.  When this flag is given the <code>scanf</code> function
+expects the number represented in the input string to be formatted
+according to the grouping rules of the currently selected locale
+(see <a href="General-Numeric.html#General-Numeric">General Numeric</a>).
+
+   <p>If the <code>"C"</code> or <code>"POSIX"</code> locale is selected there is no
+difference.  But for a locale which specifies values for the appropriate
+fields in the locale the input must have the correct form in the input. 
+Otherwise the longest prefix with a correct form is processed.
+
+   </body></html>
+

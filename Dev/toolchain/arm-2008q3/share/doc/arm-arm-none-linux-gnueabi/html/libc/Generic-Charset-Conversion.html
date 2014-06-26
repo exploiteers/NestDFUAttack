@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>Generic Charset Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Character-Set-Handling.html#Character-Set-Handling" title="Character Set Handling">
+<link rel="prev" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion" title="Non-reentrant Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Generic-Charset-Conversion"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>
+<hr>
+</div>
+
+<h3 class="section">6.5 Generic Charset Conversion</h3>
+
+<p>The conversion functions mentioned so far in this chapter all had in
+common that they operate on character sets that are not directly
+specified by the functions.  The multibyte encoding used is specified by
+the currently selected locale for the <code>LC_CTYPE</code> category.  The
+wide character set is fixed by the implementation (in the case of GNU C
+library it is always UCS-4 encoded ISO&nbsp;10646<!-- /@w -->.
+
+   <p>This has of course several problems when it comes to general character
+conversion:
+
+     <ul>
+<li>For every conversion where neither the source nor the destination
+character set is the character set of the locale for the <code>LC_CTYPE</code>
+category, one has to change the <code>LC_CTYPE</code> locale using
+<code>setlocale</code>.
+
+     <p>Changing the <code>LC_TYPE</code> locale introduces major problems for the rest
+of the programs since several more functions (e.g., the character
+classification functions, see <a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>) use the
+<code>LC_CTYPE</code> category.
+
+     <li>Parallel conversions to and from different character sets are not
+possible since the <code>LC_CTYPE</code> selection is global and shared by all
+threads.
+
+     <li>If neither the source nor the destination character set is the character
+set used for <code>wchar_t</code> representation, there is at least a two-step
+process necessary to convert a text using the functions above.  One would
+have to select the source character set as the multibyte encoding,
+convert the text into a <code>wchar_t</code> text, select the destination
+character set as the multibyte encoding, and convert the wide character
+text to the multibyte (= destination) character set.
+
+     <p>Even if this is possible (which is not guaranteed) it is a very tiring
+work.  Plus it suffers from the other two raised points even more due to
+the steady changing of the locale. 
+</ul>
+
+   <p>The XPG2 standard defines a completely new set of functions, which has
+none of these limitations.  They are not at all coupled to the selected
+locales, and they have no constraints on the character sets selected for
+source and destination.  Only the set of available conversions limits
+them.  The standard does not specify that any conversion at all must be
+available.  Such availability is a measure of the quality of the
+implementation.
+
+   <p>In the following text first the interface to <code>iconv</code> and then the
+conversion function, will be described.  Comparisons with other
+implementations will show what obstacles stand in the way of portable
+applications.  Finally, the implementation is described in so far as might
+interest the advanced user who wants to extend conversion capabilities.
+
+<ul class="menu">
+<li><a accesskey="1" href="Generic-Conversion-Interface.html#Generic-Conversion-Interface">Generic Conversion Interface</a>:     Generic Character Set Conversion Interface. 
+<li><a accesskey="2" href="iconv-Examples.html#iconv-Examples">iconv Examples</a>:                   A complete <code>iconv</code> example. 
+<li><a accesskey="3" href="Other-iconv-Implementations.html#Other-iconv-Implementations">Other iconv Implementations</a>:      Some Details about other <code>iconv</code>
+                                     Implementations. 
+<li><a accesskey="4" href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">glibc iconv Implementation</a>:       The <code>iconv</code> Implementation in the GNU C
+                                     library. 
+</ul>
+
+   </body></html>
+

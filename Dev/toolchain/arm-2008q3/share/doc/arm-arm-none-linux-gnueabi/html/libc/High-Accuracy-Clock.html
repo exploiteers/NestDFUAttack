@@ -1,0 +1,237 @@
+<html lang="en">
+<head>
+<title>High Accuracy Clock - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link rel="prev" href="Broken_002ddown-Time.html#Broken_002ddown-Time" title="Broken-down Time">
+<link rel="next" href="Formatting-Calendar-Time.html#Formatting-Calendar-Time" title="Formatting Calendar Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="High-Accuracy-Clock"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Formatting-Calendar-Time.html#Formatting-Calendar-Time">Formatting Calendar Time</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Broken_002ddown-Time.html#Broken_002ddown-Time">Broken-down Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.4.4 High Accuracy Clock</h4>
+
+<p><a name="index-time_002c-high-precision-2646"></a><a name="index-clock_002c-high-accuracy-2647"></a><a name="index-sys_002ftimex_002eh-2648"></a><!-- On Linux, GNU libc implements ntp_gettime() and npt_adjtime() as calls -->
+<!-- to adjtimex(). -->
+The <code>ntp_gettime</code> and <code>ntp_adjtime</code> functions provide an
+interface to monitor and manipulate the system clock to maintain high
+accuracy time.  For example, you can fine tune the speed of the clock
+or synchronize it with another time source.
+
+   <p>A typical use of these functions is by a server implementing the Network
+Time Protocol to synchronize the clocks of multiple systems and high
+precision clocks.
+
+   <p>These functions are declared in <samp><span class="file">sys/timex.h</span></samp>.
+
+   <p><a name="index-struct-ntptimeval-2649"></a>
+
+<div class="defun">
+&mdash; Data Type: <b>struct ntptimeval</b><var><a name="index-struct-ntptimeval-2650"></a></var><br>
+<blockquote><p>This structure is used for information about the system clock.  It
+contains the following members:
+          <dl>
+<dt><code>struct timeval time</code><dd>This is the current calendar time, expressed as the elapsed time since
+the epoch.  The <code>struct timeval</code> data type is described in
+<a href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>.
+
+          <br><dt><code>long int maxerror</code><dd>This is the maximum error, measured in microseconds.  Unless updated
+via <code>ntp_adjtime</code> periodically, this value will reach some
+platform-specific maximum value.
+
+          <br><dt><code>long int esterror</code><dd>This is the estimated error, measured in microseconds.  This value can
+be set by <code>ntp_adjtime</code> to indicate the estimated offset of the
+system clock from the true calendar time. 
+</dl>
+        </p></blockquote></div>
+
+<!-- sys/timex.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>ntp_gettime</b> (<var>struct ntptimeval *tptr</var>)<var><a name="index-ntp_005fgettime-2651"></a></var><br>
+<blockquote><p>The <code>ntp_gettime</code> function sets the structure pointed to by
+<var>tptr</var> to current values.  The elements of the structure afterwards
+contain the values the timer implementation in the kernel assumes.  They
+might or might not be correct.  If they are not a <code>ntp_adjtime</code>
+call is necessary.
+
+        <p>The return value is <code>0</code> on success and other values on failure.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>TIME_ERROR</code><dd>The precision clock model is not properly set up at the moment, thus the
+clock must be considered unsynchronized, and the values should be
+treated with care. 
+</dl>
+        </p></blockquote></div>
+
+   <p><a name="index-struct-timex-2652"></a>
+
+<div class="defun">
+&mdash; Data Type: <b>struct timex</b><var><a name="index-struct-timex-2653"></a></var><br>
+<blockquote><p>This structure is used to control and monitor the system clock.  It
+contains the following members:
+          <dl>
+<dt><code>unsigned int modes</code><dd>This variable controls whether and which values are set.  Several
+symbolic constants have to be combined with <em>binary or</em> to specify
+the effective mode.  These constants start with <code>MOD_</code>.
+
+          <br><dt><code>long int offset</code><dd>This value indicates the current offset of the system clock from the true
+calendar time.  The value is given in microseconds.  If bit
+<code>MOD_OFFSET</code> is set in <code>modes</code>, the offset (and possibly other
+dependent values) can be set.  The offset's absolute value must not
+exceed <code>MAXPHASE</code>.
+
+          <br><dt><code>long int frequency</code><dd>This value indicates the difference in frequency between the true
+calendar time and the system clock.  The value is expressed as scaled
+PPM (parts per million, 0.0001%).  The scaling is <code>1 &lt;&lt;
+SHIFT_USEC</code>.  The value can be set with bit <code>MOD_FREQUENCY</code>, but
+the absolute value must not exceed <code>MAXFREQ</code>.
+
+          <br><dt><code>long int maxerror</code><dd>This is the maximum error, measured in microseconds.  A new value can be
+set using bit <code>MOD_MAXERROR</code>.  Unless updated via
+<code>ntp_adjtime</code> periodically, this value will increase steadily
+and reach some platform-specific maximum value.
+
+          <br><dt><code>long int esterror</code><dd>This is the estimated error, measured in microseconds.  This value can
+be set using bit <code>MOD_ESTERROR</code>.
+
+          <br><dt><code>int status</code><dd>This variable reflects the various states of the clock machinery.  There
+are symbolic constants for the significant bits, starting with
+<code>STA_</code>.  Some of these flags can be updated using the
+<code>MOD_STATUS</code> bit.
+
+          <br><dt><code>long int constant</code><dd>This value represents the bandwidth or stiffness of the PLL (phase
+locked loop) implemented in the kernel.  The value can be changed using
+bit <code>MOD_TIMECONST</code>.
+
+          <br><dt><code>long int precision</code><dd>This value represents the accuracy or the maximum error when reading the
+system clock.  The value is expressed in microseconds.
+
+          <br><dt><code>long int tolerance</code><dd>This value represents the maximum frequency error of the system clock in
+scaled PPM.  This value is used to increase the <code>maxerror</code> every
+second.
+
+          <br><dt><code>struct timeval time</code><dd>The current calendar time.
+
+          <br><dt><code>long int tick</code><dd>The elapsed time between clock ticks in microseconds.  A clock tick is a
+periodic timer interrupt on which the system clock is based.
+
+          <br><dt><code>long int ppsfreq</code><dd>This is the first of a few optional variables that are present only if
+the system clock can use a PPS (pulse per second) signal to discipline
+the system clock.  The value is expressed in scaled PPM and it denotes
+the difference in frequency between the system clock and the PPS signal.
+
+          <br><dt><code>long int jitter</code><dd>This value expresses a median filtered average of the PPS signal's
+dispersion in microseconds.
+
+          <br><dt><code>int shift</code><dd>This value is a binary exponent for the duration of the PPS calibration
+interval, ranging from <code>PPS_SHIFT</code> to <code>PPS_SHIFTMAX</code>.
+
+          <br><dt><code>long int stabil</code><dd>This value represents the median filtered dispersion of the PPS
+frequency in scaled PPM.
+
+          <br><dt><code>long int jitcnt</code><dd>This counter represents the number of pulses where the jitter exceeded
+the allowed maximum <code>MAXTIME</code>.
+
+          <br><dt><code>long int calcnt</code><dd>This counter reflects the number of successful calibration intervals.
+
+          <br><dt><code>long int errcnt</code><dd>This counter represents the number of calibration errors (caused by
+large offsets or jitter).
+
+          <br><dt><code>long int stbcnt</code><dd>This counter denotes the number of of calibrations where the stability
+exceeded the threshold. 
+</dl>
+        </p></blockquote></div>
+
+<!-- sys/timex.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>ntp_adjtime</b> (<var>struct timex *tptr</var>)<var><a name="index-ntp_005fadjtime-2654"></a></var><br>
+<blockquote><p>The <code>ntp_adjtime</code> function sets the structure specified by
+<var>tptr</var> to current values.
+
+        <p>In addition, <code>ntp_adjtime</code> updates some settings to match what you
+pass to it in *<var>tptr</var>.  Use the <code>modes</code> element of *<var>tptr</var>
+to select what settings to update.  You can set <code>offset</code>,
+<code>freq</code>, <code>maxerror</code>, <code>esterror</code>, <code>status</code>,
+<code>constant</code>, and <code>tick</code>.
+
+        <p><code>modes</code> = zero means set nothing.
+
+        <p>Only the superuser can update settings.
+
+     <!-- On Linux, ntp_adjtime() also does the adjtime() function if you set -->
+     <!-- modes = ADJ_OFFSET_SINGLESHOT (in fact, that is how GNU libc implements -->
+     <!-- adjtime()).  But this should be considered an internal function because -->
+     <!-- it's so inconsistent with the rest of what ntp_adjtime() does and is -->
+     <!-- forced in an ugly way into the struct timex.  So we don't document it -->
+     <!-- and instead document adjtime() as the way to achieve the function. -->
+        <p>The return value is <code>0</code> on success and other values on failure.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>TIME_ERROR</code><dd>The high accuracy clock model is not properly set up at the moment, thus the
+clock must be considered unsynchronized, and the values should be
+treated with care.  Another reason could be that the specified new values
+are not allowed.
+
+          <br><dt><code>EPERM</code><dd>The process specified a settings update, but is not superuser.
+
+        </dl>
+
+        <p>For more details see RFC1305 (Network Time Protocol, Version 3) and
+related documents.
+
+        <p><strong>Portability note:</strong> Early versions of the GNU C library did not
+have this function but did have the synonymous <code>adjtimex</code>.
+
+        </blockquote></div>
+
+   </body></html>
+

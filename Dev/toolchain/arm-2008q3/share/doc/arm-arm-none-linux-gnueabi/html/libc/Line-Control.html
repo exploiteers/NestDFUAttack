@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+<title>Line Control - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface" title="Low-Level Terminal Interface">
+<link rel="prev" href="BSD-Terminal-Modes.html#BSD-Terminal-Modes" title="BSD Terminal Modes">
+<link rel="next" href="Noncanon-Example.html#Noncanon-Example" title="Noncanon Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Line-Control"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Noncanon-Example.html#Noncanon-Example">Noncanon Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="BSD-Terminal-Modes.html#BSD-Terminal-Modes">BSD Terminal Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>
+<hr>
+</div>
+
+<h3 class="section">17.6 Line Control Functions</h3>
+
+<p><a name="index-terminal-line-control-functions-2000"></a>
+These functions perform miscellaneous control actions on terminal
+devices.  As regards terminal access, they are treated like doing
+output: if any of these functions is used by a background process on its
+controlling terminal, normally all processes in the process group are
+sent a <code>SIGTTOU</code> signal.  The exception is if the calling process
+itself is ignoring or blocking <code>SIGTTOU</code> signals, in which case the
+operation is performed and no signal is sent.  See <a href="Job-Control.html#Job-Control">Job Control</a>.
+
+   <p><a name="index-break-condition_002c-generating-2001"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>tcsendbreak</b> (<var>int filedes, int duration</var>)<var><a name="index-tcsendbreak-2002"></a></var><br>
+<blockquote><p>This function generates a break condition by transmitting a stream of
+zero bits on the terminal associated with the file descriptor
+<var>filedes</var>.  The duration of the break is controlled by the
+<var>duration</var> argument.  If zero, the duration is between 0.25 and 0.5
+seconds.  The meaning of a nonzero value depends on the operating system.
+
+        <p>This function does nothing if the terminal is not an asynchronous serial
+data port.
+
+        <p>The return value is normally zero.  In the event of an error, a value
+of -1 is returned.  The following <code>errno</code> error conditions
+are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal device. 
+</dl>
+        </p></blockquote></div>
+
+   <p><a name="index-flushing-terminal-output-queue-2003"></a><a name="index-terminal-output-queue_002c-flushing-2004"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>tcdrain</b> (<var>int filedes</var>)<var><a name="index-tcdrain-2005"></a></var><br>
+<blockquote><p>The <code>tcdrain</code> function waits until all queued
+output to the terminal <var>filedes</var> has been transmitted.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>tcdrain</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this calls to <code>tcdrain</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The return value is normally zero.  In the event of an error, a value
+of -1 is returned.  The following <code>errno</code> error conditions
+are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal device.
+
+          <br><dt><code>EINTR</code><dd>The operation was interrupted by delivery of a signal. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>. 
+</dl>
+        </p></blockquote></div>
+
+   <p><a name="index-clearing-terminal-input-queue-2006"></a><a name="index-terminal-input-queue_002c-clearing-2007"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>tcflush</b> (<var>int filedes, int queue</var>)<var><a name="index-tcflush-2008"></a></var><br>
+<blockquote><p>The <code>tcflush</code> function is used to clear the input and/or output
+queues associated with the terminal file <var>filedes</var>.  The <var>queue</var>
+argument specifies which queue(s) to clear, and can be one of the
+following values:
+
+     <!-- Extra blank lines here make it look better. -->
+          
+<a name="index-TCIFLUSH-2009"></a>
+<dl><dt><code>TCIFLUSH</code><dd>
+Clear any input data received, but not yet read.
+
+          <p><a name="index-TCOFLUSH-2010"></a><br><dt><code>TCOFLUSH</code><dd>
+Clear any output data written, but not yet transmitted.
+
+          <p><a name="index-TCIOFLUSH-2011"></a><br><dt><code>TCIOFLUSH</code><dd>
+Clear both queued input and output. 
+</dl>
+
+        <p>The return value is normally zero.  In the event of an error, a value
+of -1 is returned.  The following <code>errno</code> error conditions
+are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal device.
+
+          <br><dt><code>EINVAL</code><dd>A bad value was supplied as the <var>queue</var> argument. 
+</dl>
+
+        <p>It is unfortunate that this function is named <code>tcflush</code>, because
+the term &ldquo;flush&rdquo; is normally used for quite another operation&mdash;waiting
+until all output is transmitted&mdash;and using it for discarding input or
+output would be confusing.  Unfortunately, the name <code>tcflush</code> comes
+from POSIX and we cannot change it. 
+</p></blockquote></div>
+
+   <p><a name="index-flow-control_002c-terminal-2012"></a><a name="index-terminal-flow-control-2013"></a><!-- termios.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>tcflow</b> (<var>int filedes, int action</var>)<var><a name="index-tcflow-2014"></a></var><br>
+<blockquote><p>The <code>tcflow</code> function is used to perform operations relating to
+XON/XOFF flow control on the terminal file specified by <var>filedes</var>.
+
+        <p>The <var>action</var> argument specifies what operation to perform, and can
+be one of the following values:
+
+          
+<a name="index-TCOOFF-2015"></a>
+<dl><dt><code>TCOOFF</code><dd>Suspend transmission of output.
+
+          <p><a name="index-TCOON-2016"></a><br><dt><code>TCOON</code><dd>Restart transmission of output.
+
+          <p><a name="index-TCIOFF-2017"></a><br><dt><code>TCIOFF</code><dd>Transmit a STOP character.
+
+          <p><a name="index-TCION-2018"></a><br><dt><code>TCION</code><dd>Transmit a START character. 
+</dl>
+
+        <p>For more information about the STOP and START characters, see <a href="Special-Characters.html#Special-Characters">Special Characters</a>.
+
+        <p>The return value is normally zero.  In the event of an error, a value
+of -1 is returned.  The following <code>errno</code> error conditions
+are defined for this function:
+
+          
+<a name="index-EBADF-2019"></a>
+<dl><dt><code>EBADF</code><dd>The <var>filedes</var> is not a valid file descriptor.
+
+          <p><a name="index-ENOTTY-2020"></a><br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal device.
+
+          <p><a name="index-EINVAL-2021"></a><br><dt><code>EINVAL</code><dd>A bad value was supplied as the <var>action</var> argument. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

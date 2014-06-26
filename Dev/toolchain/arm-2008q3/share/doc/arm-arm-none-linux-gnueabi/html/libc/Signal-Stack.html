@@ -1,0 +1,185 @@
+<html lang="en">
+<head>
+<title>Signal Stack - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Handling.html#Signal-Handling" title="Signal Handling">
+<link rel="prev" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal" title="Waiting for a Signal">
+<link rel="next" href="BSD-Signal-Handling.html#BSD-Signal-Handling" title="BSD Signal Handling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Stack"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="BSD-Signal-Handling.html#BSD-Signal-Handling">BSD Signal Handling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Handling.html#Signal-Handling">Signal Handling</a>
+<hr>
+</div>
+
+<h3 class="section">24.9 Using a Separate Signal Stack</h3>
+
+<p>A signal stack is a special area of memory to be used as the execution
+stack during signal handlers.  It should be fairly large, to avoid any
+danger that it will overflow in turn; the macro <code>SIGSTKSZ</code> is
+defined to a canonical size for signal stacks.  You can use
+<code>malloc</code> to allocate the space for the stack.  Then call
+<code>sigaltstack</code> or <code>sigstack</code> to tell the system to use that
+space for the signal stack.
+
+   <p>You don't need to write signal handlers differently in order to use a
+signal stack.  Switching from one stack to the other happens
+automatically.  (Some non-GNU debuggers on some machines may get
+confused if you examine a stack trace while a handler that uses the
+signal stack is running.)
+
+   <p>There are two interfaces for telling the system to use a separate signal
+stack.  <code>sigstack</code> is the older interface, which comes from 4.2
+BSD.  <code>sigaltstack</code> is the newer interface, and comes from 4.4
+BSD.  The <code>sigaltstack</code> interface has the advantage that it does
+not require your program to know which direction the stack grows, which
+depends on the specific machine and operating system.
+
+<!-- signal.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Data Type: <b>stack_t</b><var><a name="index-stack_005ft-2982"></a></var><br>
+<blockquote><p>This structure describes a signal stack.  It contains the following members:
+
+          <dl>
+<dt><code>void *ss_sp</code><dd>This points to the base of the signal stack.
+
+          <br><dt><code>size_t ss_size</code><dd>This is the size (in bytes) of the signal stack which &lsquo;<samp><span class="samp">ss_sp</span></samp>&rsquo; points to. 
+You should set this to however much space you allocated for the stack.
+
+          <p>There are two macros defined in <samp><span class="file">signal.h</span></samp> that you should use in
+calculating this size:
+
+               <dl>
+<dt><code>SIGSTKSZ</code><a name="index-SIGSTKSZ-2983"></a><dd>This is the canonical size for a signal stack.  It is judged to be
+sufficient for normal uses.
+
+               <br><dt><code>MINSIGSTKSZ</code><a name="index-MINSIGSTKSZ-2984"></a><dd>This is the amount of signal stack space the operating system needs just
+to implement signal delivery.  The size of a signal stack <strong>must</strong>
+be greater than this.
+
+               <p>For most cases, just using <code>SIGSTKSZ</code> for <code>ss_size</code> is
+sufficient.  But if you know how much stack space your program's signal
+handlers will need, you may want to use a different size.  In this case,
+you should allocate <code>MINSIGSTKSZ</code> additional bytes for the signal
+stack and increase <code>ss_size</code> accordingly. 
+</dl>
+
+          <br><dt><code>int ss_flags</code><dd>This field contains the bitwise <span class="sc">or</span> of these flags:
+
+               <dl>
+<dt><code>SS_DISABLE</code><a name="index-SS_005fDISABLE-2985"></a><dd>This tells the system that it should not use the signal stack.
+
+               <br><dt><code>SS_ONSTACK</code><a name="index-SS_005fONSTACK-2986"></a><dd>This is set by the system, and indicates that the signal stack is
+currently in use.  If this bit is not set, then signals will be
+delivered on the normal user stack. 
+</dl>
+          </dl>
+        </p></blockquote></div>
+
+<!-- signal.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: int <b>sigaltstack</b> (<var>const stack_t *restrict stack, stack_t *restrict oldstack</var>)<var><a name="index-sigaltstack-2987"></a></var><br>
+<blockquote><p>The <code>sigaltstack</code> function specifies an alternate stack for use
+during signal handling.  When a signal is received by the process and
+its action indicates that the signal stack is used, the system arranges
+a switch to the currently installed signal stack while the handler for
+that signal is executed.
+
+        <p>If <var>oldstack</var> is not a null pointer, information about the currently
+installed signal stack is returned in the location it points to.  If
+<var>stack</var> is not a null pointer, then this is installed as the new
+stack for use by signal handlers.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  If
+<code>sigaltstack</code> fails, it sets <code>errno</code> to one of these values:
+
+          <dl>
+<dt><code>EINVAL</code><dd>You tried to disable a stack that was in fact currently in use.
+
+          <br><dt><code>ENOMEM</code><dd>The size of the alternate stack was too small. 
+It must be greater than <code>MINSIGSTKSZ</code>. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Here is the older <code>sigstack</code> interface.  You should use
+<code>sigaltstack</code> instead on systems that have it.
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct sigstack</b><var><a name="index-struct-sigstack-2988"></a></var><br>
+<blockquote><p>This structure describes a signal stack.  It contains the following members:
+
+          <dl>
+<dt><code>void *ss_sp</code><dd>This is the stack pointer.  If the stack grows downwards on your
+machine, this should point to the top of the area you allocated.  If the
+stack grows upwards, it should point to the bottom.
+
+          <br><dt><code>int ss_onstack</code><dd>This field is true if the process is currently using this stack. 
+</dl>
+        </p></blockquote></div>
+
+<!-- signal.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>sigstack</b> (<var>const struct sigstack *stack, struct sigstack *oldstack</var>)<var><a name="index-sigstack-2989"></a></var><br>
+<blockquote><p>The <code>sigstack</code> function specifies an alternate stack for use during
+signal handling.  When a signal is received by the process and its
+action indicates that the signal stack is used, the system arranges a
+switch to the currently installed signal stack while the handler for
+that signal is executed.
+
+        <p>If <var>oldstack</var> is not a null pointer, information about the currently
+installed signal stack is returned in the location it points to.  If
+<var>stack</var> is not a null pointer, then this is installed as the new
+stack for use by signal handlers.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure. 
+</p></blockquote></div>
+
+   </body></html>
+

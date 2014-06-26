@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+<title>Delivery of Signal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Concepts-of-Signals.html#Concepts-of-Signals" title="Concepts of Signals">
+<link rel="prev" href="Signal-Generation.html#Signal-Generation" title="Signal Generation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Delivery-of-Signal"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signal-Generation.html#Signal-Generation">Signal Generation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Concepts-of-Signals.html#Concepts-of-Signals">Concepts of Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.1.3 How Signals Are Delivered</h4>
+
+<p><a name="index-delivery-of-signals-2811"></a><a name="index-pending-signals-2812"></a><a name="index-blocked-signals-2813"></a>
+When a signal is generated, it becomes <dfn>pending</dfn>.  Normally it
+remains pending for just a short period of time and then is
+<dfn>delivered</dfn> to the process that was signaled.  However, if that kind
+of signal is currently <dfn>blocked</dfn>, it may remain pending
+indefinitely&mdash;until signals of that kind are <dfn>unblocked</dfn>.  Once
+unblocked, it will be delivered immediately.  See <a href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>.
+
+   <p><a name="index-specified-action-_0028for-a-signal_0029-2814"></a><a name="index-default-action-_0028for-a-signal_0029-2815"></a><a name="index-signal-action-2816"></a><a name="index-catching-signals-2817"></a>When the signal is delivered, whether right away or after a long delay,
+the <dfn>specified action</dfn> for that signal is taken.  For certain
+signals, such as <code>SIGKILL</code> and <code>SIGSTOP</code>, the action is fixed,
+but for most signals, the program has a choice: ignore the signal,
+specify a <dfn>handler function</dfn>, or accept the <dfn>default action</dfn> for
+that kind of signal.  The program specifies its choice using functions
+such as <code>signal</code> or <code>sigaction</code> (see <a href="Signal-Actions.html#Signal-Actions">Signal Actions</a>).  We
+sometimes say that a handler <dfn>catches</dfn> the signal.  While the
+handler is running, that particular signal is normally blocked.
+
+   <p>If the specified action for a kind of signal is to ignore it, then any
+such signal which is generated is discarded immediately.  This happens
+even if the signal is also blocked at the time.  A signal discarded in
+this way will never be delivered, not even if the program subsequently
+specifies a different action for that kind of signal and then unblocks
+it.
+
+   <p>If a signal arrives which the program has neither handled nor ignored,
+its <dfn>default action</dfn> takes place.  Each kind of signal has its own
+default action, documented below (see <a href="Standard-Signals.html#Standard-Signals">Standard Signals</a>).  For most kinds
+of signals, the default action is to terminate the process.  For certain
+kinds of signals that represent &ldquo;harmless&rdquo; events, the default action
+is to do nothing.
+
+   <p>When a signal terminates a process, its parent process can determine the
+cause of termination by examining the termination status code reported
+by the <code>wait</code> or <code>waitpid</code> functions.  (This is discussed in
+more detail in <a href="Process-Completion.html#Process-Completion">Process Completion</a>.)  The information it can get
+includes the fact that termination was due to a signal and the kind of
+signal involved.  If a program you run from a shell is terminated by a
+signal, the shell typically prints some kind of error message.
+
+   <p>The signals that normally represent program errors have a special
+property: when one of these signals terminates the process, it also
+writes a <dfn>core dump file</dfn> which records the state of the process at
+the time of termination.  You can examine the core dump with a debugger
+to investigate what caused the error.
+
+   <p>If you raise a &ldquo;program error&rdquo; signal by explicit request, and this
+terminates the process, it makes a core dump file just as if the signal
+had been due directly to an error.
+
+   </body></html>
+

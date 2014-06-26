@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Rounding - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link rel="next" href="Control-Functions.html#Control-Functions" title="Control Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Rounding"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Control-Functions.html#Control-Functions">Control Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.6 Rounding Modes</h3>
+
+<p>Floating-point calculations are carried out internally with extra
+precision, and then rounded to fit into the destination type.  This
+ensures that results are as precise as the input data.  IEEE&nbsp;754<!-- /@w -->
+defines four possible rounding modes:
+
+     <dl>
+<dt>Round to nearest.<dd>This is the default mode.  It should be used unless there is a specific
+need for one of the others.  In this mode results are rounded to the
+nearest representable value.  If the result is midway between two
+representable values, the even representable is chosen. <dfn>Even</dfn> here
+means the lowest-order bit is zero.  This rounding mode prevents
+statistical bias and guarantees numeric stability: round-off errors in a
+lengthy calculation will remain smaller than half of <code>FLT_EPSILON</code>.
+
+     <!-- @item Round toward @math{+@infinity{}} -->
+     <br><dt>Round toward plus Infinity.<dd>All results are rounded to the smallest representable value
+which is greater than the result.
+
+     <!-- @item Round toward @math{-@infinity{}} -->
+     <br><dt>Round toward minus Infinity.<dd>All results are rounded to the largest representable value which is less
+than the result.
+
+     <br><dt>Round toward zero.<dd>All results are rounded to the largest representable value whose
+magnitude is less than that of the result.  In other words, if the
+result is negative it is rounded up; if it is positive, it is rounded
+down. 
+</dl>
+
+<p class="noindent"><samp><span class="file">fenv.h</span></samp> defines constants which you can use to refer to the
+various rounding modes.  Each one will be defined if and only if the FPU
+supports the corresponding rounding mode.
+
+     <dl>
+<!-- fenv.h -->
+<!-- ISO -->
+<a name="index-FE_005fTONEAREST-2388"></a><dt><code>FE_TONEAREST</code><dd>Round to nearest.
+
+     <!-- fenv.h -->
+     <!-- ISO -->
+     <p><a name="index-FE_005fUPWARD-2389"></a><br><dt><code>FE_UPWARD</code><dd>Round toward +&amp;infin;.
+
+     <!-- fenv.h -->
+     <!-- ISO -->
+     <p><a name="index-FE_005fDOWNWARD-2390"></a><br><dt><code>FE_DOWNWARD</code><dd>Round toward -&amp;infin;.
+
+     <!-- fenv.h -->
+     <!-- ISO -->
+     <p><a name="index-FE_005fTOWARDZERO-2391"></a><br><dt><code>FE_TOWARDZERO</code><dd>Round toward zero. 
+</dl>
+
+   <p>Underflow is an unusual case.  Normally, IEEE&nbsp;754<!-- /@w --> floating point
+numbers are always normalized (see <a href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>). 
+Numbers smaller than 2^r (where r is the minimum exponent,
+<code>FLT_MIN_RADIX-1</code> for <var>float</var>) cannot be represented as
+normalized numbers.  Rounding all such numbers to zero or 2^r
+would cause some algorithms to fail at 0.  Therefore, they are left in
+denormalized form.  That produces loss of precision, since some bits of
+the mantissa are stolen to indicate the decimal point.
+
+   <p>If a result is too small to be represented as a denormalized number, it
+is rounded to zero.  However, the sign of the result is preserved; if
+the calculation was negative, the result is <dfn>negative zero</dfn>. 
+Negative zero can also result from some operations on infinity, such as
+4/-&amp;infin;.  Negative zero behaves identically to zero except
+when the <code>copysign</code> or <code>signbit</code> functions are used to check
+the sign bit directly.
+
+   <p>At any time one of the above four rounding modes is selected.  You can
+find out which one with this function:
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fegetround</b> (<var>void</var>)<var><a name="index-fegetround-2392"></a></var><br>
+<blockquote><p>Returns the currently selected rounding mode, represented by one of the
+values of the defined rounding mode macros. 
+</p></blockquote></div>
+
+<p class="noindent">To change the rounding mode, use this function:
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fesetround</b> (<var>int round</var>)<var><a name="index-fesetround-2393"></a></var><br>
+<blockquote><p>Changes the currently selected rounding mode to <var>round</var>.  If
+<var>round</var> does not correspond to one of the supported rounding modes
+nothing is changed.  <code>fesetround</code> returns zero if it changed the
+rounding mode, a nonzero value if the mode is not supported. 
+</p></blockquote></div>
+
+   <p>You should avoid changing the rounding mode if possible.  It can be an
+expensive operation; also, some hardware requires you to compile your
+program differently for it to work.  The resulting code may run slower. 
+See your compiler documentation for details. 
+<!-- This section used to claim that functions existed to round one number -->
+<!-- in a specific fashion.  I can't find any functions in the library -->
+<!-- that do that. -zw -->
+
+   </body></html>
+

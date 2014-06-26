@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>OS Information - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Data.html#Data" title="Data">
+<link rel="prev" href="Vector-Unit.html#Vector-Unit" title="Vector Unit">
+<link rel="next" href="Memory-Region-Attributes.html#Memory-Region-Attributes" title="Memory Region Attributes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="OS-Information"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Memory-Region-Attributes.html#Memory-Region-Attributes">Memory Region Attributes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Vector-Unit.html#Vector-Unit">Vector Unit</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Data.html#Data">Data</a>
+<hr>
+</div>
+
+<h3 class="section">8.14 Operating System Auxiliary Information</h3>
+
+<p><a name="index-OS-information-533"></a>
+<span class="sc">gdb</span> provides interfaces to useful OS facilities that can help
+you debug your program.
+
+   <p><a name="index-g_t_0040code_007bptrace_007d-system-call-534"></a><a name="index-g_t_0040code_007bstruct-user_007d-contents-535"></a>When <span class="sc">gdb</span> runs on a <dfn>Posix system</dfn> (such as GNU or Unix
+machines), it interfaces with the inferior via the <code>ptrace</code>
+system call.  The operating system creates a special sata structure,
+called <code>struct user</code>, for this interface.  You can use the
+command <code>info udot</code> to display the contents of this data
+structure.
+
+     <dl>
+<dt><code>info udot</code><dd><a name="index-info-udot-536"></a>Display the contents of the <code>struct user</code> maintained by the OS
+kernel for the program being debugged.  <span class="sc">gdb</span> displays the
+contents of <code>struct user</code> as a list of hex numbers, similar to
+the <code>examine</code> command. 
+</dl>
+
+   <p><a name="index-auxiliary-vector-537"></a><a name="index-vector_002c-auxiliary-538"></a>Some operating systems supply an <dfn>auxiliary vector</dfn> to programs at
+startup.  This is akin to the arguments and environment that you
+specify for a program, but contains a system-dependent variety of
+binary values that tell system libraries important details about the
+hardware, operating system, and process.  Each value's purpose is
+identified by an integer tag; the meanings are well-known but system-specific. 
+Depending on the configuration and operating system facilities,
+<span class="sc">gdb</span> may be able to show you this information.  For remote
+targets, this functionality may further depend on the remote stub's
+support of the &lsquo;<samp><span class="samp">qXfer:auxv:read</span></samp>&rsquo; packet, see
+<a href="qXfer-auxiliary-vector-read.html#qXfer-auxiliary-vector-read">qXfer auxiliary vector read</a>.
+
+     
+<a name="index-info-auxv-539"></a>
+<dl><dt><code>info auxv</code><dd>Display the auxiliary vector of the inferior, which can be either a
+live process or a core dump file.  <span class="sc">gdb</span> prints each tag value
+numerically, and also shows names and text descriptions for recognized
+tags.  Some values in the vector are numbers, some bit masks, and some
+pointers to strings or other data.  <span class="sc">gdb</span> displays each value in the
+most appropriate form for a recognized tag, and in hexadecimal for
+an unrecognized tag. 
+</dl>
+
+   </body></html>
+

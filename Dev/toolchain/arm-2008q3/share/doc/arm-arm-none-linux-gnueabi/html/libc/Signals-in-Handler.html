@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Signals in Handler - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link rel="prev" href="Longjmp-in-Handler.html#Longjmp-in-Handler" title="Longjmp in Handler">
+<link rel="next" href="Merged-Signals.html#Merged-Signals" title="Merged Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signals-in-Handler"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Merged-Signals.html#Merged-Signals">Merged Signals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Longjmp-in-Handler.html#Longjmp-in-Handler">Longjmp in Handler</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.4.4 Signals Arriving While a Handler Runs</h4>
+
+<p><a name="index-race-conditions_002c-relating-to-signals-2931"></a>
+What happens if another signal arrives while your signal handler
+function is running?
+
+   <p>When the handler for a particular signal is invoked, that signal is
+automatically blocked until the handler returns.  That means that if two
+signals of the same kind arrive close together, the second one will be
+held until the first has been handled.  (The handler can explicitly
+unblock the signal using <code>sigprocmask</code>, if you want to allow more
+signals of this type to arrive; see <a href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>.)
+
+   <p>However, your handler can still be interrupted by delivery of another
+kind of signal.  To avoid this, you can use the <code>sa_mask</code> member of
+the action structure passed to <code>sigaction</code> to explicitly specify
+which signals should be blocked while the signal handler runs.  These
+signals are in addition to the signal for which the handler was invoked,
+and any other signals that are normally blocked by the process. 
+See <a href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>.
+
+   <p>When the handler returns, the set of blocked signals is restored to the
+value it had before the handler ran.  So using <code>sigprocmask</code> inside
+the handler only affects what signals can arrive during the execution of
+the handler itself, not what signals can arrive once the handler returns.
+
+   <p><strong>Portability Note:</strong> Always use <code>sigaction</code> to establish a
+handler for a signal that you expect to receive asynchronously, if you
+want your program to work properly on System V Unix.  On this system,
+the handling of a signal whose handler was established with
+<code>signal</code> automatically sets the signal's action back to
+<code>SIG_DFL</code>, and the handler must re-establish itself each time it
+runs.  This practice, while inconvenient, does work when signals cannot
+arrive in succession.  However, if another signal can arrive right away,
+it may arrive before the handler can re-establish itself.  Then the
+second signal would receive the default handling, which could terminate
+the process.
+
+   </body></html>
+

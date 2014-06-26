@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+<title>Linked Channels - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions" title="Stream/Descriptor Precautions">
+<link rel="next" href="Independent-Channels.html#Independent-Channels" title="Independent Channels">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Linked-Channels"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Independent-Channels.html#Independent-Channels">Independent Channels</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.5.1 Linked Channels</h4>
+
+<p><a name="index-linked-channels-1245"></a>
+Channels that come from a single opening share the same file position;
+we call them <dfn>linked</dfn> channels.  Linked channels result when you
+make a stream from a descriptor using <code>fdopen</code>, when you get a
+descriptor from a stream with <code>fileno</code>, when you copy a descriptor
+with <code>dup</code> or <code>dup2</code>, and when descriptors are inherited
+during <code>fork</code>.  For files that don't support random access, such as
+terminals and pipes, <em>all</em> channels are effectively linked.  On
+random-access files, all append-type output streams are effectively
+linked to each other.
+
+   <p><a name="index-cleaning-up-a-stream-1246"></a>If you have been using a stream for I/O (or have just opened the stream),
+and you want to do I/O using
+another channel (either a stream or a descriptor) that is linked to it,
+you must first <dfn>clean up</dfn> the stream that you have been using. 
+See <a href="Cleaning-Streams.html#Cleaning-Streams">Cleaning Streams</a>.
+
+   <p>Terminating a process, or executing a new program in the process,
+destroys all the streams in the process.  If descriptors linked to these
+streams persist in other processes, their file positions become
+undefined as a result.  To prevent this, you must clean up the streams
+before destroying them.
+
+   </body></html>
+

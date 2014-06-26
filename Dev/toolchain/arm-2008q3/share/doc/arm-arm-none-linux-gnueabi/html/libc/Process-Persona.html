@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Process Persona - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="User-and-Group-IDs.html#User-and-Group-IDs" title="User and Group IDs">
+<link rel="next" href="Why-Change-Persona.html#Why-Change-Persona" title="Why Change Persona">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Process-Persona"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Why-Change-Persona.html#Why-Change-Persona">Why Change Persona</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="User-and-Group-IDs.html#User-and-Group-IDs">User and Group IDs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.2 The Persona of a Process</h3>
+
+<p><a name="index-persona-3294"></a><a name="index-effective-user-ID-3295"></a><a name="index-effective-group-ID-3296"></a><a name="index-supplementary-group-IDs-3297"></a>
+<!-- When Hurd is more widely used, explain multiple effective user IDs -->
+<!-- here. -zw -->
+At any time, each process has an <dfn>effective user ID</dfn>, a <dfn>effective
+group ID</dfn>, and a set of <dfn>supplementary group IDs</dfn>.  These IDs
+determine the privileges of the process.  They are collectively
+called the <dfn>persona</dfn> of the process, because they determine &ldquo;who it
+is&rdquo; for purposes of access control.
+
+   <p>Your login shell starts out with a persona which consists of your user
+ID, your default group ID, and your supplementary group IDs (if you are
+in more than one group).  In normal circumstances, all your other processes
+inherit these values.
+
+   <p><a name="index-real-user-ID-3298"></a><a name="index-real-group-ID-3299"></a>A process also has a <dfn>real user ID</dfn> which identifies the user who
+created the process, and a <dfn>real group ID</dfn> which identifies that
+user's default group.  These values do not play a role in access
+control, so we do not consider them part of the persona.  But they are
+also important.
+
+   <p>Both the real and effective user ID can be changed during the lifetime
+of a process.  See <a href="Why-Change-Persona.html#Why-Change-Persona">Why Change Persona</a>.
+
+   <p>For details on how a process's effective user ID and group IDs affect
+its permission to access files, see <a href="Access-Permission.html#Access-Permission">Access Permission</a>.
+
+   <p>The effective user ID of a process also controls permissions for sending
+signals using the <code>kill</code> function.  See <a href="Signaling-Another-Process.html#Signaling-Another-Process">Signaling Another Process</a>.
+
+   <p>Finally, there are many operations which can only be performed by a
+process whose effective user ID is zero.  A process with this user ID is
+a <dfn>privileged process</dfn>.  Commonly the user name <code>root</code> is
+associated with user ID 0, but there may be other user names with this
+ID. 
+<!-- !!! should mention POSIX capabilities here. -->
+
+   </body></html>
+

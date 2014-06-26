@@ -1,0 +1,126 @@
+<html lang="en">
+<head>
+<title>Input Conversion Syntax - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Formatted-Input-Basics.html#Formatted-Input-Basics" title="Formatted Input Basics">
+<link rel="next" href="Table-of-Input-Conversions.html#Table-of-Input-Conversions" title="Table of Input Conversions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Input-Conversion-Syntax"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Table-of-Input-Conversions.html#Table-of-Input-Conversions">Table of Input Conversions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Formatted-Input-Basics.html#Formatted-Input-Basics">Formatted Input Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.2 Input Conversion Syntax</h4>
+
+<p>A <code>scanf</code> template string is a string that contains ordinary
+multibyte characters interspersed with conversion specifications that
+start with &lsquo;<samp><span class="samp">%</span></samp>&rsquo;.
+
+   <p>Any whitespace character (as defined by the <code>isspace</code> function;
+see <a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>) in the template causes any number
+of whitespace characters in the input stream to be read and discarded. 
+The whitespace characters that are matched need not be exactly the same
+whitespace characters that appear in the template string.  For example,
+write &lsquo;<samp><span class="samp"> , </span></samp>&rsquo; in the template to recognize a comma with optional
+whitespace before and after.
+
+   <p>Other characters in the template string that are not part of conversion
+specifications must match characters in the input stream exactly; if
+this is not the case, a matching failure occurs.
+
+   <p>The conversion specifications in a <code>scanf</code> template string
+have the general form:
+
+<pre class="smallexample">     % <var>flags</var> <var>width</var> <var>type</var> <var>conversion</var>
+</pre>
+   <p>In more detail, an input conversion specification consists of an initial
+&lsquo;<samp><span class="samp">%</span></samp>&rsquo; character followed in sequence by:
+
+     <ul>
+<li>An optional <dfn>flag character</dfn> &lsquo;<samp><span class="samp">*</span></samp>&rsquo;, which says to ignore the text
+read for this specification.  When <code>scanf</code> finds a conversion
+specification that uses this flag, it reads input as directed by the
+rest of the conversion specification, but it discards this input, does
+not use a pointer argument, and does not increment the count of
+successful assignments. 
+<a name="index-flag-character-_0028_0040code_007bscanf_007d_0029-1077"></a>
+<li>An optional flag character &lsquo;<samp><span class="samp">a</span></samp>&rsquo; (valid with string conversions only)
+which requests allocation of a buffer long enough to store the string in. 
+(This is a GNU extension.) 
+See <a href="Dynamic-String-Input.html#Dynamic-String-Input">Dynamic String Input</a>.
+
+     <li>An optional decimal integer that specifies the <dfn>maximum field
+width</dfn>.  Reading of characters from the input stream stops either when
+this maximum is reached or when a non-matching character is found,
+whichever happens first.  Most conversions discard initial whitespace
+characters (those that don't are explicitly documented), and these
+discarded characters don't count towards the maximum field width. 
+String input conversions store a null character to mark the end of the
+input; the maximum field width does not include this terminator. 
+<a name="index-maximum-field-width-_0028_0040code_007bscanf_007d_0029-1078"></a>
+<li>An optional <dfn>type modifier character</dfn>.  For example, you can
+specify a type modifier of &lsquo;<samp><span class="samp">l</span></samp>&rsquo; with integer conversions such as
+&lsquo;<samp><span class="samp">%d</span></samp>&rsquo; to specify that the argument is a pointer to a <code>long int</code>
+rather than a pointer to an <code>int</code>. 
+<a name="index-type-modifier-character-_0028_0040code_007bscanf_007d_0029-1079"></a>
+<li>A character that specifies the conversion to be applied. 
+</ul>
+
+   <p>The exact options that are permitted and how they are interpreted vary
+between the different conversion specifiers.  See the descriptions of the
+individual conversions for information about the particular options that
+they allow.
+
+   <p>With the &lsquo;<samp><span class="samp">-Wformat</span></samp>&rsquo; option, the GNU C compiler checks calls to
+<code>scanf</code> and related functions.  It examines the format string and
+verifies that the correct number and types of arguments are supplied. 
+There is also a GNU C syntax to tell the compiler that a function you
+write uses a <code>scanf</code>-style format string. 
+See <a href="../gcc/Function-Attributes.html#Function-Attributes">Declaring Attributes of Functions</a>, for more information.
+
+   </body></html>
+

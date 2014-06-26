@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Time Basics - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Date-and-Time.html#Date-and-Time" title="Date and Time">
+<link rel="next" href="Elapsed-Time.html#Elapsed-Time" title="Elapsed Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Time-Basics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Date-and-Time.html#Date-and-Time">Date and Time</a>
+<hr>
+</div>
+
+<h3 class="section">21.1 Time Basics</h3>
+
+<p><a name="index-time-2587"></a>
+Discussing time in a technical manual can be difficult because the word
+&ldquo;time&rdquo; in English refers to lots of different things.  In this manual,
+we use a rigorous terminology to avoid confusion, and the only thing we
+use the simple word &ldquo;time&rdquo; for is to talk about the abstract concept.
+
+   <p>A <dfn>calendar time</dfn> is a point in the time continuum, for example
+November 4, 1990 at 18:02.5 UTC.  Sometimes this is called &ldquo;absolute
+time&rdquo;. 
+<a name="index-calendar-time-2588"></a>
+We don't speak of a &ldquo;date&rdquo;, because that is inherent in a calendar
+time. 
+<a name="index-date-2589"></a>
+An <dfn>interval</dfn> is a contiguous part of the time continuum between two
+calendar times, for example the hour between 9:00 and 10:00 on July 4,
+1980. 
+<a name="index-interval-2590"></a>
+An <dfn>elapsed time</dfn> is the length of an interval, for example, 35
+minutes.  People sometimes sloppily use the word &ldquo;interval&rdquo; to refer
+to the elapsed time of some interval. 
+<a name="index-elapsed-time-2591"></a><a name="index-time_002c-elapsed-2592"></a>
+An <dfn>amount of time</dfn> is a sum of elapsed times, which need not be of
+any specific intervals.  For example, the amount of time it takes to
+read a book might be 9 hours, independently of when and in how many
+sittings it is read.
+
+   <p>A <dfn>period</dfn> is the elapsed time of an interval between two events,
+especially when they are part of a sequence of regularly repeating
+events. 
+<a name="index-period-of-time-2593"></a>
+<dfn>CPU time</dfn> is like calendar time, except that it is based on the
+subset of the time continuum when a particular process is actively
+using a CPU.  CPU time is, therefore, relative to a process. 
+<a name="index-CPU-time-2594"></a>
+<dfn>Processor time</dfn> is an amount of time that a CPU is in use.  In
+fact, it's a basic system resource, since there's a limit to how much
+can exist in any given interval (that limit is the elapsed time of the
+interval times the number of CPUs in the processor).  People often call
+this CPU time, but we reserve the latter term in this manual for the
+definition above. 
+<a name="index-processor-time-2595"></a>
+
+   </body></html>
+

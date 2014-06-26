@@ -1,0 +1,192 @@
+<html lang="en">
+<head>
+<title>Editing Characters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Special-Characters.html#Special-Characters" title="Special Characters">
+<link rel="next" href="Signal-Characters.html#Signal-Characters" title="Signal Characters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Editing-Characters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Signal-Characters.html#Signal-Characters">Signal Characters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Special-Characters.html#Special-Characters">Special Characters</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">17.4.9.1 Characters for Input Editing</h5>
+
+<p>These special characters are active only in canonical input mode. 
+See <a href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VEOF</b><var><a name="index-VEOF-1956"></a></var><br>
+<blockquote><p><a name="index-EOF-character-1957"></a>This is the subscript for the EOF character in the special control
+character array.  <var>termios</var><code>.c_cc[VEOF]</code> holds the character
+itself.
+
+        <p>The EOF character is recognized only in canonical input mode.  It acts
+as a line terminator in the same way as a newline character, but if the
+EOF character is typed at the beginning of a line it causes <code>read</code>
+to return a byte count of zero, indicating end-of-file.  The EOF
+character itself is discarded.
+
+        <p>Usually, the EOF character is <kbd>C-d</kbd>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VEOL</b><var><a name="index-VEOL-1958"></a></var><br>
+<blockquote><p><a name="index-EOL-character-1959"></a>This is the subscript for the EOL character in the special control
+character array.  <var>termios</var><code>.c_cc[VEOL]</code> holds the character
+itself.
+
+        <p>The EOL character is recognized only in canonical input mode.  It acts
+as a line terminator, just like a newline character.  The EOL character
+is not discarded; it is read as the last character in the input line.
+
+     <!-- !!! example: this is set to ESC by 4.3 csh with "set filec" so it can -->
+     <!-- complete partial lines without using cbreak or raw mode. -->
+        <p>You don't need to use the EOL character to make &lt;RET&gt; end a line. 
+Just set the ICRNL flag.  In fact, this is the default state of
+affairs. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>VEOL2</b><var><a name="index-VEOL2-1960"></a></var><br>
+<blockquote><p><a name="index-EOL2-character-1961"></a>This is the subscript for the EOL2 character in the special control
+character array.  <var>termios</var><code>.c_cc[VEOL2]</code> holds the character
+itself.
+
+        <p>The EOL2 character works just like the EOL character (see above), but it
+can be a different character.  Thus, you can specify two characters to
+terminate an input line, by setting EOL to one of them and EOL2 to the
+other.
+
+        <p>The EOL2 character is a BSD extension; it exists only on BSD systems
+and the GNU system. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VERASE</b><var><a name="index-VERASE-1962"></a></var><br>
+<blockquote><p><a name="index-ERASE-character-1963"></a>This is the subscript for the ERASE character in the special control
+character array.  <var>termios</var><code>.c_cc[VERASE]</code> holds the
+character itself.
+
+        <p>The ERASE character is recognized only in canonical input mode.  When
+the user types the erase character, the previous character typed is
+discarded.  (If the terminal generates multibyte character sequences,
+this may cause more than one byte of input to be discarded.)  This
+cannot be used to erase past the beginning of the current line of text. 
+The ERASE character itself is discarded. 
+<!-- !!! mention ECHOE here -->
+
+        <p>Usually, the ERASE character is &lt;DEL&gt;. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>VWERASE</b><var><a name="index-VWERASE-1964"></a></var><br>
+<blockquote><p><a name="index-WERASE-character-1965"></a>This is the subscript for the WERASE character in the special control
+character array.  <var>termios</var><code>.c_cc[VWERASE]</code> holds the character
+itself.
+
+        <p>The WERASE character is recognized only in canonical mode.  It erases an
+entire word of prior input, and any whitespace after it; whitespace
+characters before the word are not erased.
+
+        <p>The definition of a &ldquo;word&rdquo; depends on the setting of the
+<code>ALTWERASE</code> mode; see <a href="Local-Modes.html#Local-Modes">Local Modes</a>.
+
+        <p>If the <code>ALTWERASE</code> mode is not set, a word is defined as a sequence
+of any characters except space or tab.
+
+        <p>If the <code>ALTWERASE</code> mode is set, a word is defined as a sequence of
+characters containing only letters, numbers, and underscores, optionally
+followed by one character that is not a letter, number, or underscore.
+
+        <p>The WERASE character is usually <kbd>C-w</kbd>.
+
+        <p>This is a BSD extension. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VKILL</b><var><a name="index-VKILL-1966"></a></var><br>
+<blockquote><p><a name="index-KILL-character-1967"></a>This is the subscript for the KILL character in the special control
+character array.  <var>termios</var><code>.c_cc[VKILL]</code> holds the character
+itself.
+
+        <p>The KILL character is recognized only in canonical input mode.  When the
+user types the kill character, the entire contents of the current line
+of input are discarded.  The kill character itself is discarded too.
+
+        <p>The KILL character is usually <kbd>C-u</kbd>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>VREPRINT</b><var><a name="index-VREPRINT-1968"></a></var><br>
+<blockquote><p><a name="index-REPRINT-character-1969"></a>This is the subscript for the REPRINT character in the special control
+character array.  <var>termios</var><code>.c_cc[VREPRINT]</code> holds the character
+itself.
+
+        <p>The REPRINT character is recognized only in canonical mode.  It reprints
+the current input line.  If some asynchronous output has come while you
+are typing, this lets you see the line you are typing clearly again.
+
+        <p>The REPRINT character is usually <kbd>C-r</kbd>.
+
+        <p>This is a BSD extension. 
+</p></blockquote></div>
+
+   </body></html>
+

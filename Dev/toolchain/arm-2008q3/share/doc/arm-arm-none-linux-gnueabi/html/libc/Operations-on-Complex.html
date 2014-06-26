@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+<title>Operations on Complex - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Complex-Numbers.html#Complex-Numbers" title="Complex Numbers">
+<link rel="next" href="Parsing-of-Numbers.html#Parsing-of-Numbers" title="Parsing of Numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Operations-on-Complex"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Parsing-of-Numbers.html#Parsing-of-Numbers">Parsing of Numbers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Complex-Numbers.html#Complex-Numbers">Complex Numbers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.10 Projections, Conjugates, and Decomposing of Complex Numbers</h3>
+
+<p><a name="index-project-complex-numbers-2524"></a><a name="index-conjugate-complex-numbers-2525"></a><a name="index-decompose-complex-numbers-2526"></a><a name="index-complex_002eh-2527"></a>
+ISO&nbsp;C99<!-- /@w --> also defines functions that perform basic operations on
+complex numbers, such as decomposition and conjugation.  The prototypes
+for all these functions are in <samp><span class="file">complex.h</span></samp>.  All functions are
+available in three variants, one for each of the three complex types.
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>creal</b> (<var>complex double z</var>)<var><a name="index-creal-2528"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>crealf</b> (<var>complex float z</var>)<var><a name="index-crealf-2529"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>creall</b> (<var>complex long double z</var>)<var><a name="index-creall-2530"></a></var><br>
+<blockquote><p>These functions return the real part of the complex number <var>z</var>. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>cimag</b> (<var>complex double z</var>)<var><a name="index-cimag-2531"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>cimagf</b> (<var>complex float z</var>)<var><a name="index-cimagf-2532"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>cimagl</b> (<var>complex long double z</var>)<var><a name="index-cimagl-2533"></a></var><br>
+<blockquote><p>These functions return the imaginary part of the complex number <var>z</var>. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>conj</b> (<var>complex double z</var>)<var><a name="index-conj-2534"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>conjf</b> (<var>complex float z</var>)<var><a name="index-conjf-2535"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>conjl</b> (<var>complex long double z</var>)<var><a name="index-conjl-2536"></a></var><br>
+<blockquote><p>These functions return the conjugate value of the complex number
+<var>z</var>.  The conjugate of a complex number has the same real part and a
+negated imaginary part.  In other words, &lsquo;<samp><span class="samp">conj(a + bi) = a + -bi</span></samp>&rsquo;. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>carg</b> (<var>complex double z</var>)<var><a name="index-carg-2537"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>cargf</b> (<var>complex float z</var>)<var><a name="index-cargf-2538"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>cargl</b> (<var>complex long double z</var>)<var><a name="index-cargl-2539"></a></var><br>
+<blockquote><p>These functions return the argument of the complex number <var>z</var>. 
+The argument of a complex number is the angle in the complex plane
+between the positive real axis and a line passing through zero and the
+number.  This angle is measured in the usual fashion and ranges from 0
+to 2&amp;pi;.
+
+        <p><code>carg</code> has a branch cut along the positive real axis. 
+</p></blockquote></div>
+
+<!-- complex.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: complex double <b>cproj</b> (<var>complex double z</var>)<var><a name="index-cproj-2540"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex float <b>cprojf</b> (<var>complex float z</var>)<var><a name="index-cprojf-2541"></a></var><br>
+<blockquote><!-- complex.h -->
+     <!-- ISO -->
+   &mdash; Function: complex long double <b>cprojl</b> (<var>complex long double z</var>)<var><a name="index-cprojl-2542"></a></var><br>
+<blockquote><p>These functions return the projection of the complex value <var>z</var> onto
+the Riemann sphere.  Values with a infinite imaginary part are projected
+to positive infinity on the real axis, even if the real part is NaN.  If
+the real part is infinite, the result is equivalent to
+
+     <pre class="smallexample">          INFINITY + I * copysign (0.0, cimag (z))
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

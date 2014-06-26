@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+<title>Changing Block Size - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Freeing-after-Malloc.html#Freeing-after-Malloc" title="Freeing after Malloc">
+<link rel="next" href="Allocating-Cleared-Space.html#Allocating-Cleared-Space" title="Allocating Cleared Space">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Changing-Block-Size"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Freeing-after-Malloc.html#Freeing-after-Malloc">Freeing after Malloc</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.4 Changing the Size of a Block</h5>
+
+<p><a name="index-changing-the-size-of-a-block-_0028_0040code_007bmalloc_007d_0029-264"></a>
+Often you do not know for certain how big a block you will ultimately need
+at the time you must begin to use the block.  For example, the block might
+be a buffer that you use to hold a line being read from a file; no matter
+how long you make the buffer initially, you may encounter a line that is
+longer.
+
+   <p>You can make the block longer by calling <code>realloc</code>.  This function
+is declared in <samp><span class="file">stdlib.h</span></samp>. 
+<a name="index-stdlib_002eh-265"></a>
+<!-- malloc.h stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: void * <b>realloc</b> (<var>void *ptr, size_t newsize</var>)<var><a name="index-realloc-266"></a></var><br>
+<blockquote><p>The <code>realloc</code> function changes the size of the block whose address is
+<var>ptr</var> to be <var>newsize</var>.
+
+        <p>Since the space after the end of the block may be in use, <code>realloc</code>
+may find it necessary to copy the block to a new address where more free
+space is available.  The value of <code>realloc</code> is the new address of the
+block.  If the block needs to be moved, <code>realloc</code> copies the old
+contents.
+
+        <p>If you pass a null pointer for <var>ptr</var>, <code>realloc</code> behaves just
+like &lsquo;<samp><span class="samp">malloc (</span><var>newsize</var><span class="samp">)</span></samp>&rsquo;.  This can be convenient, but beware
+that older implementations (before ISO&nbsp;C<!-- /@w -->) may not support this
+behavior, and will probably crash when <code>realloc</code> is passed a null
+pointer. 
+</p></blockquote></div>
+
+   <p>Like <code>malloc</code>, <code>realloc</code> may return a null pointer if no
+memory space is available to make the block bigger.  When this happens,
+the original block is untouched; it has not been modified or relocated.
+
+   <p>In most cases it makes no difference what happens to the original block
+when <code>realloc</code> fails, because the application program cannot continue
+when it is out of memory, and the only thing to do is to give a fatal error
+message.  Often it is convenient to write and use a subroutine,
+conventionally called <code>xrealloc</code>, that takes care of the error message
+as <code>xmalloc</code> does for <code>malloc</code>:
+
+<pre class="smallexample">     void *
+     xrealloc (void *ptr, size_t size)
+     {
+       register void *value = realloc (ptr, size);
+       if (value == 0)
+         fatal ("Virtual memory exhausted");
+       return value;
+     }
+</pre>
+   <p>You can also use <code>realloc</code> to make a block smaller.  The reason you
+would do this is to avoid tying up a lot of memory space when only a little
+is needed. 
+<!-- The following is no longer true with the new malloc. -->
+<!-- But it seems wise to keep the warning for other implementations. -->
+In several allocation implementations, making a block smaller sometimes
+necessitates copying it, so it can fail if no other space is available.
+
+   <p>If the new size you specify is the same as the old size, <code>realloc</code>
+is guaranteed to change nothing and return the same address that you gave.
+
+   </body></html>
+

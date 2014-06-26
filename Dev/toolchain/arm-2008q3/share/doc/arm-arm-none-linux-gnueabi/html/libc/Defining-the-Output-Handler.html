@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Defining the Output Handler - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Customizing-Printf.html#Customizing-Printf" title="Customizing Printf">
+<link rel="prev" href="Conversion-Specifier-Options.html#Conversion-Specifier-Options" title="Conversion Specifier Options">
+<link rel="next" href="Printf-Extension-Example.html#Printf-Extension-Example" title="Printf Extension Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Defining-the-Output-Handler"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Printf-Extension-Example.html#Printf-Extension-Example">Printf Extension Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">Conversion Specifier Options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.13.3 Defining the Output Handler</h4>
+
+<p>Now let's look at how to define the handler and arginfo functions
+which are passed as arguments to <code>register_printf_function</code>.
+
+   <p><strong>Compatibility Note:</strong> The interface changed in GNU libc
+version 2.0.  Previously the third argument was of type
+<code>va_list *</code>.
+
+   <p>You should define your handler functions with a prototype like:
+
+<pre class="smallexample">     int <var>function</var> (FILE *stream, const struct printf_info *info,
+                         const void *const *args)
+</pre>
+   <p>The <var>stream</var> argument passed to the handler function is the stream to
+which it should write output.
+
+   <p>The <var>info</var> argument is a pointer to a structure that contains
+information about the various options that were included with the
+conversion in the template string.  You should not modify this structure
+inside your handler function.  See <a href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">Conversion Specifier Options</a>, for
+a description of this data structure.
+
+<!-- The following changes some time back.  -drepper@gnu, 1996/11/14 -->
+<!-- The @code{ap_pointer} argument is used to pass the tail of the variable -->
+<!-- argument list containing the values to be printed to your handler. -->
+<!-- Unlike most other functions that can be passed an explicit variable -->
+<!-- argument list, this is a @emph{pointer} to a @code{va_list}, rather than -->
+<!-- the @code{va_list} itself.  Thus, you should fetch arguments by -->
+<!-- means of @code{va_arg (*ap_pointer, @var{type})}. -->
+<!-- (Passing a pointer here allows the function that calls your handler -->
+<!-- function to update its own @code{va_list} variable to account for the -->
+<!-- arguments that your handler processes.  @xref{Variadic Functions}.) -->
+   <p>The <var>args</var> is a vector of pointers to the arguments data. 
+The number of arguments was determined by calling the argument
+information function provided by the user.
+
+   <p>Your handler function should return a value just like <code>printf</code>
+does: it should return the number of characters it has written, or a
+negative value to indicate an error.
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>printf_function</b><var><a name="index-printf_005ffunction-1067"></a></var><br>
+<blockquote><p>This is the data type that a handler function should have. 
+</p></blockquote></div>
+
+   <p>If you are going to use <code>parse_printf_format</code><!-- /@w --> in your
+application, you must also define a function to pass as the
+<var>arginfo-function</var> argument for each new conversion you install with
+<code>register_printf_function</code>.
+
+   <p>You have to define these functions with a prototype like:
+
+<pre class="smallexample">     int <var>function</var> (const struct printf_info *info,
+                         size_t n, int *argtypes)
+</pre>
+   <p>The return value from the function should be the number of arguments the
+conversion expects.  The function should also fill in no more than
+<var>n</var> elements of the <var>argtypes</var> array with information about the
+types of each of these arguments.  This information is encoded using the
+various &lsquo;<samp><span class="samp">PA_</span></samp>&rsquo; macros.  (You will notice that this is the same
+calling convention <code>parse_printf_format</code> itself uses.)
+
+<!-- printf.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>printf_arginfo_function</b><var><a name="index-printf_005farginfo_005ffunction-1068"></a></var><br>
+<blockquote><p>This type is used to describe functions that return information about
+the number and type of arguments used by a conversion specifier. 
+</p></blockquote></div>
+
+   </body></html>
+

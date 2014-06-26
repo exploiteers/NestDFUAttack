@@ -1,0 +1,177 @@
+<html lang="en">
+<head>
+<title>Duplicating Descriptors - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Control-Operations.html#Control-Operations" title="Control Operations">
+<link rel="next" href="Descriptor-Flags.html#Descriptor-Flags" title="Descriptor Flags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Duplicating-Descriptors"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Control-Operations.html#Control-Operations">Control Operations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.12 Duplicating Descriptors</h3>
+
+<p><a name="index-duplicating-file-descriptors-1314"></a><a name="index-redirecting-input-and-output-1315"></a>
+You can <dfn>duplicate</dfn> a file descriptor, or allocate another file
+descriptor that refers to the same open file as the original.  Duplicate
+descriptors share one file position and one set of file status flags
+(see <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>), but each has its own set of file descriptor
+flags (see <a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>).
+
+   <p>The major use of duplicating a file descriptor is to implement
+<dfn>redirection</dfn> of input or output:  that is, to change the
+file or pipe that a particular file descriptor corresponds to.
+
+   <p>You can perform this operation using the <code>fcntl</code> function with the
+<code>F_DUPFD</code> command, but there are also convenient functions
+<code>dup</code> and <code>dup2</code> for duplicating descriptors.
+
+   <p><a name="index-unistd_002eh-1316"></a><a name="index-fcntl_002eh-1317"></a>The <code>fcntl</code> function and flags are declared in <samp><span class="file">fcntl.h</span></samp>,
+while prototypes for <code>dup</code> and <code>dup2</code> are in the header file
+<samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>dup</b> (<var>int old</var>)<var><a name="index-dup-1318"></a></var><br>
+<blockquote><p>This function copies descriptor <var>old</var> to the first available
+descriptor number (the first number not currently open).  It is
+equivalent to <code>fcntl (</code><var>old</var><code>, F_DUPFD, 0)</code>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>dup2</b> (<var>int old, int new</var>)<var><a name="index-dup2-1319"></a></var><br>
+<blockquote><p>This function copies the descriptor <var>old</var> to descriptor number
+<var>new</var>.
+
+        <p>If <var>old</var> is an invalid descriptor, then <code>dup2</code> does nothing; it
+does not close <var>new</var>.  Otherwise, the new duplicate of <var>old</var>
+replaces any previous meaning of descriptor <var>new</var>, as if <var>new</var>
+were closed first.
+
+        <p>If <var>old</var> and <var>new</var> are different numbers, and <var>old</var> is a
+valid descriptor number, then <code>dup2</code> is equivalent to:
+
+     <pre class="smallexample">          close (<var>new</var>);
+          fcntl (<var>old</var>, F_DUPFD, <var>new</var>)
+</pre>
+        <p>However, <code>dup2</code> does this atomically; there is no instant in the
+middle of calling <code>dup2</code> at which <var>new</var> is closed and not yet a
+duplicate of <var>old</var>. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>F_DUPFD</b><var><a name="index-F_005fDUPFD-1320"></a></var><br>
+<blockquote><p>This macro is used as the <var>command</var> argument to <code>fcntl</code>, to
+copy the file descriptor given as the first argument.
+
+        <p>The form of the call in this case is:
+
+     <pre class="smallexample">          fcntl (<var>old</var>, F_DUPFD, <var>next-filedes</var>)
+</pre>
+        <p>The <var>next-filedes</var> argument is of type <code>int</code> and specifies that
+the file descriptor returned should be the next available one greater
+than or equal to this value.
+
+        <p>The return value from <code>fcntl</code> with this command is normally the value
+of the new file descriptor.  A return value of -1 indicates an
+error.  The following <code>errno</code> error conditions are defined for
+this command:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>old</var> argument is invalid.
+
+          <br><dt><code>EINVAL</code><dd>The <var>next-filedes</var> argument is invalid.
+
+          <br><dt><code>EMFILE</code><dd>There are no more file descriptors available&mdash;your program is already
+using the maximum.  In BSD and GNU, the maximum is controlled by a
+resource limit that can be changed; see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>, for
+more information about the <code>RLIMIT_NOFILE</code> limit. 
+</dl>
+
+        <p><code>ENFILE</code> is not a possible error code for <code>dup2</code> because
+<code>dup2</code> does not create a new opening of a file; duplicate
+descriptors do not count toward the limit which <code>ENFILE</code>
+indicates.  <code>EMFILE</code> is possible because it refers to the limit on
+distinct descriptor numbers in use in one process. 
+</p></blockquote></div>
+
+   <p>Here is an example showing how to use <code>dup2</code> to do redirection. 
+Typically, redirection of the standard streams (like <code>stdin</code>) is
+done by a shell or shell-like program before calling one of the
+<code>exec</code> functions (see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>) to execute a new
+program in a child process.  When the new program is executed, it
+creates and initializes the standard streams to point to the
+corresponding file descriptors, before its <code>main</code> function is
+invoked.
+
+   <p>So, to redirect standard input to a file, the shell could do something
+like:
+
+<pre class="smallexample">     pid = fork ();
+     if (pid == 0)
+       {
+         char *filename;
+         char *program;
+         int file;
+         ...
+         file = TEMP_FAILURE_RETRY (open (filename, O_RDONLY));
+         dup2 (file, STDIN_FILENO);
+         TEMP_FAILURE_RETRY (close (file));
+         execv (program, NULL);
+       }
+</pre>
+   <p>There is also a more detailed example showing how to implement redirection
+in the context of a pipeline of processes in <a href="Launching-Jobs.html#Launching-Jobs">Launching Jobs</a>.
+
+   </body></html>
+

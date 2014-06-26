@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>File Status Flags - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Descriptor-Flags.html#Descriptor-Flags" title="Descriptor Flags">
+<link rel="next" href="File-Locks.html#File-Locks" title="File Locks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-Status-Flags"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Locks.html#File-Locks">File Locks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.14 File Status Flags</h3>
+
+<p><a name="index-file-status-flags-1327"></a>
+<dfn>File status flags</dfn> are used to specify attributes of the opening of a
+file.  Unlike the file descriptor flags discussed in <a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>, the file status flags are shared by duplicated file descriptors
+resulting from a single opening of the file.  The file status flags are
+specified with the <var>flags</var> argument to <code>open</code>;
+see <a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>.
+
+   <p>File status flags fall into three categories, which are described in the
+following sections.
+
+     <ul>
+<li><a href="Access-Modes.html#Access-Modes">Access Modes</a>, specify what type of access is allowed to the
+file: reading, writing, or both.  They are set by <code>open</code> and are
+returned by <code>fcntl</code>, but cannot be changed.
+
+     <li><a href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>, control details of what <code>open</code> will do. 
+These flags are not preserved after the <code>open</code> call.
+
+     <li><a href="Operating-Modes.html#Operating-Modes">Operating Modes</a>, affect how operations such as <code>read</code> and
+<code>write</code> are done.  They are set by <code>open</code>, and can be fetched or
+changed with <code>fcntl</code>. 
+</ul>
+
+   <p>The symbols in this section are defined in the header file
+<samp><span class="file">fcntl.h</span></samp>. 
+<a name="index-fcntl_002eh-1328"></a>
+
+<ul class="menu">
+<li><a accesskey="1" href="Access-Modes.html#Access-Modes">Access Modes</a>:                 Whether the descriptor can read or write. 
+<li><a accesskey="2" href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>:              Details of <code>open</code>. 
+<li><a accesskey="3" href="Operating-Modes.html#Operating-Modes">Operating Modes</a>:              Special modes to control I/O operations. 
+<li><a accesskey="4" href="Getting-File-Status-Flags.html#Getting-File-Status-Flags">Getting File Status Flags</a>:    Fetching and changing these flags. 
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Who Logged In - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Tips-for-Setuid.html#Tips-for-Setuid" title="Tips for Setuid">
+<link rel="next" href="User-Accounting-Database.html#User-Accounting-Database" title="User Accounting Database">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Who-Logged-In"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="User-Accounting-Database.html#User-Accounting-Database">User Accounting Database</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tips-for-Setuid.html#Tips-for-Setuid">Tips for Setuid</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.11 Identifying Who Logged In</h3>
+
+<p><a name="index-login-name_002c-determining-3328"></a><a name="index-user-ID_002c-determining-3329"></a>
+You can use the functions listed in this section to determine the login
+name of the user who is running a process, and the name of the user who
+logged in the current session.  See also the function <code>getuid</code> and
+friends (see <a href="Reading-Persona.html#Reading-Persona">Reading Persona</a>).  How this information is collected by
+the system and how to control/add/remove information from the background
+storage is described in <a href="User-Accounting-Database.html#User-Accounting-Database">User Accounting Database</a>.
+
+   <p>The <code>getlogin</code> function is declared in <samp><span class="file">unistd.h</span></samp>, while
+<code>cuserid</code> and <code>L_cuserid</code> are declared in <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-3330"></a><a name="index-unistd_002eh-3331"></a>
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: char * <b>getlogin</b> (<var>void</var>)<var><a name="index-getlogin-3332"></a></var><br>
+<blockquote><p>The <code>getlogin</code> function returns a pointer to a string containing the
+name of the user logged in on the controlling terminal of the process,
+or a null pointer if this information cannot be determined.  The string
+is statically allocated and might be overwritten on subsequent calls to
+this function or to <code>cuserid</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: char * <b>cuserid</b> (<var>char *string</var>)<var><a name="index-cuserid-3333"></a></var><br>
+<blockquote><p>The <code>cuserid</code> function returns a pointer to a string containing a
+user name associated with the effective ID of the process.  If
+<var>string</var> is not a null pointer, it should be an array that can hold
+at least <code>L_cuserid</code> characters; the string is returned in this
+array.  Otherwise, a pointer to a string in a static area is returned. 
+This string is statically allocated and might be overwritten on
+subsequent calls to this function or to <code>getlogin</code>.
+
+        <p>The use of this function is deprecated since it is marked to be
+withdrawn in XPG4.2 and has already been removed from newer revisions of
+POSIX.1. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>L_cuserid</b><var><a name="index-L_005fcuserid-3334"></a></var><br>
+<blockquote><p>An integer constant that indicates how long an array you might need to
+store a user name. 
+</p></blockquote></div>
+
+   <p>These functions let your program identify positively the user who is
+running or the user who logged in this session.  (These can differ when
+setuid programs are involved; see <a href="Process-Persona.html#Process-Persona">Process Persona</a>.)  The user cannot
+do anything to fool these functions.
+
+   <p>For most purposes, it is more useful to use the environment variable
+<code>LOGNAME</code> to find out who the user is.  This is more flexible
+precisely because the user can set <code>LOGNAME</code> arbitrarily. 
+See <a href="Standard-Environment.html#Standard-Environment">Standard Environment</a>.
+
+   </body></html>
+

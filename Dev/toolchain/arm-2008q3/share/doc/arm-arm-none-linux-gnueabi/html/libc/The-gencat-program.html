@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>The gencat program - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen" title="Message catalogs a la X/Open">
+<link rel="prev" href="The-message-catalog-files.html#The-message-catalog-files" title="The message catalog files">
+<link rel="next" href="Common-Usage.html#Common-Usage" title="Common Usage">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="The-gencat-program"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Common-Usage.html#Common-Usage">Common Usage</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-message-catalog-files.html#The-message-catalog-files">The message catalog files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen">Message catalogs a la X/Open</a>
+<hr>
+</div>
+
+<h4 class="subsection">8.1.3 Generate Message Catalogs files</h4>
+
+<p><a name="index-gencat-806"></a>The <code>gencat</code> program is specified in the X/Open standard and the
+GNU implementation follows this specification and so processes
+all correctly formed input files.  Additionally some extension are
+implemented which help to work in a more reasonable way with the
+<code>catgets</code> functions.
+
+   <p>The <code>gencat</code> program can be invoked in two ways:
+
+<pre class="example">     `gencat [<var>Option</var>]... [<var>Output-File</var> [<var>Input-File</var>]...]`
+</pre>
+   <p>This is the interface defined in the X/Open standard.  If no
+<var>Input-File</var> parameter is given input will be read from standard
+input.  Multiple input files will be read as if they are concatenated. 
+If <var>Output-File</var> is also missing, the output will be written to
+standard output.  To provide the interface one is used to from other
+programs a second interface is provided.
+
+<pre class="smallexample">     `gencat [<var>Option</var>]... -o <var>Output-File</var> [<var>Input-File</var>]...`
+</pre>
+   <p>The option &lsquo;<samp><span class="samp">-o</span></samp>&rsquo; is used to specify the output file and all file
+arguments are used as input files.
+
+   <p>Beside this one can use <samp><span class="file">-</span></samp> or <samp><span class="file">/dev/stdin</span></samp> for
+<var>Input-File</var> to denote the standard input.  Corresponding one can
+use <samp><span class="file">-</span></samp> and <samp><span class="file">/dev/stdout</span></samp> for <var>Output-File</var> to denote
+standard output.  Using <samp><span class="file">-</span></samp> as a file name is allowed in X/Open
+while using the device names is a GNU extension.
+
+   <p>The <code>gencat</code> program works by concatenating all input files and
+then <strong>merge</strong> the resulting collection of message sets with a
+possibly existing output file.  This is done by removing all messages
+with set/message number tuples matching any of the generated messages
+from the output file and then adding all the new messages.  To
+regenerate a catalog file while ignoring the old contents therefore
+requires to remove the output file if it exists.  If the output is
+written to standard output no merging takes place.
+
+<p class="noindent">The following table shows the options understood by the <code>gencat</code>
+program.  The X/Open standard does not specify any option for the
+program so all of these are GNU extensions.
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">-V</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">--version</span></samp>&rsquo;<dd>Print the version information and exit. 
+<br><dt>&lsquo;<samp><span class="samp">-h</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">--help</span></samp>&rsquo;<dd>Print a usage message listing all available options, then exit successfully. 
+<br><dt>&lsquo;<samp><span class="samp">--new</span></samp>&rsquo;<dd>Do never merge the new messages from the input files with the old content
+of the output files.  The old content of the output file is discarded. 
+<br><dt>&lsquo;<samp><span class="samp">-H</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">--header=name</span></samp>&rsquo;<dd>This option is used to emit the symbolic names given to sets and
+messages in the input files for use in the program.  Details about how
+to use this are given in the next section.  The <var>name</var> parameter to
+this option specifies the name of the output file.  It will contain a
+number of C preprocessor <code>#define</code>s to associate a name with a
+number.
+
+     <p>Please note that the generated file only contains the symbols from the
+input files.  If the output is merged with the previous content of the
+output file the possibly existing symbols from the file(s) which
+generated the old output files are not in the generated header file. 
+</dl>
+
+   </body></html>
+

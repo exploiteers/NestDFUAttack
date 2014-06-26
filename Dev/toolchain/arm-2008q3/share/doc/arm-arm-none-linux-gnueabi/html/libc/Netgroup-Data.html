@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+<title>Netgroup Data - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Netgroup-Database.html#Netgroup-Database" title="Netgroup Database">
+<link rel="next" href="Lookup-Netgroup.html#Lookup-Netgroup" title="Lookup Netgroup">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Netgroup-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Lookup-Netgroup.html#Lookup-Netgroup">Lookup Netgroup</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.16.1 Netgroup Data</h4>
+
+<p><a name="index-Netgroup-3423"></a>Sometimes it is useful to group users according to other criteria
+(see <a href="Group-Database.html#Group-Database">Group Database</a>).  E.g., it is useful to associate a certain
+group of users with a certain machine.  On the other hand grouping of
+host names is not supported so far.
+
+   <p>In Sun Microsystems SunOS appeared a new kind of database, the netgroup
+database.  It allows grouping hosts, users, and domains freely, giving
+them individual names.  To be more concrete, a netgroup is a list of triples
+consisting of a host name, a user name, and a domain name where any of
+the entries can be a wildcard entry matching all inputs.  A last
+possibility is that names of other netgroups can also be given in the
+list specifying a netgroup.  So one can construct arbitrary hierarchies
+without loops.
+
+   <p>Sun's implementation allows netgroups only for the <code>nis</code> or
+<code>nisplus</code> service, see <a href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">Services in the NSS configuration</a>.  The
+implementation in the GNU C library has no such restriction.  An entry
+in either of the input services must have the following form:
+
+<pre class="smallexample">     <var>groupname</var> ( <var>groupname</var> | <code>(</code><var>hostname</var><code>,</code><var>username</var><code>,</code><code>domainname</code><code>)</code> )+
+</pre>
+   <p>Any of the fields in the triple can be empty which means anything
+matches.  While describing the functions we will see that the opposite
+case is useful as well.  I.e., there may be entries which will not
+match any input.  For entries like this, a name consisting of the single
+character <code>-</code> shall be used.
+
+   </body></html>
+

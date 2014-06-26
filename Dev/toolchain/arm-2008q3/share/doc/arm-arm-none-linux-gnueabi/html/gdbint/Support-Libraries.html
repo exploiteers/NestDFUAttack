@@ -1,0 +1,302 @@
+<html lang="en">
+<head>
+<title>Support Libraries - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Native-Debugging.html#Native-Debugging" title="Native Debugging">
+<link rel="next" href="Coding.html#Coding" title="Coding">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Support-Libraries"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Coding.html#Coding">Coding</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Native-Debugging.html#Native-Debugging">Native Debugging</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">14 Support Libraries</h2>
+
+<h3 class="section">14.1 BFD</h3>
+
+<p><a name="index-BFD-library-384"></a>
+BFD provides support for <span class="sc">gdb</span> in several ways:
+
+     <dl>
+<dt><em>identifying executable and core files</em><dd>BFD will identify a variety of file types, including a.out, coff, and
+several variants thereof, as well as several kinds of core files.
+
+     <br><dt><em>access to sections of files</em><dd>BFD parses the file headers to determine the names, virtual addresses,
+sizes, and file locations of all the various named sections in files
+(such as the text section or the data section).  <span class="sc">gdb</span> simply
+calls BFD to read or write section <var>x</var> at byte offset <var>y</var> for
+length <var>z</var>.
+
+     <br><dt><em>specialized core file support</em><dd>BFD provides routines to determine the failing command name stored in a
+core file, the signal with which the program failed, and whether a core
+file matches (i.e. could be a core dump of) a particular executable
+file.
+
+     <br><dt><em>locating the symbol information</em><dd><span class="sc">gdb</span> uses an internal interface of BFD to determine where to find the
+symbol information in an executable file or symbol-file.  <span class="sc">gdb</span> itself
+handles the reading of symbols, since BFD does not &ldquo;understand&rdquo; debug
+symbols, but <span class="sc">gdb</span> uses BFD's cached information to find the symbols,
+string table, etc. 
+</dl>
+
+<h3 class="section">14.2 opcodes</h3>
+
+<p><a name="index-opcodes-library-385"></a>
+The opcodes library provides <span class="sc">gdb</span>'s disassembler.  (It's a separate
+library because it's also used in binutils, for <samp><span class="file">objdump</span></samp>).
+
+<h3 class="section">14.3 readline</h3>
+
+<p><a name="index-readline-library-386"></a>The <code>readline</code> library provides a set of functions for use by applications
+that allow users to edit command lines as they are typed in.
+
+<h3 class="section">14.4 libiberty</h3>
+
+<p><a name="index-g_t_0040code_007blibiberty_007d-library-387"></a>
+The <code>libiberty</code> library provides a set of functions and features
+that integrate and improve on functionality found in modern operating
+systems.  Broadly speaking, such features can be divided into three
+groups: supplemental functions (functions that may be missing in some
+environments and operating systems), replacement functions (providing
+a uniform and easier to use interface for commonly used standard
+functions), and extensions (which provide additional functionality
+beyond standard functions).
+
+   <p><span class="sc">gdb</span> uses various features provided by the <code>libiberty</code>
+library, for instance the C<tt>++</tt> demangler, the <acronym>IEEE</acronym>
+floating format support functions, the input options parser
+&lsquo;<samp><span class="samp">getopt</span></samp>&rsquo;, the &lsquo;<samp><span class="samp">obstack</span></samp>&rsquo; extension, and other functions.
+
+<h4 class="subsection">14.4.1 <code>obstacks</code> in <span class="sc">gdb</span></h4>
+
+<p><a name="index-g_t_0040code_007bobstacks_007d-388"></a>
+The obstack mechanism provides a convenient way to allocate and free
+chunks of memory.  Each obstack is a pool of memory that is managed
+like a stack.  Objects (of any nature, size and alignment) are
+allocated and freed in a <acronym>LIFO</acronym> fashion on an obstack (see
+<code>libiberty</code>'s documentation for a more detailed explanation of
+<code>obstacks</code>).
+
+   <p>The most noticeable use of the <code>obstacks</code> in <span class="sc">gdb</span> is in
+object files.  There is an obstack associated with each internal
+representation of an object file.  Lots of things get allocated on
+these <code>obstacks</code>: dictionary entries, blocks, blockvectors,
+symbols, minimal symbols, types, vectors of fundamental types, class
+fields of types, object files section lists, object files section
+offset lists, line tables, symbol tables, partial symbol tables,
+string tables, symbol table private data, macros tables, debug
+information sections and entries, import and export lists (som),
+unwind information (hppa), dwarf2 location expressions data.  Plus
+various strings such as directory names strings, debug format strings,
+names of types.
+
+   <p>An essential and convenient property of all data on <code>obstacks</code> is
+that memory for it gets allocated (with <code>obstack_alloc</code>) at
+various times during a debugging session, but it is released all at
+once using the <code>obstack_free</code> function.  The <code>obstack_free</code>
+function takes a pointer to where in the stack it must start the
+deletion from (much like the cleanup chains have a pointer to where to
+start the cleanups).  Because of the stack like structure of the
+<code>obstacks</code>, this allows to free only a top portion of the
+obstack.  There are a few instances in <span class="sc">gdb</span> where such thing
+happens.  Calls to <code>obstack_free</code> are done after some local data
+is allocated to the obstack.  Only the local data is deleted from the
+obstack.  Of course this assumes that nothing between the
+<code>obstack_alloc</code> and the <code>obstack_free</code> allocates anything
+else on the same obstack.  For this reason it is best and safest to
+use temporary <code>obstacks</code>.
+
+   <p>Releasing the whole obstack is also not safe per se.  It is safe only
+under the condition that we know the <code>obstacks</code> memory is no
+longer needed.  In <span class="sc">gdb</span> we get rid of the <code>obstacks</code> only
+when we get rid of the whole objfile(s), for instance upon reading a
+new symbol file.
+
+<h3 class="section">14.5 gnu-regex</h3>
+
+<p><a name="index-regular-expressions-library-389"></a>
+Regex conditionals.
+
+     <dl>
+<dt><code>C_ALLOCA</code>
+<br><dt><code>NFAILURES</code>
+<br><dt><code>RE_NREGS</code>
+<br><dt><code>SIGN_EXTEND_CHAR</code>
+<br><dt><code>SWITCH_ENUM_BUG</code>
+<br><dt><code>SYNTAX_TABLE</code>
+<br><dt><code>Sword</code>
+<br><dt><code>sparc</code><dd></dl>
+
+<h3 class="section">14.6 Array Containers</h3>
+
+<p><a name="index-Array-Containers-390"></a><a name="index-VEC-391"></a>
+Often it is necessary to manipulate a dynamic array of a set of
+objects.  C forces some bookkeeping on this, which can get cumbersome
+and repetitive.  The <samp><span class="file">vec.h</span></samp> file contains macros for defining
+and using a typesafe vector type.  The functions defined will be
+inlined when compiling, and so the abstraction cost should be zero. 
+Domain checks are added to detect programming errors.
+
+   <p>An example use would be an array of symbols or section information. 
+The array can be grown as symbols are read in (or preallocated), and
+the accessor macros provided keep care of all the necessary
+bookkeeping.  Because the arrays are type safe, there is no danger of
+accidentally mixing up the contents.  Think of these as C++ templates,
+but implemented in C.
+
+   <p>Because of the different behavior of structure objects, scalar objects
+and of pointers, there are three flavors of vector, one for each of
+these variants.  Both the structure object and pointer variants pass
+pointers to objects around &mdash; in the former case the pointers are
+stored into the vector and in the latter case the pointers are
+dereferenced and the objects copied into the vector.  The scalar
+object variant is suitable for <code>int</code>-like objects, and the vector
+elements are returned by value.
+
+   <p>There are both <code>index</code> and <code>iterate</code> accessors.  The iterator
+returns a boolean iteration condition and updates the iteration
+variable passed by reference.  Because the iterator will be inlined,
+the address-of can be optimized away.
+
+   <p>The vectors are implemented using the trailing array idiom, thus they
+are not resizeable without changing the address of the vector object
+itself.  This means you cannot have variables or fields of vector type
+&mdash; always use a pointer to a vector.  The one exception is the final
+field of a structure, which could be a vector type.  You will have to
+use the <code>embedded_size</code> &amp; <code>embedded_init</code> calls to create
+such objects, and they will probably not be resizeable (so don't use
+the <dfn>safe</dfn> allocation variants).  The trailing array idiom is used
+(rather than a pointer to an array of data), because, if we allow
+<code>NULL</code> to also represent an empty vector, empty vectors occupy
+minimal space in the structure containing them.
+
+   <p>Each operation that increases the number of active elements is
+available in <dfn>quick</dfn> and <dfn>safe</dfn> variants.  The former presumes
+that there is sufficient allocated space for the operation to succeed
+(it dies if there is not).  The latter will reallocate the vector, if
+needed.  Reallocation causes an exponential increase in vector size. 
+If you know you will be adding N elements, it would be more efficient
+to use the reserve operation before adding the elements with the
+<dfn>quick</dfn> operation.  This will ensure there are at least as many
+elements as you ask for, it will exponentially increase if there are
+too few spare slots.  If you want reserve a specific number of slots,
+but do not want the exponential increase (for instance, you know this
+is the last allocation), use a negative number for reservation.  You
+can also create a vector of a specific size from the get go.
+
+   <p>You should prefer the push and pop operations, as they append and
+remove from the end of the vector. If you need to remove several items
+in one go, use the truncate operation.  The insert and remove
+operations allow you to change elements in the middle of the vector. 
+There are two remove operations, one which preserves the element
+ordering <code>ordered_remove</code>, and one which does not
+<code>unordered_remove</code>.  The latter function copies the end element
+into the removed slot, rather than invoke a memmove operation.  The
+<code>lower_bound</code> function will determine where to place an item in
+the array using insert that will maintain sorted order.
+
+   <p>If you need to directly manipulate a vector, then the <code>address</code>
+accessor will return the address of the start of the vector.  Also the
+<code>space</code> predicate will tell you whether there is spare capacity in the
+vector.  You will not normally need to use these two functions.
+
+   <p>Vector types are defined using a
+<code>DEF_VEC_{O,P,I}(</code><var>typename</var><code>)</code> macro.  Variables of vector
+type are declared using a <code>VEC(</code><var>typename</var><code>)</code> macro.  The
+characters <code>O</code>, <code>P</code> and <code>I</code> indicate whether
+<var>typename</var> is an object (<code>O</code>), pointer (<code>P</code>) or integral
+(<code>I</code>) type.  Be careful to pick the correct one, as you'll get an
+awkward and inefficient API if you use the wrong one.  There is a
+check, which results in a compile-time warning, for the <code>P</code> and
+<code>I</code> versions, but there is no check for the <code>O</code> versions, as
+that is not possible in plain C.
+
+   <p>An example of their use would be,
+
+<pre class="smallexample">     DEF_VEC_P(tree);   // non-managed tree vector.
+     
+     struct my_struct {
+       VEC(tree) *v;      // A (pointer to) a vector of tree pointers.
+     };
+     
+     struct my_struct *s;
+     
+     if (VEC_length(tree, s-&gt;v)) { we have some contents }
+     VEC_safe_push(tree, s-&gt;v, decl); // append some decl onto the end
+     for (ix = 0; VEC_iterate(tree, s-&gt;v, ix, elt); ix++)
+       { do something with elt }
+     
+</pre>
+   <p>The <samp><span class="file">vec.h</span></samp> file provides details on how to invoke the various
+accessors provided.  They are enumerated here:
+
+     <dl>
+<dt><code>VEC_length</code><dd>Return the number of items in the array,
+
+     <br><dt><code>VEC_empty</code><dd>Return true if the array has no elements.
+
+     <br><dt><code>VEC_last</code><dt><code>VEC_index</code><dd>Return the last or arbitrary item in the array.
+
+     <br><dt><code>VEC_iterate</code><dd>Access an array element and indicate whether the array has been
+traversed.
+
+     <br><dt><code>VEC_alloc</code><dt><code>VEC_free</code><dd>Create and destroy an array.
+
+     <br><dt><code>VEC_embedded_size</code><dt><code>VEC_embedded_init</code><dd>Helpers for embedding an array as the final element of another struct.
+
+     <br><dt><code>VEC_copy</code><dd>Duplicate an array.
+
+     <br><dt><code>VEC_space</code><dd>Return the amount of free space in an array.
+
+     <br><dt><code>VEC_reserve</code><dd>Ensure a certain amount of free space.
+
+     <br><dt><code>VEC_quick_push</code><dt><code>VEC_safe_push</code><dd>Append to an array, either assuming the space is available, or making
+sure that it is.
+
+     <br><dt><code>VEC_pop</code><dd>Remove the last item from an array.
+
+     <br><dt><code>VEC_truncate</code><dd>Remove several items from the end of an array.
+
+     <br><dt><code>VEC_safe_grow</code><dd>Add several items to the end of an array.
+
+     <br><dt><code>VEC_replace</code><dd>Overwrite an item in the array.
+
+     <br><dt><code>VEC_quick_insert</code><dt><code>VEC_safe_insert</code><dd>Insert an item into the middle of the array.  Either the space must
+already exist, or the space is created.
+
+     <br><dt><code>VEC_ordered_remove</code><dt><code>VEC_unordered_remove</code><dd>Remove an item from the array, preserving order or not.
+
+     <br><dt><code>VEC_block_remove</code><dd>Remove a set of items from the array.
+
+     <br><dt><code>VEC_address</code><dd>Provide the address of the first element.
+
+     <br><dt><code>VEC_lower_bound</code><dd>Binary search the array.
+
+   </dl>
+
+<h3 class="section">14.7 include</h3>
+
+</body></html>
+

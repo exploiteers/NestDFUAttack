@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Status of an Obstack - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Extra-Fast-Growing.html#Extra-Fast-Growing" title="Extra Fast Growing">
+<link rel="next" href="Obstacks-Data-Alignment.html#Obstacks-Data-Alignment" title="Obstacks Data Alignment">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Status-of-an-Obstack"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Obstacks-Data-Alignment.html#Obstacks-Data-Alignment">Obstacks Data Alignment</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Extra-Fast-Growing.html#Extra-Fast-Growing">Extra Fast Growing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.8 Status of an Obstack</h5>
+
+<p><a name="index-obstack-status-330"></a><a name="index-status-of-obstack-331"></a>
+Here are functions that provide information on the current status of
+allocation in an obstack.  You can use them to learn about an object while
+still growing it.
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>obstack_base</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005fbase-332"></a></var><br>
+<blockquote><p>This function returns the tentative address of the beginning of the
+currently growing object in <var>obstack-ptr</var>.  If you finish the object
+immediately, it will have that address.  If you make it larger first, it
+may outgrow the current chunk&mdash;then its address will change!
+
+        <p>If no object is growing, this value says where the next object you
+allocate will start (once again assuming it fits in the current
+chunk). 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void * <b>obstack_next_free</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005fnext_005ffree-333"></a></var><br>
+<blockquote><p>This function returns the address of the first free byte in the current
+chunk of obstack <var>obstack-ptr</var>.  This is the end of the currently
+growing object.  If no object is growing, <code>obstack_next_free</code>
+returns the same value as <code>obstack_base</code>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>obstack_object_size</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005fobject_005fsize-334"></a></var><br>
+<blockquote><p>This function returns the size in bytes of the currently growing object. 
+This is equivalent to
+
+     <pre class="smallexample">          obstack_next_free (<var>obstack-ptr</var>) - obstack_base (<var>obstack-ptr</var>)
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

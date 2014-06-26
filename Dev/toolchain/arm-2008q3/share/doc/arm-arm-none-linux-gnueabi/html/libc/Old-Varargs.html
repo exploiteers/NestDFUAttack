@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+<title>Old Varargs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="How-Variadic.html#How-Variadic" title="How Variadic">
+<link rel="prev" href="Argument-Macros.html#Argument-Macros" title="Argument Macros">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Old-Varargs"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argument-Macros.html#Argument-Macros">Argument Macros</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="How-Variadic.html#How-Variadic">How Variadic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.2.3.1 Old-Style Variadic Functions</h5>
+
+<p><a name="index-varargs_002eh-3731"></a>Before ISO&nbsp;C<!-- /@w -->, programmers used a slightly different facility for
+writing variadic functions.  The GNU C compiler still supports it;
+currently, it is more portable than the ISO&nbsp;C<!-- /@w --> facility, since support
+for ISO&nbsp;C<!-- /@w --> is still not universal.  The header file which defines the
+old-fashioned variadic facility is called <samp><span class="file">varargs.h</span></samp>.
+
+   <p>Using <samp><span class="file">varargs.h</span></samp> is almost the same as using <samp><span class="file">stdarg.h</span></samp>. 
+There is no difference in how you call a variadic function;
+see <a href="Calling-Variadics.html#Calling-Variadics">Calling Variadics</a>.  The only difference is in how you define
+them.  First of all, you must use old-style non-prototype syntax, like
+this:
+
+<pre class="smallexample">     tree
+     build (va_alist)
+          va_dcl
+     {
+</pre>
+   <p>Secondly, you must give <code>va_start</code> only one argument, like this:
+
+<pre class="smallexample">       va_list p;
+       va_start (p);
+</pre>
+   <p>These are the special macros used for defining old-style variadic
+functions:
+
+<!-- varargs.h -->
+<!-- Unix -->
+<div class="defun">
+&mdash; Macro: <b>va_alist</b><var><a name="index-va_005falist-3732"></a></var><br>
+<blockquote><p>This macro stands for the argument name list required in a variadic
+function. 
+</p></blockquote></div>
+
+<!-- varargs.h -->
+<!-- Unix -->
+<div class="defun">
+&mdash; Macro: <b>va_dcl</b><var><a name="index-va_005fdcl-3733"></a></var><br>
+<blockquote><p>This macro declares the implicit argument or arguments for a variadic
+function. 
+</p></blockquote></div>
+
+<!-- varargs.h -->
+<!-- Unix -->
+<div class="defun">
+&mdash; Macro: void <b>va_start</b> (<var>va_list ap</var>)<var><a name="index-va_005fstart-3734"></a></var><br>
+<blockquote><p>This macro, as defined in <samp><span class="file">varargs.h</span></samp>, initializes the argument
+pointer variable <var>ap</var> to point to the first argument of the current
+function. 
+</p></blockquote></div>
+
+   <p>The other argument macros, <code>va_arg</code> and <code>va_end</code>, are the same
+in <samp><span class="file">varargs.h</span></samp> as in <samp><span class="file">stdarg.h</span></samp>; see <a href="Argument-Macros.html#Argument-Macros">Argument Macros</a>, for
+details.
+
+   <p>It does not work to include both <samp><span class="file">varargs.h</span></samp> and <samp><span class="file">stdarg.h</span></samp> in
+the same compilation; they define <code>va_start</code> in conflicting ways.
+
+   </body></html>
+

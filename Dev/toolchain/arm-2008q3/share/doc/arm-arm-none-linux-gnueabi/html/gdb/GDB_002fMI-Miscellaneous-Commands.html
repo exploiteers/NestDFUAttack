@@ -1,0 +1,320 @@
+<html lang="en">
+<head>
+<title>GDB/MI Miscellaneous Commands - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="GDB_002fMI.html#GDB_002fMI" title="GDB/MI">
+<link rel="prev" href="GDB_002fMI-File-Transfer-Commands.html#GDB_002fMI-File-Transfer-Commands" title="GDB/MI File Transfer Commands">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="GDB%2fMI-Miscellaneous-Commands"></a>
+<a name="GDB_002fMI-Miscellaneous-Commands"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="GDB_002fMI-File-Transfer-Commands.html#GDB_002fMI-File-Transfer-Commands">GDB/MI File Transfer Commands</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="GDB_002fMI.html#GDB_002fMI">GDB/MI</a>
+<hr>
+</div>
+
+<h3 class="section">25.19 Miscellaneous <span class="sc">gdb/mi</span> Commands</h3>
+
+<!-- @subheading -gdb-complete -->
+<h4 class="subheading">The <code>-gdb-exit</code> Command</h4>
+
+<p><a name="index-g_t_002dgdb_002dexit-1578"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -gdb-exit
+</pre>
+   <p>Exit <span class="sc">gdb</span> immediately.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>Approximately corresponds to &lsquo;<samp><span class="samp">quit</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<pre class="smallexample">     (gdb)
+     -gdb-exit
+     ^exit
+</pre>
+<h4 class="subheading">The <code>-exec-abort</code> Command</h4>
+
+<p><a name="index-g_t_002dexec_002dabort-1579"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -exec-abort
+</pre>
+   <p>Kill the inferior running program.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">kill</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-gdb-set</code> Command</h4>
+
+<p><a name="index-g_t_002dgdb_002dset-1580"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -gdb-set
+</pre>
+   <p>Set an internal <span class="sc">gdb</span> variable. 
+<!-- IS THIS A DOLLAR VARIABLE? OR SOMETHING LIKE ANNOTATE ????? -->
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">set</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<pre class="smallexample">     (gdb)
+     -gdb-set $foo=3
+     ^done
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-gdb-show</code> Command</h4>
+
+<p><a name="index-g_t_002dgdb_002dshow-1581"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -gdb-show
+</pre>
+   <p>Show the current value of a <span class="sc">gdb</span> variable.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">show</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<pre class="smallexample">     (gdb)
+     -gdb-show annotate
+     ^done,value="0"
+     (gdb)
+</pre>
+<!-- @subheading -gdb-source -->
+<h4 class="subheading">The <code>-gdb-version</code> Command</h4>
+
+<p><a name="index-g_t_002dgdb_002dversion-1582"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -gdb-version
+</pre>
+   <p>Show version information for <span class="sc">gdb</span>.  Used mostly in testing.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The <span class="sc">gdb</span> equivalent is &lsquo;<samp><span class="samp">show version</span></samp>&rsquo;.  <span class="sc">gdb</span> by
+default shows this information when you start an interactive session.
+
+<h5 class="subsubheading">Example</h5>
+
+<!-- This example modifies the actual output from GDB to avoid overfull -->
+<!-- box in TeX. -->
+<pre class="smallexample">     (gdb)
+     -gdb-version
+     ~GNU gdb 5.2.1
+     ~Copyright 2000 Free Software Foundation, Inc.
+     ~GDB is free software, covered by the GNU General Public License, and
+     ~you are welcome to change it and/or distribute copies of it under
+     ~ certain conditions.
+     ~Type "show copying" to see the conditions.
+     ~There is absolutely no warranty for GDB.  Type "show warranty" for
+     ~ details.
+     ~This GDB was configured as
+      "--host=sparc-sun-solaris2.5.1 --target=ppc-eabi".
+     ^done
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-list-features</code> Command</h4>
+
+<p><a name="index-g_t_002dlist_002dfeatures-1583"></a>
+Returns a list of particular features of the MI protocol that
+this version of gdb implements.  A feature can be a command,
+or a new field in an output of some command, or even an
+important bugfix.  While a frontend can sometimes detect presence
+of a feature at runtime, it is easier to perform detection at debugger
+startup.
+
+   <p>The command returns a list of strings, with each string naming an
+available feature.  Each returned string is just a name, it does not
+have any internal structure.  The list of possible feature names
+is given below.
+
+   <p>Example output:
+
+<pre class="smallexample">     (gdb) -list-features
+     ^done,result=["feature1","feature2"]
+</pre>
+   <p>The current list of features is:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">frozen-varobjs</span></samp>&rsquo;<dd>Indicates presence of the <code>-var-set-frozen</code> command, as well
+as possible presense of the <code>frozen</code> field in the output
+of <code>-varobj-create</code>. 
+<br><dt>&lsquo;<samp><span class="samp">pending-breakpoints</span></samp>&rsquo;<dd>Indicates presence of the <samp><span class="option">-f</span></samp> option to the <code>-break-insert</code> command. 
+<br><dt>&lsquo;<samp><span class="samp">thread-info</span></samp>&rsquo;<dd>Indicates presence of the <code>-thread-info</code> command.
+
+   </dl>
+
+<h4 class="subheading">The <code>-list-target-features</code> Command</h4>
+
+<p><a name="index-g_t_002dlist_002dtarget_002dfeatures-1584"></a>
+Returns a list of particular features that are supported by the
+target.  Those features affect the permitted MI commands, but
+unlike the features reported by the <code>-list-features</code> command, the
+features depend on which target GDB is using at the moment.  Whenever
+a target can change, due to commands such as <code>-target-select</code>,
+<code>-target-attach</code> or <code>-exec-run</code>, the list of target features
+may change, and the frontend should obtain it again. 
+Example output:
+
+<pre class="smallexample">     (gdb) -list-features
+     ^done,result=["async"]
+</pre>
+   <p>The current list of features is:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">async</span></samp>&rsquo;<dd>Indicates that the target is capable of asynchronous command
+execution, which means that <span class="sc">gdb</span> will accept further commands
+while the target is running.
+
+   </dl>
+
+<h4 class="subheading">The <code>-interpreter-exec</code> Command</h4>
+
+<p><a name="index-g_t_002dinterpreter_002dexec-1585"></a>
+
+<h4 class="subheading">Synopsis</h4>
+
+<pre class="smallexample">     -interpreter-exec <var>interpreter</var> <var>command</var>
+</pre>
+   <p><a name="g_t_002dinterpreter_002dexec"></a>Execute the specified <var>command</var> in the given <var>interpreter</var>.
+
+<h4 class="subheading"><span class="sc">gdb</span> Command</h4>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">interpreter-exec</span></samp>&rsquo;.
+
+<h4 class="subheading">Example</h4>
+
+<pre class="smallexample">     (gdb)
+     -interpreter-exec console "break main"
+     &amp;"During symbol reading, couldn't parse type; debugger out of date?.\n"
+     &amp;"During symbol reading, bad structure-type format.\n"
+     ~"Breakpoint 1 at 0x8074fc6: file ../../src/gdb/main.c, line 743.\n"
+     ^done
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-inferior-tty-set</code> Command</h4>
+
+<p><a name="index-g_t_002dinferior_002dtty_002dset-1586"></a>
+
+<h4 class="subheading">Synopsis</h4>
+
+<pre class="smallexample">     -inferior-tty-set /dev/pts/1
+</pre>
+   <p>Set terminal for future runs of the program being debugged.
+
+<h4 class="subheading"><span class="sc">gdb</span> Command</h4>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">set inferior-tty</span></samp>&rsquo; /dev/pts/1.
+
+<h4 class="subheading">Example</h4>
+
+<pre class="smallexample">     (gdb)
+     -inferior-tty-set /dev/pts/1
+     ^done
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-inferior-tty-show</code> Command</h4>
+
+<p><a name="index-g_t_002dinferior_002dtty_002dshow-1587"></a>
+
+<h4 class="subheading">Synopsis</h4>
+
+<pre class="smallexample">     -inferior-tty-show
+</pre>
+   <p>Show terminal for future runs of program being debugged.
+
+<h4 class="subheading"><span class="sc">gdb</span> Command</h4>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">show inferior-tty</span></samp>&rsquo;.
+
+<h4 class="subheading">Example</h4>
+
+<pre class="smallexample">     (gdb)
+     -inferior-tty-set /dev/pts/1
+     ^done
+     (gdb)
+     -inferior-tty-show
+     ^done,inferior_tty_terminal="/dev/pts/1"
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-enable-timings</code> Command</h4>
+
+<p><a name="index-g_t_002denable_002dtimings-1588"></a>
+
+<h4 class="subheading">Synopsis</h4>
+
+<pre class="smallexample">     -enable-timings [yes | no]
+</pre>
+   <p>Toggle the printing of the wallclock, user and system times for an MI
+command as a field in its output.  This command is to help frontend
+developers optimize the performance of their code.  No argument is
+equivalent to &lsquo;<samp><span class="samp">yes</span></samp>&rsquo;.
+
+<h4 class="subheading"><span class="sc">gdb</span> Command</h4>
+
+<p>No equivalent.
+
+<h4 class="subheading">Example</h4>
+
+<pre class="smallexample">     (gdb)
+     -enable-timings
+     ^done
+     (gdb)
+     -break-insert main
+     ^done,bkpt={number="1",type="breakpoint",disp="keep",enabled="y",
+     addr="0x080484ed",func="main",file="myprog.c",
+     fullname="/home/nickrob/myprog.c",line="73",times="0"},
+     time={wallclock="0.05185",user="0.00800",system="0.00000"}
+     (gdb)
+     -enable-timings no
+     ^done
+     (gdb)
+     -exec-run
+     ^running
+     (gdb)
+     *stopped,reason="breakpoint-hit",disp="keep",bkptno="1",thread-id="0",
+     frame={addr="0x080484ed",func="main",args=[{name="argc",value="1"},
+     {name="argv",value="0xbfb60364"}],file="myprog.c",
+     fullname="/home/nickrob/myprog.c",line="73"}
+     (gdb)
+</pre>
+   </body></html>
+

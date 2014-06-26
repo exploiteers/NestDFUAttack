@@ -1,0 +1,4 @@
+loopback	127
+local		169.254	zeroconf bonjour
+private		192.168
+multicast	224

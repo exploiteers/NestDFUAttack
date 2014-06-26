@@ -1,0 +1,93 @@
+<html lang="en">
+<head>
+<title>Porting to Unix - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Porting.html#Porting" title="Porting">
+<link rel="prev" href="Hierarchy-Conventions.html#Hierarchy-Conventions" title="Hierarchy Conventions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Porting-to-Unix"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hierarchy-Conventions.html#Hierarchy-Conventions">Hierarchy Conventions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Porting.html#Porting">Porting</a>
+<hr>
+</div>
+
+<h4 class="appendixsubsec">D.2.2 Porting the GNU C Library to Unix Systems</h4>
+
+<p>Most Unix systems are fundamentally very similar.  There are variations
+between different machines, and variations in what facilities are
+provided by the kernel.  But the interface to the operating system
+facilities is, for the most part, pretty uniform and simple.
+
+   <p>The code for Unix systems is in the directory <samp><span class="file">unix</span></samp>, at the top
+level of the <samp><span class="file">sysdeps</span></samp> hierarchy.  This directory contains
+subdirectories (and subdirectory trees) for various Unix variants.
+
+   <p>The functions which are system calls in most Unix systems are
+implemented in assembly code, which is generated automatically from
+specifications in files named <samp><span class="file">syscalls.list</span></samp>.  There are several
+such files, one in <samp><span class="file">sysdeps/unix</span></samp> and others in its subdirectories. 
+Some special system calls are implemented in files that are named with a
+suffix of &lsquo;<samp><span class="samp">.S</span></samp>&rsquo;; for example, <samp><span class="file">_exit.S</span></samp>.  Files ending in
+&lsquo;<samp><span class="samp">.S</span></samp>&rsquo; are run through the C preprocessor before being fed to the
+assembler.
+
+   <p>These files all use a set of macros that should be defined in
+<samp><span class="file">sysdep.h</span></samp>.  The <samp><span class="file">sysdep.h</span></samp> file in <samp><span class="file">sysdeps/unix</span></samp>
+partially defines them; a <samp><span class="file">sysdep.h</span></samp> file in another directory must
+finish defining them for the particular machine and operating system
+variant.  See <samp><span class="file">sysdeps/unix/sysdep.h</span></samp> and the machine-specific
+<samp><span class="file">sysdep.h</span></samp> implementations to see what these macros are and what
+they should do.
+
+   <p>The system-specific makefile for the <samp><span class="file">unix</span></samp> directory
+(<samp><span class="file">sysdeps/unix/Makefile</span></samp>) gives rules to generate several files
+from the Unix system you are building the library on (which is assumed
+to be the target system you are building the library <em>for</em>).  All
+the generated files are put in the directory where the object files are
+kept; they should not affect the source tree itself.  The files
+generated are <samp><span class="file">ioctls.h</span></samp>, <samp><span class="file">errnos.h</span></samp>, <samp><span class="file">sys/param.h</span></samp>, and
+<samp><span class="file">errlist.c</span></samp> (for the <samp><span class="file">stdio</span></samp> section of the library).
+
+   </body></html>
+

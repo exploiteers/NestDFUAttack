@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Query Memory Parameters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Resources.html#Memory-Resources" title="Memory Resources">
+<link rel="prev" href="Memory-Subsystem.html#Memory-Subsystem" title="Memory Subsystem">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Query-Memory-Parameters"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Memory-Subsystem.html#Memory-Subsystem">Memory Subsystem</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Resources.html#Memory-Resources">Memory Resources</a>
+<hr>
+</div>
+
+<h4 class="subsection">22.4.2 How to get information about the memory subsystem?</h4>
+
+<p>The page size of the virtual memory the process sees is essential to
+know in several situations.  Some programming interface (e.g.,
+<code>mmap</code>, see <a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>) require the user to provide
+information adjusted to the page size.  In the case of <code>mmap</code> is it
+necessary to provide a length argument which is a multiple of the page
+size.  Another place where the knowledge about the page size is useful
+is in memory allocation.  If one allocates pieces of memory in larger
+chunks which are then subdivided by the application code it is useful to
+adjust the size of the larger blocks to the page size.  If the total
+memory requirement for the block is close (but not larger) to a multiple
+of the page size the kernel's memory handling can work more effectively
+since it only has to allocate memory pages which are fully used.  (To do
+this optimization it is necessary to know a bit about the memory
+allocator which will require a bit of memory itself for each block and
+this overhead must not push the total size over the page size multiple.
+
+   <p>The page size traditionally was a compile time constant.  But recent
+development of processors changed this.  Processors now support
+different page sizes and they can possibly even vary among different
+processes on the same system.  Therefore the system should be queried at
+runtime about the current page size and no assumptions (except about it
+being a power of two) should be made.
+
+   <p><a name="index-g_t_005fSC_005fPAGESIZE-2778"></a>The correct interface to query about the page size is <code>sysconf</code>
+(see <a href="Sysconf-Definition.html#Sysconf-Definition">Sysconf Definition</a>) with the parameter <code>_SC_PAGESIZE</code>. 
+There is a much older interface available, too.
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getpagesize</b> (<var>void</var>)<var><a name="index-getpagesize-2779"></a></var><br>
+<blockquote><p>The <code>getpagesize</code> function returns the page size of the process. 
+This value is fixed for the runtime of the process but can vary in
+different runs of the application.
+
+        <p>The function is declared in <samp><span class="file">unistd.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Widely available on System&nbsp;V<!-- /@w --> derived systems is a method to get
+information about the physical memory the system has.  The call
+
+   <p><a name="index-g_t_005fSC_005fPHYS_005fPAGES-2780"></a><a name="index-sysconf-2781"></a>
+<pre class="smallexample">       sysconf (_SC_PHYS_PAGES)
+</pre>
+   <p class="noindent">returns the total number of pages of physical the system has. 
+This does not mean all this memory is available.  This information can
+be found using
+
+   <p><a name="index-g_t_005fSC_005fAVPHYS_005fPAGES-2782"></a><a name="index-sysconf-2783"></a>
+<pre class="smallexample">       sysconf (_SC_AVPHYS_PAGES)
+</pre>
+   <p>These two values help to optimize applications.  The value returned for
+<code>_SC_AVPHYS_PAGES</code> is the amount of memory the application can use
+without hindering any other process (given that no other process
+increases its memory usage).  The value returned for
+<code>_SC_PHYS_PAGES</code> is more or less a hard limit for the working set. 
+If all applications together constantly use more than that amount of
+memory the system is in trouble.
+
+   <p>The GNU C library provides in addition to these already described way to
+get this information two functions.  They are declared in the file
+<samp><span class="file">sys/sysinfo.h</span></samp>.  Programmers should prefer to use the
+<code>sysconf</code> method described above.
+
+<!-- sys/sysinfo.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: long int <b>get_phys_pages</b> (<var>void</var>)<var><a name="index-get_005fphys_005fpages-2784"></a></var><br>
+<blockquote><p>The <code>get_phys_pages</code> function returns the total number of pages of
+physical the system has.  To get the amount of memory this number has to
+be multiplied by the page size.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- sys/sysinfo.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: long int <b>get_avphys_pages</b> (<var>void</var>)<var><a name="index-get_005favphys_005fpages-2785"></a></var><br>
+<blockquote><p>The <code>get_phys_pages</code> function returns the number of available pages of
+physical the system has.  To get the amount of memory this number has to
+be multiplied by the page size.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   </body></html>
+

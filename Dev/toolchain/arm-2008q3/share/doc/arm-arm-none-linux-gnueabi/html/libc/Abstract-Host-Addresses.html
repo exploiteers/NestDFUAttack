@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Abstract Host Addresses - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Host-Addresses.html#Host-Addresses" title="Host Addresses">
+<link rel="next" href="Host-Address-Data-Type.html#Host-Address-Data-Type" title="Host Address Data Type">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Abstract-Host-Addresses"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Host-Address-Data-Type.html#Host-Address-Data-Type">Host Address Data Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">16.6.2.1 Internet Host Addresses</h5>
+
+<p><a name="index-host-address_002c-Internet-1686"></a><a name="index-Internet-host-address-1687"></a>
+
+   <p><a name="index-network-number-1688"></a><a name="index-local-network-address-number-1689"></a>An IPv4 Internet host address is a number containing four bytes of data. 
+Historically these are divided into two parts, a <dfn>network number</dfn> and a
+<dfn>local network address number</dfn> within that network.  In the
+mid-1990s classless addresses were introduced which changed this
+behavior.  Since some functions implicitly expect the old definitions,
+we first describe the class-based network and will then describe
+classless addresses.  IPv6 uses only classless addresses and therefore
+the following paragraphs don't apply.
+
+   <p>The class-based IPv4 network number consists of the first one, two or
+three bytes; the rest of the bytes are the local address.
+
+   <p>IPv4 network numbers are registered with the Network Information Center
+(NIC), and are divided into three classes&mdash;A, B and C.  The local
+network address numbers of individual machines are registered with the
+administrator of the particular network.
+
+   <p>Class A networks have single-byte numbers in the range 0 to 127.  There
+are only a small number of Class A networks, but they can each support a
+very large number of hosts.  Medium-sized Class B networks have two-byte
+network numbers, with the first byte in the range 128 to 191.  Class C
+networks are the smallest; they have three-byte network numbers, with
+the first byte in the range 192-255.  Thus, the first 1, 2, or 3 bytes
+of an Internet address specify a network.  The remaining bytes of the
+Internet address specify the address within that network.
+
+   <p>The Class A network 0 is reserved for broadcast to all networks.  In
+addition, the host number 0 within each network is reserved for broadcast
+to all hosts in that network.  These uses are obsolete now but for
+compatibility reasons you shouldn't use network 0 and host number 0.
+
+   <p>The Class A network 127 is reserved for loopback; you can always use
+the Internet address &lsquo;<samp><span class="samp">127.0.0.1</span></samp>&rsquo; to refer to the host machine.
+
+   <p>Since a single machine can be a member of multiple networks, it can
+have multiple Internet host addresses.  However, there is never
+supposed to be more than one machine with the same host address.
+
+<!-- !!! this section could document the IN_CLASS* macros in <netinet/in.h>. -->
+<!-- No, it shouldn't since they're obsolete. -->
+   <p><a name="index-standard-dot-notation_002c-for-Internet-addresses-1690"></a><a name="index-dot-notation_002c-for-Internet-addresses-1691"></a>There are four forms of the <dfn>standard numbers-and-dots notation</dfn>
+for Internet addresses:
+
+     <dl>
+<dt><var>a</var><code>.</code><var>b</var><code>.</code><var>c</var><code>.</code><var>d</var><dd>This specifies all four bytes of the address individually and is the
+commonly used representation.
+
+     <br><dt><var>a</var><code>.</code><var>b</var><code>.</code><var>c</var><dd>The last part of the address, <var>c</var>, is interpreted as a 2-byte quantity. 
+This is useful for specifying host addresses in a Class B network with
+network address number <var>a</var><code>.</code><var>b</var>.
+
+     <br><dt><var>a</var><code>.</code><var>b</var><dd>The last part of the address, <var>b</var>, is interpreted as a 3-byte quantity. 
+This is useful for specifying host addresses in a Class A network with
+network address number <var>a</var>.
+
+     <br><dt><var>a</var><dd>If only one part is given, this corresponds directly to the host address
+number. 
+</dl>
+
+   <p>Within each part of the address, the usual C conventions for specifying
+the radix apply.  In other words, a leading &lsquo;<samp><span class="samp">0x</span></samp>&rsquo; or &lsquo;<samp><span class="samp">0X</span></samp>&rsquo; implies
+hexadecimal radix; a leading &lsquo;<samp><span class="samp">0</span></samp>&rsquo; implies octal; and otherwise decimal
+radix is assumed.
+
+<h5 class="subsubheading">Classless Addresses</h5>
+
+<p>IPv4 addresses (and IPv6 addresses also) are now considered classless;
+the distinction between classes A, B and C can be ignored.  Instead an
+IPv4 host address consists of a 32-bit address and a 32-bit mask.  The
+mask contains set bits for the network part and cleared bits for the
+host part.  The network part is contiguous from the left, with the
+remaining bits representing the host.  As a consequence, the netmask can
+simply be specified as the number of set bits.  Classes A, B and C are
+just special cases of this general rule.  For example, class A addresses
+have a netmask of &lsquo;<samp><span class="samp">255.0.0.0</span></samp>&rsquo; or a prefix length of 8.
+
+   <p>Classless IPv4 network addresses are written in numbers-and-dots
+notation with the prefix length appended and a slash as separator.  For
+example the class A network 10 is written as &lsquo;<samp><span class="samp">10.0.0.0/8</span></samp>&rsquo;.
+
+<h5 class="subsubheading">IPv6 Addresses</h5>
+
+<p>IPv6 addresses contain 128 bits (IPv4 has 32 bits) of data.  A host
+address is usually written as eight 16-bit hexadecimal numbers that are
+separated by colons.  Two colons are used to abbreviate strings of
+consecutive zeros.  For example, the IPv6 loopback address
+&lsquo;<samp><span class="samp">0:0:0:0:0:0:0:1</span></samp>&rsquo; can just be written as &lsquo;<samp><span class="samp">::1</span></samp>&rsquo;.
+
+   </body></html>
+

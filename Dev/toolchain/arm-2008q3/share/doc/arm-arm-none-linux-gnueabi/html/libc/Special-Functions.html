@@ -1,0 +1,261 @@
+<html lang="en">
+<head>
+<title>Special Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="prev" href="Hyperbolic-Functions.html#Hyperbolic-Functions" title="Hyperbolic Functions">
+<link rel="next" href="Errors-in-Math-Functions.html#Errors-in-Math-Functions" title="Errors in Math Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Special-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Errors-in-Math-Functions.html#Errors-in-Math-Functions">Errors in Math Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hyperbolic-Functions.html#Hyperbolic-Functions">Hyperbolic Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.6 Special Functions</h3>
+
+<p><a name="index-special-functions-2239"></a><a name="index-Bessel-functions-2240"></a><a name="index-gamma-function-2241"></a>
+These are some more exotic mathematical functions which are sometimes
+useful.  Currently they only have real-valued versions.
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>erf</b> (<var>double x</var>)<var><a name="index-erf-2242"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>erff</b> (<var>float x</var>)<var><a name="index-erff-2243"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>erfl</b> (<var>long double x</var>)<var><a name="index-erfl-2244"></a></var><br>
+<blockquote><p><code>erf</code> returns the error function of <var>x</var>.  The error
+function is defined as
+     <pre class="smallexample">          erf (x) = 2/sqrt(pi) * integral from 0 to x of exp(-t^2) dt
+</pre>
+        </blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>erfc</b> (<var>double x</var>)<var><a name="index-erfc-2245"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>erfcf</b> (<var>float x</var>)<var><a name="index-erfcf-2246"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>erfcl</b> (<var>long double x</var>)<var><a name="index-erfcl-2247"></a></var><br>
+<blockquote><p><code>erfc</code> returns <code>1.0 - erf(</code><var>x</var><code>)</code>, but computed in a
+fashion that avoids round-off error when <var>x</var> is large. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>lgamma</b> (<var>double x</var>)<var><a name="index-lgamma-2248"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>lgammaf</b> (<var>float x</var>)<var><a name="index-lgammaf-2249"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>lgammal</b> (<var>long double x</var>)<var><a name="index-lgammal-2250"></a></var><br>
+<blockquote><p><code>lgamma</code> returns the natural logarithm of the absolute value of
+the gamma function of <var>x</var>.  The gamma function is defined as
+     <pre class="smallexample">          gamma (x) = integral from 0 to &amp;infin; of t^(x-1) e^-t dt
+</pre>
+        <p><a name="index-signgam-2251"></a>The sign of the gamma function is stored in the global variable
+<var>signgam</var>, which is declared in <samp><span class="file">math.h</span></samp>.  It is <code>1</code> if
+the intermediate result was positive or zero, or <code>-1</code> if it was
+negative.
+
+        <p>To compute the real gamma function you can use the <code>tgamma</code>
+function or you can compute the values as follows:
+     <pre class="smallexample">          lgam = lgamma(x);
+          gam  = signgam*exp(lgam);
+</pre>
+        <p>The gamma function has singularities at the non-positive integers. 
+<code>lgamma</code> will raise the zero divide exception if evaluated at a
+singularity. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: double <b>lgamma_r</b> (<var>double x, int *signp</var>)<var><a name="index-lgamma_005fr-2252"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- XPG -->
+   &mdash; Function: float <b>lgammaf_r</b> (<var>float x, int *signp</var>)<var><a name="index-lgammaf_005fr-2253"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- XPG -->
+   &mdash; Function: long double <b>lgammal_r</b> (<var>long double x, int *signp</var>)<var><a name="index-lgammal_005fr-2254"></a></var><br>
+<blockquote><p><code>lgamma_r</code> is just like <code>lgamma</code>, but it stores the sign of
+the intermediate result in the variable pointed to by <var>signp</var>
+instead of in the <var>signgam</var> global.  This means it is reentrant. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>gamma</b> (<var>double x</var>)<var><a name="index-gamma-2255"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>gammaf</b> (<var>float x</var>)<var><a name="index-gammaf-2256"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>gammal</b> (<var>long double x</var>)<var><a name="index-gammal-2257"></a></var><br>
+<blockquote><p>These functions exist for compatibility reasons.  They are equivalent to
+<code>lgamma</code> etc.  It is better to use <code>lgamma</code> since for one the
+name reflects better the actual computation, moreover <code>lgamma</code> is
+standardized in ISO&nbsp;C99<!-- /@w --> while <code>gamma</code> is not. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- XPG, ISO -->
+<div class="defun">
+&mdash; Function: double <b>tgamma</b> (<var>double x</var>)<var><a name="index-tgamma-2258"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- XPG, ISO -->
+   &mdash; Function: float <b>tgammaf</b> (<var>float x</var>)<var><a name="index-tgammaf-2259"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- XPG, ISO -->
+   &mdash; Function: long double <b>tgammal</b> (<var>long double x</var>)<var><a name="index-tgammal-2260"></a></var><br>
+<blockquote><p><code>tgamma</code> applies the gamma function to <var>x</var>.  The gamma
+function is defined as
+     <pre class="smallexample">          gamma (x) = integral from 0 to &amp;infin; of t^(x-1) e^-t dt
+</pre>
+        <p>This function was introduced in ISO&nbsp;C99<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>j0</b> (<var>double x</var>)<var><a name="index-j0-2261"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>j0f</b> (<var>float x</var>)<var><a name="index-j0f-2262"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>j0l</b> (<var>long double x</var>)<var><a name="index-j0l-2263"></a></var><br>
+<blockquote><p><code>j0</code> returns the Bessel function of the first kind of order 0 of
+<var>x</var>.  It may signal underflow if <var>x</var> is too large. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>j1</b> (<var>double x</var>)<var><a name="index-j1-2264"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>j1f</b> (<var>float x</var>)<var><a name="index-j1f-2265"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>j1l</b> (<var>long double x</var>)<var><a name="index-j1l-2266"></a></var><br>
+<blockquote><p><code>j1</code> returns the Bessel function of the first kind of order 1 of
+<var>x</var>.  It may signal underflow if <var>x</var> is too large. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>jn</b> (<var>int n, double x</var>)<var><a name="index-jn-2267"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>jnf</b> (<var>int n, float x</var>)<var><a name="index-jnf-2268"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>jnl</b> (<var>int n, long double x</var>)<var><a name="index-jnl-2269"></a></var><br>
+<blockquote><p><code>jn</code> returns the Bessel function of the first kind of order
+<var>n</var> of <var>x</var>.  It may signal underflow if <var>x</var> is too large. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>y0</b> (<var>double x</var>)<var><a name="index-y0-2270"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>y0f</b> (<var>float x</var>)<var><a name="index-y0f-2271"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>y0l</b> (<var>long double x</var>)<var><a name="index-y0l-2272"></a></var><br>
+<blockquote><p><code>y0</code> returns the Bessel function of the second kind of order 0 of
+<var>x</var>.  It may signal underflow if <var>x</var> is too large.  If <var>x</var>
+is negative, <code>y0</code> signals a domain error; if it is zero,
+<code>y0</code> signals overflow and returns -&amp;infin;. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>y1</b> (<var>double x</var>)<var><a name="index-y1-2273"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>y1f</b> (<var>float x</var>)<var><a name="index-y1f-2274"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>y1l</b> (<var>long double x</var>)<var><a name="index-y1l-2275"></a></var><br>
+<blockquote><p><code>y1</code> returns the Bessel function of the second kind of order 1 of
+<var>x</var>.  It may signal underflow if <var>x</var> is too large.  If <var>x</var>
+is negative, <code>y1</code> signals a domain error; if it is zero,
+<code>y1</code> signals overflow and returns -&amp;infin;. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: double <b>yn</b> (<var>int n, double x</var>)<var><a name="index-yn-2276"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: float <b>ynf</b> (<var>int n, float x</var>)<var><a name="index-ynf-2277"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- SVID -->
+   &mdash; Function: long double <b>ynl</b> (<var>int n, long double x</var>)<var><a name="index-ynl-2278"></a></var><br>
+<blockquote><p><code>yn</code> returns the Bessel function of the second kind of order <var>n</var> of
+<var>x</var>.  It may signal underflow if <var>x</var> is too large.  If <var>x</var>
+is negative, <code>yn</code> signals a domain error; if it is zero,
+<code>yn</code> signals overflow and returns -&amp;infin;. 
+</p></blockquote></div>
+
+   </body></html>
+

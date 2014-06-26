@@ -1,0 +1,226 @@
+<html lang="en">
+<head>
+<title>Contributors - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Maintenance.html#Maintenance" title="Maintenance">
+<link rel="next" href="Free-Manuals.html#Free-Manuals" title="Free Manuals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Contributors"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Free-Manuals.html#Free-Manuals">Free Manuals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Maintenance.html#Maintenance">Maintenance</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Who wrote what parts of the GNU C library -->
+<h2 class="appendix">Appendix E Contributors to the GNU C Library</h2>
+
+<p>The GNU C library was written originally by Roland McGrath, and is
+currently maintained by Ulrich Drepper.  Some parts of the library were
+contributed or worked on by other people.
+
+     <ul>
+<li>The <code>getopt</code> function and related code was written by
+Richard Stallman, David&nbsp;J.<!-- /@w --> MacKenzie, and Roland&nbsp;McGrath<!-- /@w -->.
+
+     <li>The merge sort function <code>qsort</code> was written by Michael J. Haertel.
+
+     <li>The quick sort function used as a fallback by <code>qsort</code> was written
+by Douglas C. Schmidt.
+
+     <li>The memory allocation functions <code>malloc</code>, <code>realloc</code> and
+<code>free</code> and related code were written by Michael J. Haertel,
+Wolfram&nbsp;Gloger<!-- /@w -->, and Doug&nbsp;Lea<!-- /@w -->.
+
+     <li>Fast implementations of many of the string functions (<code>memcpy</code>,
+<code>strlen</code>, etc.) were written by Torbj&ouml;rn Granlund.
+
+     <li>The <samp><span class="file">tar.h</span></samp> header file was written by David J. MacKenzie.
+
+     <li>The port to the MIPS DECStation running Ultrix 4
+(<code>mips-dec-ultrix4</code>)
+was contributed by Brendan Kehoe and Ian Lance Taylor.
+
+     <li>The DES encryption function <code>crypt</code> and related functions were
+contributed by Michael Glad.
+
+     <li>The <code>ftw</code> and <code>nftw</code> functions were contributed by Ulrich Drepper.
+
+     <li>The startup code to support SunOS shared libraries was contributed by
+Tom Quinn.
+
+     <li>The <code>mktime</code> function was contributed by Paul Eggert.
+
+     <li>The port to the Sequent Symmetry running Dynix version 3
+(<code>i386-sequent-bsd</code>) was contributed by Jason Merrill.
+
+     <li>The timezone support code is derived from the public-domain timezone
+package by Arthur David Olson and his many contributors.
+
+     <li>The port to the DEC Alpha running OSF/1 (<code>alpha-dec-osf1</code>) was
+contributed by Brendan Kehoe, using some code written by Roland McGrath.
+
+     <li>The port to SGI machines running Irix 4 (<code>mips-sgi-irix4</code>) was
+contributed by Tom Quinn.
+
+     <li>The port of the Mach and Hurd code to the MIPS architecture
+(<code>mips-</code><var>anything</var><code>-gnu</code>) was contributed by Kazumoto Kojima.
+
+     <li>The floating-point printing function used by <code>printf</code> and friends
+and the floating-point reading function used by <code>scanf</code>,
+<code>strtod</code> and friends were written by Ulrich Drepper.  The
+multi-precision integer functions used in those functions are taken from
+GNU MP, which was contributed by Torbj&ouml;rn Granlund.
+
+     <li>The internationalization support in the library, and the support
+programs <code>locale</code> and <code>localedef</code>, were written by Ulrich
+Drepper.  Ulrich Drepper adapted the support code for message catalogs
+(<samp><span class="file">libintl.h</span></samp>, etc.) from the GNU <code>gettext</code> package, which he
+also wrote.  He also contributed the <code>catgets</code> support and the
+entire suite of multi-byte and wide-character support functions
+(<samp><span class="file">wctype.h</span></samp>, <samp><span class="file">wchar.h</span></samp>, etc.).
+
+     <li>The implementations of the <samp><span class="file">nsswitch.conf</span></samp> mechanism and the files
+and DNS backends for it were designed and written by Ulrich Drepper and
+Roland McGrath, based on a backend interface defined by Peter Eriksson.
+
+     <li>The port to Linux i386/ELF (<code>i386-</code><var>anything</var><code>-linux</code>) was
+contributed by Ulrich Drepper, based in large part on work done in
+Hongjiu Lu's Linux version of the GNU C Library.
+
+     <li>The port to Linux/m68k (<code>m68k-</code><var>anything</var><code>-linux</code>) was
+contributed by Andreas Schwab.
+
+     <li>The ports to Linux/ARM (<code>arm-</code><var>ANYTHING</var><code>-linuxaout</code>) and ARM
+standalone (<code>arm-</code><var>ANYTHING</var><code>-none</code>), as well as parts of the
+IPv6 support code, were contributed by Philip Blundell.
+
+     <li>Richard Henderson contributed the ELF dynamic linking code and other
+support for the Alpha processor.
+
+     <li>David Mosberger-Tang contributed the port to Linux/Alpha
+(<code>alpha-</code><var>anything</var><code>-linux</code>).
+
+     <li>The port to Linux on PowerPC (<code>powerpc-</code><var>anything</var><code>-linux</code>)
+was contributed by Geoffrey Keating.
+
+     <li>Miles Bader wrote the argp argument-parsing package, and the argz/envz
+interfaces.
+
+     <li>Stephen R. van den Berg contributed a highly-optimized <code>strstr</code> function.
+
+     <li>Ulrich Drepper contributed the <code>hsearch</code> and <code>drand48</code>
+families of functions; reentrant &lsquo;<samp><span class="samp">...</span><code>_r</code></samp>&rsquo; versions of the
+<code>random</code> family; System V shared memory and IPC support code; and
+several highly-optimized string functions for i<var>x</var>86 processors.
+
+     <li>The math functions are taken from <code>fdlibm-5.1</code> by Sun
+Microsystems, as modified by J.T. Conklin, Ian Lance Taylor,
+Ulrich Drepper, Andreas Schwab, and Roland McGrath.
+
+     <li>The <code>libio</code> library used to implement <code>stdio</code> functions on
+some platforms was written by Per Bothner and modified by Ulrich Drepper.
+
+     <li>Eric Youngdale and Ulrich Drepper implemented versioning of objects on
+the symbol level.
+
+     <li>Thorsten Kukuk provided an implementation for NIS (YP) and NIS+,
+securelevel 0, 1 and 2.
+
+     <li>Andreas Jaeger provided a test suite for the math library.
+
+     <li>Mark Kettenis implemented the utmpx interface and an utmp daemon.
+
+     <li>Ulrich Drepper added character conversion functions (<code>iconv</code>).
+
+     <li>Thorsten Kukuk provided an implementation for a caching daemon for NSS
+(nscd).
+
+     <li>Tim Waugh provided an implementation of the POSIX.2 wordexp function family.
+
+     <li>Mark Kettenis provided a Hesiod NSS module.
+
+     <li>The Internet-related code (most of the <samp><span class="file">inet</span></samp> subdirectory) and
+several other miscellaneous functions and header files have been
+included from 4.4 BSD with little or no modification.  The copying
+permission notice for this code can be found in the file <samp><span class="file">LICENSES</span></samp>
+in the source distribution.
+
+     <li>The random number generation functions <code>random</code>, <code>srandom</code>,
+<code>setstate</code> and <code>initstate</code>, which are also the basis for the
+<code>rand</code> and <code>srand</code> functions, were written by Earl T. Cohen
+for the University of California at Berkeley and are copyrighted by the
+Regents of the University of California.  They have undergone minor
+changes to fit into the GNU C library and to fit the ISO&nbsp;C<!-- /@w --> standard,
+but the functional code is Berkeley's.
+
+     <li>The DNS resolver code is taken directly from BIND 4.9.5, which
+includes copyrighted code from UC Berkeley and from Digital Equipment
+Corporation.  See the file <samp><span class="file">LICENSES</span></samp> for the text of the DEC license.
+
+     <li>The code to support Sun RPC is taken verbatim from Sun's
+<span class="sc">rpcsrc-4.0</span><!-- /@w --> distribution; see the file <samp><span class="file">LICENSES</span></samp> for the
+text of the license.
+
+     <li>Some of the support code for Mach is taken from Mach 3.0 by CMU;
+the file if_ppp.h is also copyright by CMU, but under a different license;
+see the file <samp><span class="file">LICENSES</span></samp> for the text of the licenses.
+
+     <li>Many of the IA64 math functions are taken from a collection of
+&ldquo;Highly Optimized Mathematical Functions for Itanium&rdquo; that Intel
+makes available under a free license; see the file <samp><span class="file">LICENSES</span></samp> for
+details.
+
+     <li>The <code>getaddrinfo</code> and <code>getnameinfo</code> functions and supporting
+code were written by Craig Metz; see the file <samp><span class="file">LICENSES</span></samp> for
+details on their licensing.
+
+     <li>Many of the IEEE 64-bit double precision math functions
+(in the <samp><span class="file">sysdeps/ieee754/dbl-64</span></samp> subdirectory) come
+from the IBM Accurate Mathematical Library, contributed by IBM.
+
+   </ul>
+
+   </body></html>
+

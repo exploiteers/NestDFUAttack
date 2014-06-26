@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+<title>Hook Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Custom-Streams.html#Custom-Streams" title="Custom Streams">
+<link rel="prev" href="Streams-and-Cookies.html#Streams-and-Cookies" title="Streams and Cookies">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Hook-Functions"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Streams-and-Cookies.html#Streams-and-Cookies">Streams and Cookies</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Custom-Streams.html#Custom-Streams">Custom Streams</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">12.21.3.2 Custom Stream Hook Functions</h5>
+
+<p><a name="index-hook-functions-_0028of-custom-streams_0029-1165"></a>
+Here are more details on how you should define the four hook functions
+that a custom stream needs.
+
+   <p>You should define the function to read data from the cookie as:
+
+<pre class="smallexample">     ssize_t <var>reader</var> (void *<var>cookie</var>, char *<var>buffer</var>, size_t <var>size</var>)
+</pre>
+   <p>This is very similar to the <code>read</code> function; see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>.  Your function should transfer up to <var>size</var> bytes into
+the <var>buffer</var>, and return the number of bytes read, or zero to
+indicate end-of-file.  You can return a value of <code>-1</code> to indicate
+an error.
+
+   <p>You should define the function to write data to the cookie as:
+
+<pre class="smallexample">     ssize_t <var>writer</var> (void *<var>cookie</var>, const char *<var>buffer</var>, size_t <var>size</var>)
+</pre>
+   <p>This is very similar to the <code>write</code> function; see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>.  Your function should transfer up to <var>size</var> bytes from
+the buffer, and return the number of bytes written.  You can return a
+value of <code>-1</code> to indicate an error.
+
+   <p>You should define the function to perform seek operations on the cookie
+as:
+
+<pre class="smallexample">     int <var>seeker</var> (void *<var>cookie</var>, off64_t *<var>position</var>, int <var>whence</var>)
+</pre>
+   <p>For this function, the <var>position</var> and <var>whence</var> arguments are
+interpreted as for <code>fgetpos</code>; see <a href="Portable-Positioning.html#Portable-Positioning">Portable Positioning</a>.
+
+   <p>After doing the seek operation, your function should store the resulting
+file position relative to the beginning of the file in <var>position</var>. 
+Your function should return a value of <code>0</code> on success and <code>-1</code>
+to indicate an error.
+
+   <p>You should define the function to do cleanup operations on the cookie
+appropriate for closing the stream as:
+
+<pre class="smallexample">     int <var>cleaner</var> (void *<var>cookie</var>)
+</pre>
+   <p>Your function should return <code>-1</code> to indicate an error, and <code>0</code>
+otherwise.
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>cookie_read_function</b><var><a name="index-cookie_005fread_005ffunction-1166"></a></var><br>
+<blockquote><p>This is the data type that the read function for a custom stream should have. 
+If you declare the function as shown above, this is the type it will have. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>cookie_write_function</b><var><a name="index-cookie_005fwrite_005ffunction-1167"></a></var><br>
+<blockquote><p>The data type of the write function for a custom stream. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>cookie_seek_function</b><var><a name="index-cookie_005fseek_005ffunction-1168"></a></var><br>
+<blockquote><p>The data type of the seek function for a custom stream. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>cookie_close_function</b><var><a name="index-cookie_005fclose_005ffunction-1169"></a></var><br>
+<blockquote><p>The data type of the close function for a custom stream. 
+</p></blockquote></div>
+
+<!-- ??? This section could use an example. -->
+   </body></html>
+

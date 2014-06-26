@@ -1,0 +1,21 @@
+# List of terminals on which the super user is allowed to login. This
+# is only used if Pluggable Authentication Modules (PAM) are not
+# enabled.
+# The "last" console
+console
+# Serial port consoles
+ttyS0
+ttyO0
+ttyS1
+ttyO1
+# USB consoles
+ttyGS0
+# Virtual consoles
+tty0
+tty1
+tty2
+tty3
+tty4
+tty5
+tty6
+tty7

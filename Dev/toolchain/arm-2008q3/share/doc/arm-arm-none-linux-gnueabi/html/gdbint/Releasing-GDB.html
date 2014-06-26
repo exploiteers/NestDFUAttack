@@ -1,0 +1,628 @@
+<html lang="en">
+<head>
+<title>Releasing GDB - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Start-of-New-Year-Procedure.html#Start-of-New-Year-Procedure" title="Start of New Year Procedure">
+<link rel="next" href="Testsuite.html#Testsuite" title="Testsuite">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Releasing-GDB"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Testsuite.html#Testsuite">Testsuite</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Start-of-New-Year-Procedure.html#Start-of-New-Year-Procedure">Start of New Year Procedure</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">19 Releasing <span class="sc">gdb</span></h2>
+
+<p><a name="index-making-a-new-release-of-gdb-429"></a>
+
+<h3 class="section">19.1 Branch Commit Policy</h3>
+
+<p>The branch commit policy is pretty slack.  <span class="sc">gdb</span> releases 5.0,
+5.1 and 5.2 all used the below:
+
+     <ul>
+<li>The <samp><span class="file">gdb/MAINTAINERS</span></samp> file still holds. 
+<li>Don't fix something on the branch unless/until it is also fixed in the
+trunk.  If this isn't possible, mentioning it in the <samp><span class="file">gdb/PROBLEMS</span></samp>
+file is better than committing a hack. 
+<li>When considering a patch for the branch, suggested criteria include:
+Does it fix a build?  Does it fix the sequence <kbd>break main; run</kbd>
+when debugging a static binary? 
+<li>The further a change is from the core of <span class="sc">gdb</span>, the less likely
+the change will worry anyone (e.g., target specific code). 
+<li>Only post a proposal to change the core of <span class="sc">gdb</span> after you've
+sent individual bribes to all the people listed in the
+<samp><span class="file">MAINTAINERS</span></samp> file <tt>;-)</tt>
+</ul>
+
+   <p><em>Pragmatics: Provided updates are restricted to non-core
+functionality there is little chance that a broken change will be fatal. 
+This means that changes such as adding a new architectures or (within
+reason) support for a new host are considered acceptable.</em>
+
+<h3 class="section">19.2 Obsoleting code</h3>
+
+<p>Before anything else, poke the other developers (and around the source
+code) to see if there is anything that can be removed from <span class="sc">gdb</span>
+(an old target, an unused file).
+
+   <p>Obsolete code is identified by adding an <code>OBSOLETE</code> prefix to every
+line.  Doing this means that it is easy to identify something that has
+been obsoleted when greping through the sources.
+
+   <p>The process is done in stages &mdash; this is mainly to ensure that the
+wider <span class="sc">gdb</span> community has a reasonable opportunity to respond. 
+Remember, everything on the Internet takes a week.
+
+     <ol type=1 start=1>
+<li>Post the proposal on <a href="mailto:gdb@sources.redhat.com">the GDB mailing list</a> Creating a bug report to track the task's state, is also highly
+recommended. 
+<li>Wait a week or so. 
+<li>Post the proposal on <a href="mailto:gdb-announce@sources.redhat.com">the GDB Announcement mailing list</a>. 
+<li>Wait a week or so. 
+<li>Go through and edit all relevant files and lines so that they are
+prefixed with the word <code>OBSOLETE</code>. 
+<li>Wait until the next GDB version, containing this obsolete code, has been
+released. 
+<li>Remove the obsolete code.
+        </ol>
+
+<p class="noindent"><em>Maintainer note: While removing old code is regrettable it is
+hopefully better for </em><span class="sc">gdb</span><em>'s long term development.  Firstly it
+helps the developers by removing code that is either no longer relevant
+or simply wrong.  Secondly since it removes any history associated with
+the file (effectively clearing the slate) the developer has a much freer
+hand when it comes to fixing broken files.</em>
+
+<h3 class="section">19.3 Before the Branch</h3>
+
+<p>The most important objective at this stage is to find and fix simple
+changes that become a pain to track once the branch is created.  For
+instance, configuration problems that stop <span class="sc">gdb</span> from even
+building.  If you can't get the problem fixed, document it in the
+<samp><span class="file">gdb/PROBLEMS</span></samp> file.
+
+<h4 class="subheading">Prompt for <samp><span class="file">gdb/NEWS</span></samp></h4>
+
+<p>People always forget.  Send a post reminding them but also if you know
+something interesting happened add it yourself.  The <code>schedule</code>
+script will mention this in its e-mail.
+
+<h4 class="subheading">Review <samp><span class="file">gdb/README</span></samp></h4>
+
+<p>Grab one of the nightly snapshots and then walk through the
+<samp><span class="file">gdb/README</span></samp> looking for anything that can be improved.  The
+<code>schedule</code> script will mention this in its e-mail.
+
+<h4 class="subheading">Refresh any imported files.</h4>
+
+<p>A number of files are taken from external repositories.  They include:
+
+     <ul>
+<li><samp><span class="file">texinfo/texinfo.tex</span></samp>
+<li><samp><span class="file">config.guess</span></samp> et. al. (see the top-level <samp><span class="file">MAINTAINERS</span></samp>
+file)
+<li><samp><span class="file">etc/standards.texi</span></samp>, <samp><span class="file">etc/make-stds.texi</span></samp>
+</ul>
+
+<h4 class="subheading">Check the ARI</h4>
+
+<p><a href="http://sources.redhat.com/gdb/ari">A.R.I.</a> is an <code>awk</code> script
+(Awk Regression Index ;-) that checks for a number of errors and coding
+conventions.  The checks include things like using <code>malloc</code> instead
+of <code>xmalloc</code> and file naming problems.  There shouldn't be any
+regressions.
+
+<h4 class="subsection">19.3.1 Review the bug data base</h4>
+
+<p>Close anything obviously fixed.
+
+<h4 class="subsection">19.3.2 Check all cross targets build</h4>
+
+<p>The targets are listed in <samp><span class="file">gdb/MAINTAINERS</span></samp>.
+
+<h3 class="section">19.4 Cut the Branch</h3>
+
+<h4 class="subheading">Create the branch</h4>
+
+<pre class="smallexample">     $  u=5.1
+     $  v=5.2
+     $  V=`echo $v | sed 's/\./_/g'`
+     $  D=`date -u +%Y-%m-%d`
+     $  echo $u $V $D
+     5.1 5_2 2002-03-03
+     $  echo cvs -f -d :ext:sources.redhat.com:/cvs/src rtag \
+     -D $D-gmt gdb_$V-$D-branchpoint insight
+     cvs -f -d :ext:sources.redhat.com:/cvs/src rtag
+     -D 2002-03-03-gmt gdb_5_2-2002-03-03-branchpoint insight
+     $  ^echo ^^
+     ...
+     $  echo cvs -f -d :ext:sources.redhat.com:/cvs/src rtag \
+     -b -r gdb_$V-$D-branchpoint gdb_$V-branch insight
+     cvs -f -d :ext:sources.redhat.com:/cvs/src rtag \
+     -b -r gdb_5_2-2002-03-03-branchpoint gdb_5_2-branch insight
+     $  ^echo ^^
+     ...
+     $
+</pre>
+     <ul>
+<li>By using <kbd>-D YYYY-MM-DD-gmt</kbd>, the branch is forced to an exact
+date/time. 
+<li>The trunk is first tagged so that the branch point can easily be found. 
+<li>Insight, which includes <span class="sc">gdb</span>, is tagged at the same time. 
+<li><samp><span class="file">version.in</span></samp> gets bumped to avoid version number conflicts. 
+<li>The reading of <samp><span class="file">.cvsrc</span></samp> is disabled using <samp><span class="file">-f</span></samp>. 
+</ul>
+
+<h4 class="subheading">Update <samp><span class="file">version.in</span></samp></h4>
+
+<pre class="smallexample">     $  u=5.1
+     $  v=5.2
+     $  V=`echo $v | sed 's/\./_/g'`
+     $  echo $u $v$V
+     5.1 5_2
+     $  cd /tmp
+     $  echo cvs -f -d :ext:sources.redhat.com:/cvs/src co \
+     -r gdb_$V-branch src/gdb/version.in
+     cvs -f -d :ext:sources.redhat.com:/cvs/src co
+      -r gdb_5_2-branch src/gdb/version.in
+     $  ^echo ^^
+     U src/gdb/version.in
+     $  cd src/gdb
+     $  echo $u.90-0000-00-00-cvs &gt; version.in
+     $  cat version.in
+     5.1.90-0000-00-00-cvs
+     $  cvs -f commit version.in
+</pre>
+     <ul>
+<li><samp><span class="file">0000-00-00</span></samp> is used as a date to pump prime the version.in update
+mechanism. 
+<li><samp><span class="file">.90</span></samp> and the previous branch version are used as fairly arbitrary
+initial branch version number. 
+</ul>
+
+<h4 class="subheading">Update the web and news pages</h4>
+
+<p>Something?
+
+<h4 class="subheading">Tweak cron to track the new branch</h4>
+
+<p>The file <samp><span class="file">gdbadmin/cron/crontab</span></samp> contains gdbadmin's cron table. 
+This file needs to be updated so that:
+
+     <ul>
+<li>A daily timestamp is added to the file <samp><span class="file">version.in</span></samp>. 
+<li>The new branch is included in the snapshot process. 
+</ul>
+
+<p class="noindent">See the file <samp><span class="file">gdbadmin/cron/README</span></samp> for how to install the updated
+cron table.
+
+   <p>The file <samp><span class="file">gdbadmin/ss/README</span></samp> should also be reviewed to reflect
+any changes.  That file is copied to both the branch/ and current/
+snapshot directories.
+
+<h4 class="subheading">Update the NEWS and README files</h4>
+
+<p>The <samp><span class="file">NEWS</span></samp> file needs to be updated so that on the branch it refers
+to <em>changes in the current release</em> while on the trunk it also
+refers to <em>changes since the current release</em>.
+
+   <p>The <samp><span class="file">README</span></samp> file needs to be updated so that it refers to the
+current release.
+
+<h4 class="subheading">Post the branch info</h4>
+
+<p>Send an announcement to the mailing lists:
+
+     <ul>
+<li><a href="mailto:gdb-announce@sources.redhat.com">GDB Announcement mailing list</a>
+<li><a href="mailto:gdb@sources.redhat.com">GDB Discussion mailing list</a> and
+<a href="mailto:gdb-testers@sources.redhat.com">GDB Testers mailing list</a>
+</ul>
+
+   <p><em>Pragmatics: The branch creation is sent to the announce list to
+ensure that people people not subscribed to the higher volume discussion
+list are alerted.</em>
+
+   <p>The announcement should include:
+
+     <ul>
+<li>The branch tag. 
+<li>How to check out the branch using CVS. 
+<li>The date/number of weeks until the release. 
+<li>The branch commit policy still holds. 
+</ul>
+
+<h3 class="section">19.5 Stabilize the branch</h3>
+
+<p>Something goes here.
+
+<h3 class="section">19.6 Create a Release</h3>
+
+<p>The process of creating and then making available a release is broken
+down into a number of stages.  The first part addresses the technical
+process of creating a releasable tar ball.  The later stages address the
+process of releasing that tar ball.
+
+   <p>When making a release candidate just the first section is needed.
+
+<h4 class="subsection">19.6.1 Create a release candidate</h4>
+
+<p>The objective at this stage is to create a set of tar balls that can be
+made available as a formal release (or as a less formal release
+candidate).
+
+<h5 class="subsubheading">Freeze the branch</h5>
+
+<p>Send out an e-mail notifying everyone that the branch is frozen to
+<a href="mailto:gdb-patches@sources.redhat.com">gdb-patches@sources.redhat.com</a>.
+
+<h5 class="subsubheading">Establish a few defaults.</h5>
+
+<pre class="smallexample">     $  b=gdb_5_2-branch
+     $  v=5.2
+     $  t=/sourceware/snapshot-tmp/gdbadmin-tmp
+     $  echo $t/$b/$v
+     /sourceware/snapshot-tmp/gdbadmin-tmp/gdb_5_2-branch/5.2
+     $  mkdir -p $t/$b/$v
+     $  cd $t/$b/$v
+     $  pwd
+     /sourceware/snapshot-tmp/gdbadmin-tmp/gdb_5_2-branch/5.2
+     $  which autoconf
+     /home/gdbadmin/bin/autoconf
+     $
+</pre>
+<p class="noindent">Notes:
+
+     <ul>
+<li>Check the <code>autoconf</code> version carefully.  You want to be using the
+version taken from the <samp><span class="file">binutils</span></samp> snapshot directory, which can be
+found at <a href="ftp://sources.redhat.com/pub/binutils/">ftp://sources.redhat.com/pub/binutils/</a>. It is very
+unlikely that a system installed version of <code>autoconf</code> (e.g.,
+<samp><span class="file">/usr/bin/autoconf</span></samp>) is correct. 
+</ul>
+
+<h5 class="subsubheading">Check out the relevant modules:</h5>
+
+<pre class="smallexample">     $  for m in gdb insight
+     do
+     ( mkdir -p $m &amp;&amp; cd $m &amp;&amp; cvs -q -f -d /cvs/src co -P -r $b $m )
+     done
+     $
+</pre>
+<p class="noindent">Note:
+
+     <ul>
+<li>The reading of <samp><span class="file">.cvsrc</span></samp> is disabled (<samp><span class="file">-f</span></samp>) so that there isn't
+any confusion between what is written here and what your local
+<code>cvs</code> really does. 
+</ul>
+
+<h5 class="subsubheading">Update relevant files.</h5>
+
+     <dl>
+<dt><samp><span class="file">gdb/NEWS</span></samp><dd>
+Major releases get their comments added as part of the mainline.  Minor
+releases should probably mention any significant bugs that were fixed.
+
+     <p>Don't forget to include the <samp><span class="file">ChangeLog</span></samp> entry.
+
+     <pre class="smallexample">          $  emacs gdb/src/gdb/NEWS
+          ...
+          c-x 4 a
+          ...
+          c-x c-s c-x c-c
+          $  cp gdb/src/gdb/NEWS insight/src/gdb/NEWS
+          $  cp gdb/src/gdb/ChangeLog insight/src/gdb/ChangeLog
+</pre>
+     <br><dt><samp><span class="file">gdb/README</span></samp><dd>
+You'll need to update:
+
+          <ul>
+<li>The version. 
+<li>The update date. 
+<li>Who did it. 
+</ul>
+
+     <pre class="smallexample">          $  emacs gdb/src/gdb/README
+          ...
+          c-x 4 a
+          ...
+          c-x c-s c-x c-c
+          $  cp gdb/src/gdb/README insight/src/gdb/README
+          $  cp gdb/src/gdb/ChangeLog insight/src/gdb/ChangeLog
+</pre>
+     <p><em>Maintainer note: Hopefully the </em><samp><span class="file">README</span></samp><em> file was reviewed
+before the initial branch was cut so just a simple substitute is needed
+to get it updated.</em>
+
+     <p><em>Maintainer note: Other projects generate </em><samp><span class="file">README</span></samp><em> and
+</em><samp><span class="file">INSTALL</span></samp><em> from the core documentation.  This might be worth
+pursuing.</em>
+
+     <br><dt><samp><span class="file">gdb/version.in</span></samp><dd>
+     <pre class="smallexample">          $  echo $v &gt; gdb/src/gdb/version.in
+          $  cat gdb/src/gdb/version.in
+          5.2
+          $  emacs gdb/src/gdb/version.in
+          ...
+          c-x 4 a
+          ... Bump to version ...
+          c-x c-s c-x c-c
+          $  cp gdb/src/gdb/version.in insight/src/gdb/version.in
+          $  cp gdb/src/gdb/ChangeLog insight/src/gdb/ChangeLog
+</pre>
+     </dl>
+
+<h5 class="subsubheading">Do the dirty work</h5>
+
+<p>This is identical to the process used to create the daily snapshot.
+
+<pre class="smallexample">     $  for m in gdb insight
+     do
+     ( cd $m/src &amp;&amp; gmake -f src-release $m.tar )
+     done
+</pre>
+   <p>If the top level source directory does not have <samp><span class="file">src-release</span></samp>
+(<span class="sc">gdb</span> version 5.3.1 or earlier), try these commands instead:
+
+<pre class="smallexample">     $  for m in gdb insight
+     do
+     ( cd $m/src &amp;&amp; gmake -f Makefile.in $m.tar )
+     done
+</pre>
+   <h5 class="subsubheading">Check the source files</h5>
+
+<p>You're looking for files that have mysteriously disappeared. 
+<kbd>distclean</kbd> has the habit of deleting files it shouldn't.  Watch out
+for the <samp><span class="file">version.in</span></samp> update <kbd>cronjob</kbd>.
+
+<pre class="smallexample">     $  ( cd gdb/src &amp;&amp; cvs -f -q -n update )
+     M djunpack.bat
+     ? gdb-5.1.91.tar
+     ? proto-toplev
+     ... lots of generated files ...
+     M gdb/ChangeLog
+     M gdb/NEWS
+     M gdb/README
+     M gdb/version.in
+     ... lots of generated files ...
+     $
+</pre>
+   <p class="noindent"><em>Don't worry about the </em><samp><span class="file">gdb.info-??</span></samp><em> or
+</em><samp><span class="file">gdb/p-exp.tab.c</span></samp><em>.  They were generated (and yes </em><samp><span class="file">gdb.info-1</span></samp><em>
+was also generated only something strange with CVS means that they
+didn't get suppressed).  Fixing it would be nice though.</em>
+
+<h5 class="subsubheading">Create compressed versions of the release</h5>
+
+<pre class="smallexample">     $  cp */src/*.tar .
+     $  cp */src/*.bz2 .
+     $  ls -F
+     gdb/ gdb-5.2.tar insight/ insight-5.2.tar
+     $  for m in gdb insight
+     do
+     bzip2 -v -9 -c $m-$v.tar &gt; $m-$v.tar.bz2
+     gzip -v -9 -c $m-$v.tar &gt; $m-$v.tar.gz
+     done
+     $
+</pre>
+<p class="noindent">Note:
+
+     <ul>
+<li>A pipe such as <kbd>bunzip2 &lt; xxx.bz2 | gzip -9 &gt; xxx.gz</kbd> is not since,
+in that mode, <code>gzip</code> does not know the name of the file and, hence,
+can not include it in the compressed file.  This is also why the release
+process runs <code>tar</code> and <code>bzip2</code> as separate passes. 
+</ul>
+
+<h4 class="subsection">19.6.2 Sanity check the tar ball</h4>
+
+<p>Pick a popular machine (Solaris/PPC?) and try the build on that.
+
+<pre class="smallexample">     $  bunzip2 &lt; gdb-5.2.tar.bz2 | tar xpf -
+     $  cd gdb-5.2
+     $  ./configure
+     $  make
+     ...
+     $  ./gdb/gdb ./gdb/gdb
+     GNU gdb 5.2
+     ...
+     (gdb)  b main
+     Breakpoint 1 at 0x80732bc: file main.c, line 734.
+     (gdb)  run
+     Starting program: /tmp/gdb-5.2/gdb/gdb
+     
+     Breakpoint 1, main (argc=1, argv=0xbffff8b4) at main.c:734
+     734       catch_errors (captured_main, &amp;args, "", RETURN_MASK_ALL);
+     (gdb)  print args
+     $1 = {argc = 136426532, argv = 0x821b7f0}
+     (gdb)
+</pre>
+   <h4 class="subsection">19.6.3 Make a release candidate available</h4>
+
+<p>If this is a release candidate then the only remaining steps are:
+
+     <ol type=1 start=1>
+<li>Commit <samp><span class="file">version.in</span></samp> and <samp><span class="file">ChangeLog</span></samp>
+<li>Tweak <samp><span class="file">version.in</span></samp> (and <samp><span class="file">ChangeLog</span></samp> to read
+<var>L</var>.<var>M</var>.<var>N</var>-0000-00-00-cvs so that the version update
+process can restart. 
+<li>Make the release candidate available in
+<a href="ftp://sources.redhat.com/pub/gdb/snapshots/branch">ftp://sources.redhat.com/pub/gdb/snapshots/branch</a>
+<li>Notify the relevant mailing lists ( <a href="mailto:gdb@sources.redhat.com">gdb@sources.redhat.com</a> and
+<a href="mailto:gdb-testers@sources.redhat.com">gdb-testers@sources.redhat.com</a> that the candidate is available.
+        </ol>
+
+<h4 class="subsection">19.6.4 Make a formal release available</h4>
+
+<p>(And you thought all that was required was to post an e-mail.)
+
+<h5 class="subsubheading">Install on sware</h5>
+
+<p>Copy the new files to both the release and the old release directory:
+
+<pre class="smallexample">     $  cp *.bz2 *.gz ~ftp/pub/gdb/old-releases/
+     $  cp *.bz2 *.gz ~ftp/pub/gdb/releases
+</pre>
+   <p class="noindent">Clean up the releases directory so that only the most recent releases
+are available (e.g. keep 5.2 and 5.2.1 but remove 5.1):
+
+<pre class="smallexample">     $  cd ~ftp/pub/gdb/releases
+     $  rm ...
+</pre>
+   <p class="noindent">Update the file <samp><span class="file">README</span></samp> and <samp><span class="file">.message</span></samp> in the releases
+directory:
+
+<pre class="smallexample">     $  vi README
+     ...
+     $  rm -f .message
+     $  ln README .message
+</pre>
+   <h5 class="subsubheading">Update the web pages.</h5>
+
+     <dl>
+<dt><samp><span class="file">htdocs/download/ANNOUNCEMENT</span></samp><dd>This file, which is posted as the official announcement, includes:
+          <ul>
+<li>General announcement. 
+<li>News.  If making an <var>M</var>.<var>N</var>.1 release, retain the news from
+earlier <var>M</var>.<var>N</var> release. 
+<li>Errata. 
+</ul>
+
+     <br><dt><samp><span class="file">htdocs/index.html</span></samp><dt><samp><span class="file">htdocs/news/index.html</span></samp><dt><samp><span class="file">htdocs/download/index.html</span></samp><dd>These files include:
+          <ul>
+<li>Announcement of the most recent release. 
+<li>News entry (remember to update both the top level and the news directory). 
+</ul>
+     These pages also need to be regenerate using <code>index.sh</code>.
+
+     <br><dt><samp><span class="file">download/onlinedocs/</span></samp><dd>You need to find the magic command that is used to generate the online
+docs from the <samp><span class="file">.tar.bz2</span></samp>.  The best way is to look in the output
+from one of the nightly <code>cron</code> jobs and then just edit accordingly. 
+Something like:
+
+     <pre class="smallexample">          $  ~/ss/update-web-docs \
+           ~ftp/pub/gdb/releases/gdb-5.2.tar.bz2 \
+           $PWD/www \
+           /www/sourceware/htdocs/gdb/download/onlinedocs \
+           gdb
+</pre>
+     <br><dt><samp><span class="file">download/ari/</span></samp><dd>Just like the online documentation.  Something like:
+
+     <pre class="smallexample">          $  /bin/sh ~/ss/update-web-ari \
+           ~ftp/pub/gdb/releases/gdb-5.2.tar.bz2 \
+           $PWD/www \
+           /www/sourceware/htdocs/gdb/download/ari \
+           gdb
+</pre>
+     </dl>
+
+<h5 class="subsubheading">Shadow the pages onto gnu</h5>
+
+<p>Something goes here.
+
+<h5 class="subsubheading">Install the <span class="sc">gdb</span> tar ball on GNU</h5>
+
+<p>At the time of writing, the GNU machine was <kbd>gnudist.gnu.org</kbd> in
+<samp><span class="file">~ftp/gnu/gdb</span></samp>.
+
+<h5 class="subsubheading">Make the <samp><span class="file">ANNOUNCEMENT</span></samp></h5>
+
+<p>Post the <samp><span class="file">ANNOUNCEMENT</span></samp> file you created above to:
+
+     <ul>
+<li><a href="mailto:gdb-announce@sources.redhat.com">GDB Announcement mailing list</a>
+<li><a href="mailto:info-gnu@gnu.org">General GNU Announcement list</a> (but delay it a
+day or so to let things get out)
+<li><a href="mailto:bug-gdb@gnu.org">GDB Bug Report mailing list</a>
+</ul>
+
+<h4 class="subsection">19.6.5 Cleanup</h4>
+
+<p>The release is out but you're still not finished.
+
+<h5 class="subsubheading">Commit outstanding changes</h5>
+
+<p>In particular you'll need to commit any changes to:
+
+     <ul>
+<li><samp><span class="file">gdb/ChangeLog</span></samp>
+<li><samp><span class="file">gdb/version.in</span></samp>
+<li><samp><span class="file">gdb/NEWS</span></samp>
+<li><samp><span class="file">gdb/README</span></samp>
+</ul>
+
+<h5 class="subsubheading">Tag the release</h5>
+
+<p>Something like:
+
+<pre class="smallexample">     $  d=`date -u +%Y-%m-%d`
+     $  echo $d
+     2002-01-24
+     $  ( cd insight/src/gdb &amp;&amp; cvs -f -q update )
+     $  ( cd insight/src &amp;&amp; cvs -f -q tag gdb_5_2-$d-release )
+</pre>
+   <p>Insight is used since that contains more of the release than
+<span class="sc">gdb</span>.
+
+<h5 class="subsubheading">Mention the release on the trunk</h5>
+
+<p>Just put something in the <samp><span class="file">ChangeLog</span></samp> so that the trunk also
+indicates when the release was made.
+
+<h5 class="subsubheading">Restart <samp><span class="file">gdb/version.in</span></samp></h5>
+
+<p>If <samp><span class="file">gdb/version.in</span></samp> does not contain an ISO date such as
+<kbd>2002-01-24</kbd> then the daily <code>cronjob</code> won't update it.  Having
+committed all the release changes it can be set to
+<samp><span class="file">5.2.0_0000-00-00-cvs</span></samp> which will restart things (yes the <kbd>_</kbd>
+is important - it affects the snapshot process).
+
+   <p>Don't forget the <samp><span class="file">ChangeLog</span></samp>.
+
+<h5 class="subsubheading">Merge into trunk</h5>
+
+<p>The files committed to the branch may also need changes merged into the
+trunk.
+
+<h5 class="subsubheading">Revise the release schedule</h5>
+
+<p>Post a revised release schedule to <a href="mailto:gdb@sources.redhat.com">GDB Discussion List</a> with an updated announcement.  The schedule can be
+generated by running:
+
+<pre class="smallexample">     $  ~/ss/schedule `date +%s` schedule
+</pre>
+   <p class="noindent">The first parameter is approximate date/time in seconds (from the epoch)
+of the most recent release.
+
+   <p>Also update the schedule <code>cronjob</code>.
+
+<h3 class="section">19.7 Post release</h3>
+
+<p>Remove any <code>OBSOLETE</code> code.
+
+   </body></html>
+

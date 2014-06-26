@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Processes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link rel="next" href="Job-Control.html#Job-Control" title="Job Control">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Processes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Job-Control.html#Job-Control">Job Control</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Program-Basics.html#Program-Basics">Program Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% How to create processes and run other programs -->
+<h2 class="chapter">26 Processes</h2>
+
+<p><a name="index-process-3146"></a><dfn>Processes</dfn> are the primitive units for allocation of system
+resources.  Each process has its own address space and (usually) one
+thread of control.  A process executes a program; you can have multiple
+processes executing the same program, but each process has its own copy
+of the program within its own address space and executes it
+independently of the other copies.
+
+   <p><a name="index-child-process-3147"></a><a name="index-parent-process-3148"></a>Processes are organized hierarchically.  Each process has a <dfn>parent
+process</dfn> which explicitly arranged to create it.  The processes created
+by a given parent are called its <dfn>child processes</dfn>.  A child
+inherits many of its attributes from the parent process.
+
+   <p>This chapter describes how a program can create, terminate, and control
+child processes.  Actually, there are three distinct operations
+involved: creating a new child process, causing the new process to
+execute a program, and coordinating the completion of the child process
+with the original program.
+
+   <p>The <code>system</code> function provides a simple, portable mechanism for
+running another program; it does all three steps automatically.  If you
+need more control over the details of how this is done, you can use the
+primitive functions to do each step individually instead.
+
+<ul class="menu">
+<li><a accesskey="1" href="Running-a-Command.html#Running-a-Command">Running a Command</a>:            The easy way to run another program. 
+<li><a accesskey="2" href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>:    An overview of the hard way to do it. 
+<li><a accesskey="3" href="Process-Identification.html#Process-Identification">Process Identification</a>:       How to get the process ID of a process. 
+<li><a accesskey="4" href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>:           How to fork a child process. 
+<li><a accesskey="5" href="Executing-a-File.html#Executing-a-File">Executing a File</a>:             How to make a process execute another program. 
+<li><a accesskey="6" href="Process-Completion.html#Process-Completion">Process Completion</a>:           How to tell when a child process has completed. 
+<li><a accesskey="7" href="Process-Completion-Status.html#Process-Completion-Status">Process Completion Status</a>:    How to interpret the status value
+                                 returned from a child process. 
+<li><a accesskey="8" href="BSD-Wait-Functions.html#BSD-Wait-Functions">BSD Wait Functions</a>:   	More functions, for backward compatibility. 
+<li><a accesskey="9" href="Process-Creation-Example.html#Process-Creation-Example">Process Creation Example</a>:     A complete example program. 
+</ul>
+
+   </body></html>
+

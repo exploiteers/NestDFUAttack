@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Argp Global Variables - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp.html#Argp" title="Argp">
+<link rel="next" href="Argp-Parsers.html#Argp-Parsers" title="Argp Parsers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Global-Variables"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Parsers.html#Argp-Parsers">Argp Parsers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp.html#Argp">Argp</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.2 Argp Global Variables</h4>
+
+<p>These variables make it easy for user programs to implement the
+&lsquo;<samp><span class="samp">--version</span></samp>&rsquo; option and provide a bug-reporting address in the
+&lsquo;<samp><span class="samp">--help</span></samp>&rsquo; output.  These are implemented in argp by default.
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Variable: const char * <b>argp_program_version</b><var><a name="index-argp_005fprogram_005fversion-3036"></a></var><br>
+<blockquote><p>If defined or set by the user program to a non-zero value, then a
+&lsquo;<samp><span class="samp">--version</span></samp>&rsquo; option is added when parsing with <code>argp_parse</code>,
+which will print the &lsquo;<samp><span class="samp">--version</span></samp>&rsquo; string followed by a newline and
+exit.  The exception to this is if the <code>ARGP_NO_EXIT</code> flag is used. 
+</p></blockquote></div>
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Variable: const char * <b>argp_program_bug_address</b><var><a name="index-argp_005fprogram_005fbug_005faddress-3037"></a></var><br>
+<blockquote><p>If defined or set by the user program to a non-zero value,
+<code>argp_program_bug_address</code> should point to a string that will be
+printed at the end of the standard output for the &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; option,
+embedded in a sentence that says &lsquo;<samp><span class="samp">Report bugs to </span><var>address</var><span class="samp">.</span></samp>&rsquo;. 
+</p></blockquote></div>
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Variable: <b>argp_program_version_hook</b><var><a name="index-argp_005fprogram_005fversion_005fhook-3038"></a></var><br>
+<blockquote><p>If defined or set by the user program to a non-zero value, a
+&lsquo;<samp><span class="samp">--version</span></samp>&rsquo; option is added when parsing with <code>arg_parse</code>,
+which prints the program version and exits with a status of zero.  This
+is not the case if the <code>ARGP_NO_HELP</code> flag is used.  If the
+<code>ARGP_NO_EXIT</code> flag is set, the exit behavior of the program is
+suppressed or modified, as when the argp parser is going to be used by
+other programs.
+
+        <p>It should point to a function with this type of signature:
+
+     <pre class="smallexample">          void <var>print-version</var> (FILE *<var>stream</var>, struct argp_state *<var>state</var>)
+</pre>
+        <p class="noindent">See <a href="Argp-Parsing-State.html#Argp-Parsing-State">Argp Parsing State</a>, for an explanation of <var>state</var>.
+
+        <p>This variable takes precedence over <code>argp_program_version</code>, and is
+useful if a program has version information not easily expressed in a
+simple string. 
+</p></blockquote></div>
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Variable: error_t <b>argp_err_exit_status</b><var><a name="index-argp_005ferr_005fexit_005fstatus-3039"></a></var><br>
+<blockquote><p>This is the exit status used when argp exits due to a parsing error.  If
+not defined or set by the user program, this defaults to:
+<code>EX_USAGE</code> from <samp><span class="file">&lt;sysexits.h&gt;</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Character Set Handling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="next" href="Locales.html#Locales" title="Locales">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Character-Set-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Locales.html#Locales">Locales</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Support for extended character sets -->
+<h2 class="chapter">6 Character Set Handling</h2>
+
+<p>Character sets used in the early days of computing had only six, seven,
+or eight bits for each character: there was never a case where more than
+eight bits (one byte) were used to represent a single character.  The
+limitations of this approach became more apparent as more people
+grappled with non-Roman character sets, where not all the characters
+that make up a language's character set can be represented by 2^8
+choices.  This chapter shows the functionality that was added to the C
+library to support multiple character sets.
+
+<ul class="menu">
+<li><a accesskey="1" href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>:               Introduction to Extended Characters. 
+<li><a accesskey="2" href="Charset-Function-Overview.html#Charset-Function-Overview">Charset Function Overview</a>:         Overview about Character Handling
+                                      Functions. 
+<li><a accesskey="3" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>:  Restartable multibyte conversion
+                                      Functions. 
+<li><a accesskey="4" href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>:          Non-reentrant Conversion Function. 
+<li><a accesskey="5" href="Generic-Charset-Conversion.html#Generic-Charset-Conversion">Generic Charset Conversion</a>:        Generic Charset Conversion. 
+</ul>
+
+   </body></html>
+

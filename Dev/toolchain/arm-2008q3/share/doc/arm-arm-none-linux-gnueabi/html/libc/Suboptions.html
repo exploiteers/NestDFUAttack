@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Suboptions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments" title="Parsing Program Arguments">
+<link rel="prev" href="Argp.html#Argp" title="Argp">
+<link rel="next" href="Suboptions-Example.html#Suboptions-Example" title="Suboptions Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Suboptions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Suboptions-Example.html#Suboptions-Example">Suboptions Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp.html#Argp">Argp</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>
+<hr>
+</div>
+
+<!-- This is a @section so that it's at the same level as getopt and argp -->
+<h5 class="subsubsection">25.3.12.1 Parsing of Suboptions</h5>
+
+<p>Having a single level of options is sometimes not enough.  There might
+be too many options which have to be available or a set of options is
+closely related.
+
+   <p>For this case some programs use suboptions.  One of the most prominent
+programs is certainly <code>mount</code>(8).  The <code>-o</code> option take one
+argument which itself is a comma separated list of options.  To ease the
+programming of code like this the function <code>getsubopt</code> is
+available.
+
+<!-- stdlib.h -->
+<div class="defun">
+&mdash; Function: int <b>getsubopt</b> (<var>char **optionp, const char* const *tokens, char **valuep</var>)<var><a name="index-getsubopt-3096"></a></var><br>
+<blockquote>
+        <p>The <var>optionp</var> parameter must be a pointer to a variable containing
+the address of the string to process.  When the function returns the
+reference is updated to point to the next suboption or to the
+terminating &lsquo;<samp><span class="samp">\0</span></samp>&rsquo; character if there is no more suboption available.
+
+        <p>The <var>tokens</var> parameter references an array of strings containing the
+known suboptions.  All strings must be &lsquo;<samp><span class="samp">\0</span></samp>&rsquo; terminated and to mark
+the end a null pointer must be stored.  When <code>getsubopt</code> finds a
+possible legal suboption it compares it with all strings available in
+the <var>tokens</var> array and returns the index in the string as the
+indicator.
+
+        <p>In case the suboption has an associated value introduced by a &lsquo;<samp><span class="samp">=</span></samp>&rsquo;
+character, a pointer to the value is returned in <var>valuep</var>.  The
+string is &lsquo;<samp><span class="samp">\0</span></samp>&rsquo; terminated.  If no argument is available
+<var>valuep</var> is set to the null pointer.  By doing this the caller can
+check whether a necessary value is given or whether no unexpected value
+is present.
+
+        <p>In case the next suboption in the string is not mentioned in the
+<var>tokens</var> array the starting address of the suboption including a
+possible value is returned in <var>valuep</var> and the return value of the
+function is &lsquo;<samp><span class="samp">-1</span></samp>&rsquo;. 
+</p></blockquote></div>
+
+   </body></html>
+

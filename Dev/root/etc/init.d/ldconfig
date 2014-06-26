@@ -1,0 +1,54 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file updates the dynamic linker (shared library) cache.
+#
+#      While running this script on the critical start-up path will
+#      slow boot time, this can be effectively used as a stop gap
+#      until there is a way to run ldconfig from a trigger script or
+#      otherwise as part of the software installation process.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+LDCONFIG=${SBINDIR}/ldconfig
+
+update_cache () {
+	if test -x ${LDCONFIG}; then
+	    ${LDCONFIG} -v 2> ${NULL} | ${SED} -ne '/.\+:/{;s/^.\+$/./g;p;}' | ${TR} -d '\n'
+    	fi
+}
+
+case "${1}" in
+
+'create')
+	${ECHO} "Creating shared library cache: \c"
+
+	if [ ! -e "${CONFDIR}/ld.so.cache" ]; then
+		update_cache
+	else
+		${ECHO} "already exists\c"
+	fi
+
+	${ECHO} "."
+	;;
+
+'update')
+	${ECHO} "Updating shared library cache: \c"
+
+	update_cache
+
+	${ECHO} "."
+	;;
+
+*)
+	echo "Usage: ${0} <create | update>"
+	exit 1
+	;;
+
+esac

@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Directories - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Names.html#File-Names" title="File Names">
+<link rel="next" href="File-Name-Resolution.html#File-Name-Resolution" title="File Name Resolution">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Directories"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="File-Name-Resolution.html#File-Name-Resolution">File Name Resolution</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Names.html#File-Names">File Names</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.2.1 Directories</h4>
+
+<p>In order to understand the syntax of file names, you need to understand
+how the file system is organized into a hierarchy of directories.
+
+   <p><a name="index-directory-903"></a><a name="index-link-904"></a><a name="index-directory-entry-905"></a>A <dfn>directory</dfn> is a file that contains information to associate other
+files with names; these associations are called <dfn>links</dfn> or
+<dfn>directory entries</dfn>.  Sometimes, people speak of &ldquo;files in a
+directory&rdquo;, but in reality, a directory only contains pointers to
+files, not the files themselves.
+
+   <p><a name="index-file-name-component-906"></a>The name of a file contained in a directory entry is called a <dfn>file
+name component</dfn>.  In general, a file name consists of a sequence of one
+or more such components, separated by the slash character (&lsquo;<samp><span class="samp">/</span></samp>&rsquo;).  A
+file name which is just one component names a file with respect to its
+directory.  A file name with multiple components names a directory, and
+then a file in that directory, and so on.
+
+   <p>Some other documents, such as the POSIX standard, use the term
+<dfn>pathname</dfn> for what we call a file name, and either <dfn>filename</dfn>
+or <dfn>pathname component</dfn> for what this manual calls a file name
+component.  We don't use this terminology because a &ldquo;path&rdquo; is
+something completely different (a list of directories to search), and we
+think that &ldquo;pathname&rdquo; used for something else will confuse users.  We
+always use &ldquo;file name&rdquo; and &ldquo;file name component&rdquo; (or sometimes just
+&ldquo;component&rdquo;, where the context is obvious) in GNU documentation.  Some
+macros use the POSIX terminology in their names, such as
+<code>PATH_MAX</code>.  These macros are defined by the POSIX standard, so we
+cannot change their names.
+
+   <p>You can find more detailed information about operations on directories
+in <a href="File-System-Interface.html#File-System-Interface">File System Interface</a>.
+
+   </body></html>
+

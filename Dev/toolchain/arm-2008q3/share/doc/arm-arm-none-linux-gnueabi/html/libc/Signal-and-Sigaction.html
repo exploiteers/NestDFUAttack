@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+<title>Signal and Sigaction - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Actions.html#Signal-Actions" title="Signal Actions">
+<link rel="prev" href="Advanced-Signal-Handling.html#Advanced-Signal-Handling" title="Advanced Signal Handling">
+<link rel="next" href="Sigaction-Function-Example.html#Sigaction-Function-Example" title="Sigaction Function Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-and-Sigaction"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sigaction-Function-Example.html#Sigaction-Function-Example">Sigaction Function Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Advanced-Signal-Handling.html#Advanced-Signal-Handling">Advanced Signal Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Actions.html#Signal-Actions">Signal Actions</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.3.3 Interaction of <code>signal</code> and <code>sigaction</code></h4>
+
+<p>It's possible to use both the <code>signal</code> and <code>sigaction</code>
+functions within a single program, but you have to be careful because
+they can interact in slightly strange ways.
+
+   <p>The <code>sigaction</code> function specifies more information than the
+<code>signal</code> function, so the return value from <code>signal</code> cannot
+express the full range of <code>sigaction</code> possibilities.  Therefore, if
+you use <code>signal</code> to save and later reestablish an action, it may
+not be able to reestablish properly a handler that was established with
+<code>sigaction</code>.
+
+   <p>To avoid having problems as a result, always use <code>sigaction</code> to
+save and restore a handler if your program uses <code>sigaction</code> at all. 
+Since <code>sigaction</code> is more general, it can properly save and
+reestablish any action, regardless of whether it was established
+originally with <code>signal</code> or <code>sigaction</code>.
+
+   <p>On some systems if you establish an action with <code>signal</code> and then
+examine it with <code>sigaction</code>, the handler address that you get may
+not be the same as what you specified with <code>signal</code>.  It may not
+even be suitable for use as an action argument with <code>signal</code>.  But
+you can rely on using it as an argument to <code>sigaction</code>.  This
+problem never happens on the GNU system.
+
+   <p>So, you're better off using one or the other of the mechanisms
+consistently within a single program.
+
+   <p><strong>Portability Note:</strong> The basic <code>signal</code> function is a feature
+of ISO&nbsp;C<!-- /@w -->, while <code>sigaction</code> is part of the POSIX.1 standard.  If
+you are concerned about portability to non-POSIX systems, then you
+should use the <code>signal</code> function instead.
+
+   </body></html>
+

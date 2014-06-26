@@ -1,0 +1,289 @@
+<html lang="en">
+<head>
+<title>Attribute Meanings - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="next" href="Reading-Attributes.html#Reading-Attributes" title="Reading Attributes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Attribute-Meanings"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Reading-Attributes.html#Reading-Attributes">Reading Attributes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.1 The meaning of the File Attributes</h4>
+
+<p><a name="index-status-of-a-file-1490"></a><a name="index-attributes-of-a-file-1491"></a><a name="index-file-attributes-1492"></a>
+When you read the attributes of a file, they come back in a structure
+called <code>struct stat</code>.  This section describes the names of the
+attributes, their data types, and what they mean.  For the functions
+to read the attributes of a file, see <a href="Reading-Attributes.html#Reading-Attributes">Reading Attributes</a>.
+
+   <p>The header file <samp><span class="file">sys/stat.h</span></samp> declares all the symbols defined
+in this section. 
+<a name="index-sys_002fstat_002eh-1493"></a>
+<!-- sys/stat.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct stat</b><var><a name="index-struct-stat-1494"></a></var><br>
+<blockquote><p>The <code>stat</code> structure type is used to return information about the
+attributes of a file.  It contains at least the following members:
+
+          <dl>
+<dt><code>mode_t st_mode</code><dd>Specifies the mode of the file.  This includes file type information
+(see <a href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>) and the file permission bits
+(see <a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>).
+
+          <br><dt><code>ino_t st_ino</code><dd>The file serial number, which distinguishes this file from all other
+files on the same device.
+
+          <br><dt><code>dev_t st_dev</code><dd>Identifies the device containing the file.  The <code>st_ino</code> and
+<code>st_dev</code>, taken together, uniquely identify the file.  The
+<code>st_dev</code> value is not necessarily consistent across reboots or
+system crashes, however.
+
+          <br><dt><code>nlink_t st_nlink</code><dd>The number of hard links to the file.  This count keeps track of how
+many directories have entries for this file.  If the count is ever
+decremented to zero, then the file itself is discarded as soon as no
+process still holds it open.  Symbolic links are not counted in the
+total.
+
+          <br><dt><code>uid_t st_uid</code><dd>The user ID of the file's owner.  See <a href="File-Owner.html#File-Owner">File Owner</a>.
+
+          <br><dt><code>gid_t st_gid</code><dd>The group ID of the file.  See <a href="File-Owner.html#File-Owner">File Owner</a>.
+
+          <br><dt><code>off_t st_size</code><dd>This specifies the size of a regular file in bytes.  For files that are
+really devices this field isn't usually meaningful.  For symbolic links
+this specifies the length of the file name the link refers to.
+
+          <br><dt><code>time_t st_atime</code><dd>This is the last access time for the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_atime_usec</code><dd>This is the fractional part of the last access time for the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>time_t st_mtime</code><dd>This is the time of the last modification to the contents of the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_mtime_usec</code><dd>This is the fractional part of the time of the last modification to the
+contents of the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>time_t st_ctime</code><dd>This is the time of the last modification to the attributes of the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_ctime_usec</code><dd>This is the fractional part of the time of the last modification to the
+attributes of the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <!-- !!! st_rdev -->
+          <br><dt><code>blkcnt_t st_blocks</code><dd>This is the amount of disk space that the file occupies, measured in
+units of 512-byte blocks.
+
+          <p>The number of disk blocks is not strictly proportional to the size of
+the file, for two reasons: the file system may use some blocks for
+internal record keeping; and the file may be sparse&mdash;it may have
+&ldquo;holes&rdquo; which contain zeros but do not actually take up space on the
+disk.
+
+          <p>You can tell (approximately) whether a file is sparse by comparing this
+value with <code>st_size</code>, like this:
+
+          <pre class="smallexample">               (st.st_blocks * 512 &lt; st.st_size)
+</pre>
+          <p>This test is not perfect because a file that is just slightly sparse
+might not be detected as sparse at all.  For practical applications,
+this is not a problem.
+
+          <br><dt><code>unsigned int st_blksize</code><dd>The optimal block size for reading of writing this file, in bytes.  You
+might use this size for allocating the buffer space for reading of
+writing the file.  (This is unrelated to <code>st_blocks</code>.) 
+</dl>
+        </p></blockquote></div>
+
+   <p>The extensions for the Large File Support (LFS) require, even on 32-bit
+machines, types which can handle file sizes up to 2^63. 
+Therefore a new definition of <code>struct stat</code> is necessary.
+
+<!-- sys/stat.h -->
+<!-- LFS -->
+<div class="defun">
+&mdash; Data Type: <b>struct stat64</b><var><a name="index-struct-stat64-1495"></a></var><br>
+<blockquote><p>The members of this type are the same and have the same names as those
+in <code>struct stat</code>.  The only difference is that the members
+<code>st_ino</code>, <code>st_size</code>, and <code>st_blocks</code> have a different
+type to support larger values.
+
+          <dl>
+<dt><code>mode_t st_mode</code><dd>Specifies the mode of the file.  This includes file type information
+(see <a href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>) and the file permission bits
+(see <a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>).
+
+          <br><dt><code>ino64_t st_ino</code><dd>The file serial number, which distinguishes this file from all other
+files on the same device.
+
+          <br><dt><code>dev_t st_dev</code><dd>Identifies the device containing the file.  The <code>st_ino</code> and
+<code>st_dev</code>, taken together, uniquely identify the file.  The
+<code>st_dev</code> value is not necessarily consistent across reboots or
+system crashes, however.
+
+          <br><dt><code>nlink_t st_nlink</code><dd>The number of hard links to the file.  This count keeps track of how
+many directories have entries for this file.  If the count is ever
+decremented to zero, then the file itself is discarded as soon as no
+process still holds it open.  Symbolic links are not counted in the
+total.
+
+          <br><dt><code>uid_t st_uid</code><dd>The user ID of the file's owner.  See <a href="File-Owner.html#File-Owner">File Owner</a>.
+
+          <br><dt><code>gid_t st_gid</code><dd>The group ID of the file.  See <a href="File-Owner.html#File-Owner">File Owner</a>.
+
+          <br><dt><code>off64_t st_size</code><dd>This specifies the size of a regular file in bytes.  For files that are
+really devices this field isn't usually meaningful.  For symbolic links
+this specifies the length of the file name the link refers to.
+
+          <br><dt><code>time_t st_atime</code><dd>This is the last access time for the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_atime_usec</code><dd>This is the fractional part of the last access time for the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>time_t st_mtime</code><dd>This is the time of the last modification to the contents of the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_mtime_usec</code><dd>This is the fractional part of the time of the last modification to the
+contents of the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>time_t st_ctime</code><dd>This is the time of the last modification to the attributes of the file. 
+See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <br><dt><code>unsigned long int st_ctime_usec</code><dd>This is the fractional part of the time of the last modification to the
+attributes of the file.  See <a href="File-Times.html#File-Times">File Times</a>.
+
+          <!-- !!! st_rdev -->
+          <br><dt><code>blkcnt64_t st_blocks</code><dd>This is the amount of disk space that the file occupies, measured in
+units of 512-byte blocks.
+
+          <br><dt><code>unsigned int st_blksize</code><dd>The optimal block size for reading of writing this file, in bytes.  You
+might use this size for allocating the buffer space for reading of
+writing the file.  (This is unrelated to <code>st_blocks</code>.) 
+</dl>
+        </p></blockquote></div>
+
+   <p>Some of the file attributes have special data type names which exist
+specifically for those attributes.  (They are all aliases for well-known
+integer types that you know and love.)  These typedef names are defined
+in the header file <samp><span class="file">sys/types.h</span></samp> as well as in <samp><span class="file">sys/stat.h</span></samp>. 
+Here is a list of them.
+
+<!-- sys/types.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>mode_t</b><var><a name="index-mode_005ft-1496"></a></var><br>
+<blockquote><p>This is an integer data type used to represent file modes.  In the
+GNU system, this is equivalent to <code>unsigned int</code>. 
+</p></blockquote></div>
+
+   <p><a name="index-inode-number-1497"></a><!-- sys/types.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>ino_t</b><var><a name="index-ino_005ft-1498"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent file serial numbers. 
+(In Unix jargon, these are sometimes called <dfn>inode numbers</dfn>.) 
+In the GNU system, this type is equivalent to <code>unsigned long int</code>.
+
+        <p>If the source is compiled with <code>_FILE_OFFSET_BITS == 64</code> this type
+is transparently replaced by <code>ino64_t</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Data Type: <b>ino64_t</b><var><a name="index-ino64_005ft-1499"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent file serial numbers
+for the use in LFS.  In the GNU system, this type is equivalent to
+<code>unsigned long long int</code>.
+
+        <p>When compiling with <code>_FILE_OFFSET_BITS == 64</code> this type is
+available under the name <code>ino_t</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>dev_t</b><var><a name="index-dev_005ft-1500"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent file device numbers. 
+In the GNU system, this is equivalent to <code>int</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>nlink_t</b><var><a name="index-nlink_005ft-1501"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent file link counts. 
+In the GNU system, this is equivalent to <code>unsigned short int</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Data Type: <b>blkcnt_t</b><var><a name="index-blkcnt_005ft-1502"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent block counts. 
+In the GNU system, this is equivalent to <code>unsigned long int</code>.
+
+        <p>If the source is compiled with <code>_FILE_OFFSET_BITS == 64</code> this type
+is transparently replaced by <code>blkcnt64_t</code>. 
+</p></blockquote></div>
+
+<!-- sys/types.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Data Type: <b>blkcnt64_t</b><var><a name="index-blkcnt64_005ft-1503"></a></var><br>
+<blockquote><p>This is an arithmetic data type used to represent block counts for the
+use in LFS.  In the GNU system, this is equivalent to <code>unsigned
+long long int</code>.
+
+        <p>When compiling with <code>_FILE_OFFSET_BITS == 64</code> this type is
+available under the name <code>blkcnt_t</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,296 @@
+<html lang="en">
+<head>
+<title>Host Names - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Host-Addresses.html#Host-Addresses" title="Host Addresses">
+<link rel="prev" href="Host-Address-Functions.html#Host-Address-Functions" title="Host Address Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Host-Names"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Host-Address-Functions.html#Host-Address-Functions">Host Address Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">16.6.2.4 Host Names</h5>
+
+<p><a name="index-hosts-database-1711"></a><a name="index-converting-host-name-to-address-1712"></a><a name="index-converting-host-address-to-name-1713"></a>
+Besides the standard numbers-and-dots notation for Internet addresses,
+you can also refer to a host by a symbolic name.  The advantage of a
+symbolic name is that it is usually easier to remember.  For example,
+the machine with Internet address &lsquo;<samp><span class="samp">158.121.106.19</span></samp>&rsquo; is also known as
+&lsquo;<samp><span class="samp">alpha.gnu.org</span></samp>&rsquo;; and other machines in the &lsquo;<samp><span class="samp">gnu.org</span></samp>&rsquo;
+domain can refer to it simply as &lsquo;<samp><span class="samp">alpha</span></samp>&rsquo;.
+
+   <p><a name="index-g_t_002fetc_002fhosts-1714"></a><a name="index-netdb_002eh-1715"></a>Internally, the system uses a database to keep track of the mapping
+between host names and host numbers.  This database is usually either
+the file <samp><span class="file">/etc/hosts</span></samp> or an equivalent provided by a name server. 
+The functions and other symbols for accessing this database are declared
+in <samp><span class="file">netdb.h</span></samp>.  They are BSD features, defined unconditionally if
+you include <samp><span class="file">netdb.h</span></samp>.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct hostent</b><var><a name="index-struct-hostent-1716"></a></var><br>
+<blockquote><p>This data type is used to represent an entry in the hosts database.  It
+has the following members:
+
+          <dl>
+<dt><code>char *h_name</code><dd>This is the &ldquo;official&rdquo; name of the host.
+
+          <br><dt><code>char **h_aliases</code><dd>These are alternative names for the host, represented as a null-terminated
+vector of strings.
+
+          <br><dt><code>int h_addrtype</code><dd>This is the host address type; in practice, its value is always either
+<code>AF_INET</code> or <code>AF_INET6</code>, with the latter being used for IPv6
+hosts.  In principle other kinds of addresses could be represented in
+the database as well as Internet addresses; if this were done, you
+might find a value in this field other than <code>AF_INET</code> or
+<code>AF_INET6</code>.  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>.
+
+          <br><dt><code>int h_length</code><dd>This is the length, in bytes, of each address.
+
+          <br><dt><code>char **h_addr_list</code><dd>This is the vector of addresses for the host.  (Recall that the host
+might be connected to multiple networks and have different addresses on
+each one.)  The vector is terminated by a null pointer.
+
+          <br><dt><code>char *h_addr</code><dd>This is a synonym for <code>h_addr_list[0]</code>; in other words, it is the
+first host address. 
+</dl>
+        </p></blockquote></div>
+
+   <p>As far as the host database is concerned, each address is just a block
+of memory <code>h_length</code> bytes long.  But in other contexts there is an
+implicit assumption that you can convert IPv4 addresses to a
+<code>struct in_addr</code> or an <code>uint32_t</code>.  Host addresses in
+a <code>struct hostent</code> structure are always given in network byte
+order; see <a href="Byte-Order.html#Byte-Order">Byte Order</a>.
+
+   <p>You can use <code>gethostbyname</code>, <code>gethostbyname2</code> or
+<code>gethostbyaddr</code> to search the hosts database for information about
+a particular host.  The information is returned in a
+statically-allocated structure; you must copy the information if you
+need to save it across calls.  You can also use <code>getaddrinfo</code> and
+<code>getnameinfo</code> to obtain this information.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct hostent * <b>gethostbyname</b> (<var>const char *name</var>)<var><a name="index-gethostbyname-1717"></a></var><br>
+<blockquote><p>The <code>gethostbyname</code> function returns information about the host
+named <var>name</var>.  If the lookup fails, it returns a null pointer. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- IPv6 Basic API -->
+<div class="defun">
+&mdash; Function: struct hostent * <b>gethostbyname2</b> (<var>const char *name, int af</var>)<var><a name="index-gethostbyname2-1718"></a></var><br>
+<blockquote><p>The <code>gethostbyname2</code> function is like <code>gethostbyname</code>, but
+allows the caller to specify the desired address family (e.g. 
+<code>AF_INET</code> or <code>AF_INET6</code>) of the result. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct hostent * <b>gethostbyaddr</b> (<var>const char *addr, size_t length, int format</var>)<var><a name="index-gethostbyaddr-1719"></a></var><br>
+<blockquote><p>The <code>gethostbyaddr</code> function returns information about the host
+with Internet address <var>addr</var>.  The parameter <var>addr</var> is not
+really a pointer to char - it can be a pointer to an IPv4 or an IPv6
+address. The <var>length</var> argument is the size (in bytes) of the address
+at <var>addr</var>.  <var>format</var> specifies the address format; for an IPv4
+Internet address, specify a value of <code>AF_INET</code>; for an IPv6
+Internet address, use <code>AF_INET6</code>.
+
+        <p>If the lookup fails, <code>gethostbyaddr</code> returns a null pointer. 
+</p></blockquote></div>
+
+   <p><a name="index-h_005ferrno-1720"></a>If the name lookup by <code>gethostbyname</code> or <code>gethostbyaddr</code>
+fails, you can find out the reason by looking at the value of the
+variable <code>h_errno</code>.  (It would be cleaner design for these
+functions to set <code>errno</code>, but use of <code>h_errno</code> is compatible
+with other systems.)
+
+   <p>Here are the error codes that you may find in <code>h_errno</code>:
+
+     <dl>
+<!-- netdb.h -->
+<!-- BSD -->
+<dt><code>HOST_NOT_FOUND</code><dd><a name="index-HOST_005fNOT_005fFOUND-1721"></a>No such host is known in the database.
+
+     <!-- netdb.h -->
+     <!-- BSD -->
+     <br><dt><code>TRY_AGAIN</code><dd><a name="index-TRY_005fAGAIN-1722"></a>This condition happens when the name server could not be contacted.  If
+you try again later, you may succeed then.
+
+     <!-- netdb.h -->
+     <!-- BSD -->
+     <br><dt><code>NO_RECOVERY</code><dd><a name="index-NO_005fRECOVERY-1723"></a>A non-recoverable error occurred.
+
+     <!-- netdb.h -->
+     <!-- BSD -->
+     <br><dt><code>NO_ADDRESS</code><dd><a name="index-NO_005fADDRESS-1724"></a>The host database contains an entry for the name, but it doesn't have an
+associated Internet address. 
+</dl>
+
+   <p>The lookup functions above all have one in common: they are not
+reentrant and therefore unusable in multi-threaded applications. 
+Therefore provides the GNU C library a new set of functions which can be
+used in this context.
+
+<!-- netdb.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>gethostbyname_r</b> (<var>const char *restrict name, struct hostent *restrict result_buf, char *restrict buf, size_t buflen, struct hostent **restrict result, int *restrict h_errnop</var>)<var><a name="index-gethostbyname_005fr-1725"></a></var><br>
+<blockquote><p>The <code>gethostbyname_r</code> function returns information about the host
+named <var>name</var>.  The caller must pass a pointer to an object of type
+<code>struct hostent</code> in the <var>result_buf</var> parameter.  In addition
+the function may need extra buffer space and the caller must pass an
+pointer and the size of the buffer in the <var>buf</var> and <var>buflen</var>
+parameters.
+
+        <p>A pointer to the buffer, in which the result is stored, is available in
+<code>*</code><var>result</var> after the function call successfully returned.  If
+an error occurs or if no entry is found, the pointer <code>*</code><var>result</var>
+is a null pointer.  Success is signalled by a zero return value.  If the
+function failed the return value is an error number.  In addition to the
+errors defined for <code>gethostbyname</code> it can also be <code>ERANGE</code>. 
+In this case the call should be repeated with a larger buffer. 
+Additional error information is not stored in the global variable
+<code>h_errno</code> but instead in the object pointed to by <var>h_errnop</var>.
+
+        <p>Here's a small example:
+     <pre class="smallexample">          struct hostent *
+          gethostname (char *host)
+          {
+            struct hostent hostbuf, *hp;
+            size_t hstbuflen;
+            char *tmphstbuf;
+            int res;
+            int herr;
+          
+            hstbuflen = 1024;
+            /* Allocate buffer, remember to free it to avoid memory leakage.  */
+            tmphstbuf = malloc (hstbuflen);
+          
+            while ((res = gethostbyname_r (host, &amp;hostbuf, tmphstbuf, hstbuflen,
+                                           &amp;hp, &amp;herr)) == ERANGE)
+              {
+                /* Enlarge the buffer.  */
+                hstbuflen *= 2;
+                tmphstbuf = realloc (tmphstbuf, hstbuflen);
+              }
+            /*  Check for errors.  */
+            if (res || hp == NULL)
+              return NULL;
+            return hp;
+          }
+</pre>
+        </blockquote></div>
+
+<!-- netdb.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>gethostbyname2_r</b> (<var>const char *name, int af, struct hostent *restrict result_buf, char *restrict buf, size_t buflen, struct hostent **restrict result, int *restrict h_errnop</var>)<var><a name="index-gethostbyname2_005fr-1726"></a></var><br>
+<blockquote><p>The <code>gethostbyname2_r</code> function is like <code>gethostbyname_r</code>, but
+allows the caller to specify the desired address family (e.g. 
+<code>AF_INET</code> or <code>AF_INET6</code>) for the result. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>gethostbyaddr_r</b> (<var>const char *addr, size_t length, int format, struct hostent *restrict result_buf, char *restrict buf, size_t buflen, struct hostent **restrict result, int *restrict h_errnop</var>)<var><a name="index-gethostbyaddr_005fr-1727"></a></var><br>
+<blockquote><p>The <code>gethostbyaddr_r</code> function returns information about the host
+with Internet address <var>addr</var>.  The parameter <var>addr</var> is not
+really a pointer to char - it can be a pointer to an IPv4 or an IPv6
+address. The <var>length</var> argument is the size (in bytes) of the address
+at <var>addr</var>.  <var>format</var> specifies the address format; for an IPv4
+Internet address, specify a value of <code>AF_INET</code>; for an IPv6
+Internet address, use <code>AF_INET6</code>.
+
+        <p>Similar to the <code>gethostbyname_r</code> function, the caller must provide
+buffers for the result and memory used internally.  In case of success
+the function returns zero.  Otherwise the value is an error number where
+<code>ERANGE</code> has the special meaning that the caller-provided buffer is
+too small. 
+</p></blockquote></div>
+
+   <p>You can also scan the entire hosts database one entry at a time using
+<code>sethostent</code>, <code>gethostent</code> and <code>endhostent</code>.  Be careful
+when using these functions because they are not reentrant.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>sethostent</b> (<var>int stayopen</var>)<var><a name="index-sethostent-1728"></a></var><br>
+<blockquote><p>This function opens the hosts database to begin scanning it.  You can
+then call <code>gethostent</code> to read the entries.
+
+     <!-- There was a rumor that this flag has different meaning if using the DNS, -->
+     <!-- but it appears this description is accurate in that case also. -->
+        <p>If the <var>stayopen</var> argument is nonzero, this sets a flag so that
+subsequent calls to <code>gethostbyname</code> or <code>gethostbyaddr</code> will
+not close the database (as they usually would).  This makes for more
+efficiency if you call those functions several times, by avoiding
+reopening the database for each call. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct hostent * <b>gethostent</b> (<var>void</var>)<var><a name="index-gethostent-1729"></a></var><br>
+<blockquote><p>This function returns the next entry in the hosts database.  It
+returns a null pointer if there are no more entries. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>endhostent</b> (<var>void</var>)<var><a name="index-endhostent-1730"></a></var><br>
+<blockquote><p>This function closes the hosts database. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+<title>Source Layout - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Maintenance.html#Maintenance" title="Maintenance">
+<link rel="next" href="Porting.html#Porting" title="Porting">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Source-Layout"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Porting.html#Porting">Porting</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Maintenance.html#Maintenance">Maintenance</a>
+<hr>
+</div>
+
+<h3 class="appendixsec">D.1 Adding New Functions</h3>
+
+<p>The process of building the library is driven by the makefiles, which
+make heavy use of special features of GNU <code>make</code>.  The makefiles
+are very complex, and you probably don't want to try to understand them. 
+But what they do is fairly straightforward, and only requires that you
+define a few variables in the right places.
+
+   <p>The library sources are divided into subdirectories, grouped by topic.
+
+   <p>The <samp><span class="file">string</span></samp> subdirectory has all the string-manipulation
+functions, <samp><span class="file">math</span></samp> has all the mathematical functions, etc.
+
+   <p>Each subdirectory contains a simple makefile, called <samp><span class="file">Makefile</span></samp>,
+which defines a few <code>make</code> variables and then includes the global
+makefile <samp><span class="file">Rules</span></samp> with a line like:
+
+<pre class="smallexample">     include ../Rules
+</pre>
+   <p class="noindent">The basic variables that a subdirectory makefile defines are:
+
+     <dl>
+<dt><code>subdir</code><dd>The name of the subdirectory, for example <samp><span class="file">stdio</span></samp>. 
+This variable <strong>must</strong> be defined.
+
+     <br><dt><code>headers</code><dd>The names of the header files in this section of the library,
+such as <samp><span class="file">stdio.h</span></samp>.
+
+     <br><dt><code>routines</code><dt><code>aux</code><dd>The names of the modules (source files) in this section of the library. 
+These should be simple names, such as &lsquo;<samp><span class="samp">strlen</span></samp>&rsquo; (rather than
+complete file names, such as <samp><span class="file">strlen.c</span></samp>).  Use <code>routines</code> for
+modules that define functions in the library, and <code>aux</code> for
+auxiliary modules containing things like data definitions.  But the
+values of <code>routines</code> and <code>aux</code> are just concatenated, so there
+really is no practical difference.
+
+     <br><dt><code>tests</code><dd>The names of test programs for this section of the library.  These
+should be simple names, such as &lsquo;<samp><span class="samp">tester</span></samp>&rsquo; (rather than complete file
+names, such as <samp><span class="file">tester.c</span></samp>).  &lsquo;<samp><span class="samp">make&nbsp;tests</span></samp>&rsquo;<!-- /@w --> will build and
+run all the test programs.  If a test program needs input, put the test
+data in a file called <samp><var>test-program</var><span class="file">.input</span></samp>; it will be given to
+the test program on its standard input.  If a test program wants to be
+run with arguments, put the arguments (all on a single line) in a file
+called <samp><var>test-program</var><span class="file">.args</span></samp>.  Test programs should exit with
+zero status when the test passes, and nonzero status when the test
+indicates a bug in the library or error in building.
+
+     <br><dt><code>others</code><dd>The names of &ldquo;other&rdquo; programs associated with this section of the
+library.  These are programs which are not tests per se, but are other
+small programs included with the library.  They are built by
+&lsquo;<samp><span class="samp">make&nbsp;others</span></samp>&rsquo;<!-- /@w -->.
+
+     <br><dt><code>install-lib</code><dt><code>install-data</code><dt><code>install</code><dd>Files to be installed by &lsquo;<samp><span class="samp">make&nbsp;install</span></samp>&rsquo;<!-- /@w -->.  Files listed in
+&lsquo;<samp><span class="samp">install-lib</span></samp>&rsquo; are installed in the directory specified by
+&lsquo;<samp><span class="samp">libdir</span></samp>&rsquo; in <samp><span class="file">configparms</span></samp> or <samp><span class="file">Makeconfig</span></samp>
+(see <a href="Installation.html#Installation">Installation</a>).  Files listed in <code>install-data</code> are
+installed in the directory specified by &lsquo;<samp><span class="samp">datadir</span></samp>&rsquo; in
+<samp><span class="file">configparms</span></samp> or <samp><span class="file">Makeconfig</span></samp>.  Files listed in <code>install</code>
+are installed in the directory specified by &lsquo;<samp><span class="samp">bindir</span></samp>&rsquo; in
+<samp><span class="file">configparms</span></samp> or <samp><span class="file">Makeconfig</span></samp>.
+
+     <br><dt><code>distribute</code><dd>Other files from this subdirectory which should be put into a
+distribution tar file.  You need not list here the makefile itself or
+the source and header files listed in the other standard variables. 
+Only define <code>distribute</code> if there are files used in an unusual way
+that should go into the distribution.
+
+     <br><dt><code>generated</code><dd>Files which are generated by <samp><span class="file">Makefile</span></samp> in this subdirectory. 
+These files will be removed by &lsquo;<samp><span class="samp">make&nbsp;clean</span></samp>&rsquo;<!-- /@w -->, and they will
+never go into a distribution.
+
+     <br><dt><code>extra-objs</code><dd>Extra object files which are built by <samp><span class="file">Makefile</span></samp> in this
+subdirectory.  This should be a list of file names like <samp><span class="file">foo.o</span></samp>;
+the files will actually be found in whatever directory object files are
+being built in.  These files will be removed by &lsquo;<samp><span class="samp">make&nbsp;clean</span></samp>&rsquo;<!-- /@w -->. 
+This variable is used for secondary object files needed to build
+<code>others</code> or <code>tests</code>. 
+</dl>
+
+   </body></html>
+

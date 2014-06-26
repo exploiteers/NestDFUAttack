@@ -1,0 +1,2781 @@
+<html lang="en">
+<head>
+<title>The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="#Top">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software Needs Free Documentation"
+and "GNU Lesser General Public License", the Front-Cover texts being
+"A GNU Manual", and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: "You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom."-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<h1 class="settitle">The GNU C Library</h1>
+<div class="shortcontents">
+<h2>Short Contents</h2>
+<ul>
+<li><a href="index.html#toc_Top">Main Menu</a></li>
+<li><a href="index.html#toc_Introduction">1 Introduction</a></li>
+<li><a href="index.html#toc_Error-Reporting">2 Error Reporting</a></li>
+<li><a href="index.html#toc_Memory">3 Virtual Memory Allocation And Paging</a></li>
+<li><a href="index.html#toc_Character-Handling">4 Character Handling</a></li>
+<li><a href="index.html#toc_String-and-Array-Utilities">5 String and Array Utilities</a></li>
+<li><a href="index.html#toc_Character-Set-Handling">6 Character Set Handling</a></li>
+<li><a href="index.html#toc_Locales">7 Locales and Internationalization</a></li>
+<li><a href="index.html#toc_Message-Translation">8 Message Translation</a></li>
+<li><a href="index.html#toc_Searching-and-Sorting">9 Searching and Sorting</a></li>
+<li><a href="index.html#toc_Pattern-Matching">10 Pattern Matching</a></li>
+<li><a href="index.html#toc_I_002fO-Overview">11 Input/Output Overview</a></li>
+<li><a href="index.html#toc_I_002fO-on-Streams">12 Input/Output on Streams</a></li>
+<li><a href="index.html#toc_Low_002dLevel-I_002fO">13 Low-Level Input/Output</a></li>
+<li><a href="index.html#toc_File-System-Interface">14 File System Interface</a></li>
+<li><a href="index.html#toc_Pipes-and-FIFOs">15 Pipes and FIFOs</a></li>
+<li><a href="index.html#toc_Sockets">16 Sockets</a></li>
+<li><a href="index.html#toc_Low_002dLevel-Terminal-Interface">17 Low-Level Terminal Interface</a></li>
+<li><a href="index.html#toc_Syslog">18 Syslog</a></li>
+<li><a href="index.html#toc_Mathematics">19 Mathematics</a></li>
+<li><a href="index.html#toc_Arithmetic">20 Arithmetic Functions</a></li>
+<li><a href="index.html#toc_Date-and-Time">21 Date and Time</a></li>
+<li><a href="index.html#toc_Resource-Usage-And-Limitation">22 Resource Usage And Limitation</a></li>
+<li><a href="index.html#toc_Non_002dLocal-Exits">23 Non-Local Exits</a></li>
+<li><a href="index.html#toc_Signal-Handling">24 Signal Handling</a></li>
+<li><a href="index.html#toc_Program-Basics">25 The Basic Program/System Interface</a></li>
+<li><a href="index.html#toc_Processes">26 Processes</a></li>
+<li><a href="index.html#toc_Job-Control">27 Job Control</a></li>
+<li><a href="index.html#toc_Name-Service-Switch">28 System Databases and Name Service Switch</a></li>
+<li><a href="index.html#toc_Users-and-Groups">29 Users and Groups</a></li>
+<li><a href="index.html#toc_System-Management">30 System Management</a></li>
+<li><a href="index.html#toc_System-Configuration">31 System Configuration Parameters</a></li>
+<li><a href="index.html#toc_Cryptographic-Functions">32 DES Encryption and Password Handling</a></li>
+<li><a href="index.html#toc_Debugging-Support">33 Debugging support</a></li>
+<li><a href="index.html#toc_Language-Features">Appendix A C Language Facilities in the Library</a></li>
+<li><a href="index.html#toc_Library-Summary">Appendix B Summary of Library Facilities</a></li>
+<li><a href="index.html#toc_Installation">Appendix C Installing the GNU C Library</a></li>
+<li><a href="index.html#toc_Maintenance">Appendix D Library Maintenance</a></li>
+<li><a href="index.html#toc_Contributors">Appendix E Contributors to the GNU C Library</a></li>
+<li><a href="index.html#toc_Free-Manuals">Appendix F Free Software Needs Free Documentation</a></li>
+<li><a href="index.html#toc_Copying">Appendix G GNU Lesser General Public License</a></li>
+<li><a href="index.html#toc_Documentation-License">Appendix H GNU Free Documentation License</a></li>
+<li><a href="index.html#toc_Concept-Index">Concept Index</a></li>
+<li><a href="index.html#toc_Type-Index">Type Index</a></li>
+<li><a href="index.html#toc_Function-Index">Function and Macro Index</a></li>
+<li><a href="index.html#toc_Variable-Index">Variable and Constant Macro Index</a></li>
+<li><a href="index.html#toc_File-Index">Program and File Index</a></li>
+</ul>
+</div>
+
+
+
+   <div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="index.html#Top">Main Menu</a>
+<li><a name="toc_Introduction" href="Introduction.html#Introduction">1 Introduction</a>
+<ul>
+<li><a href="Getting-Started.html#Getting-Started">1.1 Getting Started</a>
+<li><a href="Standards-and-Portability.html#Standards-and-Portability">1.2 Standards and Portability</a>
+<ul>
+<li><a href="ISO-C.html#ISO-C">1.2.1 ISO C</a>
+<li><a href="POSIX.html#POSIX">1.2.2 POSIX (The Portable Operating System Interface)</a>
+<li><a href="Berkeley-Unix.html#Berkeley-Unix">1.2.3 Berkeley Unix</a>
+<li><a href="SVID.html#SVID">1.2.4 SVID (The System V Interface Description)</a>
+<li><a href="XPG.html#XPG">1.2.5 XPG (The X/Open Portability Guide)</a>
+</li></ul>
+<li><a href="Using-the-Library.html#Using-the-Library">1.3 Using the Library</a>
+<ul>
+<li><a href="Header-Files.html#Header-Files">1.3.1 Header Files</a>
+<li><a href="Macro-Definitions.html#Macro-Definitions">1.3.2 Macro Definitions of Functions</a>
+<li><a href="Reserved-Names.html#Reserved-Names">1.3.3 Reserved Names</a>
+<li><a href="Feature-Test-Macros.html#Feature-Test-Macros">1.3.4 Feature Test Macros</a>
+</li></ul>
+<li><a href="Roadmap-to-the-Manual.html#Roadmap-to-the-Manual">1.4 Roadmap to the Manual</a>
+</li></ul>
+<li><a name="toc_Error-Reporting" href="Error-Reporting.html#Error-Reporting">2 Error Reporting</a>
+<ul>
+<li><a href="Checking-for-Errors.html#Checking-for-Errors">2.1 Checking for Errors</a>
+<li><a href="Error-Codes.html#Error-Codes">2.2 Error Codes</a>
+<li><a href="Error-Messages.html#Error-Messages">2.3 Error Messages</a>
+</li></ul>
+<li><a name="toc_Memory" href="Memory.html#Memory">3 Virtual Memory Allocation And Paging</a>
+<ul>
+<li><a href="Memory-Concepts.html#Memory-Concepts">3.1 Process Memory Concepts</a>
+<li><a href="Memory-Allocation.html#Memory-Allocation">3.2 Allocating Storage For Program Data</a>
+<ul>
+<li><a href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">3.2.1 Memory Allocation in C Programs</a>
+<ul>
+<li><a href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">3.2.1.1 Dynamic Memory Allocation</a>
+</li></ul>
+<li><a href="Unconstrained-Allocation.html#Unconstrained-Allocation">3.2.2 Unconstrained Allocation</a>
+<ul>
+<li><a href="Basic-Allocation.html#Basic-Allocation">3.2.2.1 Basic Memory Allocation</a>
+<li><a href="Malloc-Examples.html#Malloc-Examples">3.2.2.2 Examples of <code>malloc</code></a>
+<li><a href="Freeing-after-Malloc.html#Freeing-after-Malloc">3.2.2.3 Freeing Memory Allocated with <code>malloc</code></a>
+<li><a href="Changing-Block-Size.html#Changing-Block-Size">3.2.2.4 Changing the Size of a Block</a>
+<li><a href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">3.2.2.5 Allocating Cleared Space</a>
+<li><a href="Efficiency-and-Malloc.html#Efficiency-and-Malloc">3.2.2.6 Efficiency Considerations for <code>malloc</code></a>
+<li><a href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">3.2.2.7 Allocating Aligned Memory Blocks</a>
+<li><a href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters">3.2.2.8 Malloc Tunable Parameters</a>
+<li><a href="Heap-Consistency-Checking.html#Heap-Consistency-Checking">3.2.2.9 Heap Consistency Checking</a>
+<li><a href="Hooks-for-Malloc.html#Hooks-for-Malloc">3.2.2.10 Memory Allocation Hooks</a>
+<li><a href="Statistics-of-Malloc.html#Statistics-of-Malloc">3.2.2.11 Statistics for Memory Allocation with <code>malloc</code></a>
+<li><a href="Summary-of-Malloc.html#Summary-of-Malloc">3.2.2.12 Summary of <code>malloc</code>-Related Functions</a>
+</li></ul>
+<li><a href="Allocation-Debugging.html#Allocation-Debugging">3.2.3 Allocation Debugging</a>
+<ul>
+<li><a href="Tracing-malloc.html#Tracing-malloc">3.2.3.1 How to install the tracing functionality</a>
+<li><a href="Using-the-Memory-Debugger.html#Using-the-Memory-Debugger">3.2.3.2 Example program excerpts</a>
+<li><a href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger">3.2.3.3 Some more or less clever ideas</a>
+<li><a href="Interpreting-the-traces.html#Interpreting-the-traces">3.2.3.4 Interpreting the traces</a>
+</li></ul>
+<li><a href="Obstacks.html#Obstacks">3.2.4 Obstacks</a>
+<ul>
+<li><a href="Creating-Obstacks.html#Creating-Obstacks">3.2.4.1 Creating Obstacks</a>
+<li><a href="Preparing-for-Obstacks.html#Preparing-for-Obstacks">3.2.4.2 Preparing for Using Obstacks</a>
+<li><a href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">3.2.4.3 Allocation in an Obstack</a>
+<li><a href="Freeing-Obstack-Objects.html#Freeing-Obstack-Objects">3.2.4.4 Freeing Objects in an Obstack</a>
+<li><a href="Obstack-Functions.html#Obstack-Functions">3.2.4.5 Obstack Functions and Macros</a>
+<li><a href="Growing-Objects.html#Growing-Objects">3.2.4.6 Growing Objects</a>
+<li><a href="Extra-Fast-Growing.html#Extra-Fast-Growing">3.2.4.7 Extra Fast Growing Objects</a>
+<li><a href="Status-of-an-Obstack.html#Status-of-an-Obstack">3.2.4.8 Status of an Obstack</a>
+<li><a href="Obstacks-Data-Alignment.html#Obstacks-Data-Alignment">3.2.4.9 Alignment of Data in Obstacks</a>
+<li><a href="Obstack-Chunks.html#Obstack-Chunks">3.2.4.10 Obstack Chunks</a>
+<li><a href="Summary-of-Obstacks.html#Summary-of-Obstacks">3.2.4.11 Summary of Obstack Functions</a>
+</li></ul>
+<li><a href="Variable-Size-Automatic.html#Variable-Size-Automatic">3.2.5 Automatic Storage with Variable Size</a>
+<ul>
+<li><a href="Alloca-Example.html#Alloca-Example">3.2.5.1 <code>alloca</code> Example</a>
+<li><a href="Advantages-of-Alloca.html#Advantages-of-Alloca">3.2.5.2 Advantages of <code>alloca</code></a>
+<li><a href="Disadvantages-of-Alloca.html#Disadvantages-of-Alloca">3.2.5.3 Disadvantages of <code>alloca</code></a>
+<li><a href="GNU-C-Variable_002dSize-Arrays.html#GNU-C-Variable_002dSize-Arrays">3.2.5.4 GNU C Variable-Size Arrays</a>
+</li></ul>
+</li></ul>
+<li><a href="Resizing-the-Data-Segment.html#Resizing-the-Data-Segment">3.3 Resizing the Data Segment</a>
+<li><a href="Locking-Pages.html#Locking-Pages">3.4 Locking Pages</a>
+<ul>
+<li><a href="Why-Lock-Pages.html#Why-Lock-Pages">3.4.1 Why Lock Pages</a>
+<li><a href="Locked-Memory-Details.html#Locked-Memory-Details">3.4.2 Locked Memory Details</a>
+<li><a href="Page-Lock-Functions.html#Page-Lock-Functions">3.4.3 Functions To Lock And Unlock Pages</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Character-Handling" href="Character-Handling.html#Character-Handling">4 Character Handling</a>
+<ul>
+<li><a href="Classification-of-Characters.html#Classification-of-Characters">4.1 Classification of Characters</a>
+<li><a href="Case-Conversion.html#Case-Conversion">4.2 Case Conversion</a>
+<li><a href="Classification-of-Wide-Characters.html#Classification-of-Wide-Characters">4.3 Character class determination for wide characters</a>
+<li><a href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes">4.4 Notes on using the wide character classes</a>
+<li><a href="Wide-Character-Case-Conversion.html#Wide-Character-Case-Conversion">4.5 Mapping of wide characters.</a>
+</li></ul>
+<li><a name="toc_String-and-Array-Utilities" href="String-and-Array-Utilities.html#String-and-Array-Utilities">5 String and Array Utilities</a>
+<ul>
+<li><a href="Representation-of-Strings.html#Representation-of-Strings">5.1 Representation of Strings</a>
+<li><a href="String_002fArray-Conventions.html#String_002fArray-Conventions">5.2 String and Array Conventions</a>
+<li><a href="String-Length.html#String-Length">5.3 String Length</a>
+<li><a href="Copying-and-Concatenation.html#Copying-and-Concatenation">5.4 Copying and Concatenation</a>
+<li><a href="String_002fArray-Comparison.html#String_002fArray-Comparison">5.5 String/Array Comparison</a>
+<li><a href="Collation-Functions.html#Collation-Functions">5.6 Collation Functions</a>
+<li><a href="Search-Functions.html#Search-Functions">5.7 Search Functions</a>
+<ul>
+<li><a href="Search-Functions.html#Search-Functions">5.7.1 Compatibility String Search Functions</a>
+</li></ul>
+<li><a href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String">5.8 Finding Tokens in a String</a>
+<li><a href="strfry.html#strfry">5.9 strfry</a>
+<li><a href="Trivial-Encryption.html#Trivial-Encryption">5.10 Trivial Encryption</a>
+<li><a href="Encode-Binary-Data.html#Encode-Binary-Data">5.11 Encode Binary Data</a>
+<li><a href="Argz-and-Envz-Vectors.html#Argz-and-Envz-Vectors">5.12 Argz and Envz Vectors</a>
+<ul>
+<li><a href="Argz-Functions.html#Argz-Functions">5.12.1 Argz Functions</a>
+<li><a href="Envz-Functions.html#Envz-Functions">5.12.2 Envz Functions</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Character-Set-Handling" href="Character-Set-Handling.html#Character-Set-Handling">6 Character Set Handling</a>
+<ul>
+<li><a href="Extended-Char-Intro.html#Extended-Char-Intro">6.1 Introduction to Extended Characters</a>
+<li><a href="Charset-Function-Overview.html#Charset-Function-Overview">6.2 Overview about Character Handling Functions</a>
+<li><a href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">6.3 Restartable Multibyte Conversion Functions</a>
+<ul>
+<li><a href="Selecting-the-Conversion.html#Selecting-the-Conversion">6.3.1 Selecting the conversion and its properties</a>
+<li><a href="Keeping-the-state.html#Keeping-the-state">6.3.2 Representing the state of the conversion</a>
+<li><a href="Converting-a-Character.html#Converting-a-Character">6.3.3 Converting Single Characters</a>
+<li><a href="Converting-Strings.html#Converting-Strings">6.3.4 Converting Multibyte and Wide Character Strings</a>
+<li><a href="Multibyte-Conversion-Example.html#Multibyte-Conversion-Example">6.3.5 A Complete Multibyte Conversion Example</a>
+</li></ul>
+<li><a href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">6.4 Non-reentrant Conversion Function</a>
+<ul>
+<li><a href="Non_002dreentrant-Character-Conversion.html#Non_002dreentrant-Character-Conversion">6.4.1 Non-reentrant Conversion of Single Characters</a>
+<li><a href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion">6.4.2 Non-reentrant Conversion of Strings</a>
+<li><a href="Shift-State.html#Shift-State">6.4.3 States in Non-reentrant Functions</a>
+</li></ul>
+<li><a href="Generic-Charset-Conversion.html#Generic-Charset-Conversion">6.5 Generic Charset Conversion</a>
+<ul>
+<li><a href="Generic-Conversion-Interface.html#Generic-Conversion-Interface">6.5.1 Generic Character Set Conversion Interface</a>
+<li><a href="iconv-Examples.html#iconv-Examples">6.5.2 A complete <code>iconv</code> example</a>
+<li><a href="Other-iconv-Implementations.html#Other-iconv-Implementations">6.5.3 Some Details about other <code>iconv</code> Implementations</a>
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">6.5.4 The <code>iconv</code> Implementation in the GNU C library</a>
+<ul>
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">6.5.4.1 Format of <samp><span class="file">gconv-modules</span></samp> files</a>
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">6.5.4.2 Finding the conversion path in <code>iconv</code></a>
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">6.5.4.3 <code>iconv</code> module data structures</a>
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">6.5.4.4 <code>iconv</code> module interfaces</a>
+</li></ul>
+</li></ul>
+</li></ul>
+<li><a name="toc_Locales" href="Locales.html#Locales">7 Locales and Internationalization</a>
+<ul>
+<li><a href="Effects-of-Locale.html#Effects-of-Locale">7.1 What Effects a Locale Has</a>
+<li><a href="Choosing-Locale.html#Choosing-Locale">7.2 Choosing a Locale</a>
+<li><a href="Locale-Categories.html#Locale-Categories">7.3 Categories of Activities that Locales Affect</a>
+<li><a href="Setting-the-Locale.html#Setting-the-Locale">7.4 How Programs Set the Locale</a>
+<li><a href="Standard-Locales.html#Standard-Locales">7.5 Standard Locales</a>
+<li><a href="Locale-Information.html#Locale-Information">7.6 Accessing Locale Information</a>
+<ul>
+<li><a href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">7.6.1 <code>localeconv</code>: It is portable but <small class="dots">...</small></a>
+<ul>
+<li><a href="General-Numeric.html#General-Numeric">7.6.1.1 Generic Numeric Formatting Parameters</a>
+<li><a href="Currency-Symbol.html#Currency-Symbol">7.6.1.2 Printing the Currency Symbol</a>
+<li><a href="Sign-of-Money-Amount.html#Sign-of-Money-Amount">7.6.1.3 Printing the Sign of a Monetary Amount</a>
+</li></ul>
+<li><a href="The-Elegant-and-Fast-Way.html#The-Elegant-and-Fast-Way">7.6.2 Pinpoint Access to Locale Data</a>
+</li></ul>
+<li><a href="Formatting-Numbers.html#Formatting-Numbers">7.7 A dedicated function to format numbers</a>
+<li><a href="Yes_002dor_002dNo-Questions.html#Yes_002dor_002dNo-Questions">7.8 Yes-or-No Questions</a>
+</li></ul>
+<li><a name="toc_Message-Translation" href="Message-Translation.html#Message-Translation">8 Message Translation</a>
+<ul>
+<li><a href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen">8.1 X/Open Message Catalog Handling</a>
+<ul>
+<li><a href="The-catgets-Functions.html#The-catgets-Functions">8.1.1 The <code>catgets</code> function family</a>
+<li><a href="The-message-catalog-files.html#The-message-catalog-files">8.1.2 Format of the message catalog files</a>
+<li><a href="The-gencat-program.html#The-gencat-program">8.1.3 Generate Message Catalogs files</a>
+<li><a href="Common-Usage.html#Common-Usage">8.1.4 How to use the <code>catgets</code> interface</a>
+<ul>
+<li><a href="Common-Usage.html#Common-Usage">8.1.4.1 Not using symbolic names</a>
+<li><a href="Common-Usage.html#Common-Usage">8.1.4.2 Using symbolic names</a>
+<li><a href="Common-Usage.html#Common-Usage">8.1.4.3 How does to this allow to develop</a>
+</li></ul>
+</li></ul>
+<li><a href="The-Uniforum-approach.html#The-Uniforum-approach">8.2 The Uniforum approach to Message Translation</a>
+<ul>
+<li><a href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">8.2.1 The <code>gettext</code> family of functions</a>
+<ul>
+<li><a href="Translation-with-gettext.html#Translation-with-gettext">8.2.1.1 What has to be done to translate a message?</a>
+<li><a href="Locating-gettext-catalog.html#Locating-gettext-catalog">8.2.1.2 How to determine which catalog to be used</a>
+<li><a href="Advanced-gettext-functions.html#Advanced-gettext-functions">8.2.1.3 Additional functions for more complicated situations</a>
+<li><a href="Charset-conversion-in-gettext.html#Charset-conversion-in-gettext">8.2.1.4 How to specify the output character set <code>gettext</code> uses</a>
+<li><a href="GUI-program-problems.html#GUI-program-problems">8.2.1.5 How to use <code>gettext</code> in GUI programs</a>
+<li><a href="Using-gettextized-software.html#Using-gettextized-software">8.2.1.6 User influence on <code>gettext</code></a>
+</li></ul>
+<li><a href="Helper-programs-for-gettext.html#Helper-programs-for-gettext">8.2.2 Programs to handle message catalogs for <code>gettext</code></a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Searching-and-Sorting" href="Searching-and-Sorting.html#Searching-and-Sorting">9 Searching and Sorting</a>
+<ul>
+<li><a href="Comparison-Functions.html#Comparison-Functions">9.1 Defining the Comparison Function</a>
+<li><a href="Array-Search-Function.html#Array-Search-Function">9.2 Array Search Function</a>
+<li><a href="Array-Sort-Function.html#Array-Sort-Function">9.3 Array Sort Function</a>
+<li><a href="Search_002fSort-Example.html#Search_002fSort-Example">9.4 Searching and Sorting Example</a>
+<li><a href="Hash-Search-Function.html#Hash-Search-Function">9.5 The <code>hsearch</code> function.</a>
+<li><a href="Tree-Search-Function.html#Tree-Search-Function">9.6 The <code>tsearch</code> function.</a>
+</li></ul>
+<li><a name="toc_Pattern-Matching" href="Pattern-Matching.html#Pattern-Matching">10 Pattern Matching</a>
+<ul>
+<li><a href="Wildcard-Matching.html#Wildcard-Matching">10.1 Wildcard Matching</a>
+<li><a href="Globbing.html#Globbing">10.2 Globbing</a>
+<ul>
+<li><a href="Calling-Glob.html#Calling-Glob">10.2.1 Calling <code>glob</code></a>
+<li><a href="Flags-for-Globbing.html#Flags-for-Globbing">10.2.2 Flags for Globbing</a>
+<li><a href="More-Flags-for-Globbing.html#More-Flags-for-Globbing">10.2.3 More Flags for Globbing</a>
+</li></ul>
+<li><a href="Regular-Expressions.html#Regular-Expressions">10.3 Regular Expression Matching</a>
+<ul>
+<li><a href="POSIX-Regexp-Compilation.html#POSIX-Regexp-Compilation">10.3.1 POSIX Regular Expression Compilation</a>
+<li><a href="Flags-for-POSIX-Regexps.html#Flags-for-POSIX-Regexps">10.3.2 Flags for POSIX Regular Expressions</a>
+<li><a href="Matching-POSIX-Regexps.html#Matching-POSIX-Regexps">10.3.3 Matching a Compiled POSIX Regular Expression</a>
+<li><a href="Regexp-Subexpressions.html#Regexp-Subexpressions">10.3.4 Match Results with Subexpressions</a>
+<li><a href="Subexpression-Complications.html#Subexpression-Complications">10.3.5 Complications in Subexpression Matching</a>
+<li><a href="Regexp-Cleanup.html#Regexp-Cleanup">10.3.6 POSIX Regexp Matching Cleanup</a>
+</li></ul>
+<li><a href="Word-Expansion.html#Word-Expansion">10.4 Shell-Style Word Expansion</a>
+<ul>
+<li><a href="Expansion-Stages.html#Expansion-Stages">10.4.1 The Stages of Word Expansion</a>
+<li><a href="Calling-Wordexp.html#Calling-Wordexp">10.4.2 Calling <code>wordexp</code></a>
+<li><a href="Flags-for-Wordexp.html#Flags-for-Wordexp">10.4.3 Flags for Word Expansion</a>
+<li><a href="Wordexp-Example.html#Wordexp-Example">10.4.4 <code>wordexp</code> Example</a>
+<li><a href="Tilde-Expansion.html#Tilde-Expansion">10.4.5 Details of Tilde Expansion</a>
+<li><a href="Variable-Substitution.html#Variable-Substitution">10.4.6 Details of Variable Substitution</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_I_002fO-Overview" href="I_002fO-Overview.html#I_002fO-Overview">11 Input/Output Overview</a>
+<ul>
+<li><a href="I_002fO-Concepts.html#I_002fO-Concepts">11.1 Input/Output Concepts</a>
+<ul>
+<li><a href="Streams-and-File-Descriptors.html#Streams-and-File-Descriptors">11.1.1 Streams and File Descriptors</a>
+<li><a href="File-Position.html#File-Position">11.1.2 File Position</a>
+</li></ul>
+<li><a href="File-Names.html#File-Names">11.2 File Names</a>
+<ul>
+<li><a href="Directories.html#Directories">11.2.1 Directories</a>
+<li><a href="File-Name-Resolution.html#File-Name-Resolution">11.2.2 File Name Resolution</a>
+<li><a href="File-Name-Errors.html#File-Name-Errors">11.2.3 File Name Errors</a>
+<li><a href="File-Name-Portability.html#File-Name-Portability">11.2.4 Portability of File Names</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_I_002fO-on-Streams" href="I_002fO-on-Streams.html#I_002fO-on-Streams">12 Input/Output on Streams</a>
+<ul>
+<li><a href="Streams.html#Streams">12.1 Streams</a>
+<li><a href="Standard-Streams.html#Standard-Streams">12.2 Standard Streams</a>
+<li><a href="Opening-Streams.html#Opening-Streams">12.3 Opening Streams</a>
+<li><a href="Closing-Streams.html#Closing-Streams">12.4 Closing Streams</a>
+<li><a href="Streams-and-Threads.html#Streams-and-Threads">12.5 Streams and Threads</a>
+<li><a href="Streams-and-I18N.html#Streams-and-I18N">12.6 Streams in Internationalized Applications</a>
+<li><a href="Simple-Output.html#Simple-Output">12.7 Simple Output by Characters or Lines</a>
+<li><a href="Character-Input.html#Character-Input">12.8 Character Input</a>
+<li><a href="Line-Input.html#Line-Input">12.9 Line-Oriented Input</a>
+<li><a href="Unreading.html#Unreading">12.10 Unreading</a>
+<ul>
+<li><a href="Unreading-Idea.html#Unreading-Idea">12.10.1 What Unreading Means</a>
+<li><a href="How-Unread.html#How-Unread">12.10.2 Using <code>ungetc</code> To Do Unreading</a>
+</li></ul>
+<li><a href="Block-Input_002fOutput.html#Block-Input_002fOutput">12.11 Block Input/Output</a>
+<li><a href="Formatted-Output.html#Formatted-Output">12.12 Formatted Output</a>
+<ul>
+<li><a href="Formatted-Output-Basics.html#Formatted-Output-Basics">12.12.1 Formatted Output Basics</a>
+<li><a href="Output-Conversion-Syntax.html#Output-Conversion-Syntax">12.12.2 Output Conversion Syntax</a>
+<li><a href="Table-of-Output-Conversions.html#Table-of-Output-Conversions">12.12.3 Table of Output Conversions</a>
+<li><a href="Integer-Conversions.html#Integer-Conversions">12.12.4 Integer Conversions</a>
+<li><a href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions">12.12.5 Floating-Point Conversions</a>
+<li><a href="Other-Output-Conversions.html#Other-Output-Conversions">12.12.6 Other Output Conversions</a>
+<li><a href="Formatted-Output-Functions.html#Formatted-Output-Functions">12.12.7 Formatted Output Functions</a>
+<li><a href="Dynamic-Output.html#Dynamic-Output">12.12.8 Dynamically Allocating Formatted Output</a>
+<li><a href="Variable-Arguments-Output.html#Variable-Arguments-Output">12.12.9 Variable Arguments Output Functions</a>
+<li><a href="Parsing-a-Template-String.html#Parsing-a-Template-String">12.12.10 Parsing a Template String</a>
+<li><a href="Example-of-Parsing.html#Example-of-Parsing">12.12.11 Example of Parsing a Template String</a>
+</li></ul>
+<li><a href="Customizing-Printf.html#Customizing-Printf">12.13 Customizing <code>printf</code></a>
+<ul>
+<li><a href="Registering-New-Conversions.html#Registering-New-Conversions">12.13.1 Registering New Conversions</a>
+<li><a href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">12.13.2 Conversion Specifier Options</a>
+<li><a href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">12.13.3 Defining the Output Handler</a>
+<li><a href="Printf-Extension-Example.html#Printf-Extension-Example">12.13.4 <code>printf</code> Extension Example</a>
+<li><a href="Predefined-Printf-Handlers.html#Predefined-Printf-Handlers">12.13.5 Predefined <code>printf</code> Handlers</a>
+</li></ul>
+<li><a href="Formatted-Input.html#Formatted-Input">12.14 Formatted Input</a>
+<ul>
+<li><a href="Formatted-Input-Basics.html#Formatted-Input-Basics">12.14.1 Formatted Input Basics</a>
+<li><a href="Input-Conversion-Syntax.html#Input-Conversion-Syntax">12.14.2 Input Conversion Syntax</a>
+<li><a href="Table-of-Input-Conversions.html#Table-of-Input-Conversions">12.14.3 Table of Input Conversions</a>
+<li><a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">12.14.4 Numeric Input Conversions</a>
+<li><a href="String-Input-Conversions.html#String-Input-Conversions">12.14.5 String Input Conversions</a>
+<li><a href="Dynamic-String-Input.html#Dynamic-String-Input">12.14.6 Dynamically Allocating String Conversions</a>
+<li><a href="Other-Input-Conversions.html#Other-Input-Conversions">12.14.7 Other Input Conversions</a>
+<li><a href="Formatted-Input-Functions.html#Formatted-Input-Functions">12.14.8 Formatted Input Functions</a>
+<li><a href="Variable-Arguments-Input.html#Variable-Arguments-Input">12.14.9 Variable Arguments Input Functions</a>
+</li></ul>
+<li><a href="EOF-and-Errors.html#EOF-and-Errors">12.15 End-Of-File and Errors</a>
+<li><a href="Error-Recovery.html#Error-Recovery">12.16 Recovering from errors</a>
+<li><a href="Binary-Streams.html#Binary-Streams">12.17 Text and Binary Streams</a>
+<li><a href="File-Positioning.html#File-Positioning">12.18 File Positioning</a>
+<li><a href="Portable-Positioning.html#Portable-Positioning">12.19 Portable File-Position Functions</a>
+<li><a href="Stream-Buffering.html#Stream-Buffering">12.20 Stream Buffering</a>
+<ul>
+<li><a href="Buffering-Concepts.html#Buffering-Concepts">12.20.1 Buffering Concepts</a>
+<li><a href="Flushing-Buffers.html#Flushing-Buffers">12.20.2 Flushing Buffers</a>
+<li><a href="Controlling-Buffering.html#Controlling-Buffering">12.20.3 Controlling Which Kind of Buffering</a>
+</li></ul>
+<li><a href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams">12.21 Other Kinds of Streams</a>
+<ul>
+<li><a href="String-Streams.html#String-Streams">12.21.1 String Streams</a>
+<li><a href="Obstack-Streams.html#Obstack-Streams">12.21.2 Obstack Streams</a>
+<li><a href="Custom-Streams.html#Custom-Streams">12.21.3 Programming Your Own Custom Streams</a>
+<ul>
+<li><a href="Streams-and-Cookies.html#Streams-and-Cookies">12.21.3.1 Custom Streams and Cookies</a>
+<li><a href="Hook-Functions.html#Hook-Functions">12.21.3.2 Custom Stream Hook Functions</a>
+</li></ul>
+</li></ul>
+<li><a href="Formatted-Messages.html#Formatted-Messages">12.22 Formatted Messages</a>
+<ul>
+<li><a href="Printing-Formatted-Messages.html#Printing-Formatted-Messages">12.22.1 Printing Formatted Messages</a>
+<li><a href="Adding-Severity-Classes.html#Adding-Severity-Classes">12.22.2 Adding Severity Classes</a>
+<li><a href="Example.html#Example">12.22.3 How to use <code>fmtmsg</code> and <code>addseverity</code></a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Low_002dLevel-I_002fO" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">13 Low-Level Input/Output</a>
+<ul>
+<li><a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">13.1 Opening and Closing Files</a>
+<li><a href="I_002fO-Primitives.html#I_002fO-Primitives">13.2 Input and Output Primitives</a>
+<li><a href="File-Position-Primitive.html#File-Position-Primitive">13.3 Setting the File Position of a Descriptor</a>
+<li><a href="Descriptors-and-Streams.html#Descriptors-and-Streams">13.4 Descriptors and Streams</a>
+<li><a href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">13.5 Dangers of Mixing Streams and Descriptors</a>
+<ul>
+<li><a href="Linked-Channels.html#Linked-Channels">13.5.1 Linked Channels</a>
+<li><a href="Independent-Channels.html#Independent-Channels">13.5.2 Independent Channels</a>
+<li><a href="Cleaning-Streams.html#Cleaning-Streams">13.5.3 Cleaning Streams</a>
+</li></ul>
+<li><a href="Scatter_002dGather.html#Scatter_002dGather">13.6 Fast Scatter-Gather I/O</a>
+<li><a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">13.7 Memory-mapped I/O</a>
+<li><a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">13.8 Waiting for Input or Output</a>
+<li><a href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">13.9 Synchronizing I/O operations</a>
+<li><a href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">13.10 Perform I/O Operations in Parallel</a>
+<ul>
+<li><a href="Asynchronous-Reads_002fWrites.html#Asynchronous-Reads_002fWrites">13.10.1 Asynchronous Read and Write Operations</a>
+<li><a href="Status-of-AIO-Operations.html#Status-of-AIO-Operations">13.10.2 Getting the Status of AIO Operations</a>
+<li><a href="Synchronizing-AIO-Operations.html#Synchronizing-AIO-Operations">13.10.3 Getting into a Consistent State</a>
+<li><a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">13.10.4 Cancellation of AIO Operations</a>
+<li><a href="Configuration-of-AIO.html#Configuration-of-AIO">13.10.5 How to optimize the AIO implementation</a>
+</li></ul>
+<li><a href="Control-Operations.html#Control-Operations">13.11 Control Operations on Files</a>
+<li><a href="Duplicating-Descriptors.html#Duplicating-Descriptors">13.12 Duplicating Descriptors</a>
+<li><a href="Descriptor-Flags.html#Descriptor-Flags">13.13 File Descriptor Flags</a>
+<li><a href="File-Status-Flags.html#File-Status-Flags">13.14 File Status Flags</a>
+<ul>
+<li><a href="Access-Modes.html#Access-Modes">13.14.1 File Access Modes</a>
+<li><a href="Open_002dtime-Flags.html#Open_002dtime-Flags">13.14.2 Open-time Flags</a>
+<li><a href="Operating-Modes.html#Operating-Modes">13.14.3 I/O Operating Modes</a>
+<li><a href="Getting-File-Status-Flags.html#Getting-File-Status-Flags">13.14.4 Getting and Setting File Status Flags</a>
+</li></ul>
+<li><a href="File-Locks.html#File-Locks">13.15 File Locks</a>
+<li><a href="Interrupt-Input.html#Interrupt-Input">13.16 Interrupt-Driven Input</a>
+<li><a href="IOCTLs.html#IOCTLs">13.17 Generic I/O Control operations</a>
+</li></ul>
+<li><a name="toc_File-System-Interface" href="File-System-Interface.html#File-System-Interface">14 File System Interface</a>
+<ul>
+<li><a href="Working-Directory.html#Working-Directory">14.1 Working Directory</a>
+<li><a href="Accessing-Directories.html#Accessing-Directories">14.2 Accessing Directories</a>
+<ul>
+<li><a href="Directory-Entries.html#Directory-Entries">14.2.1 Format of a Directory Entry</a>
+<li><a href="Opening-a-Directory.html#Opening-a-Directory">14.2.2 Opening a Directory Stream</a>
+<li><a href="Reading_002fClosing-Directory.html#Reading_002fClosing-Directory">14.2.3 Reading and Closing a Directory Stream</a>
+<li><a href="Simple-Directory-Lister.html#Simple-Directory-Lister">14.2.4 Simple Program to List a Directory</a>
+<li><a href="Random-Access-Directory.html#Random-Access-Directory">14.2.5 Random Access in a Directory Stream</a>
+<li><a href="Scanning-Directory-Content.html#Scanning-Directory-Content">14.2.6 Scanning the Content of a Directory</a>
+<li><a href="Simple-Directory-Lister-Mark-II.html#Simple-Directory-Lister-Mark-II">14.2.7 Simple Program to List a Directory, Mark II</a>
+</li></ul>
+<li><a href="Working-with-Directory-Trees.html#Working-with-Directory-Trees">14.3 Working with Directory Trees</a>
+<li><a href="Hard-Links.html#Hard-Links">14.4 Hard Links</a>
+<li><a href="Symbolic-Links.html#Symbolic-Links">14.5 Symbolic Links</a>
+<li><a href="Deleting-Files.html#Deleting-Files">14.6 Deleting Files</a>
+<li><a href="Renaming-Files.html#Renaming-Files">14.7 Renaming Files</a>
+<li><a href="Creating-Directories.html#Creating-Directories">14.8 Creating Directories</a>
+<li><a href="File-Attributes.html#File-Attributes">14.9 File Attributes</a>
+<ul>
+<li><a href="Attribute-Meanings.html#Attribute-Meanings">14.9.1 The meaning of the File Attributes</a>
+<li><a href="Reading-Attributes.html#Reading-Attributes">14.9.2 Reading the Attributes of a File</a>
+<li><a href="Testing-File-Type.html#Testing-File-Type">14.9.3 Testing the Type of a File</a>
+<li><a href="File-Owner.html#File-Owner">14.9.4 File Owner</a>
+<li><a href="Permission-Bits.html#Permission-Bits">14.9.5 The Mode Bits for Access Permission</a>
+<li><a href="Access-Permission.html#Access-Permission">14.9.6 How Your Access to a File is Decided</a>
+<li><a href="Setting-Permissions.html#Setting-Permissions">14.9.7 Assigning File Permissions</a>
+<li><a href="Testing-File-Access.html#Testing-File-Access">14.9.8 Testing Permission to Access a File</a>
+<li><a href="File-Times.html#File-Times">14.9.9 File Times</a>
+<li><a href="File-Size.html#File-Size">14.9.10 File Size</a>
+</li></ul>
+<li><a href="Making-Special-Files.html#Making-Special-Files">14.10 Making Special Files</a>
+<li><a href="Temporary-Files.html#Temporary-Files">14.11 Temporary Files</a>
+</li></ul>
+<li><a name="toc_Pipes-and-FIFOs" href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">15 Pipes and FIFOs</a>
+<ul>
+<li><a href="Creating-a-Pipe.html#Creating-a-Pipe">15.1 Creating a Pipe</a>
+<li><a href="Pipe-to-a-Subprocess.html#Pipe-to-a-Subprocess">15.2 Pipe to a Subprocess</a>
+<li><a href="FIFO-Special-Files.html#FIFO-Special-Files">15.3 FIFO Special Files</a>
+<li><a href="Pipe-Atomicity.html#Pipe-Atomicity">15.4 Atomicity of Pipe I/O</a>
+</li></ul>
+<li><a name="toc_Sockets" href="Sockets.html#Sockets">16 Sockets</a>
+<ul>
+<li><a href="Socket-Concepts.html#Socket-Concepts">16.1 Socket Concepts</a>
+<li><a href="Communication-Styles.html#Communication-Styles">16.2 Communication Styles</a>
+<li><a href="Socket-Addresses.html#Socket-Addresses">16.3 Socket Addresses</a>
+<ul>
+<li><a href="Address-Formats.html#Address-Formats">16.3.1 Address Formats</a>
+<li><a href="Setting-Address.html#Setting-Address">16.3.2 Setting the Address of a Socket</a>
+<li><a href="Reading-Address.html#Reading-Address">16.3.3 Reading the Address of a Socket</a>
+</li></ul>
+<li><a href="Interface-Naming.html#Interface-Naming">16.4 Interface Naming</a>
+<li><a href="Local-Namespace.html#Local-Namespace">16.5 The Local Namespace</a>
+<ul>
+<li><a href="Local-Namespace-Concepts.html#Local-Namespace-Concepts">16.5.1 Local Namespace Concepts</a>
+<li><a href="Local-Namespace-Details.html#Local-Namespace-Details">16.5.2 Details of Local Namespace</a>
+<li><a href="Local-Socket-Example.html#Local-Socket-Example">16.5.3 Example of Local-Namespace Sockets</a>
+</li></ul>
+<li><a href="Internet-Namespace.html#Internet-Namespace">16.6 The Internet Namespace</a>
+<ul>
+<li><a href="Internet-Address-Formats.html#Internet-Address-Formats">16.6.1 Internet Socket Address Formats</a>
+<li><a href="Host-Addresses.html#Host-Addresses">16.6.2 Host Addresses</a>
+<ul>
+<li><a href="Abstract-Host-Addresses.html#Abstract-Host-Addresses">16.6.2.1 Internet Host Addresses</a>
+<li><a href="Host-Address-Data-Type.html#Host-Address-Data-Type">16.6.2.2 Host Address Data Type</a>
+<li><a href="Host-Address-Functions.html#Host-Address-Functions">16.6.2.3 Host Address Functions</a>
+<li><a href="Host-Names.html#Host-Names">16.6.2.4 Host Names</a>
+</li></ul>
+<li><a href="Ports.html#Ports">16.6.3 Internet Ports</a>
+<li><a href="Services-Database.html#Services-Database">16.6.4 The Services Database</a>
+<li><a href="Byte-Order.html#Byte-Order">16.6.5 Byte Order Conversion</a>
+<li><a href="Protocols-Database.html#Protocols-Database">16.6.6 Protocols Database</a>
+<li><a href="Inet-Example.html#Inet-Example">16.6.7 Internet Socket Example</a>
+</li></ul>
+<li><a href="Misc-Namespaces.html#Misc-Namespaces">16.7 Other Namespaces</a>
+<li><a href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">16.8 Opening and Closing Sockets</a>
+<ul>
+<li><a href="Creating-a-Socket.html#Creating-a-Socket">16.8.1 Creating a Socket</a>
+<li><a href="Closing-a-Socket.html#Closing-a-Socket">16.8.2 Closing a Socket</a>
+<li><a href="Socket-Pairs.html#Socket-Pairs">16.8.3 Socket Pairs</a>
+</li></ul>
+<li><a href="Connections.html#Connections">16.9 Using Sockets with Connections</a>
+<ul>
+<li><a href="Connecting.html#Connecting">16.9.1 Making a Connection</a>
+<li><a href="Listening.html#Listening">16.9.2 Listening for Connections</a>
+<li><a href="Accepting-Connections.html#Accepting-Connections">16.9.3 Accepting Connections</a>
+<li><a href="Who-is-Connected.html#Who-is-Connected">16.9.4 Who is Connected to Me?</a>
+<li><a href="Transferring-Data.html#Transferring-Data">16.9.5 Transferring Data</a>
+<ul>
+<li><a href="Sending-Data.html#Sending-Data">16.9.5.1 Sending Data</a>
+<li><a href="Receiving-Data.html#Receiving-Data">16.9.5.2 Receiving Data</a>
+<li><a href="Socket-Data-Options.html#Socket-Data-Options">16.9.5.3 Socket Data Options</a>
+</li></ul>
+<li><a href="Byte-Stream-Example.html#Byte-Stream-Example">16.9.6 Byte Stream Socket Example</a>
+<li><a href="Server-Example.html#Server-Example">16.9.7 Byte Stream Connection Server Example</a>
+<li><a href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data">16.9.8 Out-of-Band Data</a>
+</li></ul>
+<li><a href="Datagrams.html#Datagrams">16.10 Datagram Socket Operations</a>
+<ul>
+<li><a href="Sending-Datagrams.html#Sending-Datagrams">16.10.1 Sending Datagrams</a>
+<li><a href="Receiving-Datagrams.html#Receiving-Datagrams">16.10.2 Receiving Datagrams</a>
+<li><a href="Datagram-Example.html#Datagram-Example">16.10.3 Datagram Socket Example</a>
+<li><a href="Example-Receiver.html#Example-Receiver">16.10.4 Example of Reading Datagrams</a>
+</li></ul>
+<li><a href="Inetd.html#Inetd">16.11 The <code>inetd</code> Daemon</a>
+<ul>
+<li><a href="Inetd-Servers.html#Inetd-Servers">16.11.1 <code>inetd</code> Servers</a>
+<li><a href="Configuring-Inetd.html#Configuring-Inetd">16.11.2 Configuring <code>inetd</code></a>
+</li></ul>
+<li><a href="Socket-Options.html#Socket-Options">16.12 Socket Options</a>
+<ul>
+<li><a href="Socket-Option-Functions.html#Socket-Option-Functions">16.12.1 Socket Option Functions</a>
+<li><a href="Socket_002dLevel-Options.html#Socket_002dLevel-Options">16.12.2 Socket-Level Options</a>
+</li></ul>
+<li><a href="Networks-Database.html#Networks-Database">16.13 Networks Database</a>
+</li></ul>
+<li><a name="toc_Low_002dLevel-Terminal-Interface" href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">17 Low-Level Terminal Interface</a>
+<ul>
+<li><a href="Is-It-a-Terminal.html#Is-It-a-Terminal">17.1 Identifying Terminals</a>
+<li><a href="I_002fO-Queues.html#I_002fO-Queues">17.2 I/O Queues</a>
+<li><a href="Canonical-or-Not.html#Canonical-or-Not">17.3 Two Styles of Input: Canonical or Not</a>
+<li><a href="Terminal-Modes.html#Terminal-Modes">17.4 Terminal Modes</a>
+<ul>
+<li><a href="Mode-Data-Types.html#Mode-Data-Types">17.4.1 Terminal Mode Data Types</a>
+<li><a href="Mode-Functions.html#Mode-Functions">17.4.2 Terminal Mode Functions</a>
+<li><a href="Setting-Modes.html#Setting-Modes">17.4.3 Setting Terminal Modes Properly</a>
+<li><a href="Input-Modes.html#Input-Modes">17.4.4 Input Modes</a>
+<li><a href="Output-Modes.html#Output-Modes">17.4.5 Output Modes</a>
+<li><a href="Control-Modes.html#Control-Modes">17.4.6 Control Modes</a>
+<li><a href="Local-Modes.html#Local-Modes">17.4.7 Local Modes</a>
+<li><a href="Line-Speed.html#Line-Speed">17.4.8 Line Speed</a>
+<li><a href="Special-Characters.html#Special-Characters">17.4.9 Special Characters</a>
+<ul>
+<li><a href="Editing-Characters.html#Editing-Characters">17.4.9.1 Characters for Input Editing</a>
+<li><a href="Signal-Characters.html#Signal-Characters">17.4.9.2 Characters that Cause Signals</a>
+<li><a href="Start_002fStop-Characters.html#Start_002fStop-Characters">17.4.9.3 Special Characters for Flow Control</a>
+<li><a href="Other-Special.html#Other-Special">17.4.9.4 Other Special Characters</a>
+</li></ul>
+<li><a href="Noncanonical-Input.html#Noncanonical-Input">17.4.10 Noncanonical Input</a>
+</li></ul>
+<li><a href="BSD-Terminal-Modes.html#BSD-Terminal-Modes">17.5 BSD Terminal Modes</a>
+<li><a href="Line-Control.html#Line-Control">17.6 Line Control Functions</a>
+<li><a href="Noncanon-Example.html#Noncanon-Example">17.7 Noncanonical Mode Example</a>
+<li><a href="Pseudo_002dTerminals.html#Pseudo_002dTerminals">17.8 Pseudo-Terminals</a>
+<ul>
+<li><a href="Allocation.html#Allocation">17.8.1 Allocating Pseudo-Terminals</a>
+<li><a href="Pseudo_002dTerminal-Pairs.html#Pseudo_002dTerminal-Pairs">17.8.2 Opening a Pseudo-Terminal Pair</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Syslog" href="Syslog.html#Syslog">18 Syslog</a>
+<ul>
+<li><a href="Overview-of-Syslog.html#Overview-of-Syslog">18.1 Overview of Syslog</a>
+<li><a href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">18.2 Submitting Syslog Messages</a>
+<ul>
+<li><a href="openlog.html#openlog">18.2.1 openlog</a>
+<li><a href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">18.2.2 syslog, vsyslog</a>
+<li><a href="closelog.html#closelog">18.2.3 closelog</a>
+<li><a href="setlogmask.html#setlogmask">18.2.4 setlogmask</a>
+<li><a href="Syslog-Example.html#Syslog-Example">18.2.5 Syslog Example</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Mathematics" href="Mathematics.html#Mathematics">19 Mathematics</a>
+<ul>
+<li><a href="Mathematical-Constants.html#Mathematical-Constants">19.1 Predefined Mathematical Constants</a>
+<li><a href="Trig-Functions.html#Trig-Functions">19.2 Trigonometric Functions</a>
+<li><a href="Inverse-Trig-Functions.html#Inverse-Trig-Functions">19.3 Inverse Trigonometric Functions</a>
+<li><a href="Exponents-and-Logarithms.html#Exponents-and-Logarithms">19.4 Exponentiation and Logarithms</a>
+<li><a href="Hyperbolic-Functions.html#Hyperbolic-Functions">19.5 Hyperbolic Functions</a>
+<li><a href="Special-Functions.html#Special-Functions">19.6 Special Functions</a>
+<li><a href="Errors-in-Math-Functions.html#Errors-in-Math-Functions">19.7 Known Maximum Errors in Math Functions</a>
+<li><a href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">19.8 Pseudo-Random Numbers</a>
+<ul>
+<li><a href="ISO-Random.html#ISO-Random">19.8.1 ISO C Random Number Functions</a>
+<li><a href="BSD-Random.html#BSD-Random">19.8.2 BSD Random Number Functions</a>
+<li><a href="SVID-Random.html#SVID-Random">19.8.3 SVID Random Number Function</a>
+</li></ul>
+<li><a href="FP-Function-Optimizations.html#FP-Function-Optimizations">19.9 Is Fast Code or Small Code preferred?</a>
+</li></ul>
+<li><a name="toc_Arithmetic" href="Arithmetic.html#Arithmetic">20 Arithmetic Functions</a>
+<ul>
+<li><a href="Integers.html#Integers">20.1 Integers</a>
+<li><a href="Integer-Division.html#Integer-Division">20.2 Integer Division</a>
+<li><a href="Floating-Point-Numbers.html#Floating-Point-Numbers">20.3 Floating Point Numbers</a>
+<li><a href="Floating-Point-Classes.html#Floating-Point-Classes">20.4 Floating-Point Number Classification Functions</a>
+<li><a href="Floating-Point-Errors.html#Floating-Point-Errors">20.5 Errors in Floating-Point Calculations</a>
+<ul>
+<li><a href="FP-Exceptions.html#FP-Exceptions">20.5.1 FP Exceptions</a>
+<li><a href="Infinity-and-NaN.html#Infinity-and-NaN">20.5.2 Infinity and NaN</a>
+<li><a href="Status-bit-operations.html#Status-bit-operations">20.5.3 Examining the FPU status word</a>
+<li><a href="Math-Error-Reporting.html#Math-Error-Reporting">20.5.4 Error Reporting by Mathematical Functions</a>
+</li></ul>
+<li><a href="Rounding.html#Rounding">20.6 Rounding Modes</a>
+<li><a href="Control-Functions.html#Control-Functions">20.7 Floating-Point Control Functions</a>
+<li><a href="Arithmetic-Functions.html#Arithmetic-Functions">20.8 Arithmetic Functions</a>
+<ul>
+<li><a href="Absolute-Value.html#Absolute-Value">20.8.1 Absolute Value</a>
+<li><a href="Normalization-Functions.html#Normalization-Functions">20.8.2 Normalization Functions</a>
+<li><a href="Rounding-Functions.html#Rounding-Functions">20.8.3 Rounding Functions</a>
+<li><a href="Remainder-Functions.html#Remainder-Functions">20.8.4 Remainder Functions</a>
+<li><a href="FP-Bit-Twiddling.html#FP-Bit-Twiddling">20.8.5 Setting and modifying single bits of FP values</a>
+<li><a href="FP-Comparison-Functions.html#FP-Comparison-Functions">20.8.6 Floating-Point Comparison Functions</a>
+<li><a href="Misc-FP-Arithmetic.html#Misc-FP-Arithmetic">20.8.7 Miscellaneous FP arithmetic functions</a>
+</li></ul>
+<li><a href="Complex-Numbers.html#Complex-Numbers">20.9 Complex Numbers</a>
+<li><a href="Operations-on-Complex.html#Operations-on-Complex">20.10 Projections, Conjugates, and Decomposing of Complex Numbers</a>
+<li><a href="Parsing-of-Numbers.html#Parsing-of-Numbers">20.11 Parsing of Numbers</a>
+<ul>
+<li><a href="Parsing-of-Integers.html#Parsing-of-Integers">20.11.1 Parsing of Integers</a>
+<li><a href="Parsing-of-Floats.html#Parsing-of-Floats">20.11.2 Parsing of Floats</a>
+</li></ul>
+<li><a href="System-V-Number-Conversion.html#System-V-Number-Conversion">20.12 Old-fashioned System V number-to-string functions</a>
+</li></ul>
+<li><a name="toc_Date-and-Time" href="Date-and-Time.html#Date-and-Time">21 Date and Time</a>
+<ul>
+<li><a href="Time-Basics.html#Time-Basics">21.1 Time Basics</a>
+<li><a href="Elapsed-Time.html#Elapsed-Time">21.2 Elapsed Time</a>
+<li><a href="Processor-And-CPU-Time.html#Processor-And-CPU-Time">21.3 Processor And CPU Time</a>
+<ul>
+<li><a href="CPU-Time.html#CPU-Time">21.3.1 CPU Time Inquiry</a>
+<li><a href="Processor-Time.html#Processor-Time">21.3.2 Processor Time Inquiry</a>
+</li></ul>
+<li><a href="Calendar-Time.html#Calendar-Time">21.4 Calendar Time</a>
+<ul>
+<li><a href="Simple-Calendar-Time.html#Simple-Calendar-Time">21.4.1 Simple Calendar Time</a>
+<li><a href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">21.4.2 High-Resolution Calendar</a>
+<li><a href="Broken_002ddown-Time.html#Broken_002ddown-Time">21.4.3 Broken-down Time</a>
+<li><a href="High-Accuracy-Clock.html#High-Accuracy-Clock">21.4.4 High Accuracy Clock</a>
+<li><a href="Formatting-Calendar-Time.html#Formatting-Calendar-Time">21.4.5 Formatting Calendar Time</a>
+<li><a href="Parsing-Date-and-Time.html#Parsing-Date-and-Time">21.4.6 Convert textual time and date information back</a>
+<ul>
+<li><a href="Low_002dLevel-Time-String-Parsing.html#Low_002dLevel-Time-String-Parsing">21.4.6.1 Interpret string according to given format</a>
+<li><a href="General-Time-String-Parsing.html#General-Time-String-Parsing">21.4.6.2 A More User-friendly Way to Parse Times and Dates</a>
+</li></ul>
+<li><a href="TZ-Variable.html#TZ-Variable">21.4.7 Specifying the Time Zone with <code>TZ</code></a>
+<li><a href="Time-Zone-Functions.html#Time-Zone-Functions">21.4.8 Functions and Variables for Time Zones</a>
+<li><a href="Time-Functions-Example.html#Time-Functions-Example">21.4.9 Time Functions Example</a>
+</li></ul>
+<li><a href="Setting-an-Alarm.html#Setting-an-Alarm">21.5 Setting an Alarm</a>
+<li><a href="Sleeping.html#Sleeping">21.6 Sleeping</a>
+</li></ul>
+<li><a name="toc_Resource-Usage-And-Limitation" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">22 Resource Usage And Limitation</a>
+<ul>
+<li><a href="Resource-Usage.html#Resource-Usage">22.1 Resource Usage</a>
+<li><a href="Limits-on-Resources.html#Limits-on-Resources">22.2 Limiting Resource Usage</a>
+<li><a href="Priority.html#Priority">22.3 Process CPU Priority And Scheduling</a>
+<ul>
+<li><a href="Absolute-Priority.html#Absolute-Priority">22.3.1 Absolute Priority</a>
+<ul>
+<li><a href="Absolute-Priority.html#Absolute-Priority">22.3.1.1 Using Absolute Priority</a>
+</li></ul>
+<li><a href="Realtime-Scheduling.html#Realtime-Scheduling">22.3.2 Realtime Scheduling</a>
+<li><a href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">22.3.3 Basic Scheduling Functions</a>
+<li><a href="Traditional-Scheduling.html#Traditional-Scheduling">22.3.4 Traditional Scheduling</a>
+<ul>
+<li><a href="Traditional-Scheduling-Intro.html#Traditional-Scheduling-Intro">22.3.4.1 Introduction To Traditional Scheduling</a>
+<li><a href="Traditional-Scheduling-Functions.html#Traditional-Scheduling-Functions">22.3.4.2 Functions For Traditional Scheduling</a>
+</li></ul>
+<li><a href="CPU-Affinity.html#CPU-Affinity">22.3.5 Limiting execution to certain CPUs</a>
+</li></ul>
+<li><a href="Memory-Resources.html#Memory-Resources">22.4 Querying memory available resources</a>
+<ul>
+<li><a href="Memory-Subsystem.html#Memory-Subsystem">22.4.1 Overview about traditional Unix memory handling</a>
+<li><a href="Query-Memory-Parameters.html#Query-Memory-Parameters">22.4.2 How to get information about the memory subsystem?</a>
+</li></ul>
+<li><a href="Processor-Resources.html#Processor-Resources">22.5 Learn about the processors available</a>
+</li></ul>
+<li><a name="toc_Non_002dLocal-Exits" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">23 Non-Local Exits</a>
+<ul>
+<li><a href="Non_002dLocal-Intro.html#Non_002dLocal-Intro">23.1 Introduction to Non-Local Exits</a>
+<li><a href="Non_002dLocal-Details.html#Non_002dLocal-Details">23.2 Details of Non-Local Exits</a>
+<li><a href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals">23.3 Non-Local Exits and Signals</a>
+<li><a href="System-V-contexts.html#System-V-contexts">23.4 Complete Context Control</a>
+</li></ul>
+<li><a name="toc_Signal-Handling" href="Signal-Handling.html#Signal-Handling">24 Signal Handling</a>
+<ul>
+<li><a href="Concepts-of-Signals.html#Concepts-of-Signals">24.1 Basic Concepts of Signals</a>
+<ul>
+<li><a href="Kinds-of-Signals.html#Kinds-of-Signals">24.1.1 Some Kinds of Signals</a>
+<li><a href="Signal-Generation.html#Signal-Generation">24.1.2 Concepts of Signal Generation</a>
+<li><a href="Delivery-of-Signal.html#Delivery-of-Signal">24.1.3 How Signals Are Delivered</a>
+</li></ul>
+<li><a href="Standard-Signals.html#Standard-Signals">24.2 Standard Signals</a>
+<ul>
+<li><a href="Program-Error-Signals.html#Program-Error-Signals">24.2.1 Program Error Signals</a>
+<li><a href="Termination-Signals.html#Termination-Signals">24.2.2 Termination Signals</a>
+<li><a href="Alarm-Signals.html#Alarm-Signals">24.2.3 Alarm Signals</a>
+<li><a href="Asynchronous-I_002fO-Signals.html#Asynchronous-I_002fO-Signals">24.2.4 Asynchronous I/O Signals</a>
+<li><a href="Job-Control-Signals.html#Job-Control-Signals">24.2.5 Job Control Signals</a>
+<li><a href="Operation-Error-Signals.html#Operation-Error-Signals">24.2.6 Operation Error Signals</a>
+<li><a href="Miscellaneous-Signals.html#Miscellaneous-Signals">24.2.7 Miscellaneous Signals</a>
+<li><a href="Signal-Messages.html#Signal-Messages">24.2.8 Signal Messages</a>
+</li></ul>
+<li><a href="Signal-Actions.html#Signal-Actions">24.3 Specifying Signal Actions</a>
+<ul>
+<li><a href="Basic-Signal-Handling.html#Basic-Signal-Handling">24.3.1 Basic Signal Handling</a>
+<li><a href="Advanced-Signal-Handling.html#Advanced-Signal-Handling">24.3.2 Advanced Signal Handling</a>
+<li><a href="Signal-and-Sigaction.html#Signal-and-Sigaction">24.3.3 Interaction of <code>signal</code> and <code>sigaction</code></a>
+<li><a href="Sigaction-Function-Example.html#Sigaction-Function-Example">24.3.4 <code>sigaction</code> Function Example</a>
+<li><a href="Flags-for-Sigaction.html#Flags-for-Sigaction">24.3.5 Flags for <code>sigaction</code></a>
+<li><a href="Initial-Signal-Actions.html#Initial-Signal-Actions">24.3.6 Initial Signal Actions</a>
+</li></ul>
+<li><a href="Defining-Handlers.html#Defining-Handlers">24.4 Defining Signal Handlers</a>
+<ul>
+<li><a href="Handler-Returns.html#Handler-Returns">24.4.1 Signal Handlers that Return</a>
+<li><a href="Termination-in-Handler.html#Termination-in-Handler">24.4.2 Handlers That Terminate the Process</a>
+<li><a href="Longjmp-in-Handler.html#Longjmp-in-Handler">24.4.3 Nonlocal Control Transfer in Handlers</a>
+<li><a href="Signals-in-Handler.html#Signals-in-Handler">24.4.4 Signals Arriving While a Handler Runs</a>
+<li><a href="Merged-Signals.html#Merged-Signals">24.4.5 Signals Close Together Merge into One</a>
+<li><a href="Nonreentrancy.html#Nonreentrancy">24.4.6 Signal Handling and Nonreentrant Functions</a>
+<li><a href="Atomic-Data-Access.html#Atomic-Data-Access">24.4.7 Atomic Data Access and Signal Handling</a>
+<ul>
+<li><a href="Non_002datomic-Example.html#Non_002datomic-Example">24.4.7.1 Problems with Non-Atomic Access</a>
+<li><a href="Atomic-Types.html#Atomic-Types">24.4.7.2 Atomic Types</a>
+<li><a href="Atomic-Usage.html#Atomic-Usage">24.4.7.3 Atomic Usage Patterns</a>
+</li></ul>
+</li></ul>
+<li><a href="Interrupted-Primitives.html#Interrupted-Primitives">24.5 Primitives Interrupted by Signals</a>
+<li><a href="Generating-Signals.html#Generating-Signals">24.6 Generating Signals</a>
+<ul>
+<li><a href="Signaling-Yourself.html#Signaling-Yourself">24.6.1 Signaling Yourself</a>
+<li><a href="Signaling-Another-Process.html#Signaling-Another-Process">24.6.2 Signaling Another Process</a>
+<li><a href="Permission-for-kill.html#Permission-for-kill">24.6.3 Permission for using <code>kill</code></a>
+<li><a href="Kill-Example.html#Kill-Example">24.6.4 Using <code>kill</code> for Communication</a>
+</li></ul>
+<li><a href="Blocking-Signals.html#Blocking-Signals">24.7 Blocking Signals</a>
+<ul>
+<li><a href="Why-Block.html#Why-Block">24.7.1 Why Blocking Signals is Useful</a>
+<li><a href="Signal-Sets.html#Signal-Sets">24.7.2 Signal Sets</a>
+<li><a href="Process-Signal-Mask.html#Process-Signal-Mask">24.7.3 Process Signal Mask</a>
+<li><a href="Testing-for-Delivery.html#Testing-for-Delivery">24.7.4 Blocking to Test for Delivery of a Signal</a>
+<li><a href="Blocking-for-Handler.html#Blocking-for-Handler">24.7.5 Blocking Signals for a Handler</a>
+<li><a href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals">24.7.6 Checking for Pending Signals</a>
+<li><a href="Remembering-a-Signal.html#Remembering-a-Signal">24.7.7 Remembering a Signal to Act On Later</a>
+</li></ul>
+<li><a href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">24.8 Waiting for a Signal</a>
+<ul>
+<li><a href="Using-Pause.html#Using-Pause">24.8.1 Using <code>pause</code></a>
+<li><a href="Pause-Problems.html#Pause-Problems">24.8.2 Problems with <code>pause</code></a>
+<li><a href="Sigsuspend.html#Sigsuspend">24.8.3 Using <code>sigsuspend</code></a>
+</li></ul>
+<li><a href="Signal-Stack.html#Signal-Stack">24.9 Using a Separate Signal Stack</a>
+<li><a href="BSD-Signal-Handling.html#BSD-Signal-Handling">24.10 BSD Signal Handling</a>
+<ul>
+<li><a href="BSD-Handler.html#BSD-Handler">24.10.1 BSD Function to Establish a Handler</a>
+<li><a href="Blocking-in-BSD.html#Blocking-in-BSD">24.10.2 BSD Functions for Blocking Signals</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Program-Basics" href="Program-Basics.html#Program-Basics">25 The Basic Program/System Interface</a>
+<ul>
+<li><a href="Program-Arguments.html#Program-Arguments">25.1 Program Arguments</a>
+<ul>
+<li><a href="Argument-Syntax.html#Argument-Syntax">25.1.1 Program Argument Syntax Conventions</a>
+<li><a href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">25.1.2 Parsing Program Arguments</a>
+</li></ul>
+<li><a href="Getopt.html#Getopt">25.2 Parsing program options using <code>getopt</code></a>
+<ul>
+<li><a href="Using-Getopt.html#Using-Getopt">25.2.1 Using the <code>getopt</code> function</a>
+<li><a href="Example-of-Getopt.html#Example-of-Getopt">25.2.2 Example of Parsing Arguments with <code>getopt</code></a>
+<li><a href="Getopt-Long-Options.html#Getopt-Long-Options">25.2.3 Parsing Long Options with <code>getopt_long</code></a>
+<li><a href="Getopt-Long-Option-Example.html#Getopt-Long-Option-Example">25.2.4 Example of Parsing Long Options with <code>getopt_long</code></a>
+</li></ul>
+<li><a href="Argp.html#Argp">25.3 Parsing Program Options with Argp</a>
+<ul>
+<li><a href="Argp.html#Argp">25.3.1 The <code>argp_parse</code> Function</a>
+<li><a href="Argp-Global-Variables.html#Argp-Global-Variables">25.3.2 Argp Global Variables</a>
+<li><a href="Argp-Parsers.html#Argp-Parsers">25.3.3 Specifying Argp Parsers</a>
+<li><a href="Argp-Option-Vectors.html#Argp-Option-Vectors">25.3.4 Specifying Options in an Argp Parser</a>
+<ul>
+<li><a href="Argp-Option-Flags.html#Argp-Option-Flags">25.3.4.1 Flags for Argp Options</a>
+</li></ul>
+<li><a href="Argp-Parser-Functions.html#Argp-Parser-Functions">25.3.5 Argp Parser Functions</a>
+<ul>
+<li><a href="Argp-Special-Keys.html#Argp-Special-Keys">25.3.5.1 Special Keys for Argp Parser Functions</a>
+<li><a href="Argp-Helper-Functions.html#Argp-Helper-Functions">25.3.5.2 Functions For Use in Argp Parsers</a>
+<li><a href="Argp-Parsing-State.html#Argp-Parsing-State">25.3.5.3 Argp Parsing State</a>
+</li></ul>
+<li><a href="Argp-Children.html#Argp-Children">25.3.6 Combining Multiple Argp Parsers</a>
+<li><a href="Argp-Flags.html#Argp-Flags">25.3.7 Flags for <code>argp_parse</code></a>
+<li><a href="Argp-Help-Filtering.html#Argp-Help-Filtering">25.3.8 Customizing Argp Help Output</a>
+<ul>
+<li><a href="Argp-Help-Filter-Keys.html#Argp-Help-Filter-Keys">25.3.8.1 Special Keys for Argp Help Filter Functions</a>
+</li></ul>
+<li><a href="Argp-Help.html#Argp-Help">25.3.9 The <code>argp_help</code> Function</a>
+<li><a href="Argp-Help-Flags.html#Argp-Help-Flags">25.3.10 Flags for the <code>argp_help</code> Function</a>
+<li><a href="Argp-Examples.html#Argp-Examples">25.3.11 Argp Examples</a>
+<ul>
+<li><a href="Argp-Example-1.html#Argp-Example-1">25.3.11.1 A Minimal Program Using Argp</a>
+<li><a href="Argp-Example-2.html#Argp-Example-2">25.3.11.2 A Program Using Argp with Only Default Options</a>
+<li><a href="Argp-Example-3.html#Argp-Example-3">25.3.11.3 A Program Using Argp with User Options</a>
+<li><a href="Argp-Example-4.html#Argp-Example-4">25.3.11.4 A Program Using Multiple Combined Argp Parsers</a>
+</li></ul>
+<li><a href="Argp-User-Customization.html#Argp-User-Customization">25.3.12 Argp User Customization</a>
+<ul>
+<li><a href="Suboptions.html#Suboptions">25.3.12.1 Parsing of Suboptions</a>
+</li></ul>
+<li><a href="Suboptions-Example.html#Suboptions-Example">25.3.13 Parsing of Suboptions Example</a>
+</li></ul>
+<li><a href="Environment-Variables.html#Environment-Variables">25.4 Environment Variables</a>
+<ul>
+<li><a href="Environment-Access.html#Environment-Access">25.4.1 Environment Access</a>
+<li><a href="Standard-Environment.html#Standard-Environment">25.4.2 Standard Environment Variables</a>
+</li></ul>
+<li><a href="System-Calls.html#System-Calls">25.5 System Calls</a>
+<li><a href="Program-Termination.html#Program-Termination">25.6 Program Termination</a>
+<ul>
+<li><a href="Normal-Termination.html#Normal-Termination">25.6.1 Normal Termination</a>
+<li><a href="Exit-Status.html#Exit-Status">25.6.2 Exit Status</a>
+<li><a href="Cleanups-on-Exit.html#Cleanups-on-Exit">25.6.3 Cleanups on Exit</a>
+<li><a href="Aborting-a-Program.html#Aborting-a-Program">25.6.4 Aborting a Program</a>
+<li><a href="Termination-Internals.html#Termination-Internals">25.6.5 Termination Internals</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Processes" href="Processes.html#Processes">26 Processes</a>
+<ul>
+<li><a href="Running-a-Command.html#Running-a-Command">26.1 Running a Command</a>
+<li><a href="Process-Creation-Concepts.html#Process-Creation-Concepts">26.2 Process Creation Concepts</a>
+<li><a href="Process-Identification.html#Process-Identification">26.3 Process Identification</a>
+<li><a href="Creating-a-Process.html#Creating-a-Process">26.4 Creating a Process</a>
+<li><a href="Executing-a-File.html#Executing-a-File">26.5 Executing a File</a>
+<li><a href="Process-Completion.html#Process-Completion">26.6 Process Completion</a>
+<li><a href="Process-Completion-Status.html#Process-Completion-Status">26.7 Process Completion Status</a>
+<li><a href="BSD-Wait-Functions.html#BSD-Wait-Functions">26.8 BSD Process Wait Functions</a>
+<li><a href="Process-Creation-Example.html#Process-Creation-Example">26.9 Process Creation Example</a>
+</li></ul>
+<li><a name="toc_Job-Control" href="Job-Control.html#Job-Control">27 Job Control</a>
+<ul>
+<li><a href="Concepts-of-Job-Control.html#Concepts-of-Job-Control">27.1 Concepts of Job Control</a>
+<li><a href="Job-Control-is-Optional.html#Job-Control-is-Optional">27.2 Job Control is Optional</a>
+<li><a href="Controlling-Terminal.html#Controlling-Terminal">27.3 Controlling Terminal of a Process</a>
+<li><a href="Access-to-the-Terminal.html#Access-to-the-Terminal">27.4 Access to the Controlling Terminal</a>
+<li><a href="Orphaned-Process-Groups.html#Orphaned-Process-Groups">27.5 Orphaned Process Groups</a>
+<li><a href="Implementing-a-Shell.html#Implementing-a-Shell">27.6 Implementing a Job Control Shell</a>
+<ul>
+<li><a href="Data-Structures.html#Data-Structures">27.6.1 Data Structures for the Shell</a>
+<li><a href="Initializing-the-Shell.html#Initializing-the-Shell">27.6.2 Initializing the Shell</a>
+<li><a href="Launching-Jobs.html#Launching-Jobs">27.6.3 Launching Jobs</a>
+<li><a href="Foreground-and-Background.html#Foreground-and-Background">27.6.4 Foreground and Background</a>
+<li><a href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs">27.6.5 Stopped and Terminated Jobs</a>
+<li><a href="Continuing-Stopped-Jobs.html#Continuing-Stopped-Jobs">27.6.6 Continuing Stopped Jobs</a>
+<li><a href="Missing-Pieces.html#Missing-Pieces">27.6.7 The Missing Pieces</a>
+</li></ul>
+<li><a href="Functions-for-Job-Control.html#Functions-for-Job-Control">27.7 Functions for Job Control</a>
+<ul>
+<li><a href="Identifying-the-Terminal.html#Identifying-the-Terminal">27.7.1 Identifying the Controlling Terminal</a>
+<li><a href="Process-Group-Functions.html#Process-Group-Functions">27.7.2 Process Group Functions</a>
+<li><a href="Terminal-Access-Functions.html#Terminal-Access-Functions">27.7.3 Functions for Controlling Terminal Access</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Name-Service-Switch" href="Name-Service-Switch.html#Name-Service-Switch">28 System Databases and Name Service Switch</a>
+<ul>
+<li><a href="NSS-Basics.html#NSS-Basics">28.1 NSS Basics</a>
+<li><a href="NSS-Configuration-File.html#NSS-Configuration-File">28.2 The NSS Configuration File</a>
+<ul>
+<li><a href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">28.2.1 Services in the NSS configuration File</a>
+<li><a href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">28.2.2 Actions in the NSS configuration</a>
+<li><a href="Notes-on-NSS-Configuration-File.html#Notes-on-NSS-Configuration-File">28.2.3 Notes on the NSS Configuration File</a>
+</li></ul>
+<li><a href="NSS-Module-Internals.html#NSS-Module-Internals">28.3 NSS Module Internals</a>
+<ul>
+<li><a href="NSS-Module-Names.html#NSS-Module-Names">28.3.1 The Naming Scheme of the NSS Modules</a>
+<li><a href="NSS-Modules-Interface.html#NSS-Modules-Interface">28.3.2 The Interface of the Function in NSS Modules</a>
+</li></ul>
+<li><a href="Extending-NSS.html#Extending-NSS">28.4 Extending NSS</a>
+<ul>
+<li><a href="Adding-another-Service-to-NSS.html#Adding-another-Service-to-NSS">28.4.1 Adding another Service to NSS</a>
+<li><a href="NSS-Module-Function-Internals.html#NSS-Module-Function-Internals">28.4.2 Internals of the NSS Module Functions</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Users-and-Groups" href="Users-and-Groups.html#Users-and-Groups">29 Users and Groups</a>
+<ul>
+<li><a href="User-and-Group-IDs.html#User-and-Group-IDs">29.1 User and Group IDs</a>
+<li><a href="Process-Persona.html#Process-Persona">29.2 The Persona of a Process</a>
+<li><a href="Why-Change-Persona.html#Why-Change-Persona">29.3 Why Change the Persona of a Process?</a>
+<li><a href="How-Change-Persona.html#How-Change-Persona">29.4 How an Application Can Change Persona</a>
+<li><a href="Reading-Persona.html#Reading-Persona">29.5 Reading the Persona of a Process</a>
+<li><a href="Setting-User-ID.html#Setting-User-ID">29.6 Setting the User ID</a>
+<li><a href="Setting-Groups.html#Setting-Groups">29.7 Setting the Group IDs</a>
+<li><a href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">29.8 Enabling and Disabling Setuid Access</a>
+<li><a href="Setuid-Program-Example.html#Setuid-Program-Example">29.9 Setuid Program Example</a>
+<li><a href="Tips-for-Setuid.html#Tips-for-Setuid">29.10 Tips for Writing Setuid Programs</a>
+<li><a href="Who-Logged-In.html#Who-Logged-In">29.11 Identifying Who Logged In</a>
+<li><a href="User-Accounting-Database.html#User-Accounting-Database">29.12 The User Accounting Database</a>
+<ul>
+<li><a href="Manipulating-the-Database.html#Manipulating-the-Database">29.12.1 Manipulating the User Accounting Database</a>
+<li><a href="XPG-Functions.html#XPG-Functions">29.12.2 XPG User Accounting Database Functions</a>
+<li><a href="Logging-In-and-Out.html#Logging-In-and-Out">29.12.3 Logging In and Out</a>
+</li></ul>
+<li><a href="User-Database.html#User-Database">29.13 User Database</a>
+<ul>
+<li><a href="User-Data-Structure.html#User-Data-Structure">29.13.1 The Data Structure that Describes a User</a>
+<li><a href="Lookup-User.html#Lookup-User">29.13.2 Looking Up One User</a>
+<li><a href="Scanning-All-Users.html#Scanning-All-Users">29.13.3 Scanning the List of All Users</a>
+<li><a href="Writing-a-User-Entry.html#Writing-a-User-Entry">29.13.4 Writing a User Entry</a>
+</li></ul>
+<li><a href="Group-Database.html#Group-Database">29.14 Group Database</a>
+<ul>
+<li><a href="Group-Data-Structure.html#Group-Data-Structure">29.14.1 The Data Structure for a Group</a>
+<li><a href="Lookup-Group.html#Lookup-Group">29.14.2 Looking Up One Group</a>
+<li><a href="Scanning-All-Groups.html#Scanning-All-Groups">29.14.3 Scanning the List of All Groups</a>
+</li></ul>
+<li><a href="Database-Example.html#Database-Example">29.15 User and Group Database Example</a>
+<li><a href="Netgroup-Database.html#Netgroup-Database">29.16 Netgroup Database</a>
+<ul>
+<li><a href="Netgroup-Data.html#Netgroup-Data">29.16.1 Netgroup Data</a>
+<li><a href="Lookup-Netgroup.html#Lookup-Netgroup">29.16.2 Looking up one Netgroup</a>
+<li><a href="Netgroup-Membership.html#Netgroup-Membership">29.16.3 Testing for Netgroup Membership</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_System-Management" href="System-Management.html#System-Management">30 System Management</a>
+<ul>
+<li><a href="Host-Identification.html#Host-Identification">30.1 Host Identification</a>
+<li><a href="Platform-Type.html#Platform-Type">30.2 Platform Type Identification</a>
+<li><a href="Filesystem-Handling.html#Filesystem-Handling">30.3 Controlling and Querying Mounts</a>
+<ul>
+<li><a href="Mount-Information.html#Mount-Information">30.3.1 Mount Information</a>
+<ul>
+<li><a href="fstab.html#fstab">30.3.1.1 The <samp><span class="file">fstab</span></samp> file</a>
+<li><a href="mtab.html#mtab">30.3.1.2 The <samp><span class="file">mtab</span></samp> file</a>
+<li><a href="Other-Mount-Information.html#Other-Mount-Information">30.3.1.3 Other (Non-libc) Sources of Mount Information</a>
+</li></ul>
+<li><a href="Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">30.3.2 Mount, Unmount, Remount</a>
+</li></ul>
+<li><a href="System-Parameters.html#System-Parameters">30.4 System Parameters</a>
+</li></ul>
+<li><a name="toc_System-Configuration" href="System-Configuration.html#System-Configuration">31 System Configuration Parameters</a>
+<ul>
+<li><a href="General-Limits.html#General-Limits">31.1 General Capacity Limits</a>
+<li><a href="System-Options.html#System-Options">31.2 Overall System Options</a>
+<li><a href="Version-Supported.html#Version-Supported">31.3 Which Version of POSIX is Supported</a>
+<li><a href="Sysconf.html#Sysconf">31.4 Using <code>sysconf</code></a>
+<ul>
+<li><a href="Sysconf-Definition.html#Sysconf-Definition">31.4.1 Definition of <code>sysconf</code></a>
+<li><a href="Constants-for-Sysconf.html#Constants-for-Sysconf">31.4.2 Constants for <code>sysconf</code> Parameters</a>
+<li><a href="Examples-of-Sysconf.html#Examples-of-Sysconf">31.4.3 Examples of <code>sysconf</code></a>
+</li></ul>
+<li><a href="Minimums.html#Minimums">31.5 Minimum Values for General Capacity Limits</a>
+<li><a href="Limits-for-Files.html#Limits-for-Files">31.6 Limits on File System Capacity</a>
+<li><a href="Options-for-Files.html#Options-for-Files">31.7 Optional Features in File Support</a>
+<li><a href="File-Minimums.html#File-Minimums">31.8 Minimum Values for File System Limits</a>
+<li><a href="Pathconf.html#Pathconf">31.9 Using <code>pathconf</code></a>
+<li><a href="Utility-Limits.html#Utility-Limits">31.10 Utility Program Capacity Limits</a>
+<li><a href="Utility-Minimums.html#Utility-Minimums">31.11 Minimum Values for Utility Limits</a>
+<li><a href="String-Parameters.html#String-Parameters">31.12 String-Valued Parameters</a>
+</li></ul>
+<li><a name="toc_Cryptographic-Functions" href="Cryptographic-Functions.html#Cryptographic-Functions">32 DES Encryption and Password Handling</a>
+<ul>
+<li><a href="Legal-Problems.html#Legal-Problems">32.1 Legal Problems</a>
+<li><a href="getpass.html#getpass">32.2 Reading Passwords</a>
+<li><a href="crypt.html#crypt">32.3 Encrypting Passwords</a>
+<li><a href="DES-Encryption.html#DES-Encryption">32.4 DES Encryption</a>
+</li></ul>
+<li><a name="toc_Debugging-Support" href="Debugging-Support.html#Debugging-Support">33 Debugging support</a>
+<ul>
+<li><a href="Backtraces.html#Backtraces">33.1 Backtraces</a>
+</li></ul>
+<li><a name="toc_Language-Features" href="Language-Features.html#Language-Features">Appendix A C Language Facilities in the Library</a>
+<ul>
+<li><a href="Consistency-Checking.html#Consistency-Checking">A.1 Explicitly Checking Internal Consistency</a>
+<li><a href="Variadic-Functions.html#Variadic-Functions">A.2 Variadic Functions</a>
+<ul>
+<li><a href="Why-Variadic.html#Why-Variadic">A.2.1 Why Variadic Functions are Used</a>
+<li><a href="How-Variadic.html#How-Variadic">A.2.2 How Variadic Functions are Defined and Used</a>
+<ul>
+<li><a href="Variadic-Prototypes.html#Variadic-Prototypes">A.2.2.1 Syntax for Variable Arguments</a>
+<li><a href="Receiving-Arguments.html#Receiving-Arguments">A.2.2.2 Receiving the Argument Values</a>
+<li><a href="How-Many-Arguments.html#How-Many-Arguments">A.2.2.3 How Many Arguments Were Supplied</a>
+<li><a href="Calling-Variadics.html#Calling-Variadics">A.2.2.4 Calling Variadic Functions</a>
+<li><a href="Argument-Macros.html#Argument-Macros">A.2.2.5 Argument Access Macros</a>
+</li></ul>
+<li><a href="Variadic-Example.html#Variadic-Example">A.2.3 Example of a Variadic Function</a>
+<ul>
+<li><a href="Old-Varargs.html#Old-Varargs">A.2.3.1 Old-Style Variadic Functions</a>
+</li></ul>
+</li></ul>
+<li><a href="Null-Pointer-Constant.html#Null-Pointer-Constant">A.3 Null Pointer Constant</a>
+<li><a href="Important-Data-Types.html#Important-Data-Types">A.4 Important Data Types</a>
+<li><a href="Data-Type-Measurements.html#Data-Type-Measurements">A.5 Data Type Measurements</a>
+<ul>
+<li><a href="Width-of-Type.html#Width-of-Type">A.5.1 Computing the Width of an Integer Data Type</a>
+<li><a href="Range-of-Type.html#Range-of-Type">A.5.2 Range of an Integer Type</a>
+<li><a href="Floating-Type-Macros.html#Floating-Type-Macros">A.5.3 Floating Type Macros</a>
+<ul>
+<li><a href="Floating-Point-Concepts.html#Floating-Point-Concepts">A.5.3.1 Floating Point Representation Concepts</a>
+<li><a href="Floating-Point-Parameters.html#Floating-Point-Parameters">A.5.3.2 Floating Point Parameters</a>
+<li><a href="IEEE-Floating-Point.html#IEEE-Floating-Point">A.5.3.3 IEEE Floating Point</a>
+</li></ul>
+<li><a href="Structure-Measurement.html#Structure-Measurement">A.5.4 Structure Field Offset Measurement</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Library-Summary" href="Library-Summary.html#Library-Summary">Appendix B Summary of Library Facilities</a>
+<li><a name="toc_Installation" href="Installation.html#Installation">Appendix C Installing the GNU C Library</a>
+<ul>
+<li><a href="Configuring-and-compiling.html#Configuring-and-compiling">C.1 Configuring and compiling GNU Libc</a>
+<li><a href="Running-make-install.html#Running-make-install">C.2 Installing the C Library</a>
+<li><a href="Tools-for-Compilation.html#Tools-for-Compilation">C.3 Recommended Tools for Compilation</a>
+<li><a href="Linux.html#Linux">C.4 Specific advice for GNU/Linux systems</a>
+<li><a href="Reporting-Bugs.html#Reporting-Bugs">C.5 Reporting Bugs</a>
+</li></ul>
+<li><a name="toc_Maintenance" href="Maintenance.html#Maintenance">Appendix D Library Maintenance</a>
+<ul>
+<li><a href="Source-Layout.html#Source-Layout">D.1 Adding New Functions</a>
+<li><a href="Porting.html#Porting">D.2 Porting the GNU C Library</a>
+<ul>
+<li><a href="Hierarchy-Conventions.html#Hierarchy-Conventions">D.2.1 Layout of the <samp><span class="file">sysdeps</span></samp> Directory Hierarchy</a>
+<li><a href="Porting-to-Unix.html#Porting-to-Unix">D.2.2 Porting the GNU C Library to Unix Systems</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Contributors" href="Contributors.html#Contributors">Appendix E Contributors to the GNU C Library</a>
+<li><a name="toc_Free-Manuals" href="Free-Manuals.html#Free-Manuals">Appendix F Free Software Needs Free Documentation</a>
+<li><a name="toc_Copying" href="Copying.html#Copying">Appendix G GNU Lesser General Public License</a>
+<ul>
+<ul>
+<li><a href="Copying.html#Copying">G.0.1 Preamble</a>
+<li><a href="Copying.html#Copying">G.0.2 How to Apply These Terms to Your New Libraries</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Documentation-License" href="Documentation-License.html#Documentation-License">Appendix H GNU Free Documentation License</a>
+<ul>
+<ul>
+<li><a href="Documentation-License.html#Documentation-License">H.0.1 ADDENDUM: How to use this License for your documents</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Concept-Index" href="Concept-Index.html#Concept-Index">Concept Index</a>
+<li><a name="toc_Type-Index" href="Type-Index.html#Type-Index">Type Index</a>
+<li><a name="toc_Function-Index" href="Function-Index.html#Function-Index">Function and Macro Index</a>
+<li><a name="toc_Variable-Index" href="Variable-Index.html#Variable-Index">Variable and Constant Macro Index</a>
+<li><a name="toc_File-Index" href="File-Index.html#File-Index">Program and File Index</a>
+</li></ul>
+</div>
+
+<div class="node">
+<p>
+<a name="Top"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Introduction.html#Introduction">Introduction</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="../index.html#dir">(dir)</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="../index.html#dir">(dir)</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Main Menu</h2>
+
+<p>This is Edition 0.12, last updated 2007-10-27, of
+<cite>The GNU C Library Reference Manual</cite>, for Version 2.8
+of the GNU C Library.
+
+<ul class="menu">
+<li><a accesskey="1" href="Introduction.html#Introduction">Introduction</a>:                  Purpose of the GNU C Library. 
+<li><a accesskey="2" href="Error-Reporting.html#Error-Reporting">Error Reporting</a>:               How library functions report errors. 
+<li><a accesskey="3" href="Memory.html#Memory">Memory</a>:                        Allocating virtual memory and controlling
+                                   paging. 
+<li><a accesskey="4" href="Character-Handling.html#Character-Handling">Character Handling</a>:            Character testing and conversion functions. 
+<li><a accesskey="5" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>:    Utilities for copying and comparing strings
+                                   and arrays. 
+<li><a accesskey="6" href="Character-Set-Handling.html#Character-Set-Handling">Character Set Handling</a>:        Support for extended character sets. 
+<li><a accesskey="7" href="Locales.html#Locales">Locales</a>:                       The country and language can affect the
+                                   behavior of library functions. 
+<li><a accesskey="8" href="Message-Translation.html#Message-Translation">Message Translation</a>:           How to make the program speak the user's
+                                   language. 
+<li><a accesskey="9" href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>:         General searching and sorting functions. 
+<li><a href="Pattern-Matching.html#Pattern-Matching">Pattern Matching</a>:              Matching shell ``globs'' and regular
+                                   expressions. 
+<li><a href="I_002fO-Overview.html#I_002fO-Overview">I/O Overview</a>:                  Introduction to the I/O facilities. 
+<li><a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>:                High-level, portable I/O facilities. 
+<li><a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>:                 Low-level, less portable I/O. 
+<li><a href="File-System-Interface.html#File-System-Interface">File System Interface</a>:         Functions for manipulating files. 
+<li><a href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>:               A simple interprocess communication
+                                   mechanism. 
+<li><a href="Sockets.html#Sockets">Sockets</a>:                       A more complicated IPC mechanism, with
+                                   networking support. 
+<li><a href="Low_002dLevel-Terminal-Interface.html#Low_002dLevel-Terminal-Interface">Low-Level Terminal Interface</a>:  How to change the characteristics of a
+                                   terminal device. 
+<li><a href="Syslog.html#Syslog">Syslog</a>:                        System logging and messaging. 
+<li><a href="Mathematics.html#Mathematics">Mathematics</a>:                   Math functions, useful constants, random
+                                   numbers. 
+<li><a href="Arithmetic.html#Arithmetic">Arithmetic</a>:                    Low level arithmetic functions. 
+<li><a href="Date-and-Time.html#Date-and-Time">Date and Time</a>:                 Functions for getting the date and time and
+                                   formatting them nicely. 
+<li><a href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">Resource Usage And Limitation</a>:  Functions for examining resource usage and
+                                   getting and setting limits. 
+<li><a href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>:               Jumping out of nested function calls. 
+<li><a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>:               How to send, block, and handle signals. 
+<li><a href="Program-Basics.html#Program-Basics">Program Basics</a>:                Writing the beginning and end of your
+                                   program. 
+<li><a href="Processes.html#Processes">Processes</a>:                     How to create processes and run other
+                                   programs. 
+<li><a href="Job-Control.html#Job-Control">Job Control</a>:                   All about process groups and sessions. 
+<li><a href="Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a>:           Accessing system databases. 
+<li><a href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>:              How users are identified and classified. 
+<li><a href="System-Management.html#System-Management">System Management</a>:             Controlling the system and getting
+                                   information about it. 
+<li><a href="System-Configuration.html#System-Configuration">System Configuration</a>:          Parameters describing operating system
+                                   limits. 
+<li><a href="Cryptographic-Functions.html#Cryptographic-Functions">Cryptographic Functions</a>:       DES encryption and password handling. 
+<li><a href="Debugging-Support.html#Debugging-Support">Debugging Support</a>:             Functions to help debugging applications.
+
+</li></ul>
+<p>Appendices
+
+</p>
+<ul class="menu">
+<li><a href="Language-Features.html#Language-Features">Language Features</a>:             C language features provided by the library. 
+<li><a href="Library-Summary.html#Library-Summary">Library Summary</a>:               A summary showing the syntax, header file,
+                                   and derivation of each library feature. 
+<li><a href="Installation.html#Installation">Installation</a>:                  How to install the GNU C library. 
+<li><a href="Maintenance.html#Maintenance">Maintenance</a>:                   How to enhance and port the GNU C Library. 
+<li><a href="Contributors.html#Contributors">Contributors</a>:                  Who wrote what parts of the GNU C library. 
+<li><a href="Free-Manuals.html#Free-Manuals">Free Manuals</a>: 		 Free Software Needs Free Documentation. 
+<li><a href="Copying.html#Copying">Copying</a>:                       The GNU Lesser General Public License says
+                                  how you can copy and share the GNU C Library. 
+<li><a href="Documentation-License.html#Documentation-License">Documentation License</a>:         This manual is under the GNU Free
+                                  Documentation License.
+
+</li></ul>
+<p>Indices
+
+</p>
+<ul class="menu">
+<li><a href="Concept-Index.html#Concept-Index">Concept Index</a>:                 Index of concepts and names. 
+<li><a href="Type-Index.html#Type-Index">Type Index</a>:                    Index of types and type qualifiers. 
+<li><a href="Function-Index.html#Function-Index">Function Index</a>:                Index of functions and function-like macros. 
+<li><a href="Variable-Index.html#Variable-Index">Variable Index</a>:                Index of variables and variable-like macros. 
+<li><a href="File-Index.html#File-Index">File Index</a>:                    Index of programs and files.
+
+</li></ul>
+<p>--- The Detailed Node Listing ---
+
+<p>Introduction
+
+</p>
+<ul class="menu">
+<li><a href="Getting-Started.html#Getting-Started">Getting Started</a>:              What this manual is for and how to use it. 
+<li><a href="Standards-and-Portability.html#Standards-and-Portability">Standards and Portability</a>:    Standards and sources upon which the GNU
+                                 C library is based. 
+<li><a href="Using-the-Library.html#Using-the-Library">Using the Library</a>:            Some practical uses for the library. 
+<li><a href="Roadmap-to-the-Manual.html#Roadmap-to-the-Manual">Roadmap to the Manual</a>:        Overview of the remaining chapters in
+                                 this manual.
+
+</li></ul>
+<p>Standards and Portability
+
+</p>
+<ul class="menu">
+<li><a href="ISO-C.html#ISO-C">ISO C</a>:                        The international standard for the C
+                                 programming language. 
+<li><a href="POSIX.html#POSIX">POSIX</a>:                        The ISO/IEC 9945 (aka IEEE 1003) standards
+                                 for operating systems. 
+<li><a href="Berkeley-Unix.html#Berkeley-Unix">Berkeley Unix</a>:                BSD and SunOS. 
+<li><a href="SVID.html#SVID">SVID</a>:                         The System V Interface Description. 
+<li><a href="XPG.html#XPG">XPG</a>:                          The X/Open Portability Guide.
+
+</li></ul>
+<p>Using the Library
+
+</p>
+<ul class="menu">
+<li><a href="Header-Files.html#Header-Files">Header Files</a>:                 How to include the header files in your
+                                 programs. 
+<li><a href="Macro-Definitions.html#Macro-Definitions">Macro Definitions</a>:            Some functions in the library may really
+                                 be implemented as macros. 
+<li><a href="Reserved-Names.html#Reserved-Names">Reserved Names</a>:               The C standard reserves some names for
+                                 the library, and some for users. 
+<li><a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>:          How to control what names are defined.
+
+</li></ul>
+<p>Error Reporting
+
+</p>
+<ul class="menu">
+<li><a href="Checking-for-Errors.html#Checking-for-Errors">Checking for Errors</a>:          How errors are reported by library functions. 
+<li><a href="Error-Codes.html#Error-Codes">Error Codes</a>:                  Error code macros; all of these expand
+                                 into integer constant values. 
+<li><a href="Error-Messages.html#Error-Messages">Error Messages</a>:               Mapping error codes onto error messages.
+
+</li></ul>
+<p>Memory
+
+</p>
+<ul class="menu">
+<li><a href="Memory-Concepts.html#Memory-Concepts">Memory Concepts</a>:              An introduction to concepts and terminology. 
+<li><a href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>:            Allocating storage for your program data
+<li><a href="Locking-Pages.html#Locking-Pages">Locking Pages</a>:                Preventing page faults
+<li><a href="Resizing-the-Data-Segment.html#Resizing-the-Data-Segment">Resizing the Data Segment</a>:    <code>brk</code>, <code>sbrk</code>
+
+</li></ul>
+<p>Memory Allocation
+
+</p>
+<ul class="menu">
+<li><a href="Memory-Allocation-and-C.html#Memory-Allocation-and-C">Memory Allocation and C</a>:      How to get different kinds of allocation in C. 
+<li><a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>:     The <code>malloc</code> facility allows fully general
+		 		 dynamic allocation. 
+<li><a href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>:         Finding memory leaks and not freed memory. 
+<li><a href="Obstacks.html#Obstacks">Obstacks</a>:                     Obstacks are less general than malloc
+				 but more efficient and convenient. 
+<li><a href="Variable-Size-Automatic.html#Variable-Size-Automatic">Variable Size Automatic</a>:      Allocation of variable-sized blocks
+				 of automatic storage that are freed when the
+				 calling function returns.
+
+</li></ul>
+<p>Unconstrained Allocation
+
+</p>
+<ul class="menu">
+<li><a href="Basic-Allocation.html#Basic-Allocation">Basic Allocation</a>:             Simple use of <code>malloc</code>. 
+<li><a href="Malloc-Examples.html#Malloc-Examples">Malloc Examples</a>:              Examples of <code>malloc</code>.  <code>xmalloc</code>. 
+<li><a href="Freeing-after-Malloc.html#Freeing-after-Malloc">Freeing after Malloc</a>:         Use <code>free</code> to free a block you
+				 got with <code>malloc</code>. 
+<li><a href="Changing-Block-Size.html#Changing-Block-Size">Changing Block Size</a>:          Use <code>realloc</code> to make a block
+				 bigger or smaller. 
+<li><a href="Allocating-Cleared-Space.html#Allocating-Cleared-Space">Allocating Cleared Space</a>:     Use <code>calloc</code> to allocate a
+				 block and clear it. 
+<li><a href="Efficiency-and-Malloc.html#Efficiency-and-Malloc">Efficiency and Malloc</a>:        Efficiency considerations in use of
+				 these functions. 
+<li><a href="Aligned-Memory-Blocks.html#Aligned-Memory-Blocks">Aligned Memory Blocks</a>:        Allocating specially aligned memory. 
+<li><a href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters">Malloc Tunable Parameters</a>:    Use <code>mallopt</code> to adjust allocation
+                                 parameters. 
+<li><a href="Heap-Consistency-Checking.html#Heap-Consistency-Checking">Heap Consistency Checking</a>:    Automatic checking for errors. 
+<li><a href="Hooks-for-Malloc.html#Hooks-for-Malloc">Hooks for Malloc</a>:             You can use these hooks for debugging
+				 programs that use <code>malloc</code>. 
+<li><a href="Statistics-of-Malloc.html#Statistics-of-Malloc">Statistics of Malloc</a>:         Getting information about how much
+				 memory your program is using. 
+<li><a href="Summary-of-Malloc.html#Summary-of-Malloc">Summary of Malloc</a>:            Summary of <code>malloc</code> and related functions.
+
+</li></ul>
+<p>Allocation Debugging
+
+</p>
+<ul class="menu">
+<li><a href="Tracing-malloc.html#Tracing-malloc">Tracing malloc</a>:                How to install the tracing functionality. 
+<li><a href="Using-the-Memory-Debugger.html#Using-the-Memory-Debugger">Using the Memory Debugger</a>:     Example programs excerpts. 
+<li><a href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger">Tips for the Memory Debugger</a>:  Some more or less clever ideas. 
+<li><a href="Interpreting-the-traces.html#Interpreting-the-traces">Interpreting the traces</a>:       What do all these lines mean?
+
+</li></ul>
+<p>Obstacks
+
+</p>
+<ul class="menu">
+<li><a href="Creating-Obstacks.html#Creating-Obstacks">Creating Obstacks</a>: 		How to declare an obstack in your program. 
+<li><a href="Preparing-for-Obstacks.html#Preparing-for-Obstacks">Preparing for Obstacks</a>: 	Preparations needed before you can
+				 use obstacks. 
+<li><a href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">Allocation in an Obstack</a>:     Allocating objects in an obstack. 
+<li><a href="Freeing-Obstack-Objects.html#Freeing-Obstack-Objects">Freeing Obstack Objects</a>:      Freeing objects in an obstack. 
+<li><a href="Obstack-Functions.html#Obstack-Functions">Obstack Functions</a>: 		The obstack functions are both
+				 functions and macros. 
+<li><a href="Growing-Objects.html#Growing-Objects">Growing Objects</a>:              Making an object bigger by stages. 
+<li><a href="Extra-Fast-Growing.html#Extra-Fast-Growing">Extra Fast Growing</a>: 		Extra-high-efficiency (though more
+				 complicated) growing objects. 
+<li><a href="Status-of-an-Obstack.html#Status-of-an-Obstack">Status of an Obstack</a>:         Inquiries about the status of an obstack. 
+<li><a href="Obstacks-Data-Alignment.html#Obstacks-Data-Alignment">Obstacks Data Alignment</a>:      Controlling alignment of objects in obstacks. 
+<li><a href="Obstack-Chunks.html#Obstack-Chunks">Obstack Chunks</a>:               How obstacks obtain and release chunks;
+				 efficiency considerations. 
+<li><a href="Summary-of-Obstacks.html#Summary-of-Obstacks">Summary of Obstacks</a>
+
+</li></ul>
+<p>Variable Size Automatic
+
+</p>
+<ul class="menu">
+<li><a href="Alloca-Example.html#Alloca-Example">Alloca Example</a>:               Example of using <code>alloca</code>. 
+<li><a href="Advantages-of-Alloca.html#Advantages-of-Alloca">Advantages of Alloca</a>:         Reasons to use <code>alloca</code>. 
+<li><a href="Disadvantages-of-Alloca.html#Disadvantages-of-Alloca">Disadvantages of Alloca</a>:      Reasons to avoid <code>alloca</code>. 
+<li><a href="GNU-C-Variable_002dSize-Arrays.html#GNU-C-Variable_002dSize-Arrays">GNU C Variable-Size Arrays</a>:   Only in GNU C, here is an alternative
+				 method of allocating dynamically and
+				 freeing automatically.
+
+</li></ul>
+<p>Locking Pages
+
+</p>
+<ul class="menu">
+<li><a href="Why-Lock-Pages.html#Why-Lock-Pages">Why Lock Pages</a>:                 Reasons to read this section. 
+<li><a href="Locked-Memory-Details.html#Locked-Memory-Details">Locked Memory Details</a>:          Everything you need to know locked
+                                    memory
+<li><a href="Page-Lock-Functions.html#Page-Lock-Functions">Page Lock Functions</a>:            Here's how to do it.
+
+</li></ul>
+<p>Character Handling
+
+</p>
+<ul class="menu">
+<li><a href="Classification-of-Characters.html#Classification-of-Characters">Classification of Characters</a>:        Testing whether characters are
+			                letters, digits, punctuation, etc.
+
+<li><a href="Case-Conversion.html#Case-Conversion">Case Conversion</a>:                     Case mapping, and the like. 
+<li><a href="Classification-of-Wide-Characters.html#Classification-of-Wide-Characters">Classification of Wide Characters</a>:   Character class determination for
+                                        wide characters. 
+<li><a href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes">Using Wide Char Classes</a>:             Notes on using the wide character
+                                        classes. 
+<li><a href="Wide-Character-Case-Conversion.html#Wide-Character-Case-Conversion">Wide Character Case Conversion</a>:      Mapping of wide characters.
+
+</li></ul>
+<p>String and Array Utilities
+
+</p>
+<ul class="menu">
+<li><a href="Representation-of-Strings.html#Representation-of-Strings">Representation of Strings</a>:    Introduction to basic concepts. 
+<li><a href="String_002fArray-Conventions.html#String_002fArray-Conventions">String/Array Conventions</a>:     Whether to use a string function or an
+				 arbitrary array function. 
+<li><a href="String-Length.html#String-Length">String Length</a>:                Determining the length of a string. 
+<li><a href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>:    Functions to copy the contents of strings
+				 and arrays. 
+<li><a href="String_002fArray-Comparison.html#String_002fArray-Comparison">String/Array Comparison</a>:      Functions for byte-wise and character-wise
+				 comparison. 
+<li><a href="Collation-Functions.html#Collation-Functions">Collation Functions</a>:          Functions for collating strings. 
+<li><a href="Search-Functions.html#Search-Functions">Search Functions</a>:             Searching for a specific element or substring. 
+<li><a href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String">Finding Tokens in a String</a>:   Splitting a string into tokens by looking
+				 for delimiters. 
+<li><a href="strfry.html#strfry">strfry</a>:                       Function for flash-cooking a string. 
+<li><a href="Trivial-Encryption.html#Trivial-Encryption">Trivial Encryption</a>:           Obscuring data. 
+<li><a href="Encode-Binary-Data.html#Encode-Binary-Data">Encode Binary Data</a>:           Encoding and Decoding of Binary Data. 
+<li><a href="Argz-and-Envz-Vectors.html#Argz-and-Envz-Vectors">Argz and Envz Vectors</a>:        Null-separated string vectors.
+
+</li></ul>
+<p>Argz and Envz Vectors
+
+</p>
+<ul class="menu">
+<li><a href="Argz-Functions.html#Argz-Functions">Argz Functions</a>:               Operations on argz vectors. 
+<li><a href="Envz-Functions.html#Envz-Functions">Envz Functions</a>:               Additional operations on environment vectors.
+
+</li></ul>
+<p>Character Set Handling
+
+</p>
+<ul class="menu">
+<li><a href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>:               Introduction to Extended Characters. 
+<li><a href="Charset-Function-Overview.html#Charset-Function-Overview">Charset Function Overview</a>:         Overview about Character Handling
+                                      Functions. 
+<li><a href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>:  Restartable multibyte conversion
+                                      Functions. 
+<li><a href="Non_002dreentrant-Conversion.html#Non_002dreentrant-Conversion">Non-reentrant Conversion</a>:          Non-reentrant Conversion Function. 
+<li><a href="Generic-Charset-Conversion.html#Generic-Charset-Conversion">Generic Charset Conversion</a>:        Generic Charset Conversion.
+
+</li></ul>
+<p>Restartable multibyte conversion
+
+</p>
+<ul class="menu">
+<li><a href="Selecting-the-Conversion.html#Selecting-the-Conversion">Selecting the Conversion</a>:      Selecting the conversion and its properties. 
+<li><a href="Keeping-the-state.html#Keeping-the-state">Keeping the state</a>:             Representing the state of the conversion. 
+<li><a href="Converting-a-Character.html#Converting-a-Character">Converting a Character</a>:        Converting Single Characters. 
+<li><a href="Converting-Strings.html#Converting-Strings">Converting Strings</a>:            Converting Multibyte and Wide Character
+                                  Strings. 
+<li><a href="Multibyte-Conversion-Example.html#Multibyte-Conversion-Example">Multibyte Conversion Example</a>:  A Complete Multibyte Conversion Example.
+
+</li></ul>
+<p>Non-reentrant Conversion
+
+</p>
+<ul class="menu">
+<li><a href="Non_002dreentrant-Character-Conversion.html#Non_002dreentrant-Character-Conversion">Non-reentrant Character Conversion</a>:   Non-reentrant Conversion of Single
+                                         Characters. 
+<li><a href="Non_002dreentrant-String-Conversion.html#Non_002dreentrant-String-Conversion">Non-reentrant String Conversion</a>:      Non-reentrant Conversion of Strings. 
+<li><a href="Shift-State.html#Shift-State">Shift State</a>:                          States in Non-reentrant Functions.
+
+</li></ul>
+<p>Generic Charset Conversion
+
+</p>
+<ul class="menu">
+<li><a href="Generic-Conversion-Interface.html#Generic-Conversion-Interface">Generic Conversion Interface</a>:     Generic Character Set Conversion Interface. 
+<li><a href="iconv-Examples.html#iconv-Examples">iconv Examples</a>:                   A complete <code>iconv</code> example. 
+<li><a href="Other-iconv-Implementations.html#Other-iconv-Implementations">Other iconv Implementations</a>:      Some Details about other <code>iconv</code>
+                                     Implementations. 
+<li><a href="glibc-iconv-Implementation.html#glibc-iconv-Implementation">glibc iconv Implementation</a>:       The <code>iconv</code> Implementation in the GNU C
+                                     library.
+
+</li></ul>
+<p>Locales
+
+</p>
+<ul class="menu">
+<li><a href="Effects-of-Locale.html#Effects-of-Locale">Effects of Locale</a>:            Actions affected by the choice of
+                                 locale. 
+<li><a href="Choosing-Locale.html#Choosing-Locale">Choosing Locale</a>:              How the user specifies a locale. 
+<li><a href="Locale-Categories.html#Locale-Categories">Locale Categories</a>:            Different purposes for which you can
+                                 select a locale. 
+<li><a href="Setting-the-Locale.html#Setting-the-Locale">Setting the Locale</a>:           How a program specifies the locale
+                                 with library functions. 
+<li><a href="Standard-Locales.html#Standard-Locales">Standard Locales</a>:             Locale names available on all systems. 
+<li><a href="Locale-Information.html#Locale-Information">Locale Information</a>:           How to access the information for the locale. 
+<li><a href="Formatting-Numbers.html#Formatting-Numbers">Formatting Numbers</a>:           A dedicated function to format numbers. 
+<li><a href="Yes_002dor_002dNo-Questions.html#Yes_002dor_002dNo-Questions">Yes-or-No Questions</a>:          Check a Response against the locale.
+
+</li></ul>
+<p>Locale Information
+
+</p>
+<ul class="menu">
+<li><a href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">The Lame Way to Locale Data</a>:    ISO C's <code>localeconv</code>. 
+<li><a href="The-Elegant-and-Fast-Way.html#The-Elegant-and-Fast-Way">The Elegant and Fast Way</a>:       X/Open's <code>nl_langinfo</code>.
+
+</li></ul>
+<p>The Lame Way to Locale Data
+
+</p>
+<ul class="menu">
+<li><a href="General-Numeric.html#General-Numeric">General Numeric</a>:              Parameters for formatting numbers and
+                                 currency amounts. 
+<li><a href="Currency-Symbol.html#Currency-Symbol">Currency Symbol</a>:              How to print the symbol that identifies an
+                                 amount of money (e.g. &lsquo;<samp><span class="samp">$</span></samp>&rsquo;). 
+<li><a href="Sign-of-Money-Amount.html#Sign-of-Money-Amount">Sign of Money Amount</a>:         How to print the (positive or negative) sign
+                                 for a monetary amount, if one exists.
+
+</li></ul>
+<p>Message Translation
+
+</p>
+<ul class="menu">
+<li><a href="Message-catalogs-a-la-X_002fOpen.html#Message-catalogs-a-la-X_002fOpen">Message catalogs a la X/Open</a>:   The <code>catgets</code> family of functions. 
+<li><a href="The-Uniforum-approach.html#The-Uniforum-approach">The Uniforum approach</a>:          The <code>gettext</code> family of functions.
+
+</li></ul>
+<p>Message catalogs a la X/Open
+
+</p>
+<ul class="menu">
+<li><a href="The-catgets-Functions.html#The-catgets-Functions">The catgets Functions</a>:       The <code>catgets</code> function family. 
+<li><a href="The-message-catalog-files.html#The-message-catalog-files">The message catalog files</a>:   Format of the message catalog files. 
+<li><a href="The-gencat-program.html#The-gencat-program">The gencat program</a>:          How to generate message catalogs files which
+                                can be used by the functions. 
+<li><a href="Common-Usage.html#Common-Usage">Common Usage</a>:                How to use the <code>catgets</code> interface.
+
+</li></ul>
+<p>The Uniforum approach
+
+</p>
+<ul class="menu">
+<li><a href="Message-catalogs-with-gettext.html#Message-catalogs-with-gettext">Message catalogs with gettext</a>:   The <code>gettext</code> family of functions. 
+<li><a href="Helper-programs-for-gettext.html#Helper-programs-for-gettext">Helper programs for gettext</a>:     Programs to handle message catalogs
+                                    for <code>gettext</code>.
+
+</li></ul>
+<p>Message catalogs with gettext
+
+</p>
+<ul class="menu">
+<li><a href="Translation-with-gettext.html#Translation-with-gettext">Translation with gettext</a>:        What has to be done to translate a message. 
+<li><a href="Locating-gettext-catalog.html#Locating-gettext-catalog">Locating gettext catalog</a>:        How to determine which catalog to be used. 
+<li><a href="Advanced-gettext-functions.html#Advanced-gettext-functions">Advanced gettext functions</a>:      Additional functions for more complicated
+                                    situations. 
+<li><a href="Charset-conversion-in-gettext.html#Charset-conversion-in-gettext">Charset conversion in gettext</a>:   How to specify the output character set
+                                    <code>gettext</code> uses. 
+<li><a href="GUI-program-problems.html#GUI-program-problems">GUI program problems</a>:            How to use <code>gettext</code> in GUI programs. 
+<li><a href="Using-gettextized-software.html#Using-gettextized-software">Using gettextized software</a>:      The possibilities of the user to influence
+                                    the way <code>gettext</code> works.
+
+</li></ul>
+<p>Searching and Sorting
+
+</p>
+<ul class="menu">
+<li><a href="Comparison-Functions.html#Comparison-Functions">Comparison Functions</a>:         Defining how to compare two objects. 
+				 Since the sort and search facilities
+                                 are general, you have to specify the
+                                 ordering. 
+<li><a href="Array-Search-Function.html#Array-Search-Function">Array Search Function</a>:        The <code>bsearch</code> function. 
+<li><a href="Array-Sort-Function.html#Array-Sort-Function">Array Sort Function</a>:          The <code>qsort</code> function. 
+<li><a href="Search_002fSort-Example.html#Search_002fSort-Example">Search/Sort Example</a>:          An example program. 
+<li><a href="Hash-Search-Function.html#Hash-Search-Function">Hash Search Function</a>:         The <code>hsearch</code> function. 
+<li><a href="Tree-Search-Function.html#Tree-Search-Function">Tree Search Function</a>:         The <code>tsearch</code> function.
+
+</li></ul>
+<p>Pattern Matching
+
+</p>
+<ul class="menu">
+<li><a href="Wildcard-Matching.html#Wildcard-Matching">Wildcard Matching</a>:     Matching a wildcard pattern against a single string. 
+<li><a href="Globbing.html#Globbing">Globbing</a>:              Finding the files that match a wildcard pattern. 
+<li><a href="Regular-Expressions.html#Regular-Expressions">Regular Expressions</a>:   Matching regular expressions against strings. 
+<li><a href="Word-Expansion.html#Word-Expansion">Word Expansion</a>:        Expanding shell variables, nested commands,
+			    arithmetic, and wildcards. 
+			    This is what the shell does with shell commands.
+
+</li></ul>
+<p>Globbing
+
+</p>
+<ul class="menu">
+<li><a href="Calling-Glob.html#Calling-Glob">Calling Glob</a>:              Basic use of <code>glob</code>. 
+<li><a href="Flags-for-Globbing.html#Flags-for-Globbing">Flags for Globbing</a>:        Flags that enable various options in <code>glob</code>. 
+<li><a href="More-Flags-for-Globbing.html#More-Flags-for-Globbing">More Flags for Globbing</a>:   GNU specific extensions to <code>glob</code>.
+
+</li></ul>
+<p>Regular Expressions
+
+</p>
+<ul class="menu">
+<li><a href="POSIX-Regexp-Compilation.html#POSIX-Regexp-Compilation">POSIX Regexp Compilation</a>:     Using <code>regcomp</code> to prepare to match. 
+<li><a href="Flags-for-POSIX-Regexps.html#Flags-for-POSIX-Regexps">Flags for POSIX Regexps</a>:      Syntax variations for <code>regcomp</code>. 
+<li><a href="Matching-POSIX-Regexps.html#Matching-POSIX-Regexps">Matching POSIX Regexps</a>:       Using <code>regexec</code> to match the compiled
+				   pattern that you get from <code>regcomp</code>. 
+<li><a href="Regexp-Subexpressions.html#Regexp-Subexpressions">Regexp Subexpressions</a>:        Finding which parts of the string were matched. 
+<li><a href="Subexpression-Complications.html#Subexpression-Complications">Subexpression Complications</a>:  Find points of which parts were matched. 
+<li><a href="Regexp-Cleanup.html#Regexp-Cleanup">Regexp Cleanup</a>: 		Freeing storage; reporting errors.
+
+</li></ul>
+<p>Word Expansion
+
+</p>
+<ul class="menu">
+<li><a href="Expansion-Stages.html#Expansion-Stages">Expansion Stages</a>:             What word expansion does to a string. 
+<li><a href="Calling-Wordexp.html#Calling-Wordexp">Calling Wordexp</a>:              How to call <code>wordexp</code>. 
+<li><a href="Flags-for-Wordexp.html#Flags-for-Wordexp">Flags for Wordexp</a>:            Options you can enable in <code>wordexp</code>. 
+<li><a href="Wordexp-Example.html#Wordexp-Example">Wordexp Example</a>:              A sample program that does word expansion. 
+<li><a href="Tilde-Expansion.html#Tilde-Expansion">Tilde Expansion</a>:              Details of how tilde expansion works. 
+<li><a href="Variable-Substitution.html#Variable-Substitution">Variable Substitution</a>:        Different types of variable substitution.
+
+</li></ul>
+<p>I/O Overview
+
+</p>
+<ul class="menu">
+<li><a href="I_002fO-Concepts.html#I_002fO-Concepts">I/O Concepts</a>:        Some basic information and terminology. 
+<li><a href="File-Names.html#File-Names">File Names</a>:          How to refer to a file.
+
+</li></ul>
+<p>I/O Concepts
+
+</p>
+<ul class="menu">
+<li><a href="Streams-and-File-Descriptors.html#Streams-and-File-Descriptors">Streams and File Descriptors</a>:     The GNU Library provides two ways
+			             to access the contents of files. 
+<li><a href="File-Position.html#File-Position">File Position</a>:                    The number of bytes from the
+                                     beginning of the file.
+
+</li></ul>
+<p>File Names
+
+</p>
+<ul class="menu">
+<li><a href="Directories.html#Directories">Directories</a>:                  Directories contain entries for files. 
+<li><a href="File-Name-Resolution.html#File-Name-Resolution">File Name Resolution</a>:         A file name specifies how to look up a file. 
+<li><a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>:             Error conditions relating to file names. 
+<li><a href="File-Name-Portability.html#File-Name-Portability">File Name Portability</a>:        File name portability and syntax issues.
+
+</li></ul>
+<p>I/O on Streams
+
+</p>
+<ul class="menu">
+<li><a href="Streams.html#Streams">Streams</a>:                      About the data type representing a stream. 
+<li><a href="Standard-Streams.html#Standard-Streams">Standard Streams</a>:             Streams to the standard input and output
+                                 devices are created for you. 
+<li><a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>:              How to create a stream to talk to a file. 
+<li><a href="Closing-Streams.html#Closing-Streams">Closing Streams</a>:              Close a stream when you are finished with it. 
+<li><a href="Streams-and-Threads.html#Streams-and-Threads">Streams and Threads</a>:          Issues with streams in threaded programs. 
+<li><a href="Streams-and-I18N.html#Streams-and-I18N">Streams and I18N</a>:             Streams in internationalized applications. 
+<li><a href="Simple-Output.html#Simple-Output">Simple Output</a>:                Unformatted output by characters and lines. 
+<li><a href="Character-Input.html#Character-Input">Character Input</a>:              Unformatted input by characters and words. 
+<li><a href="Line-Input.html#Line-Input">Line Input</a>:                   Reading a line or a record from a stream. 
+<li><a href="Unreading.html#Unreading">Unreading</a>:                    Peeking ahead/pushing back input just read. 
+<li><a href="Block-Input_002fOutput.html#Block-Input_002fOutput">Block Input/Output</a>:           Input and output operations on blocks of data. 
+<li><a href="Formatted-Output.html#Formatted-Output">Formatted Output</a>:             <code>printf</code> and related functions. 
+<li><a href="Customizing-Printf.html#Customizing-Printf">Customizing Printf</a>:           You can define new conversion specifiers for
+                                 <code>printf</code> and friends. 
+<li><a href="Formatted-Input.html#Formatted-Input">Formatted Input</a>:              <code>scanf</code> and related functions. 
+<li><a href="EOF-and-Errors.html#EOF-and-Errors">EOF and Errors</a>:               How you can tell if an I/O error happens. 
+<li><a href="Error-Recovery.html#Error-Recovery">Error Recovery</a>: 		What you can do about errors. 
+<li><a href="Binary-Streams.html#Binary-Streams">Binary Streams</a>:               Some systems distinguish between text files
+                                 and binary files. 
+<li><a href="File-Positioning.html#File-Positioning">File Positioning</a>:             About random-access streams. 
+<li><a href="Portable-Positioning.html#Portable-Positioning">Portable Positioning</a>:         Random access on peculiar ISO C systems. 
+<li><a href="Stream-Buffering.html#Stream-Buffering">Stream Buffering</a>:             How to control buffering of streams. 
+<li><a href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams">Other Kinds of Streams</a>:       Streams that do not necessarily correspond
+                                 to an open file. 
+<li><a href="Formatted-Messages.html#Formatted-Messages">Formatted Messages</a>:           Print strictly formatted messages.
+
+</li></ul>
+<p>Unreading
+
+</p>
+<ul class="menu">
+<li><a href="Unreading-Idea.html#Unreading-Idea">Unreading Idea</a>:               An explanation of unreading with pictures. 
+<li><a href="How-Unread.html#How-Unread">How Unread</a>:                   How to call <code>ungetc</code> to do unreading.
+
+</li></ul>
+<p>Formatted Output
+
+</p>
+<ul class="menu">
+<li><a href="Formatted-Output-Basics.html#Formatted-Output-Basics">Formatted Output Basics</a>:      Some examples to get you started. 
+<li><a href="Output-Conversion-Syntax.html#Output-Conversion-Syntax">Output Conversion Syntax</a>:     General syntax of conversion
+                                 specifications. 
+<li><a href="Table-of-Output-Conversions.html#Table-of-Output-Conversions">Table of Output Conversions</a>:  Summary of output conversions and
+                                 what they do. 
+<li><a href="Integer-Conversions.html#Integer-Conversions">Integer Conversions</a>:          Details about formatting of integers. 
+<li><a href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions">Floating-Point Conversions</a>:   Details about formatting of
+                                 floating-point numbers. 
+<li><a href="Other-Output-Conversions.html#Other-Output-Conversions">Other Output Conversions</a>:     Details about formatting of strings,
+                                 characters, pointers, and the like. 
+<li><a href="Formatted-Output-Functions.html#Formatted-Output-Functions">Formatted Output Functions</a>:   Descriptions of the actual functions. 
+<li><a href="Dynamic-Output.html#Dynamic-Output">Dynamic Output</a>: 		Functions that allocate memory for the output. 
+<li><a href="Variable-Arguments-Output.html#Variable-Arguments-Output">Variable Arguments Output</a>:    <code>vprintf</code> and friends. 
+<li><a href="Parsing-a-Template-String.html#Parsing-a-Template-String">Parsing a Template String</a>:    What kinds of args does a given template
+                                 call for? 
+<li><a href="Example-of-Parsing.html#Example-of-Parsing">Example of Parsing</a>:           Sample program using <code>parse_printf_format</code>.
+
+</li></ul>
+<p>Customizing Printf
+
+</p>
+<ul class="menu">
+<li><a href="Registering-New-Conversions.html#Registering-New-Conversions">Registering New Conversions</a>:          Using <code>register_printf_function</code>
+                                         to register a new output conversion. 
+<li><a href="Conversion-Specifier-Options.html#Conversion-Specifier-Options">Conversion Specifier Options</a>:         The handler must be able to get
+                                         the options specified in the
+                                         template when it is called. 
+<li><a href="Defining-the-Output-Handler.html#Defining-the-Output-Handler">Defining the Output Handler</a>:          Defining the handler and arginfo
+                                         functions that are passed as arguments
+                                         to <code>register_printf_function</code>. 
+<li><a href="Printf-Extension-Example.html#Printf-Extension-Example">Printf Extension Example</a>:             How to define a <code>printf</code>
+                                         handler function. 
+<li><a href="Predefined-Printf-Handlers.html#Predefined-Printf-Handlers">Predefined Printf Handlers</a>:           Predefined <code>printf</code> handlers.
+
+</li></ul>
+<p>Formatted Input
+
+</p>
+<ul class="menu">
+<li><a href="Formatted-Input-Basics.html#Formatted-Input-Basics">Formatted Input Basics</a>:       Some basics to get you started. 
+<li><a href="Input-Conversion-Syntax.html#Input-Conversion-Syntax">Input Conversion Syntax</a>:      Syntax of conversion specifications. 
+<li><a href="Table-of-Input-Conversions.html#Table-of-Input-Conversions">Table of Input Conversions</a>:   Summary of input conversions and what they do. 
+<li><a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>:    Details of conversions for reading numbers. 
+<li><a href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>:     Details of conversions for reading strings. 
+<li><a href="Dynamic-String-Input.html#Dynamic-String-Input">Dynamic String Input</a>: 	String conversions that <code>malloc</code> the buffer. 
+<li><a href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>:      Details of miscellaneous other conversions. 
+<li><a href="Formatted-Input-Functions.html#Formatted-Input-Functions">Formatted Input Functions</a>:    Descriptions of the actual functions. 
+<li><a href="Variable-Arguments-Input.html#Variable-Arguments-Input">Variable Arguments Input</a>:     <code>vscanf</code> and friends.
+
+</li></ul>
+<p>Stream Buffering
+
+</p>
+<ul class="menu">
+<li><a href="Buffering-Concepts.html#Buffering-Concepts">Buffering Concepts</a>:           Terminology is defined here. 
+<li><a href="Flushing-Buffers.html#Flushing-Buffers">Flushing Buffers</a>:             How to ensure that output buffers are flushed. 
+<li><a href="Controlling-Buffering.html#Controlling-Buffering">Controlling Buffering</a>:        How to specify what kind of buffering to use.
+
+</li></ul>
+<p>Other Kinds of Streams
+
+</p>
+<ul class="menu">
+<li><a href="String-Streams.html#String-Streams">String Streams</a>:               Streams that get data from or put data in
+                                 a string or memory buffer. 
+<li><a href="Obstack-Streams.html#Obstack-Streams">Obstack Streams</a>: 		Streams that store data in an obstack. 
+<li><a href="Custom-Streams.html#Custom-Streams">Custom Streams</a>:               Defining your own streams with an arbitrary
+                                 input data source and/or output data sink.
+
+</li></ul>
+<p>Custom Streams
+
+</p>
+<ul class="menu">
+<li><a href="Streams-and-Cookies.html#Streams-and-Cookies">Streams and Cookies</a>:          The <dfn>cookie</dfn> records where to fetch or
+                                 store data that is read or written. 
+<li><a href="Hook-Functions.html#Hook-Functions">Hook Functions</a>:               How you should define the four <dfn>hook
+                                 functions</dfn> that a custom stream needs.
+
+</li></ul>
+<p>Formatted Messages
+
+</p>
+<ul class="menu">
+<li><a href="Printing-Formatted-Messages.html#Printing-Formatted-Messages">Printing Formatted Messages</a>:    The <code>fmtmsg</code> function. 
+<li><a href="Adding-Severity-Classes.html#Adding-Severity-Classes">Adding Severity Classes</a>:        Add more severity classes. 
+<li><a href="Example.html#Example">Example</a>:                        How to use <code>fmtmsg</code> and <code>addseverity</code>.
+
+</li></ul>
+<p>Low-Level I/O
+
+</p>
+<ul class="menu">
+<li><a href="Opening-and-Closing-Files.html#Opening-and-Closing-Files">Opening and Closing Files</a>:            How to open and close file
+                                         descriptors. 
+<li><a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>:                       Reading and writing data. 
+<li><a href="File-Position-Primitive.html#File-Position-Primitive">File Position Primitive</a>:              Setting a descriptor's file
+                                         position. 
+<li><a href="Descriptors-and-Streams.html#Descriptors-and-Streams">Descriptors and Streams</a>:              Converting descriptor to stream
+                                         or vice-versa. 
+<li><a href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>:        Precautions needed if you use both
+                                         descriptors and streams. 
+<li><a href="Scatter_002dGather.html#Scatter_002dGather">Scatter-Gather</a>:                       Fast I/O to discontinuous buffers. 
+<li><a href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>:                    Using files like memory. 
+<li><a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>:                      How to check for input or output
+					 on multiple file descriptors. 
+<li><a href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">Synchronizing I/O</a>:                    Making sure all I/O actions completed. 
+<li><a href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>:                     Perform I/O in parallel. 
+<li><a href="Control-Operations.html#Control-Operations">Control Operations</a>:                   Various other operations on file
+					 descriptors. 
+<li><a href="Duplicating-Descriptors.html#Duplicating-Descriptors">Duplicating Descriptors</a>:              Fcntl commands for duplicating
+                                         file descriptors. 
+<li><a href="Descriptor-Flags.html#Descriptor-Flags">Descriptor Flags</a>:                     Fcntl commands for manipulating
+                                         flags associated with file
+                                         descriptors. 
+<li><a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>:                    Fcntl commands for manipulating
+                                         flags associated with open files. 
+<li><a href="File-Locks.html#File-Locks">File Locks</a>:                           Fcntl commands for implementing
+                                         file locking. 
+<li><a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>:                      Getting an asynchronous signal when
+                                         input arrives. 
+<li><a href="IOCTLs.html#IOCTLs">IOCTLs</a>:                               Generic I/O Control operations.
+
+</li></ul>
+<p>Stream/Descriptor Precautions
+
+</p>
+<ul class="menu">
+<li><a href="Linked-Channels.html#Linked-Channels">Linked Channels</a>: 	   Dealing with channels sharing a file position. 
+<li><a href="Independent-Channels.html#Independent-Channels">Independent Channels</a>:    Dealing with separately opened, unlinked channels. 
+<li><a href="Cleaning-Streams.html#Cleaning-Streams">Cleaning Streams</a>: 	   Cleaning a stream makes it safe to use
+                            another channel.
+
+</li></ul>
+<p>Asynchronous I/O
+
+</p>
+<ul class="menu">
+<li><a href="Asynchronous-Reads_002fWrites.html#Asynchronous-Reads_002fWrites">Asynchronous Reads/Writes</a>:     Asynchronous Read and Write Operations. 
+<li><a href="Status-of-AIO-Operations.html#Status-of-AIO-Operations">Status of AIO Operations</a>:      Getting the Status of AIO Operations. 
+<li><a href="Synchronizing-AIO-Operations.html#Synchronizing-AIO-Operations">Synchronizing AIO Operations</a>:  Getting into a consistent state. 
+<li><a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>:         Cancellation of AIO Operations. 
+<li><a href="Configuration-of-AIO.html#Configuration-of-AIO">Configuration of AIO</a>:          How to optimize the AIO implementation.
+
+</li></ul>
+<p>File Status Flags
+
+</p>
+<ul class="menu">
+<li><a href="Access-Modes.html#Access-Modes">Access Modes</a>:                 Whether the descriptor can read or write. 
+<li><a href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>:              Details of <code>open</code>. 
+<li><a href="Operating-Modes.html#Operating-Modes">Operating Modes</a>:              Special modes to control I/O operations. 
+<li><a href="Getting-File-Status-Flags.html#Getting-File-Status-Flags">Getting File Status Flags</a>:    Fetching and changing these flags.
+
+</li></ul>
+<p>File System Interface
+
+</p>
+<ul class="menu">
+<li><a href="Working-Directory.html#Working-Directory">Working Directory</a>:            This is used to resolve relative
+				 file names. 
+<li><a href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>:        Finding out what files a directory
+				 contains. 
+<li><a href="Working-with-Directory-Trees.html#Working-with-Directory-Trees">Working with Directory Trees</a>:  Apply actions to all files or a selectable
+                                 subset of a directory hierarchy. 
+<li><a href="Hard-Links.html#Hard-Links">Hard Links</a>:                   Adding alternate names to a file. 
+<li><a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>:               A file that ``points to'' a file name. 
+<li><a href="Deleting-Files.html#Deleting-Files">Deleting Files</a>:               How to delete a file, and what that means. 
+<li><a href="Renaming-Files.html#Renaming-Files">Renaming Files</a>:               Changing a file's name. 
+<li><a href="Creating-Directories.html#Creating-Directories">Creating Directories</a>:         A system call just for creating a directory. 
+<li><a href="File-Attributes.html#File-Attributes">File Attributes</a>:              Attributes of individual files. 
+<li><a href="Making-Special-Files.html#Making-Special-Files">Making Special Files</a>:         How to create special files. 
+<li><a href="Temporary-Files.html#Temporary-Files">Temporary Files</a>:              Naming and creating temporary files.
+
+</li></ul>
+<p>Accessing Directories
+
+</p>
+<ul class="menu">
+<li><a href="Directory-Entries.html#Directory-Entries">Directory Entries</a>:            Format of one directory entry. 
+<li><a href="Opening-a-Directory.html#Opening-a-Directory">Opening a Directory</a>:          How to open a directory stream. 
+<li><a href="Reading_002fClosing-Directory.html#Reading_002fClosing-Directory">Reading/Closing Directory</a>:    How to read directory entries from the stream. 
+<li><a href="Simple-Directory-Lister.html#Simple-Directory-Lister">Simple Directory Lister</a>:      A very simple directory listing program. 
+<li><a href="Random-Access-Directory.html#Random-Access-Directory">Random Access Directory</a>:      Rereading part of the directory
+                                 already read with the same stream. 
+<li><a href="Scanning-Directory-Content.html#Scanning-Directory-Content">Scanning Directory Content</a>:   Get entries for user selected subset of
+                                 contents in given directory. 
+<li><a href="Simple-Directory-Lister-Mark-II.html#Simple-Directory-Lister-Mark-II">Simple Directory Lister Mark II</a>:   Revised version of the program.
+
+</li></ul>
+<p>File Attributes
+
+</p>
+<ul class="menu">
+<li><a href="Attribute-Meanings.html#Attribute-Meanings">Attribute Meanings</a>:           The names of the file attributes,
+                                 and what their values mean. 
+<li><a href="Reading-Attributes.html#Reading-Attributes">Reading Attributes</a>:           How to read the attributes of a file. 
+<li><a href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>:            Distinguishing ordinary files,
+                                 directories, links... 
+<li><a href="File-Owner.html#File-Owner">File Owner</a>:                   How ownership for new files is determined,
+			         and how to change it. 
+<li><a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>:              How information about a file's access
+                                 mode is stored. 
+<li><a href="Access-Permission.html#Access-Permission">Access Permission</a>:            How the system decides who can access a file. 
+<li><a href="Setting-Permissions.html#Setting-Permissions">Setting Permissions</a>:          How permissions for new files are assigned,
+			         and how to change them. 
+<li><a href="Testing-File-Access.html#Testing-File-Access">Testing File Access</a>:          How to find out if your process can
+                                 access a file. 
+<li><a href="File-Times.html#File-Times">File Times</a>:                   About the time attributes of a file. 
+<li><a href="File-Size.html#File-Size">File Size</a>: 			Manually changing the size of a file.
+
+</li></ul>
+<p>Pipes and FIFOs
+
+</p>
+<ul class="menu">
+<li><a href="Creating-a-Pipe.html#Creating-a-Pipe">Creating a Pipe</a>:              Making a pipe with the <code>pipe</code> function. 
+<li><a href="Pipe-to-a-Subprocess.html#Pipe-to-a-Subprocess">Pipe to a Subprocess</a>:         Using a pipe to communicate with a
+				 child process. 
+<li><a href="FIFO-Special-Files.html#FIFO-Special-Files">FIFO Special Files</a>:           Making a FIFO special file. 
+<li><a href="Pipe-Atomicity.html#Pipe-Atomicity">Pipe Atomicity</a>: 		When pipe (or FIFO) I/O is atomic.
+
+</li></ul>
+<p>Sockets
+
+</p>
+<ul class="menu">
+<li><a href="Socket-Concepts.html#Socket-Concepts">Socket Concepts</a>: 	Basic concepts you need to know about. 
+<li><a href="Communication-Styles.html#Communication-Styles">Communication Styles</a>: Stream communication, datagrams and other styles. 
+<li><a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>: 	How socket names (``addresses'') work. 
+<li><a href="Interface-Naming.html#Interface-Naming">Interface Naming</a>: 	Identifying specific network interfaces. 
+<li><a href="Local-Namespace.html#Local-Namespace">Local Namespace</a>: 	Details about the local namespace. 
+<li><a href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>: 	Details about the Internet namespace. 
+<li><a href="Misc-Namespaces.html#Misc-Namespaces">Misc Namespaces</a>: 	Other namespaces not documented fully here. 
+<li><a href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">Open/Close Sockets</a>:   Creating sockets and destroying them. 
+<li><a href="Connections.html#Connections">Connections</a>: 		Operations on sockets with connection state. 
+<li><a href="Datagrams.html#Datagrams">Datagrams</a>: 		Operations on datagram sockets. 
+<li><a href="Inetd.html#Inetd">Inetd</a>: 		Inetd is a daemon that starts servers on request. 
+			   The most convenient way to write a server
+			   is to make it work with Inetd. 
+<li><a href="Socket-Options.html#Socket-Options">Socket Options</a>: 	Miscellaneous low-level socket options. 
+<li><a href="Networks-Database.html#Networks-Database">Networks Database</a>:    Accessing the database of network names.
+
+</li></ul>
+<p>Socket Addresses
+
+</p>
+<ul class="menu">
+<li><a href="Address-Formats.html#Address-Formats">Address Formats</a>: 		About <code>struct sockaddr</code>. 
+<li><a href="Setting-Address.html#Setting-Address">Setting Address</a>: 		Binding an address to a socket. 
+<li><a href="Reading-Address.html#Reading-Address">Reading Address</a>: 		Reading the address of a socket.
+
+</li></ul>
+<p>Local Namespace
+
+</p>
+<ul class="menu">
+<li><a href="Local-Namespace-Concepts.html#Local-Namespace-Concepts">Concepts</a>:  What you need to understand. 
+<li><a href="Local-Namespace-Details.html#Local-Namespace-Details">Details</a>:    Address format, symbolic names, etc. 
+<li><a href="Local-Socket-Example.html#Local-Socket-Example">Example</a>:       Example of creating a socket.
+
+</li></ul>
+<p>Internet Namespace
+
+</p>
+<ul class="menu">
+<li><a href="Internet-Address-Formats.html#Internet-Address-Formats">Internet Address Formats</a>:     How socket addresses are specified in the
+                                 Internet namespace. 
+<li><a href="Host-Addresses.html#Host-Addresses">Host Addresses</a>: 	        All about host addresses of Internet host. 
+<li><a href="Protocols-Database.html#Protocols-Database">Protocols Database</a>: 		Referring to protocols by name. 
+<li><a href="Ports.html#Ports">Ports</a>: 			Internet port numbers. 
+<li><a href="Services-Database.html#Services-Database">Services Database</a>:            Ports may have symbolic names. 
+<li><a href="Byte-Order.html#Byte-Order">Byte Order</a>: 		        Different hosts may use different byte
+                                 ordering conventions; you need to
+                                 canonicalize host address and port number. 
+<li><a href="Inet-Example.html#Inet-Example">Inet Example</a>: 	        Putting it all together.
+
+</li></ul>
+<p>Host Addresses
+
+</p>
+<ul class="menu">
+<li><a href="Abstract-Host-Addresses.html#Abstract-Host-Addresses">Abstract Host Addresses</a>: 	What a host number consists of. 
+<li><a href="Host-Address-Data-Type.html#Host-Address-Data-Type">Data type</a>: 	Data type for a host number. 
+<li><a href="Host-Address-Functions.html#Host-Address-Functions">Functions</a>: 	Functions to operate on them. 
+<li><a href="Host-Names.html#Host-Names">Names</a>: 		Translating host names to host numbers.
+
+</li></ul>
+<p>Open/Close Sockets
+
+</p>
+<ul class="menu">
+<li><a href="Creating-a-Socket.html#Creating-a-Socket">Creating a Socket</a>:            How to open a socket. 
+<li><a href="Closing-a-Socket.html#Closing-a-Socket">Closing a Socket</a>:             How to close a socket. 
+<li><a href="Socket-Pairs.html#Socket-Pairs">Socket Pairs</a>:                 These are created like pipes.
+
+</li></ul>
+<p>Connections
+
+</p>
+<ul class="menu">
+<li><a href="Connecting.html#Connecting">Connecting</a>:     	     What the client program must do. 
+<li><a href="Listening.html#Listening">Listening</a>: 		     How a server program waits for requests. 
+<li><a href="Accepting-Connections.html#Accepting-Connections">Accepting Connections</a>:     What the server does when it gets a request. 
+<li><a href="Who-is-Connected.html#Who-is-Connected">Who is Connected</a>: 	     Getting the address of the
+				other side of a connection. 
+<li><a href="Transferring-Data.html#Transferring-Data">Transferring Data</a>:         How to send and receive data. 
+<li><a href="Byte-Stream-Example.html#Byte-Stream-Example">Byte Stream Example</a>: 	     An example program: a client for communicating
+			      over a byte stream socket in the Internet namespace. 
+<li><a href="Server-Example.html#Server-Example">Server Example</a>: 	     A corresponding server program. 
+<li><a href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data">Out-of-Band Data</a>:          This is an advanced feature.
+
+</li></ul>
+<p>Transferring Data
+
+</p>
+<ul class="menu">
+<li><a href="Sending-Data.html#Sending-Data">Sending Data</a>: 		Sending data with <code>send</code>. 
+<li><a href="Receiving-Data.html#Receiving-Data">Receiving Data</a>: 		Reading data with <code>recv</code>. 
+<li><a href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>: 		Using <code>send</code> and <code>recv</code>.
+
+</li></ul>
+<p>Datagrams
+
+</p>
+<ul class="menu">
+<li><a href="Sending-Datagrams.html#Sending-Datagrams">Sending Datagrams</a>:     Sending packets on a datagram socket. 
+<li><a href="Receiving-Datagrams.html#Receiving-Datagrams">Receiving Datagrams</a>:   Receiving packets on a datagram socket. 
+<li><a href="Datagram-Example.html#Datagram-Example">Datagram Example</a>:      An example program: packets sent over a
+                           datagram socket in the local namespace. 
+<li><a href="Example-Receiver.html#Example-Receiver">Example Receiver</a>: 	 Another program, that receives those packets.
+
+</li></ul>
+<p>Inetd
+
+</p>
+<ul class="menu">
+<li><a href="Inetd-Servers.html#Inetd-Servers">Inetd Servers</a>
+<li><a href="Configuring-Inetd.html#Configuring-Inetd">Configuring Inetd</a>
+
+</li></ul>
+<p>Socket Options
+
+</p>
+<ul class="menu">
+<li><a href="Socket-Option-Functions.html#Socket-Option-Functions">Socket Option Functions</a>:      The basic functions for setting and getting
+                                 socket options. 
+<li><a href="Socket_002dLevel-Options.html#Socket_002dLevel-Options">Socket-Level Options</a>:         Details of the options at the socket level.
+
+</li></ul>
+<p>Low-Level Terminal Interface
+
+</p>
+<ul class="menu">
+<li><a href="Is-It-a-Terminal.html#Is-It-a-Terminal">Is It a Terminal</a>:             How to determine if a file is a terminal
+			         device, and what its name is. 
+<li><a href="I_002fO-Queues.html#I_002fO-Queues">I/O Queues</a>:                   About flow control and typeahead. 
+<li><a href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>:             Two basic styles of input processing. 
+<li><a href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>:               How to examine and modify flags controlling
+			         details of terminal I/O: echoing,
+                                 signals, editing.  Posix. 
+<li><a href="BSD-Terminal-Modes.html#BSD-Terminal-Modes">BSD Terminal Modes</a>:           BSD compatible terminal mode setting
+<li><a href="Line-Control.html#Line-Control">Line Control</a>:                 Sending break sequences, clearing
+                                 terminal buffers ... 
+<li><a href="Noncanon-Example.html#Noncanon-Example">Noncanon Example</a>:             How to read single characters without echo. 
+<li><a href="Pseudo_002dTerminals.html#Pseudo_002dTerminals">Pseudo-Terminals</a>:             How to open a pseudo-terminal.
+
+</li></ul>
+<p>Terminal Modes
+
+</p>
+<ul class="menu">
+<li><a href="Mode-Data-Types.html#Mode-Data-Types">Mode Data Types</a>:              The data type <code>struct termios</code> and
+                                 related types. 
+<li><a href="Mode-Functions.html#Mode-Functions">Mode Functions</a>:               Functions to read and set the terminal
+                                 attributes. 
+<li><a href="Setting-Modes.html#Setting-Modes">Setting Modes</a>:                The right way to set terminal attributes
+                                 reliably. 
+<li><a href="Input-Modes.html#Input-Modes">Input Modes</a>:                  Flags controlling low-level input handling. 
+<li><a href="Output-Modes.html#Output-Modes">Output Modes</a>:                 Flags controlling low-level output handling. 
+<li><a href="Control-Modes.html#Control-Modes">Control Modes</a>:                Flags controlling serial port behavior. 
+<li><a href="Local-Modes.html#Local-Modes">Local Modes</a>:                  Flags controlling high-level input handling. 
+<li><a href="Line-Speed.html#Line-Speed">Line Speed</a>:                   How to read and set the terminal line speed. 
+<li><a href="Special-Characters.html#Special-Characters">Special Characters</a>:           Characters that have special effects,
+			         and how to change them. 
+<li><a href="Noncanonical-Input.html#Noncanonical-Input">Noncanonical Input</a>:           Controlling how long to wait for input.
+
+</li></ul>
+<p>Special Characters
+
+</p>
+<ul class="menu">
+<li><a href="Editing-Characters.html#Editing-Characters">Editing Characters</a>:           Special characters that terminate lines and
+                                  delete text, and other editing functions. 
+<li><a href="Signal-Characters.html#Signal-Characters">Signal Characters</a>:            Special characters that send or raise signals
+                                  to or for certain classes of processes. 
+<li><a href="Start_002fStop-Characters.html#Start_002fStop-Characters">Start/Stop Characters</a>:        Special characters that suspend or resume
+                                  suspended output. 
+<li><a href="Other-Special.html#Other-Special">Other Special</a>: 		Other special characters for BSD systems:
+				  they can discard output, and print status.
+
+</li></ul>
+<p>Pseudo-Terminals
+
+</p>
+<ul class="menu">
+<li><a href="Allocation.html#Allocation">Allocation</a>:              Allocating a pseudo terminal. 
+<li><a href="Pseudo_002dTerminal-Pairs.html#Pseudo_002dTerminal-Pairs">Pseudo-Terminal Pairs</a>:   How to open both sides of a
+                            pseudo-terminal in a single operation.
+
+</li></ul>
+<p>Syslog
+
+</p>
+<ul class="menu">
+<li><a href="Overview-of-Syslog.html#Overview-of-Syslog">Overview of Syslog</a>:            Overview of a system's Syslog facility
+<li><a href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>:    Functions to submit messages to Syslog
+
+</li></ul>
+<p>Submitting Syslog Messages
+
+</p>
+<ul class="menu">
+<li><a href="openlog.html#openlog">openlog</a>:                       Open connection to Syslog
+<li><a href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">syslog; vsyslog</a>:               Submit message to Syslog
+<li><a href="closelog.html#closelog">closelog</a>:                      Close connection to Syslog
+<li><a href="setlogmask.html#setlogmask">setlogmask</a>:                    Cause certain messages to be ignored
+<li><a href="Syslog-Example.html#Syslog-Example">Syslog Example</a>:                Example of all of the above
+
+</li></ul>
+<p>Mathematics
+
+</p>
+<ul class="menu">
+<li><a href="Mathematical-Constants.html#Mathematical-Constants">Mathematical Constants</a>:       Precise numeric values for often-used
+                                 constants. 
+<li><a href="Trig-Functions.html#Trig-Functions">Trig Functions</a>:               Sine, cosine, tangent, and friends. 
+<li><a href="Inverse-Trig-Functions.html#Inverse-Trig-Functions">Inverse Trig Functions</a>:       Arcsine, arccosine, etc. 
+<li><a href="Exponents-and-Logarithms.html#Exponents-and-Logarithms">Exponents and Logarithms</a>:     Also pow and sqrt. 
+<li><a href="Hyperbolic-Functions.html#Hyperbolic-Functions">Hyperbolic Functions</a>:         sinh, cosh, tanh, etc. 
+<li><a href="Special-Functions.html#Special-Functions">Special Functions</a>:            Bessel, gamma, erf. 
+<li><a href="Errors-in-Math-Functions.html#Errors-in-Math-Functions">Errors in Math Functions</a>:     Known Maximum Errors in Math Functions. 
+<li><a href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">Pseudo-Random Numbers</a>:        Functions for generating pseudo-random
+				 numbers. 
+<li><a href="FP-Function-Optimizations.html#FP-Function-Optimizations">FP Function Optimizations</a>:    Fast code or small code.
+
+</li></ul>
+<p>Pseudo-Random Numbers
+
+</p>
+<ul class="menu">
+<li><a href="ISO-Random.html#ISO-Random">ISO Random</a>:                   <code>rand</code> and friends. 
+<li><a href="BSD-Random.html#BSD-Random">BSD Random</a>:                   <code>random</code> and friends. 
+<li><a href="SVID-Random.html#SVID-Random">SVID Random</a>:                  <code>drand48</code> and friends.
+
+</li></ul>
+<p>Arithmetic
+
+</p>
+<ul class="menu">
+<li><a href="Integers.html#Integers">Integers</a>:                     Basic integer types and concepts
+<li><a href="Integer-Division.html#Integer-Division">Integer Division</a>:             Integer division with guaranteed rounding. 
+<li><a href="Floating-Point-Numbers.html#Floating-Point-Numbers">Floating Point Numbers</a>:       Basic concepts.  IEEE 754. 
+<li><a href="Floating-Point-Classes.html#Floating-Point-Classes">Floating Point Classes</a>:       The five kinds of floating-point number. 
+<li><a href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>:        When something goes wrong in a calculation. 
+<li><a href="Rounding.html#Rounding">Rounding</a>:                     Controlling how results are rounded. 
+<li><a href="Control-Functions.html#Control-Functions">Control Functions</a>:            Saving and restoring the FPU's state. 
+<li><a href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>:         Fundamental operations provided by the library. 
+<li><a href="Complex-Numbers.html#Complex-Numbers">Complex Numbers</a>:              The types.  Writing complex constants. 
+<li><a href="Operations-on-Complex.html#Operations-on-Complex">Operations on Complex</a>:        Projection, conjugation, decomposition. 
+<li><a href="Parsing-of-Numbers.html#Parsing-of-Numbers">Parsing of Numbers</a>:           Converting strings to numbers. 
+<li><a href="System-V-Number-Conversion.html#System-V-Number-Conversion">System V Number Conversion</a>:   An archaic way to convert numbers to strings.
+
+</li></ul>
+<p>Floating Point Errors
+
+</p>
+<ul class="menu">
+<li><a href="FP-Exceptions.html#FP-Exceptions">FP Exceptions</a>:                IEEE 754 math exceptions and how to detect them. 
+<li><a href="Infinity-and-NaN.html#Infinity-and-NaN">Infinity and NaN</a>:             Special values returned by calculations. 
+<li><a href="Status-bit-operations.html#Status-bit-operations">Status bit operations</a>:        Checking for exceptions after the fact. 
+<li><a href="Math-Error-Reporting.html#Math-Error-Reporting">Math Error Reporting</a>:         How the math functions report errors.
+
+</li></ul>
+<p>Arithmetic Functions
+
+</p>
+<ul class="menu">
+<li><a href="Absolute-Value.html#Absolute-Value">Absolute Value</a>:               Absolute values of integers and floats. 
+<li><a href="Normalization-Functions.html#Normalization-Functions">Normalization Functions</a>:      Extracting exponents and putting them back. 
+<li><a href="Rounding-Functions.html#Rounding-Functions">Rounding Functions</a>:           Rounding floats to integers. 
+<li><a href="Remainder-Functions.html#Remainder-Functions">Remainder Functions</a>:          Remainders on division, precisely defined. 
+<li><a href="FP-Bit-Twiddling.html#FP-Bit-Twiddling">FP Bit Twiddling</a>:             Sign bit adjustment.  Adding epsilon. 
+<li><a href="FP-Comparison-Functions.html#FP-Comparison-Functions">FP Comparison Functions</a>:      Comparisons without risk of exceptions. 
+<li><a href="Misc-FP-Arithmetic.html#Misc-FP-Arithmetic">Misc FP Arithmetic</a>:           Max, min, positive difference, multiply-add.
+
+</li></ul>
+<p>Parsing of Numbers
+
+</p>
+<ul class="menu">
+<li><a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>:          Functions for conversion of integer values. 
+<li><a href="Parsing-of-Floats.html#Parsing-of-Floats">Parsing of Floats</a>:            Functions for conversion of floating-point
+				 values.
+
+</li></ul>
+<p>Date and Time
+
+</p>
+<ul class="menu">
+<li><a href="Time-Basics.html#Time-Basics">Time Basics</a>:                  Concepts and definitions. 
+<li><a href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>:                 Data types to represent elapsed times
+<li><a href="Processor-And-CPU-Time.html#Processor-And-CPU-Time">Processor And CPU Time</a>:       Time a program has spent executing. 
+<li><a href="Calendar-Time.html#Calendar-Time">Calendar Time</a>:                Manipulation of ``real'' dates and times. 
+<li><a href="Setting-an-Alarm.html#Setting-an-Alarm">Setting an Alarm</a>:             Sending a signal after a specified time. 
+<li><a href="Sleeping.html#Sleeping">Sleeping</a>:                     Waiting for a period of time.
+
+</li></ul>
+<p>Processor And CPU Time
+
+</p>
+<ul class="menu">
+<li><a href="CPU-Time.html#CPU-Time">CPU Time</a>:                     The <code>clock</code> function. 
+<li><a href="Processor-Time.html#Processor-Time">Processor Time</a>:               The <code>times</code> function.
+
+</li></ul>
+<p>Calendar Time
+
+</p>
+<ul class="menu">
+<li><a href="Simple-Calendar-Time.html#Simple-Calendar-Time">Simple Calendar Time</a>:         Facilities for manipulating calendar time. 
+<li><a href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>:     A time representation with greater precision. 
+<li><a href="Broken_002ddown-Time.html#Broken_002ddown-Time">Broken-down Time</a>:             Facilities for manipulating local time. 
+<li><a href="High-Accuracy-Clock.html#High-Accuracy-Clock">High Accuracy Clock</a>:          Maintaining a high accuracy system clock. 
+<li><a href="Formatting-Calendar-Time.html#Formatting-Calendar-Time">Formatting Calendar Time</a>:     Converting times to strings. 
+<li><a href="Parsing-Date-and-Time.html#Parsing-Date-and-Time">Parsing Date and Time</a>:        Convert textual time and date information back
+                                 into broken-down time values. 
+<li><a href="TZ-Variable.html#TZ-Variable">TZ Variable</a>:                  How users specify the time zone. 
+<li><a href="Time-Zone-Functions.html#Time-Zone-Functions">Time Zone Functions</a>:          Functions to examine or specify the time zone. 
+<li><a href="Time-Functions-Example.html#Time-Functions-Example">Time Functions Example</a>:       An example program showing use of some of
+				 the time functions.
+
+</li></ul>
+<p>Parsing Date and Time
+
+</p>
+<ul class="menu">
+<li><a href="Low_002dLevel-Time-String-Parsing.html#Low_002dLevel-Time-String-Parsing">Low-Level Time String Parsing</a>:   Interpret string according to given format. 
+<li><a href="General-Time-String-Parsing.html#General-Time-String-Parsing">General Time String Parsing</a>:     User-friendly function to parse data and
+                                    time strings.
+
+</li></ul>
+<p>Resource Usage And Limitation
+
+</p>
+<ul class="menu">
+<li><a href="Resource-Usage.html#Resource-Usage">Resource Usage</a>: 		Measuring various resources used. 
+<li><a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>: 		Specifying limits on resource usage. 
+<li><a href="Priority.html#Priority">Priority</a>: 			Reading or setting process run priority. 
+<li><a href="Memory-Resources.html#Memory-Resources">Memory Resources</a>:             Querying memory available resources. 
+<li><a href="Processor-Resources.html#Processor-Resources">Processor Resources</a>:          Learn about the processors available.
+
+</li></ul>
+<p>Priority
+
+</p>
+<ul class="menu">
+<li><a href="Absolute-Priority.html#Absolute-Priority">Absolute Priority</a>:                The first tier of priority.  Posix
+<li><a href="Realtime-Scheduling.html#Realtime-Scheduling">Realtime Scheduling</a>:              Scheduling among the process nobility
+<li><a href="Basic-Scheduling-Functions.html#Basic-Scheduling-Functions">Basic Scheduling Functions</a>:       Get/set scheduling policy, priority
+<li><a href="Traditional-Scheduling.html#Traditional-Scheduling">Traditional Scheduling</a>:           Scheduling among the vulgar masses
+<li><a href="CPU-Affinity.html#CPU-Affinity">CPU Affinity</a>:                     Limiting execution to certain CPUs
+
+</li></ul>
+<p>Traditional Scheduling
+
+</p>
+<ul class="menu">
+<li><a href="Traditional-Scheduling-Intro.html#Traditional-Scheduling-Intro">Traditional Scheduling Intro</a>
+<li><a href="Traditional-Scheduling-Functions.html#Traditional-Scheduling-Functions">Traditional Scheduling Functions</a>
+
+</li></ul>
+<p>Memory Resources
+
+</p>
+<ul class="menu">
+<li><a href="Memory-Subsystem.html#Memory-Subsystem">Memory Subsystem</a>:            Overview about traditional Unix memory handling. 
+<li><a href="Query-Memory-Parameters.html#Query-Memory-Parameters">Query Memory Parameters</a>:     How to get information about the memory
+                                subsystem?
+
+</li></ul>
+<p>Non-Local Exits
+
+</p>
+<ul class="menu">
+<li><a href="Non_002dLocal-Intro.html#Non_002dLocal-Intro">Intro</a>:         When and how to use these facilities. 
+<li><a href="Non_002dLocal-Details.html#Non_002dLocal-Details">Details</a>:     Functions for non-local exits. 
+<li><a href="Non_002dLocal-Exits-and-Signals.html#Non_002dLocal-Exits-and-Signals">Non-Local Exits and Signals</a>:   Portability issues. 
+<li><a href="System-V-contexts.html#System-V-contexts">System V contexts</a>:             Complete context control a la System V.
+
+</li></ul>
+<p>Signal Handling
+
+</p>
+<ul class="menu">
+<li><a href="Concepts-of-Signals.html#Concepts-of-Signals">Concepts of Signals</a>:          Introduction to the signal facilities. 
+<li><a href="Standard-Signals.html#Standard-Signals">Standard Signals</a>:             Particular kinds of signals with
+                                 standard names and meanings. 
+<li><a href="Signal-Actions.html#Signal-Actions">Signal Actions</a>:               Specifying what happens when a
+                                 particular signal is delivered. 
+<li><a href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>:            How to write a signal handler function. 
+<li><a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>: 	Signal handlers affect use of <code>open</code>,
+				 <code>read</code>, <code>write</code> and other functions. 
+<li><a href="Generating-Signals.html#Generating-Signals">Generating Signals</a>:           How to send a signal to a process. 
+<li><a href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>:             Making the system hold signals temporarily. 
+<li><a href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>:         Suspending your program until a signal
+                                 arrives. 
+<li><a href="Signal-Stack.html#Signal-Stack">Signal Stack</a>:                 Using a Separate Signal Stack. 
+<li><a href="BSD-Signal-Handling.html#BSD-Signal-Handling">BSD Signal Handling</a>:          Additional functions for backward
+			         compatibility with BSD.
+
+</li></ul>
+<p>Concepts of Signals
+
+</p>
+<ul class="menu">
+<li><a href="Kinds-of-Signals.html#Kinds-of-Signals">Kinds of Signals</a>:             Some examples of what can cause a signal. 
+<li><a href="Signal-Generation.html#Signal-Generation">Signal Generation</a>:            Concepts of why and how signals occur. 
+<li><a href="Delivery-of-Signal.html#Delivery-of-Signal">Delivery of Signal</a>:           Concepts of what a signal does to the
+                                 process.
+
+</li></ul>
+<p>Standard Signals
+
+</p>
+<ul class="menu">
+<li><a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>:        Used to report serious program errors. 
+<li><a href="Termination-Signals.html#Termination-Signals">Termination Signals</a>:          Used to interrupt and/or terminate the
+                                 program. 
+<li><a href="Alarm-Signals.html#Alarm-Signals">Alarm Signals</a>:                Used to indicate expiration of timers. 
+<li><a href="Asynchronous-I_002fO-Signals.html#Asynchronous-I_002fO-Signals">Asynchronous I/O Signals</a>:     Used to indicate input is available. 
+<li><a href="Job-Control-Signals.html#Job-Control-Signals">Job Control Signals</a>:          Signals used to support job control. 
+<li><a href="Operation-Error-Signals.html#Operation-Error-Signals">Operation Error Signals</a>:      Used to report operational system errors. 
+<li><a href="Miscellaneous-Signals.html#Miscellaneous-Signals">Miscellaneous Signals</a>:        Miscellaneous Signals. 
+<li><a href="Signal-Messages.html#Signal-Messages">Signal Messages</a>:              Printing a message describing a signal.
+
+</li></ul>
+<p>Signal Actions
+
+</p>
+<ul class="menu">
+<li><a href="Basic-Signal-Handling.html#Basic-Signal-Handling">Basic Signal Handling</a>:        The simple <code>signal</code> function. 
+<li><a href="Advanced-Signal-Handling.html#Advanced-Signal-Handling">Advanced Signal Handling</a>:     The more powerful <code>sigaction</code> function. 
+<li><a href="Signal-and-Sigaction.html#Signal-and-Sigaction">Signal and Sigaction</a>:         How those two functions interact. 
+<li><a href="Sigaction-Function-Example.html#Sigaction-Function-Example">Sigaction Function Example</a>:   An example of using the sigaction function. 
+<li><a href="Flags-for-Sigaction.html#Flags-for-Sigaction">Flags for Sigaction</a>:          Specifying options for signal handling. 
+<li><a href="Initial-Signal-Actions.html#Initial-Signal-Actions">Initial Signal Actions</a>:       How programs inherit signal actions.
+
+</li></ul>
+<p>Defining Handlers
+
+</p>
+<ul class="menu">
+<li><a href="Handler-Returns.html#Handler-Returns">Handler Returns</a>:              Handlers that return normally, and what
+                                 this means. 
+<li><a href="Termination-in-Handler.html#Termination-in-Handler">Termination in Handler</a>:       How handler functions terminate a program. 
+<li><a href="Longjmp-in-Handler.html#Longjmp-in-Handler">Longjmp in Handler</a>:           Nonlocal transfer of control out of a
+                                 signal handler. 
+<li><a href="Signals-in-Handler.html#Signals-in-Handler">Signals in Handler</a>:           What happens when signals arrive while
+                                 the handler is already occupied. 
+<li><a href="Merged-Signals.html#Merged-Signals">Merged Signals</a>: 		When a second signal arrives before the
+				 first is handled. 
+<li><a href="Nonreentrancy.html#Nonreentrancy">Nonreentrancy</a>:                Do not call any functions unless you know they
+                                 are reentrant with respect to signals. 
+<li><a href="Atomic-Data-Access.html#Atomic-Data-Access">Atomic Data Access</a>:           A single handler can run in the middle of
+                                 reading or writing a single object.
+
+</li></ul>
+<p>Atomic Data Access
+
+</p>
+<ul class="menu">
+<li><a href="Non_002datomic-Example.html#Non_002datomic-Example">Non-atomic Example</a>: 		A program illustrating interrupted access. 
+<li><a href="Atomic-Types.html#Atomic-Types">Types</a>: 		Data types that guarantee no interruption. 
+<li><a href="Atomic-Usage.html#Atomic-Usage">Usage</a>: 		Proving that interruption is harmless.
+
+</li></ul>
+<p>Generating Signals
+
+</p>
+<ul class="menu">
+<li><a href="Signaling-Yourself.html#Signaling-Yourself">Signaling Yourself</a>:           A process can send a signal to itself. 
+<li><a href="Signaling-Another-Process.html#Signaling-Another-Process">Signaling Another Process</a>:    Send a signal to another process. 
+<li><a href="Permission-for-kill.html#Permission-for-kill">Permission for kill</a>:          Permission for using <code>kill</code>. 
+<li><a href="Kill-Example.html#Kill-Example">Kill Example</a>:                 Using <code>kill</code> for Communication.
+
+</li></ul>
+<p>Blocking Signals
+
+</p>
+<ul class="menu">
+<li><a href="Why-Block.html#Why-Block">Why Block</a>:                            The purpose of blocking signals. 
+<li><a href="Signal-Sets.html#Signal-Sets">Signal Sets</a>:                          How to specify which signals to
+                                         block. 
+<li><a href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>:                  Blocking delivery of signals to your
+				         process during normal execution. 
+<li><a href="Testing-for-Delivery.html#Testing-for-Delivery">Testing for Delivery</a>:                 Blocking to Test for Delivery of
+                                         a Signal. 
+<li><a href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>:                 Blocking additional signals while a
+				         handler is being run. 
+<li><a href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals">Checking for Pending Signals</a>:         Checking for Pending Signals
+<li><a href="Remembering-a-Signal.html#Remembering-a-Signal">Remembering a Signal</a>:                 How you can get almost the same
+                                         effect as blocking a signal, by
+                                         handling it and setting a flag
+                                         to be tested later.
+
+</li></ul>
+<p>Waiting for a Signal
+
+</p>
+<ul class="menu">
+<li><a href="Using-Pause.html#Using-Pause">Using Pause</a>:                  The simple way, using <code>pause</code>. 
+<li><a href="Pause-Problems.html#Pause-Problems">Pause Problems</a>:               Why the simple way is often not very good. 
+<li><a href="Sigsuspend.html#Sigsuspend">Sigsuspend</a>:                   Reliably waiting for a specific signal.
+
+</li></ul>
+<p>BSD Signal Handling
+
+</p>
+<ul class="menu">
+<li><a href="BSD-Handler.html#BSD-Handler">BSD Handler</a>:                  BSD Function to Establish a Handler. 
+<li><a href="Blocking-in-BSD.html#Blocking-in-BSD">Blocking in BSD</a>:              BSD Functions for Blocking Signals.
+
+</li></ul>
+<p>Program Basics
+
+</p>
+<ul class="menu">
+<li><a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>:            Parsing your program's command-line arguments. 
+<li><a href="Environment-Variables.html#Environment-Variables">Environment Variables</a>:        Less direct parameters affecting your program
+<li><a href="System-Calls.html#System-Calls">System Calls</a>:                 Requesting service from the system
+<li><a href="Program-Termination.html#Program-Termination">Program Termination</a>:          Telling the system you're done; return status
+
+</li></ul>
+<p>Program Arguments
+
+</p>
+<ul class="menu">
+<li><a href="Argument-Syntax.html#Argument-Syntax">Argument Syntax</a>:              By convention, options start with a hyphen. 
+<li><a href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>:    Ways to parse program options and arguments.
+
+</li></ul>
+<p>Parsing Program Arguments
+
+</p>
+<ul class="menu">
+<li><a href="Getopt.html#Getopt">Getopt</a>:                       Parsing program options using <code>getopt</code>. 
+<li><a href="Argp.html#Argp">Argp</a>:                         Parsing program options using <code>argp_parse</code>. 
+<li><a href="Suboptions.html#Suboptions">Suboptions</a>:                   Some programs need more detailed options. 
+<li><a href="Suboptions-Example.html#Suboptions-Example">Suboptions Example</a>:           This shows how it could be done for <code>mount</code>.
+
+</li></ul>
+<p>Environment Variables
+
+</p>
+<ul class="menu">
+<li><a href="Environment-Access.html#Environment-Access">Environment Access</a>:           How to get and set the values of
+				 environment variables. 
+<li><a href="Standard-Environment.html#Standard-Environment">Standard Environment</a>:         These environment variables have
+                		 standard interpretations.
+
+</li></ul>
+<p>Program Termination
+
+</p>
+<ul class="menu">
+<li><a href="Normal-Termination.html#Normal-Termination">Normal Termination</a>:           If a program calls <code>exit</code>, a
+                                 process terminates normally. 
+<li><a href="Exit-Status.html#Exit-Status">Exit Status</a>:                  The <code>exit status</code> provides information
+                                 about why the process terminated. 
+<li><a href="Cleanups-on-Exit.html#Cleanups-on-Exit">Cleanups on Exit</a>:             A process can run its own cleanup
+                                 functions upon normal termination. 
+<li><a href="Aborting-a-Program.html#Aborting-a-Program">Aborting a Program</a>:           The <code>abort</code> function causes
+                                 abnormal program termination. 
+<li><a href="Termination-Internals.html#Termination-Internals">Termination Internals</a>:        What happens when a process terminates.
+
+</li></ul>
+<p>Processes
+
+</p>
+<ul class="menu">
+<li><a href="Running-a-Command.html#Running-a-Command">Running a Command</a>:            The easy way to run another program. 
+<li><a href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>:    An overview of the hard way to do it. 
+<li><a href="Process-Identification.html#Process-Identification">Process Identification</a>:       How to get the process ID of a process. 
+<li><a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>:           How to fork a child process. 
+<li><a href="Executing-a-File.html#Executing-a-File">Executing a File</a>:             How to make a process execute another program. 
+<li><a href="Process-Completion.html#Process-Completion">Process Completion</a>:           How to tell when a child process has completed. 
+<li><a href="Process-Completion-Status.html#Process-Completion-Status">Process Completion Status</a>:    How to interpret the status value
+                                 returned from a child process. 
+<li><a href="BSD-Wait-Functions.html#BSD-Wait-Functions">BSD Wait Functions</a>:   	More functions, for backward compatibility. 
+<li><a href="Process-Creation-Example.html#Process-Creation-Example">Process Creation Example</a>:     A complete example program.
+
+</li></ul>
+<p>Job Control
+
+</p>
+<ul class="menu">
+<li><a href="Concepts-of-Job-Control.html#Concepts-of-Job-Control">Concepts of Job Control</a>:      Jobs can be controlled by a shell. 
+<li><a href="Job-Control-is-Optional.html#Job-Control-is-Optional">Job Control is Optional</a>:      Not all POSIX systems support job control. 
+<li><a href="Controlling-Terminal.html#Controlling-Terminal">Controlling Terminal</a>:         How a process gets its controlling terminal. 
+<li><a href="Access-to-the-Terminal.html#Access-to-the-Terminal">Access to the Terminal</a>:       How processes share the controlling terminal. 
+<li><a href="Orphaned-Process-Groups.html#Orphaned-Process-Groups">Orphaned Process Groups</a>:      Jobs left after the user logs out. 
+<li><a href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>:         What a shell must do to implement job control. 
+<li><a href="Functions-for-Job-Control.html#Functions-for-Job-Control">Functions for Job Control</a>:    Functions to control process groups.
+
+</li></ul>
+<p>Implementing a Shell
+
+</p>
+<ul class="menu">
+<li><a href="Data-Structures.html#Data-Structures">Data Structures</a>:              Introduction to the sample shell. 
+<li><a href="Initializing-the-Shell.html#Initializing-the-Shell">Initializing the Shell</a>:       What the shell must do to take
+				 responsibility for job control. 
+<li><a href="Launching-Jobs.html#Launching-Jobs">Launching Jobs</a>:               Creating jobs to execute commands. 
+<li><a href="Foreground-and-Background.html#Foreground-and-Background">Foreground and Background</a>:    Putting a job in foreground of background. 
+<li><a href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs">Stopped and Terminated Jobs</a>:   Reporting job status. 
+<li><a href="Continuing-Stopped-Jobs.html#Continuing-Stopped-Jobs">Continuing Stopped Jobs</a>:      How to continue a stopped job in
+				 the foreground or background. 
+<li><a href="Missing-Pieces.html#Missing-Pieces">Missing Pieces</a>:               Other parts of the shell.
+
+</li></ul>
+<p>Functions for Job Control
+
+</p>
+<ul class="menu">
+<li><a href="Identifying-the-Terminal.html#Identifying-the-Terminal">Identifying the Terminal</a>:     Determining the controlling terminal's name. 
+<li><a href="Process-Group-Functions.html#Process-Group-Functions">Process Group Functions</a>:      Functions for manipulating process groups. 
+<li><a href="Terminal-Access-Functions.html#Terminal-Access-Functions">Terminal Access Functions</a>:    Functions for controlling terminal access.
+
+</li></ul>
+<p>Name Service Switch
+
+</p>
+<ul class="menu">
+<li><a href="NSS-Basics.html#NSS-Basics">NSS Basics</a>:                   What is this NSS good for. 
+<li><a href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>:       Configuring NSS. 
+<li><a href="NSS-Module-Internals.html#NSS-Module-Internals">NSS Module Internals</a>:         How does it work internally. 
+<li><a href="Extending-NSS.html#Extending-NSS">Extending NSS</a>:                What to do to add services or databases.
+
+</li></ul>
+<p>NSS Configuration File
+
+</p>
+<ul class="menu">
+<li><a href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">Services in the NSS configuration</a>:   Service names in the NSS configuration. 
+<li><a href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a>:   React appropriately to the lookup result. 
+<li><a href="Notes-on-NSS-Configuration-File.html#Notes-on-NSS-Configuration-File">Notes on NSS Configuration File</a>:   Things to take care about while
+                                     configuring NSS.
+
+</li></ul>
+<p>NSS Module Internals
+
+</p>
+<ul class="menu">
+<li><a href="NSS-Module-Names.html#NSS-Module-Names">NSS Module Names</a>:             Construction of the interface function of
+                                the NSS modules. 
+<li><a href="NSS-Modules-Interface.html#NSS-Modules-Interface">NSS Modules Interface</a>:        Programming interface in the NSS module
+                                functions.
+
+</li></ul>
+<p>Extending NSS
+
+</p>
+<ul class="menu">
+<li><a href="Adding-another-Service-to-NSS.html#Adding-another-Service-to-NSS">Adding another Service to NSS</a>:   What is to do to add a new service. 
+<li><a href="NSS-Module-Function-Internals.html#NSS-Module-Function-Internals">NSS Module Function Internals</a>:   Guidelines for writing new NSS
+                                        service functions.
+
+</li></ul>
+<p>Users and Groups
+
+</p>
+<ul class="menu">
+<li><a href="User-and-Group-IDs.html#User-and-Group-IDs">User and Group IDs</a>:           Each user has a unique numeric ID;
+				 likewise for groups. 
+<li><a href="Process-Persona.html#Process-Persona">Process Persona</a>:              The user IDs and group IDs of a process. 
+<li><a href="Why-Change-Persona.html#Why-Change-Persona">Why Change Persona</a>:           Why a program might need to change
+				 its user and/or group IDs. 
+<li><a href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>:           Changing the user and group IDs. 
+<li><a href="Reading-Persona.html#Reading-Persona">Reading Persona</a>:              How to examine the user and group IDs.
+
+<li><a href="Setting-User-ID.html#Setting-User-ID">Setting User ID</a>:              Functions for setting the user ID. 
+<li><a href="Setting-Groups.html#Setting-Groups">Setting Groups</a>:               Functions for setting the group IDs.
+
+<li><a href="Enable_002fDisable-Setuid.html#Enable_002fDisable-Setuid">Enable/Disable Setuid</a>:        Turning setuid access on and off. 
+<li><a href="Setuid-Program-Example.html#Setuid-Program-Example">Setuid Program Example</a>:       The pertinent parts of one sample program. 
+<li><a href="Tips-for-Setuid.html#Tips-for-Setuid">Tips for Setuid</a>:              How to avoid granting unlimited access.
+
+<li><a href="Who-Logged-In.html#Who-Logged-In">Who Logged In</a>:                Getting the name of the user who logged in,
+				 or of the real user ID of the current process.
+
+<li><a href="User-Accounting-Database.html#User-Accounting-Database">User Accounting Database</a>:     Keeping information about users and various
+                                 actions in databases.
+
+<li><a href="User-Database.html#User-Database">User Database</a>:                Functions and data structures for
+                        	 accessing the user database. 
+<li><a href="Group-Database.html#Group-Database">Group Database</a>:               Functions and data structures for
+                        	 accessing the group database. 
+<li><a href="Database-Example.html#Database-Example">Database Example</a>:             Example program showing the use of database
+				 inquiry functions. 
+<li><a href="Netgroup-Database.html#Netgroup-Database">Netgroup Database</a>:            Functions for accessing the netgroup database.
+
+</li></ul>
+<p>User Accounting Database
+
+</p>
+<ul class="menu">
+<li><a href="Manipulating-the-Database.html#Manipulating-the-Database">Manipulating the Database</a>:    Scanning and modifying the user
+                                 accounting database. 
+<li><a href="XPG-Functions.html#XPG-Functions">XPG Functions</a>:                A standardized way for doing the same thing. 
+<li><a href="Logging-In-and-Out.html#Logging-In-and-Out">Logging In and Out</a>:           Functions from BSD that modify the user
+                                 accounting database.
+
+</li></ul>
+<p>User Database
+
+</p>
+<ul class="menu">
+<li><a href="User-Data-Structure.html#User-Data-Structure">User Data Structure</a>:          What each user record contains. 
+<li><a href="Lookup-User.html#Lookup-User">Lookup User</a>:                  How to look for a particular user. 
+<li><a href="Scanning-All-Users.html#Scanning-All-Users">Scanning All Users</a>:           Scanning the list of all users, one by one. 
+<li><a href="Writing-a-User-Entry.html#Writing-a-User-Entry">Writing a User Entry</a>:         How a program can rewrite a user's record.
+
+</li></ul>
+<p>Group Database
+
+</p>
+<ul class="menu">
+<li><a href="Group-Data-Structure.html#Group-Data-Structure">Group Data Structure</a>:         What each group record contains. 
+<li><a href="Lookup-Group.html#Lookup-Group">Lookup Group</a>:                 How to look for a particular group. 
+<li><a href="Scanning-All-Groups.html#Scanning-All-Groups">Scanning All Groups</a>:          Scanning the list of all groups.
+
+</li></ul>
+<p>Netgroup Database
+
+</p>
+<ul class="menu">
+<li><a href="Netgroup-Data.html#Netgroup-Data">Netgroup Data</a>:                   Data in the Netgroup database and where
+                                   it comes from. 
+<li><a href="Lookup-Netgroup.html#Lookup-Netgroup">Lookup Netgroup</a>:                 How to look for a particular netgroup. 
+<li><a href="Netgroup-Membership.html#Netgroup-Membership">Netgroup Membership</a>:             How to test for netgroup membership.
+
+</li></ul>
+<p>System Management
+
+</p>
+<ul class="menu">
+<li><a href="Host-Identification.html#Host-Identification">Host Identification</a>:          Determining the name of the machine. 
+<li><a href="Platform-Type.html#Platform-Type">Platform Type</a>:                Determining operating system and basic
+                                  machine type
+<li><a href="Filesystem-Handling.html#Filesystem-Handling">Filesystem Handling</a>:          Controlling/querying mounts
+<li><a href="System-Parameters.html#System-Parameters">System Parameters</a>:            Getting and setting various system parameters
+
+</li></ul>
+<p>Filesystem Handling
+
+</p>
+<ul class="menu">
+<li><a href="Mount-Information.html#Mount-Information">Mount Information</a>:            What is or could be mounted? 
+<li><a href="Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">Mount-Unmount-Remount</a>:        Controlling what is mounted and how
+
+</li></ul>
+<p>Mount Information
+
+</p>
+<ul class="menu">
+<li><a href="fstab.html#fstab">fstab</a>:                        The <samp><span class="file">fstab</span></samp> file
+<li><a href="mtab.html#mtab">mtab</a>:                         The <samp><span class="file">mtab</span></samp> file
+<li><a href="Other-Mount-Information.html#Other-Mount-Information">Other Mount Information</a>:      Other (non-libc) sources of mount information
+
+</li></ul>
+<p>System Configuration
+
+</p>
+<ul class="menu">
+<li><a href="General-Limits.html#General-Limits">General Limits</a>:            Constants and functions that describe
+				various process-related limits that have
+				one uniform value for any given machine. 
+<li><a href="System-Options.html#System-Options">System Options</a>:            Optional POSIX features. 
+<li><a href="Version-Supported.html#Version-Supported">Version Supported</a>:         Version numbers of POSIX.1 and POSIX.2. 
+<li><a href="Sysconf.html#Sysconf">Sysconf</a>:                   Getting specific configuration values
+                                of general limits and system options. 
+<li><a href="Minimums.html#Minimums">Minimums</a>:                  Minimum values for general limits.
+
+<li><a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>:          Size limitations that pertain to individual files. 
+                                These can vary between file systems
+                                or even from file to file. 
+<li><a href="Options-for-Files.html#Options-for-Files">Options for Files</a>:         Optional features that some files may support. 
+<li><a href="File-Minimums.html#File-Minimums">File Minimums</a>:             Minimum values for file limits. 
+<li><a href="Pathconf.html#Pathconf">Pathconf</a>:                  Getting the limit values for a particular file.
+
+<li><a href="Utility-Limits.html#Utility-Limits">Utility Limits</a>:            Capacity limits of some POSIX.2 utility programs. 
+<li><a href="Utility-Minimums.html#Utility-Minimums">Utility Minimums</a>:          Minimum allowable values of those limits.
+
+<li><a href="String-Parameters.html#String-Parameters">String Parameters</a>:         Getting the default search path.
+
+</li></ul>
+<p>Sysconf
+
+</p>
+<ul class="menu">
+<li><a href="Sysconf-Definition.html#Sysconf-Definition">Sysconf Definition</a>:         Detailed specifications of <code>sysconf</code>. 
+<li><a href="Constants-for-Sysconf.html#Constants-for-Sysconf">Constants for Sysconf</a>:      The list of parameters <code>sysconf</code> can read. 
+<li><a href="Examples-of-Sysconf.html#Examples-of-Sysconf">Examples of Sysconf</a>:        How to use <code>sysconf</code> and the parameter
+				 macros properly together.
+
+</li></ul>
+<p>Cryptographic Functions
+
+</p>
+<ul class="menu">
+<li><a href="Legal-Problems.html#Legal-Problems">Legal Problems</a>:               This software can get you locked up, or worse. 
+<li><a href="getpass.html#getpass">getpass</a>:                      Prompting the user for a password. 
+<li><a href="crypt.html#crypt">crypt</a>:                        A one-way function for passwords. 
+<li><a href="DES-Encryption.html#DES-Encryption">DES Encryption</a>:               Routines for DES encryption.
+
+</li></ul>
+<p>Debugging Support
+
+</p>
+<ul class="menu">
+<li><a href="Backtraces.html#Backtraces">Backtraces</a>:                 Obtaining and printing a back trace of the
+                               current stack.
+
+</li></ul>
+<p>Language Features
+
+</p>
+<ul class="menu">
+<li><a href="Consistency-Checking.html#Consistency-Checking">Consistency Checking</a>:         Using <code>assert</code> to abort if
+				 something ``impossible'' happens. 
+<li><a href="Variadic-Functions.html#Variadic-Functions">Variadic Functions</a>:           Defining functions with varying numbers
+                                 of args. 
+<li><a href="Null-Pointer-Constant.html#Null-Pointer-Constant">Null Pointer Constant</a>:        The macro <code>NULL</code>. 
+<li><a href="Important-Data-Types.html#Important-Data-Types">Important Data Types</a>:         Data types for object sizes. 
+<li><a href="Data-Type-Measurements.html#Data-Type-Measurements">Data Type Measurements</a>:       Parameters of data type representations.
+
+</li></ul>
+<p>Variadic Functions
+
+</p>
+<ul class="menu">
+<li><a href="Why-Variadic.html#Why-Variadic">Why Variadic</a>:                 Reasons for making functions take
+                                 variable arguments. 
+<li><a href="How-Variadic.html#How-Variadic">How Variadic</a>:                 How to define and call variadic functions. 
+<li><a href="Variadic-Example.html#Variadic-Example">Variadic Example</a>:             A complete example.
+
+</li></ul>
+<p>How Variadic
+
+</p>
+<ul class="menu">
+<li><a href="Variadic-Prototypes.html#Variadic-Prototypes">Variadic Prototypes</a>:   How to make a prototype for a function
+			  with variable arguments. 
+<li><a href="Receiving-Arguments.html#Receiving-Arguments">Receiving Arguments</a>:   Steps you must follow to access the
+			  optional argument values. 
+<li><a href="How-Many-Arguments.html#How-Many-Arguments">How Many Arguments</a>:    How to decide whether there are more arguments. 
+<li><a href="Calling-Variadics.html#Calling-Variadics">Calling Variadics</a>:     Things you need to know about calling
+			  variable arguments functions. 
+<li><a href="Argument-Macros.html#Argument-Macros">Argument Macros</a>:       Detailed specification of the macros
+        		  for accessing variable arguments. 
+<li><a href="Old-Varargs.html#Old-Varargs">Old Varargs</a>: 		 The pre-ISO way of defining variadic functions.
+
+</li></ul>
+<p>Data Type Measurements
+
+</p>
+<ul class="menu">
+<li><a href="Width-of-Type.html#Width-of-Type">Width of Type</a>:            How many bits does an integer type hold? 
+<li><a href="Range-of-Type.html#Range-of-Type">Range of Type</a>:            What are the largest and smallest values
+			     that an integer type can hold? 
+<li><a href="Floating-Type-Macros.html#Floating-Type-Macros">Floating Type Macros</a>:     Parameters that measure the floating point types. 
+<li><a href="Structure-Measurement.html#Structure-Measurement">Structure Measurement</a>:    Getting measurements on structure types.
+
+</li></ul>
+<p>Floating Type Macros
+
+</p>
+<ul class="menu">
+<li><a href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>:      Definitions of terminology. 
+<li><a href="Floating-Point-Parameters.html#Floating-Point-Parameters">Floating Point Parameters</a>:    Details of specific macros. 
+<li><a href="IEEE-Floating-Point.html#IEEE-Floating-Point">IEEE Floating Point</a>:          The measurements for one common
+                                 representation.
+
+</li></ul>
+<p>Installation
+
+</p>
+<ul class="menu">
+<li><a href="Configuring-and-compiling.html#Configuring-and-compiling">Configuring and compiling</a>:    How to compile and test GNU libc. 
+<li><a href="Running-make-install.html#Running-make-install">Running make install</a>:         How to install it once you've got it
+ compiled. 
+<li><a href="Tools-for-Compilation.html#Tools-for-Compilation">Tools for Compilation</a>:        You'll need these first. 
+<li><a href="Linux.html#Linux">Linux</a>:                        Specific advice for GNU/Linux systems. 
+<li><a href="Reporting-Bugs.html#Reporting-Bugs">Reporting Bugs</a>:               So they'll get fixed.
+
+</li></ul>
+<p>Maintenance
+
+</p>
+<ul class="menu">
+<li><a href="Source-Layout.html#Source-Layout">Source Layout</a>:          How to add new functions or header files
+                             to the GNU C library. 
+<li><a href="Porting.html#Porting">Porting</a>:                How to port the GNU C library to
+                             a new machine or operating system.
+
+</li></ul>
+<p>Porting
+
+</p>
+<ul class="menu">
+<li><a href="Hierarchy-Conventions.html#Hierarchy-Conventions">Hierarchy Conventions</a>:        The layout of the <samp><span class="file">sysdeps</span></samp> hierarchy. 
+<li><a href="Porting-to-Unix.html#Porting-to-Unix">Porting to Unix</a>:              Porting the library to an average
+                                   Unix-like system. 
+</ul>
+
+   </body></html>
+

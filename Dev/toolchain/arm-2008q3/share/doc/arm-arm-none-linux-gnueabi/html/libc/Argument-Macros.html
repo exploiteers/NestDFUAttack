@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Argument Macros - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="How-Variadic.html#How-Variadic" title="How Variadic">
+<link rel="prev" href="Calling-Variadics.html#Calling-Variadics" title="Calling Variadics">
+<link rel="next" href="Old-Varargs.html#Old-Varargs" title="Old Varargs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argument-Macros"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Old-Varargs.html#Old-Varargs">Old Varargs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Calling-Variadics.html#Calling-Variadics">Calling Variadics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="How-Variadic.html#How-Variadic">How Variadic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.2.2.5 Argument Access Macros</h5>
+
+<p>Here are descriptions of the macros used to retrieve variable arguments. 
+These macros are defined in the header file <samp><span class="file">stdarg.h</span></samp>. 
+<a name="index-stdarg_002eh-3725"></a>
+<!-- stdarg.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Data Type: <b>va_list</b><var><a name="index-va_005flist-3726"></a></var><br>
+<blockquote><p>The type <code>va_list</code> is used for argument pointer variables. 
+</p></blockquote></div>
+
+<!-- stdarg.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: void <b>va_start</b> (<var>va_list ap, last-required</var>)<var><a name="index-va_005fstart-3727"></a></var><br>
+<blockquote><p>This macro initializes the argument pointer variable <var>ap</var> to point
+to the first of the optional arguments of the current function;
+<var>last-required</var> must be the last required argument to the function.
+
+        <p>See <a href="Old-Varargs.html#Old-Varargs">Old Varargs</a>, for an alternate definition of <code>va_start</code>
+found in the header file <samp><span class="file">varargs.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- stdarg.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: <var>type</var> <b>va_arg</b> (<var>va_list ap, type</var>)<var><a name="index-va_005farg-3728"></a></var><br>
+<blockquote><p>The <code>va_arg</code> macro returns the value of the next optional argument,
+and modifies the value of <var>ap</var> to point to the subsequent argument. 
+Thus, successive uses of <code>va_arg</code> return successive optional
+arguments.
+
+        <p>The type of the value returned by <code>va_arg</code> is <var>type</var> as
+specified in the call.  <var>type</var> must be a self-promoting type (not
+<code>char</code> or <code>short int</code> or <code>float</code>) that matches the type
+of the actual argument. 
+</p></blockquote></div>
+
+<!-- stdarg.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: void <b>va_end</b> (<var>va_list ap</var>)<var><a name="index-va_005fend-3729"></a></var><br>
+<blockquote><p>This ends the use of <var>ap</var>.  After a <code>va_end</code> call, further
+<code>va_arg</code> calls with the same <var>ap</var> may not work.  You should invoke
+<code>va_end</code> before returning from the function in which <code>va_start</code>
+was invoked with the same <var>ap</var> argument.
+
+        <p>In the GNU C library, <code>va_end</code> does nothing, and you need not ever
+use it except for reasons of portability.
+
+        </blockquote></div>
+
+   <p>Sometimes it is necessary to parse the list of parameters more than once
+or one wants to remember a certain position in the parameter list.  To
+do this, one will have to make a copy of the current value of the
+argument.  But <code>va_list</code> is an opaque type and one cannot necessarily
+assign the value of one variable of type <code>va_list</code> to another variable
+of the same type.
+
+<!-- stdarg.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: void <b>__va_copy</b> (<var>va_list dest, va_list src</var>)<var><a name="index-g_t_005f_005fva_005fcopy-3730"></a></var><br>
+<blockquote><p>The <code>__va_copy</code> macro allows copying of objects of type
+<code>va_list</code> even if this is not an integral type.  The argument pointer
+in <var>dest</var> is initialized to point to the same argument as the
+pointer in <var>src</var>.
+
+        <p>This macro is a GNU extension but it will hopefully also be available in
+the next update of the ISO C standard. 
+</p></blockquote></div>
+
+   <p>If you want to use <code>__va_copy</code> you should always be prepared for the
+possibility that this macro will not be available.  On architectures where a
+simple assignment is invalid, hopefully <code>__va_copy</code> <em>will</em> be available,
+so one should always write something like this:
+
+<pre class="smallexample">     {
+       va_list ap, save;
+       ...
+     #ifdef __va_copy
+       __va_copy (save, ap);
+     #else
+       save = ap;
+     #endif
+       ...
+     }
+</pre>
+   </body></html>
+

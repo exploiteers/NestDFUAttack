@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>ISO C - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standards-and-Portability.html#Standards-and-Portability" title="Standards and Portability">
+<link rel="next" href="POSIX.html#POSIX" title="POSIX">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="ISO-C"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="POSIX.html#POSIX">POSIX</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standards-and-Portability.html#Standards-and-Portability">Standards and Portability</a>
+<hr>
+</div>
+
+<h4 class="subsection">1.2.1 ISO C</h4>
+
+<p><a name="index-ISO-C-3"></a>
+The GNU C library is compatible with the C standard adopted by the
+American National Standards Institute (ANSI):
+<cite>American National Standard X3.159-1989&mdash;&ldquo;ANSI C&rdquo;</cite> and later
+by the International Standardization Organization (ISO):
+<cite>ISO/IEC 9899:1990, &ldquo;Programming languages&mdash;C&rdquo;</cite>. 
+We here refer to the standard as ISO&nbsp;C<!-- /@w --> since this is the more
+general standard in respect of ratification. 
+The header files and library facilities that make up the GNU library are
+a superset of those specified by the ISO&nbsp;C<!-- /@w --> standard.
+
+   <p><a name="index-gcc-4"></a>If you are concerned about strict adherence to the ISO&nbsp;C<!-- /@w --> standard, you
+should use the &lsquo;<samp><span class="samp">-ansi</span></samp>&rsquo; option when you compile your programs with
+the GNU C compiler.  This tells the compiler to define <em>only</em> ISO
+standard features from the library header files, unless you explicitly
+ask for additional features.  See <a href="Feature-Test-Macros.html#Feature-Test-Macros">Feature Test Macros</a>, for
+information on how to do this.
+
+   <p>Being able to restrict the library to include only ISO&nbsp;C<!-- /@w --> features is
+important because ISO&nbsp;C<!-- /@w --> puts limitations on what names can be defined
+by the library implementation, and the GNU extensions don't fit these
+limitations.  See <a href="Reserved-Names.html#Reserved-Names">Reserved Names</a>, for more information about these
+restrictions.
+
+   <p>This manual does not attempt to give you complete details on the
+differences between ISO&nbsp;C<!-- /@w --> and older dialects.  It gives advice on how
+to write programs to work portably under multiple C dialects, but does
+not aim for completeness.
+
+   </body></html>
+

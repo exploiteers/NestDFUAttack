@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+<title>Disadvantages of Alloca - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Variable-Size-Automatic.html#Variable-Size-Automatic" title="Variable Size Automatic">
+<link rel="prev" href="Advantages-of-Alloca.html#Advantages-of-Alloca" title="Advantages of Alloca">
+<link rel="next" href="GNU-C-Variable_002dSize-Arrays.html#GNU-C-Variable_002dSize-Arrays" title="GNU C Variable-Size Arrays">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Disadvantages-of-Alloca"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="GNU-C-Variable_002dSize-Arrays.html#GNU-C-Variable_002dSize-Arrays">GNU C Variable-Size Arrays</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Advantages-of-Alloca.html#Advantages-of-Alloca">Advantages of Alloca</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Variable-Size-Automatic.html#Variable-Size-Automatic">Variable Size Automatic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.5.3 Disadvantages of <code>alloca</code></h5>
+
+<p><a name="index-g_t_0040code_007balloca_007d-disadvantages-346"></a><a name="index-disadvantages-of-_0040code_007balloca_007d-347"></a>These are the disadvantages of <code>alloca</code> in comparison with
+<code>malloc</code>:
+
+     <ul>
+<li>If you try to allocate more memory than the machine can provide, you
+don't get a clean error message.  Instead you get a fatal signal like
+the one you would get from an infinite recursion; probably a
+segmentation violation (see <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>).
+
+     <li>Some non-GNU systems fail to support <code>alloca</code>, so it is less
+portable.  However, a slower emulation of <code>alloca</code> written in C
+is available for use on systems with this deficiency. 
+</ul>
+
+   </body></html>
+

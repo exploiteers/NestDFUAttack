@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+<title>Calling Wordexp - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Word-Expansion.html#Word-Expansion" title="Word Expansion">
+<link rel="prev" href="Expansion-Stages.html#Expansion-Stages" title="Expansion Stages">
+<link rel="next" href="Flags-for-Wordexp.html#Flags-for-Wordexp" title="Flags for Wordexp">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Calling-Wordexp"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Flags-for-Wordexp.html#Flags-for-Wordexp">Flags for Wordexp</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Expansion-Stages.html#Expansion-Stages">Expansion Stages</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Word-Expansion.html#Word-Expansion">Word Expansion</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.4.2 Calling <code>wordexp</code></h4>
+
+<p>All the functions, constants and data types for word expansion are
+declared in the header file <samp><span class="file">wordexp.h</span></samp>.
+
+   <p>Word expansion produces a vector of words (strings).  To return this
+vector, <code>wordexp</code> uses a special data type, <code>wordexp_t</code>, which
+is a structure.  You pass <code>wordexp</code> the address of the structure,
+and it fills in the structure's fields to tell you about the results.
+
+<!-- wordexp.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Data Type: <b>wordexp_t</b><var><a name="index-wordexp_005ft-894"></a></var><br>
+<blockquote><p>This data type holds a pointer to a word vector.  More precisely, it
+records both the address of the word vector and its size.
+
+          <dl>
+<dt><code>we_wordc</code><dd>The number of elements in the vector.
+
+          <br><dt><code>we_wordv</code><dd>The address of the vector.  This field has type <code>char&nbsp;**</code><!-- /@w -->.
+
+          <br><dt><code>we_offs</code><dd>The offset of the first real element of the vector, from its nominal
+address in the <code>we_wordv</code> field.  Unlike the other fields, this
+is always an input to <code>wordexp</code>, rather than an output from it.
+
+          <p>If you use a nonzero offset, then that many elements at the beginning of
+the vector are left empty.  (The <code>wordexp</code> function fills them with
+null pointers.)
+
+          <p>The <code>we_offs</code> field is meaningful only if you use the
+<code>WRDE_DOOFFS</code> flag.  Otherwise, the offset is always zero
+regardless of what is in this field, and the first real element comes at
+the beginning of the vector. 
+</dl>
+        </p></blockquote></div>
+
+<!-- wordexp.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: int <b>wordexp</b> (<var>const char *words, wordexp_t *word-vector-ptr, int flags</var>)<var><a name="index-wordexp-895"></a></var><br>
+<blockquote><p>Perform word expansion on the string <var>words</var>, putting the result in
+a newly allocated vector, and store the size and address of this vector
+into <code>*</code><var>word-vector-ptr</var>.  The argument <var>flags</var> is a
+combination of bit flags; see <a href="Flags-for-Wordexp.html#Flags-for-Wordexp">Flags for Wordexp</a>, for details of
+the flags.
+
+        <p>You shouldn't use any of the characters &lsquo;<samp><span class="samp">|&amp;;&lt;&gt;</span></samp>&rsquo; in the string
+<var>words</var> unless they are quoted; likewise for newline.  If you use
+these characters unquoted, you will get the <code>WRDE_BADCHAR</code> error
+code.  Don't use parentheses or braces unless they are quoted or part of
+a word expansion construct.  If you use quotation characters &lsquo;<samp><span class="samp">'"`</span></samp>&rsquo;,
+they should come in pairs that balance.
+
+        <p>The results of word expansion are a sequence of words.  The function
+<code>wordexp</code> allocates a string for each resulting word, then
+allocates a vector of type <code>char **</code> to store the addresses of
+these strings.  The last element of the vector is a null pointer. 
+This vector is called the <dfn>word vector</dfn>.
+
+        <p>To return this vector, <code>wordexp</code> stores both its address and its
+length (number of elements, not counting the terminating null pointer)
+into <code>*</code><var>word-vector-ptr</var>.
+
+        <p>If <code>wordexp</code> succeeds, it returns 0.  Otherwise, it returns one
+of these error codes:
+
+          <dl>
+<!-- wordexp.h -->
+<!-- POSIX.2 -->
+<dt><code>WRDE_BADCHAR</code><dd>The input string <var>words</var> contains an unquoted invalid character such
+as &lsquo;<samp><span class="samp">|</span></samp>&rsquo;.
+
+          <!-- wordexp.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>WRDE_BADVAL</code><dd>The input string refers to an undefined shell variable, and you used the flag
+<code>WRDE_UNDEF</code> to forbid such references.
+
+          <!-- wordexp.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>WRDE_CMDSUB</code><dd>The input string uses command substitution, and you used the flag
+<code>WRDE_NOCMD</code> to forbid command substitution.
+
+          <!-- wordexp.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>WRDE_NOSPACE</code><dd>It was impossible to allocate memory to hold the result.  In this case,
+<code>wordexp</code> can store part of the results&mdash;as much as it could
+allocate room for.
+
+          <!-- wordexp.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>WRDE_SYNTAX</code><dd>There was a syntax error in the input string.  For example, an unmatched
+quoting character is a syntax error. 
+</dl>
+        </p></blockquote></div>
+
+<!-- wordexp.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: void <b>wordfree</b> (<var>wordexp_t *word-vector-ptr</var>)<var><a name="index-wordfree-896"></a></var><br>
+<blockquote><p>Free the storage used for the word-strings and vector that
+<code>*</code><var>word-vector-ptr</var> points to.  This does not free the
+structure <code>*</code><var>word-vector-ptr</var> itself&mdash;only the other
+data it points to. 
+</p></blockquote></div>
+
+   </body></html>
+

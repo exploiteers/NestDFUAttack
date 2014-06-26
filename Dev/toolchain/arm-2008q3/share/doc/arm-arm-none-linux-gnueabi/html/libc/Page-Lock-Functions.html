@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+<title>Page Lock Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Locking-Pages.html#Locking-Pages" title="Locking Pages">
+<link rel="prev" href="Locked-Memory-Details.html#Locked-Memory-Details" title="Locked Memory Details">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Page-Lock-Functions"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Locked-Memory-Details.html#Locked-Memory-Details">Locked Memory Details</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Locking-Pages.html#Locking-Pages">Locking Pages</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.4.3 Functions To Lock And Unlock Pages</h4>
+
+<p>The symbols in this section are declared in <samp><span class="file">sys/mman.h</span></samp>.  These
+functions are defined by POSIX.1b, but their availability depends on
+your kernel.  If your kernel doesn't allow these functions, they exist
+but always fail.  They <em>are</em> available with a Linux kernel.
+
+   <p><strong>Portability Note:</strong> POSIX.1b requires that when the <code>mlock</code>
+and <code>munlock</code> functions are available, the file <samp><span class="file">unistd.h</span></samp>
+define the macro <code>_POSIX_MEMLOCK_RANGE</code> and the file
+<code>limits.h</code> define the macro <code>PAGESIZE</code> to be the size of a
+memory page in bytes.  It requires that when the <code>mlockall</code> and
+<code>munlockall</code> functions are available, the <samp><span class="file">unistd.h</span></samp> file
+define the macro <code>_POSIX_MEMLOCK</code>.  The GNU C library conforms to
+this requirement.
+
+<!-- sys/mman.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>mlock</b> (<var>const void *addr, size_t len</var>)<var><a name="index-mlock-358"></a></var><br>
+<blockquote>
+        <p><code>mlock</code> locks a range of the calling process' virtual pages.
+
+        <p>The range of memory starts at address <var>addr</var> and is <var>len</var> bytes
+long.  Actually, since you must lock whole pages, it is the range of
+pages that include any part of the specified range.
+
+        <p>When the function returns successfully, each of those pages is backed by
+(connected to) a real frame (is resident) and is marked to stay that
+way.  This means the function may cause page-ins and have to wait for
+them.
+
+        <p>When the function fails, it does not affect the lock status of any
+pages.
+
+        <p>The return value is zero if the function succeeds.  Otherwise, it is
+<code>-1</code> and <code>errno</code> is set accordingly.  <code>errno</code> values
+specific to this function are:
+
+          <dl>
+<dt><code>ENOMEM</code><dd>
+               <ul>
+<li>At least some of the specified address range does not exist in the
+calling process' virtual address space. 
+<li>The locking would cause the process to exceed its locked page limit. 
+</ul>
+
+          <br><dt><code>EPERM</code><dd>The calling process is not superuser.
+
+          <br><dt><code>EINVAL</code><dd><var>len</var> is not positive.
+
+          <br><dt><code>ENOSYS</code><dd>The kernel does not provide <code>mlock</code> capability.
+
+        </dl>
+
+        <p>You can lock <em>all</em> a process' memory with <code>mlockall</code>.  You
+unlock memory with <code>munlock</code> or <code>munlockall</code>.
+
+        <p>To avoid all page faults in a C program, you have to use
+<code>mlockall</code>, because some of the memory a program uses is hidden
+from the C code, e.g. the stack and automatic variables, and you
+wouldn't know what address to tell <code>mlock</code>.
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>munlock</b> (<var>const void *addr, size_t len</var>)<var><a name="index-munlock-359"></a></var><br>
+<blockquote>
+        <p><code>munlock</code> unlocks a range of the calling process' virtual pages.
+
+        <p><code>munlock</code> is the inverse of <code>mlock</code> and functions completely
+analogously to <code>mlock</code>, except that there is no <code>EPERM</code>
+failure.
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>mlockall</b> (<var>int flags</var>)<var><a name="index-mlockall-360"></a></var><br>
+<blockquote>
+        <p><code>mlockall</code> locks all the pages in a process' virtual memory address
+space, and/or any that are added to it in the future.  This includes the
+pages of the code, data and stack segment, as well as shared libraries,
+user space kernel data, shared memory, and memory mapped files.
+
+        <p><var>flags</var> is a string of single bit flags represented by the following
+macros.  They tell <code>mlockall</code> which of its functions you want.  All
+other bits must be zero.
+
+          <dl>
+<dt><code>MCL_CURRENT</code><dd>Lock all pages which currently exist in the calling process' virtual
+address space.
+
+          <br><dt><code>MCL_FUTURE</code><dd>Set a mode such that any pages added to the process' virtual address
+space in the future will be locked from birth.  This mode does not
+affect future address spaces owned by the same process so exec, which
+replaces a process' address space, wipes out <code>MCL_FUTURE</code>. 
+See <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>.
+
+        </dl>
+
+        <p>When the function returns successfully, and you specified
+<code>MCL_CURRENT</code>, all of the process' pages are backed by (connected
+to) real frames (they are resident) and are marked to stay that way. 
+This means the function may cause page-ins and have to wait for them.
+
+        <p>When the process is in <code>MCL_FUTURE</code> mode because it successfully
+executed this function and specified <code>MCL_CURRENT</code>, any system call
+by the process that requires space be added to its virtual address space
+fails with <code>errno</code> = <code>ENOMEM</code> if locking the additional space
+would cause the process to exceed its locked page limit.  In the case
+that the address space addition that can't be accommodated is stack
+expansion, the stack expansion fails and the kernel sends a
+<code>SIGSEGV</code> signal to the process.
+
+        <p>When the function fails, it does not affect the lock status of any pages
+or the future locking mode.
+
+        <p>The return value is zero if the function succeeds.  Otherwise, it is
+<code>-1</code> and <code>errno</code> is set accordingly.  <code>errno</code> values
+specific to this function are:
+
+          <dl>
+<dt><code>ENOMEM</code><dd>
+               <ul>
+<li>At least some of the specified address range does not exist in the
+calling process' virtual address space. 
+<li>The locking would cause the process to exceed its locked page limit. 
+</ul>
+
+          <br><dt><code>EPERM</code><dd>The calling process is not superuser.
+
+          <br><dt><code>EINVAL</code><dd>Undefined bits in <var>flags</var> are not zero.
+
+          <br><dt><code>ENOSYS</code><dd>The kernel does not provide <code>mlockall</code> capability.
+
+        </dl>
+
+        <p>You can lock just specific pages with <code>mlock</code>.  You unlock pages
+with <code>munlockall</code> and <code>munlock</code>.
+
+        </blockquote></div>
+
+<!-- sys/mman.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>munlockall</b> (<var>void</var>)<var><a name="index-munlockall-361"></a></var><br>
+<blockquote>
+        <p><code>munlockall</code> unlocks every page in the calling process' virtual
+address space and turn off <code>MCL_FUTURE</code> future locking mode.
+
+        <p>The return value is zero if the function succeeds.  Otherwise, it is
+<code>-1</code> and <code>errno</code> is set accordingly.  The only way this
+function can fail is for generic reasons that all functions and system
+calls can fail, so there are no specific <code>errno</code> values.
+
+        </blockquote></div>
+
+   </body></html>
+

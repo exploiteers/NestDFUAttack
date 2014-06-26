@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Controlling Terminal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Job-Control.html#Job-Control" title="Job Control">
+<link rel="prev" href="Job-Control-is-Optional.html#Job-Control-is-Optional" title="Job Control is Optional">
+<link rel="next" href="Access-to-the-Terminal.html#Access-to-the-Terminal" title="Access to the Terminal">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Controlling-Terminal"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Access-to-the-Terminal.html#Access-to-the-Terminal">Access to the Terminal</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Job-Control-is-Optional.html#Job-Control-is-Optional">Job Control is Optional</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Job-Control.html#Job-Control">Job Control</a>
+<hr>
+</div>
+
+<h3 class="section">27.3 Controlling Terminal of a Process</h3>
+
+<p>One of the attributes of a process is its controlling terminal.  Child
+processes created with <code>fork</code> inherit the controlling terminal from
+their parent process.  In this way, all the processes in a session
+inherit the controlling terminal from the session leader.  A session
+leader that has control of a terminal is called the <dfn>controlling
+process</dfn> of that terminal.
+
+   <p><a name="index-controlling-process-3207"></a>You generally do not need to worry about the exact mechanism used to
+allocate a controlling terminal to a session, since it is done for you
+by the system when you log in. 
+<!-- ??? How does GNU system let a process get a ctl terminal. -->
+
+   <p>An individual process disconnects from its controlling terminal when it
+calls <code>setsid</code> to become the leader of a new session. 
+See <a href="Process-Group-Functions.html#Process-Group-Functions">Process Group Functions</a>.
+
+<!-- !!! explain how it gets a new one (by opening any terminal) -->
+<!-- ??? How you get a controlling terminal is system-dependent. -->
+<!-- We should document how this will work in the GNU system when it is decided. -->
+<!-- What Unix does is not clean and I don't think GNU should use that. -->
+   </body></html>
+

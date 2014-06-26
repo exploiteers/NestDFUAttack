@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+<title>Multibyte Conversion Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion" title="Restartable multibyte conversion">
+<link rel="prev" href="Converting-Strings.html#Converting-Strings" title="Converting Strings">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Multibyte-Conversion-Example"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Converting-Strings.html#Converting-Strings">Converting Strings</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.3.5 A Complete Multibyte Conversion Example</h4>
+
+<p>The example programs given in the last sections are only brief and do
+not contain all the error checking, etc.  Presented here is a complete
+and documented example.  It features the <code>mbrtowc</code> function but it
+should be easy to derive versions using the other functions.
+
+<pre class="smallexample">     int
+     file_mbsrtowcs (int input, int output)
+     {
+       /* <span class="roman">Note the use of </span><code>MB_LEN_MAX</code><span class="roman">.</span>
+          <code>MB_CUR_MAX</code><span class="roman"> cannot portably be used here.</span>  */
+       char buffer[BUFSIZ + MB_LEN_MAX];
+       mbstate_t state;
+       int filled = 0;
+       int eof = 0;
+     
+       /* <span class="roman">Initialize the state.</span>  */
+       memset (&amp;state, '\0', sizeof (state));
+     
+       while (!eof)
+         {
+           ssize_t nread;
+           ssize_t nwrite;
+           char *inp = buffer;
+           wchar_t outbuf[BUFSIZ];
+           wchar_t *outp = outbuf;
+     
+           /* <span class="roman">Fill up the buffer from the input file.</span>  */
+           nread = read (input, buffer + filled, BUFSIZ);
+           if (nread &lt; 0)
+             {
+               perror ("read");
+               return 0;
+             }
+           /* <span class="roman">If we reach end of file, make a note to read no more.</span> */
+           if (nread == 0)
+             eof = 1;
+     
+           /* <code>filled</code><span class="roman"> is now the number of bytes in </span><code>buffer</code><span class="roman">.</span> */
+           filled += nread;
+     
+           /* <span class="roman">Convert those bytes to wide characters--as many as we can.</span> */
+           while (1)
+             {
+               size_t thislen = mbrtowc (outp, inp, filled, &amp;state);
+               /* <span class="roman">Stop converting at invalid character;</span>
+                  <span class="roman">this can mean we have read just the first part</span>
+                  <span class="roman">of a valid character.</span>  */
+               if (thislen == (size_t) -1)
+                 break;
+               /* <span class="roman">We want to handle embedded NUL bytes</span>
+                  <span class="roman">but the return value is 0.  Correct this.</span>  */
+               if (thislen == 0)
+                 thislen = 1;
+               /* <span class="roman">Advance past this character.</span> */
+               inp += thislen;
+               filled -= thislen;
+               ++outp;
+             }
+     
+           /* <span class="roman">Write the wide characters we just made.</span>  */
+           nwrite = write (output, outbuf,
+                           (outp - outbuf) * sizeof (wchar_t));
+           if (nwrite &lt; 0)
+             {
+               perror ("write");
+               return 0;
+             }
+     
+           /* <span class="roman">See if we have a </span><em>real</em><span class="roman"> invalid character.</span> */
+           if ((eof &amp;&amp; filled &gt; 0) || filled &gt;= MB_CUR_MAX)
+             {
+               error (0, 0, "invalid multibyte character");
+               return 0;
+             }
+     
+           /* <span class="roman">If any characters must be carried forward,</span>
+              <span class="roman">put them at the beginning of </span><code>buffer</code><span class="roman">.</span> */
+           if (filled &gt; 0)
+             memmove (inp, buffer, filled);
+         }
+     
+       return 1;
+     }
+</pre>
+   </body></html>
+

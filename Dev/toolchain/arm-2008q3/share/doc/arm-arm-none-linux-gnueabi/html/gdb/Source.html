@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+<title>Source - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Stack.html#Stack" title="Stack">
+<link rel="next" href="Data.html#Data" title="Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Source"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Data.html#Data">Data</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stack.html#Stack">Stack</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">7 Examining Source Files</h2>
+
+<p><span class="sc">gdb</span> can print parts of your program's source, since the debugging
+information recorded in the program tells <span class="sc">gdb</span> what source files were
+used to build it.  When your program stops, <span class="sc">gdb</span> spontaneously prints
+the line where it stopped.  Likewise, when you select a stack frame
+(see <a href="Selection.html#Selection">Selecting a Frame</a>), <span class="sc">gdb</span> prints the line where
+execution in that frame has stopped.  You can print other portions of
+source files by explicit command.
+
+   <p>If you use <span class="sc">gdb</span> through its <span class="sc">gnu</span> Emacs interface, you may
+prefer to use Emacs facilities to view source; see <a href="Emacs.html#Emacs">Using <span class="sc">gdb</span> under <span class="sc">gnu</span> Emacs</a>.
+
+<ul class="menu">
+<li><a accesskey="1" href="List.html#List">List</a>:                         Printing source lines
+<li><a accesskey="2" href="Specify-Location.html#Specify-Location">Specify Location</a>:             How to specify code locations
+<li><a accesskey="3" href="Edit.html#Edit">Edit</a>:                         Editing source files
+<li><a accesskey="4" href="Search.html#Search">Search</a>:                       Searching source files
+<li><a accesskey="5" href="Source-Path.html#Source-Path">Source Path</a>:                  Specifying source directories
+<li><a accesskey="6" href="Machine-Code.html#Machine-Code">Machine Code</a>:                 Source and machine code
+</ul>
+
+   </body></html>
+

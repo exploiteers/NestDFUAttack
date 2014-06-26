@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+<title>Varying Target Capabilities - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Agent-Expressions.html#Agent-Expressions" title="Agent Expressions">
+<link rel="prev" href="Using-Agent-Expressions.html#Using-Agent-Expressions" title="Using Agent Expressions">
+<link rel="next" href="Tracing-on-Symmetrix.html#Tracing-on-Symmetrix" title="Tracing on Symmetrix">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Varying-Target-Capabilities"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tracing-on-Symmetrix.html#Tracing-on-Symmetrix">Tracing on Symmetrix</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Agent-Expressions.html#Using-Agent-Expressions">Using Agent Expressions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Agent-Expressions.html#Agent-Expressions">Agent Expressions</a>
+<hr>
+</div>
+
+<h3 class="section">E.4 Varying Target Capabilities</h3>
+
+<p>Some targets don't support floating-point, and some would rather not
+have to deal with <code>long long</code> operations.  Also, different targets
+will have different stack sizes, and different bytecode buffer lengths.
+
+   <p>Thus, GDB needs a way to ask the target about itself.  We haven't worked
+out the details yet, but in general, GDB should be able to send the
+target a packet asking it to describe itself.  The reply should be a
+packet whose length is explicit, so we can add new information to the
+packet in future revisions of the agent, without confusing old versions
+of GDB, and it should contain a version number.  It should contain at
+least the following information:
+
+     <ul>
+<li>whether floating point is supported
+
+     <li>whether <code>long long</code> is supported
+
+     <li>maximum acceptable size of bytecode stack
+
+     <li>maximum acceptable length of bytecode expressions
+
+     <li>which registers are actually available for collection
+
+     <li>whether the target supports disabled tracepoints
+
+   </ul>
+
+   </body></html>
+

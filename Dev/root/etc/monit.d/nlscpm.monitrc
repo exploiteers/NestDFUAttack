@@ -1,0 +1,13 @@
+#
+#    Copyright (c) 2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the control and configuration file for the
+#      daemon-monitoring daemon, monit, for the Nest Labs System
+#      Control and Power Management (SCPM) daemon, nlscpm.
+#
+
+check process nlscpmd with pidfile "/var/run/nlscpmd.pid"
+  start program = "/etc/init.d/scpm start"
+  stop  program = "/etc/init.d/scpm stop"

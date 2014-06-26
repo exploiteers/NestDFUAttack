@@ -1,0 +1,185 @@
+<html lang="en">
+<head>
+<title>Status bit operations - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Point-Errors.html#Floating-Point-Errors" title="Floating Point Errors">
+<link rel="prev" href="Infinity-and-NaN.html#Infinity-and-NaN" title="Infinity and NaN">
+<link rel="next" href="Math-Error-Reporting.html#Math-Error-Reporting" title="Math Error Reporting">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Status-bit-operations"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Math-Error-Reporting.html#Math-Error-Reporting">Math Error Reporting</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Infinity-and-NaN.html#Infinity-and-NaN">Infinity and NaN</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Point-Errors.html#Floating-Point-Errors">Floating Point Errors</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.5.3 Examining the FPU status word</h4>
+
+<p>ISO&nbsp;C99<!-- /@w --> defines functions to query and manipulate the
+floating-point status word.  You can use these functions to check for
+untrapped exceptions when it's convenient, rather than worrying about
+them in the middle of a calculation.
+
+   <p>These constants represent the various IEEE&nbsp;754<!-- /@w --> exceptions.  Not all
+FPUs report all the different exceptions.  Each constant is defined if
+and only if the FPU you are compiling for supports that exception, so
+you can test for FPU support with &lsquo;<samp><span class="samp">#ifdef</span></samp>&rsquo;.  They are defined in
+<samp><span class="file">fenv.h</span></samp>.
+
+     <dl>
+<!-- fenv.h -->
+<!-- ISO -->
+<dt><code>FE_INEXACT</code><a name="index-FE_005fINEXACT-2372"></a><dd> The inexact exception. 
+<!-- fenv.h -->
+<!-- ISO -->
+<br><dt><code>FE_DIVBYZERO</code><a name="index-FE_005fDIVBYZERO-2373"></a><dd> The divide by zero exception. 
+<!-- fenv.h -->
+<!-- ISO -->
+<br><dt><code>FE_UNDERFLOW</code><a name="index-FE_005fUNDERFLOW-2374"></a><dd> The underflow exception. 
+<!-- fenv.h -->
+<!-- ISO -->
+<br><dt><code>FE_OVERFLOW</code><a name="index-FE_005fOVERFLOW-2375"></a><dd> The overflow exception. 
+<!-- fenv.h -->
+<!-- ISO -->
+<br><dt><code>FE_INVALID</code><a name="index-FE_005fINVALID-2376"></a><dd> The invalid exception. 
+</dl>
+
+   <p>The macro <code>FE_ALL_EXCEPT</code> is the bitwise OR of all exception macros
+which are supported by the FP implementation.
+
+   <p>These functions allow you to clear exception flags, test for exceptions,
+and save and restore the set of exceptions flagged.
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>feclearexcept</b> (<var>int excepts</var>)<var><a name="index-feclearexcept-2377"></a></var><br>
+<blockquote><p>This function clears all of the supported exception flags indicated by
+<var>excepts</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>feraiseexcept</b> (<var>int excepts</var>)<var><a name="index-feraiseexcept-2378"></a></var><br>
+<blockquote><p>This function raises the supported exceptions indicated by
+<var>excepts</var>.  If more than one exception bit in <var>excepts</var> is set
+the order in which the exceptions are raised is undefined except that
+overflow (<code>FE_OVERFLOW</code>) or underflow (<code>FE_UNDERFLOW</code>) are
+raised before inexact (<code>FE_INEXACT</code>).  Whether for overflow or
+underflow the inexact exception is also raised is also implementation
+dependent.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fetestexcept</b> (<var>int excepts</var>)<var><a name="index-fetestexcept-2379"></a></var><br>
+<blockquote><p>Test whether the exception flags indicated by the parameter <var>except</var>
+are currently set.  If any of them are, a nonzero value is returned
+which specifies which exceptions are set.  Otherwise the result is zero. 
+</p></blockquote></div>
+
+   <p>To understand these functions, imagine that the status word is an
+integer variable named <var>status</var>.  <code>feclearexcept</code> is then
+equivalent to &lsquo;<samp><span class="samp">status &amp;= ~excepts</span></samp>&rsquo; and <code>fetestexcept</code> is
+equivalent to &lsquo;<samp><span class="samp">(status &amp; excepts)</span></samp>&rsquo;.  The actual implementation may
+be very different, of course.
+
+   <p>Exception flags are only cleared when the program explicitly requests it,
+by calling <code>feclearexcept</code>.  If you want to check for exceptions
+from a set of calculations, you should clear all the flags first.  Here
+is a simple example of the way to use <code>fetestexcept</code>:
+
+<pre class="smallexample">     {
+       double f;
+       int raised;
+       feclearexcept (FE_ALL_EXCEPT);
+       f = compute ();
+       raised = fetestexcept (FE_OVERFLOW | FE_INVALID);
+       if (raised &amp; FE_OVERFLOW) { /* ... */ }
+       if (raised &amp; FE_INVALID) { /* ... */ }
+       /* ... */
+     }
+</pre>
+   <p>You cannot explicitly set bits in the status word.  You can, however,
+save the entire status word and restore it later.  This is done with the
+following functions:
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fegetexceptflag</b> (<var>fexcept_t *flagp, int excepts</var>)<var><a name="index-fegetexceptflag-2380"></a></var><br>
+<blockquote><p>This function stores in the variable pointed to by <var>flagp</var> an
+implementation-defined value representing the current setting of the
+exception flags indicated by <var>excepts</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fesetexceptflag</b> (<var>const fexcept_t *flagp, int excepts</var>)<var><a name="index-fesetexceptflag-2381"></a></var><br>
+<blockquote><p>This function restores the flags for the exceptions indicated by
+<var>excepts</var> to the values stored in the variable pointed to by
+<var>flagp</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+   <p>Note that the value stored in <code>fexcept_t</code> bears no resemblance to
+the bit mask returned by <code>fetestexcept</code>.  The type may not even be
+an integer.  Do not attempt to modify an <code>fexcept_t</code> variable.
+
+   </body></html>
+

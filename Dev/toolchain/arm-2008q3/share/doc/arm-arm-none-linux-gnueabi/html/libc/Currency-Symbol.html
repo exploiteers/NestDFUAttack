@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+<title>Currency Symbol - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data" title="The Lame Way to Locale Data">
+<link rel="prev" href="General-Numeric.html#General-Numeric" title="General Numeric">
+<link rel="next" href="Sign-of-Money-Amount.html#Sign-of-Money-Amount" title="Sign of Money Amount">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Currency-Symbol"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sign-of-Money-Amount.html#Sign-of-Money-Amount">Sign of Money Amount</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="General-Numeric.html#General-Numeric">General Numeric</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-Lame-Way-to-Locale-Data.html#The-Lame-Way-to-Locale-Data">The Lame Way to Locale Data</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">7.6.1.2 Printing the Currency Symbol</h5>
+
+<p><a name="index-currency-symbols-712"></a>
+These members of the <code>struct lconv</code> structure specify how to print
+the symbol to identify a monetary value&mdash;the international analog of
+&lsquo;<samp><span class="samp">$</span></samp>&rsquo; for US dollars.
+
+   <p>Each country has two standard currency symbols.  The <dfn>local currency
+symbol</dfn> is used commonly within the country, while the
+<dfn>international currency symbol</dfn> is used internationally to refer to
+that country's currency when it is necessary to indicate the country
+unambiguously.
+
+   <p>For example, many countries use the dollar as their monetary unit, and
+when dealing with international currencies it's important to specify
+that one is dealing with (say) Canadian dollars instead of U.S. dollars
+or Australian dollars.  But when the context is known to be Canada,
+there is no need to make this explicit&mdash;dollar amounts are implicitly
+assumed to be in Canadian dollars.
+
+     <dl>
+<dt><code>char *currency_symbol</code><dd>The local currency symbol for the selected locale.
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, this member has a value of <code>""</code>
+(the empty string), meaning &ldquo;unspecified&rdquo;.  The ISO standard doesn't
+say what to do when you find this value; we recommend you simply print
+the empty string as you would print any other string pointed to by this
+variable.
+
+     <br><dt><code>char *int_curr_symbol</code><dd>The international currency symbol for the selected locale.
+
+     <p>The value of <code>int_curr_symbol</code> should normally consist of a
+three-letter abbreviation determined by the international standard
+<cite>ISO 4217 Codes for the Representation of Currency and Funds</cite>,
+followed by a one-character separator (often a space).
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, this member has a value of <code>""</code>
+(the empty string), meaning &ldquo;unspecified&rdquo;.  We recommend you simply print
+the empty string as you would print any other string pointed to by this
+variable.
+
+     <br><dt><code>char p_cs_precedes</code><dt><code>char n_cs_precedes</code><dt><code>char int_p_cs_precedes</code><dt><code>char int_n_cs_precedes</code><dd>These members are <code>1</code> if the <code>currency_symbol</code> or
+<code>int_curr_symbol</code> strings should precede the value of a monetary
+amount, or <code>0</code> if the strings should follow the value.  The
+<code>p_cs_precedes</code> and <code>int_p_cs_precedes</code> members apply to
+positive amounts (or zero), and the <code>n_cs_precedes</code> and
+<code>int_n_cs_precedes</code> members apply to negative amounts.
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, all of these members have a value of
+<code>CHAR_MAX</code>, meaning &ldquo;unspecified&rdquo;.  The ISO standard doesn't say
+what to do when you find this value.  We recommend printing the
+currency symbol before the amount, which is right for most countries. 
+In other words, treat all nonzero values alike in these members.
+
+     <p>The members with the <code>int_</code> prefix apply to the
+<code>int_curr_symbol</code> while the other two apply to
+<code>currency_symbol</code>.
+
+     <br><dt><code>char p_sep_by_space</code><dt><code>char n_sep_by_space</code><dt><code>char int_p_sep_by_space</code><dt><code>char int_n_sep_by_space</code><dd>These members are <code>1</code> if a space should appear between the
+<code>currency_symbol</code> or <code>int_curr_symbol</code> strings and the
+amount, or <code>0</code> if no space should appear.  The
+<code>p_sep_by_space</code> and <code>int_p_sep_by_space</code> members apply to
+positive amounts (or zero), and the <code>n_sep_by_space</code> and
+<code>int_n_sep_by_space</code> members apply to negative amounts.
+
+     <p>In the standard &lsquo;<samp><span class="samp">C</span></samp>&rsquo; locale, all of these members have a value of
+<code>CHAR_MAX</code>, meaning &ldquo;unspecified&rdquo;.  The ISO standard doesn't say
+what you should do when you find this value; we suggest you treat it as
+1 (print a space).  In other words, treat all nonzero values alike in
+these members.
+
+     <p>The members with the <code>int_</code> prefix apply to the
+<code>int_curr_symbol</code> while the other two apply to
+<code>currency_symbol</code>.  There is one specialty with the
+<code>int_curr_symbol</code>, though.  Since all legal values contain a space
+at the end the string one either printf this space (if the currency
+symbol must appear in front and must be separated) or one has to avoid
+printing this character at all (especially when at the end of the
+string). 
+</dl>
+
+   </body></html>
+

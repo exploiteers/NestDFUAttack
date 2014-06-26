@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Calling Variadics - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="How-Variadic.html#How-Variadic" title="How Variadic">
+<link rel="prev" href="How-Many-Arguments.html#How-Many-Arguments" title="How Many Arguments">
+<link rel="next" href="Argument-Macros.html#Argument-Macros" title="Argument Macros">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Calling-Variadics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argument-Macros.html#Argument-Macros">Argument Macros</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="How-Many-Arguments.html#How-Many-Arguments">How Many Arguments</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="How-Variadic.html#How-Variadic">How Variadic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.2.2.4 Calling Variadic Functions</h5>
+
+<p><a name="index-variadic-functions_002c-calling-3720"></a><a name="index-calling-variadic-functions-3721"></a><a name="index-declaring-variadic-functions-3722"></a>
+You don't have to do anything special to call a variadic function. 
+Just put the arguments (required arguments, followed by optional ones)
+inside parentheses, separated by commas, as usual.  But you must declare
+the function with a prototype and know how the argument values are converted.
+
+   <p>In principle, functions that are <em>defined</em> to be variadic must also
+be <em>declared</em> to be variadic using a function prototype whenever
+you call them.  (See <a href="Variadic-Prototypes.html#Variadic-Prototypes">Variadic Prototypes</a>, for how.)  This is because
+some C compilers use a different calling convention to pass the same set
+of argument values to a function depending on whether that function
+takes variable arguments or fixed arguments.
+
+   <p>In practice, the GNU C compiler always passes a given set of argument
+types in the same way regardless of whether they are optional or
+required.  So, as long as the argument types are self-promoting, you can
+safely omit declaring them.  Usually it is a good idea to declare the
+argument types for variadic functions, and indeed for all functions. 
+But there are a few functions which it is extremely convenient not to
+have to declare as variadic&mdash;for example, <code>open</code> and
+<code>printf</code>.
+
+   <p><a name="index-default-argument-promotions-3723"></a><a name="index-argument-promotion-3724"></a>Since the prototype doesn't specify types for optional arguments, in a
+call to a variadic function the <dfn>default argument promotions</dfn> are
+performed on the optional argument values.  This means the objects of
+type <code>char</code> or <code>short&nbsp;int</code><!-- /@w --> (whether signed or not) are
+promoted to either <code>int</code> or <code>unsigned&nbsp;int</code><!-- /@w -->, as
+appropriate; and that objects of type <code>float</code> are promoted to type
+<code>double</code>.  So, if the caller passes a <code>char</code> as an optional
+argument, it is promoted to an <code>int</code>, and the function can access
+it with <code>va_arg (</code><var>ap</var><code>, int)</code>.
+
+   <p>Conversion of the required arguments is controlled by the function
+prototype in the usual way: the argument expression is converted to the
+declared argument type as if it were being assigned to a variable of
+that type.
+
+   </body></html>
+

@@ -1,0 +1,13 @@
+proc /proc proc defaults 0 0
+sysfs /sys sysfs defaults 0 0
+devpts /dev/pts devpts gid=5,mode=620 0 0
+tmpfs /tmp tmpfs mode=1777 0 0
+tmpfs /var/lock tmpfs mode=0755,defaults 0 0
+tmpfs /var/run tmpfs mode=1777,defaults 0 0
+devshm /dev/shm tmpfs mode=1777,size=2m 0 0
+/dev/mtdblock10 /media/system-config jffs2 noatime,defaults 0 0
+/dev/mtdblock11 /media/user-config jffs2 noatime,defaults 0 0
+/dev/mtdblock12 /media/data jffs2 noatime,defaults 0 0
+/dev/mtdblock13 /media/log jffs2 noatime,defaults 0 0
+/dev/mtdblock14 /media/scratch jffs2 noatime,defaults 0 0
+debugfs /sys/kernel/debug debugfs defaults 0 0

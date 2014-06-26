@@ -1,0 +1,223 @@
+<html lang="en">
+<head>
+<title>Line Input - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Character-Input.html#Character-Input" title="Character Input">
+<link rel="next" href="Unreading.html#Unreading" title="Unreading">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Line-Input"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Unreading.html#Unreading">Unreading</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Character-Input.html#Character-Input">Character Input</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.9 Line-Oriented Input</h3>
+
+<p>Since many programs interpret input on the basis of lines, it is
+convenient to have functions to read a line of text from a stream.
+
+   <p>Standard C has functions to do this, but they aren't very safe: null
+characters and even (for <code>gets</code>) long lines can confuse them.  So
+the GNU library provides the nonstandard <code>getline</code> function that
+makes it easy to read lines reliably.
+
+   <p>Another GNU extension, <code>getdelim</code>, generalizes <code>getline</code>.  It
+reads a delimited record, defined as everything through the next
+occurrence of a specified delimiter character.
+
+   <p>All these functions are declared in <samp><span class="file">stdio.h</span></samp>.
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: ssize_t <b>getline</b> (<var>char **lineptr, size_t *n, FILE *stream</var>)<var><a name="index-getline-993"></a></var><br>
+<blockquote><p>This function reads an entire line from <var>stream</var>, storing the text
+(including the newline and a terminating null character) in a buffer
+and storing the buffer address in <code>*</code><var>lineptr</var>.
+
+        <p>Before calling <code>getline</code>, you should place in <code>*</code><var>lineptr</var>
+the address of a buffer <code>*</code><var>n</var> bytes long, allocated with
+<code>malloc</code>.  If this buffer is long enough to hold the line,
+<code>getline</code> stores the line in this buffer.  Otherwise,
+<code>getline</code> makes the buffer bigger using <code>realloc</code>, storing the
+new buffer address back in <code>*</code><var>lineptr</var> and the increased size
+back in <code>*</code><var>n</var>. 
+See <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>.
+
+        <p>If you set <code>*</code><var>lineptr</var> to a null pointer, and <code>*</code><var>n</var>
+to zero, before the call, then <code>getline</code> allocates the initial
+buffer for you by calling <code>malloc</code>.
+
+        <p>In either case, when <code>getline</code> returns,  <code>*</code><var>lineptr</var> is
+a <code>char *</code> which points to the text of the line.
+
+        <p>When <code>getline</code> is successful, it returns the number of characters
+read (including the newline, but not including the terminating null). 
+This value enables you to distinguish null characters that are part of
+the line from the null character inserted as a terminator.
+
+        <p>This function is a GNU extension, but it is the recommended way to read
+lines from a stream.  The alternative standard functions are unreliable.
+
+        <p>If an error occurs or end of file is reached without any bytes read,
+<code>getline</code> returns <code>-1</code>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: ssize_t <b>getdelim</b> (<var>char **lineptr, size_t *n, int delimiter, FILE *stream</var>)<var><a name="index-getdelim-994"></a></var><br>
+<blockquote><p>This function is like <code>getline</code> except that the character which
+tells it to stop reading is not necessarily newline.  The argument
+<var>delimiter</var> specifies the delimiter character; <code>getdelim</code> keeps
+reading until it sees that character (or end of file).
+
+        <p>The text is stored in <var>lineptr</var>, including the delimiter character
+and a terminating null.  Like <code>getline</code>, <code>getdelim</code> makes
+<var>lineptr</var> bigger if it isn't big enough.
+
+        <p><code>getline</code> is in fact implemented in terms of <code>getdelim</code>, just
+like this:
+
+     <pre class="smallexample">          ssize_t
+          getline (char **lineptr, size_t *n, FILE *stream)
+          {
+            return getdelim (lineptr, n, '\n', stream);
+          }
+</pre>
+        </blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>fgets</b> (<var>char *s, int count, FILE *stream</var>)<var><a name="index-fgets-995"></a></var><br>
+<blockquote><p>The <code>fgets</code> function reads characters from the stream <var>stream</var>
+up to and including a newline character and stores them in the string
+<var>s</var>, adding a null character to mark the end of the string.  You
+must supply <var>count</var> characters worth of space in <var>s</var>, but the
+number of characters read is at most <var>count</var> &minus; 1.  The extra
+character space is used to hold the null character at the end of the
+string.
+
+        <p>If the system is already at end of file when you call <code>fgets</code>, then
+the contents of the array <var>s</var> are unchanged and a null pointer is
+returned.  A null pointer is also returned if a read error occurs. 
+Otherwise, the return value is the pointer <var>s</var>.
+
+        <p><strong>Warning:</strong>  If the input data has a null character, you can't tell. 
+So don't use <code>fgets</code> unless you know the data cannot contain a null. 
+Don't use it to read files edited by the user because, if the user inserts
+a null character, you should either handle it properly or print a clear
+error message.  We recommend using <code>getline</code> instead of <code>fgets</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>fgetws</b> (<var>wchar_t *ws, int count, FILE *stream</var>)<var><a name="index-fgetws-996"></a></var><br>
+<blockquote><p>The <code>fgetws</code> function reads wide characters from the stream
+<var>stream</var> up to and including a newline character and stores them in
+the string <var>ws</var>, adding a null wide character to mark the end of the
+string.  You must supply <var>count</var> wide characters worth of space in
+<var>ws</var>, but the number of characters read is at most <var>count</var>
+&minus; 1.  The extra character space is used to hold the null wide
+character at the end of the string.
+
+        <p>If the system is already at end of file when you call <code>fgetws</code>, then
+the contents of the array <var>ws</var> are unchanged and a null pointer is
+returned.  A null pointer is also returned if a read error occurs. 
+Otherwise, the return value is the pointer <var>ws</var>.
+
+        <p><strong>Warning:</strong> If the input data has a null wide character (which are
+null bytes in the input stream), you can't tell.  So don't use
+<code>fgetws</code> unless you know the data cannot contain a null.  Don't use
+it to read files edited by the user because, if the user inserts a null
+character, you should either handle it properly or print a clear error
+message. 
+<!-- XXX We need getwline!!! -->
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>fgets_unlocked</b> (<var>char *s, int count, FILE *stream</var>)<var><a name="index-fgets_005funlocked-997"></a></var><br>
+<blockquote><p>The <code>fgets_unlocked</code> function is equivalent to the <code>fgets</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>fgetws_unlocked</b> (<var>wchar_t *ws, int count, FILE *stream</var>)<var><a name="index-fgetws_005funlocked-998"></a></var><br>
+<blockquote><p>The <code>fgetws_unlocked</code> function is equivalent to the <code>fgetws</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Deprecated function: char * <b>gets</b> (<var>char *s</var>)<var><a name="index-gets-999"></a></var><br>
+<blockquote><p>The function <code>gets</code> reads characters from the stream <code>stdin</code>
+up to the next newline character, and stores them in the string <var>s</var>. 
+The newline character is discarded (note that this differs from the
+behavior of <code>fgets</code>, which copies the newline character into the
+string).  If <code>gets</code> encounters a read error or end-of-file, it
+returns a null pointer; otherwise it returns <var>s</var>.
+
+        <p><strong>Warning:</strong> The <code>gets</code> function is <strong>very dangerous</strong>
+because it provides no protection against overflowing the string
+<var>s</var>.  The GNU library includes it for compatibility only.  You
+should <strong>always</strong> use <code>fgets</code> or <code>getline</code> instead.  To
+remind you of this, the linker (if using GNU <code>ld</code>) will issue a
+warning whenever you use <code>gets</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

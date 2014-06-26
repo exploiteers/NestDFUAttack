@@ -1,0 +1,1354 @@
+<html lang="en">
+<head>
+<title>Error Codes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Error-Reporting.html#Error-Reporting" title="Error Reporting">
+<link rel="prev" href="Checking-for-Errors.html#Checking-for-Errors" title="Checking for Errors">
+<link rel="next" href="Error-Messages.html#Error-Messages" title="Error Messages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Error-Codes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Error-Messages.html#Error-Messages">Error Messages</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Checking-for-Errors.html#Checking-for-Errors">Checking for Errors</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Error-Reporting.html#Error-Reporting">Error Reporting</a>
+<hr>
+</div>
+
+<h3 class="section">2.2 Error Codes</h3>
+
+<p><a name="index-errno_002eh-62"></a>The error code macros are defined in the header file <samp><span class="file">errno.h</span></samp>. 
+All of them expand into integer constant values.  Some of these error
+codes can't occur on the GNU system, but they can occur using the GNU
+library on other systems.
+
+<!-- errno.h -->
+<!-- POSIX.1: Operation not permitted -->
+<div class="defun">
+&mdash; Macro: int <b>EPERM</b><var><a name="index-EPERM-63"></a></var><br>
+<blockquote><!-- errno 1 @c DO NOT REMOVE -->
+        <p>Operation not permitted; only the owner of the file (or other resource)
+or processes with special privileges can perform the operation. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No such file or directory -->
+<div class="defun">
+&mdash; Macro: int <b>ENOENT</b><var><a name="index-ENOENT-64"></a></var><br>
+<blockquote><!-- errno 2 @c DO NOT REMOVE -->
+        <p>No such file or directory.  This is a &ldquo;file doesn't exist&rdquo; error
+for ordinary files that are referenced in contexts where they are
+expected to already exist. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No such process -->
+<div class="defun">
+&mdash; Macro: int <b>ESRCH</b><var><a name="index-ESRCH-65"></a></var><br>
+<blockquote><!-- errno 3 @c DO NOT REMOVE -->
+        <p>No process matches the specified process ID. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Interrupted system call -->
+<div class="defun">
+&mdash; Macro: int <b>EINTR</b><var><a name="index-EINTR-66"></a></var><br>
+<blockquote><!-- errno 4 @c DO NOT REMOVE -->
+        <p>Interrupted function call; an asynchronous signal occurred and prevented
+completion of the call.  When this happens, you should try the call
+again.
+
+        <p>You can choose to have functions resume after a signal that is handled,
+rather than failing with <code>EINTR</code>; see <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Input/output error -->
+<div class="defun">
+&mdash; Macro: int <b>EIO</b><var><a name="index-EIO-67"></a></var><br>
+<blockquote><!-- errno 5 @c DO NOT REMOVE -->
+        <p>Input/output error; usually used for physical read or write errors. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No such device or address -->
+<div class="defun">
+&mdash; Macro: int <b>ENXIO</b><var><a name="index-ENXIO-68"></a></var><br>
+<blockquote><!-- errno 6 @c DO NOT REMOVE -->
+        <p>No such device or address.  The system tried to use the device
+represented by a file you specified, and it couldn't find the device. 
+This can mean that the device file was installed incorrectly, or that
+the physical device is missing or not correctly attached to the
+computer. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Argument list too long -->
+<div class="defun">
+&mdash; Macro: int <b>E2BIG</b><var><a name="index-E2BIG-69"></a></var><br>
+<blockquote><!-- errno 7 @c DO NOT REMOVE -->
+        <p>Argument list too long; used when the arguments passed to a new program
+being executed with one of the <code>exec</code> functions (see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>) occupy too much memory space.  This condition never arises in the
+GNU system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Exec format error -->
+<div class="defun">
+&mdash; Macro: int <b>ENOEXEC</b><var><a name="index-ENOEXEC-70"></a></var><br>
+<blockquote><!-- errno 8 @c DO NOT REMOVE -->
+        <p>Invalid executable file format.  This condition is detected by the
+<code>exec</code> functions; see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Bad file descriptor -->
+<div class="defun">
+&mdash; Macro: int <b>EBADF</b><var><a name="index-EBADF-71"></a></var><br>
+<blockquote><!-- errno 9 @c DO NOT REMOVE -->
+        <p>Bad file descriptor; for example, I/O on a descriptor that has been
+closed or reading from a descriptor open only for writing (or vice
+versa). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No child processes -->
+<div class="defun">
+&mdash; Macro: int <b>ECHILD</b><var><a name="index-ECHILD-72"></a></var><br>
+<blockquote><!-- errno 10 @c DO NOT REMOVE -->
+        <p>There are no child processes.  This error happens on operations that are
+supposed to manipulate child processes, when there aren't any processes
+to manipulate. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Resource deadlock avoided -->
+<div class="defun">
+&mdash; Macro: int <b>EDEADLK</b><var><a name="index-EDEADLK-73"></a></var><br>
+<blockquote><!-- errno 11 @c DO NOT REMOVE -->
+        <p>Deadlock avoided; allocating a system resource would have resulted in a
+deadlock situation.  The system does not guarantee that it will notice
+all such situations.  This error means you got lucky and the system
+noticed; it might just hang.  See <a href="File-Locks.html#File-Locks">File Locks</a>, for an example. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Cannot allocate memory -->
+<div class="defun">
+&mdash; Macro: int <b>ENOMEM</b><var><a name="index-ENOMEM-74"></a></var><br>
+<blockquote><!-- errno 12 @c DO NOT REMOVE -->
+        <p>No memory available.  The system cannot allocate more virtual memory
+because its capacity is full. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Permission denied -->
+<div class="defun">
+&mdash; Macro: int <b>EACCES</b><var><a name="index-EACCES-75"></a></var><br>
+<blockquote><!-- errno 13 @c DO NOT REMOVE -->
+        <p>Permission denied; the file permissions do not allow the attempted operation. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Bad address -->
+<div class="defun">
+&mdash; Macro: int <b>EFAULT</b><var><a name="index-EFAULT-76"></a></var><br>
+<blockquote><!-- errno 14 @c DO NOT REMOVE -->
+        <p>Bad address; an invalid pointer was detected. 
+In the GNU system, this error never happens; you get a signal instead. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Block device required -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTBLK</b><var><a name="index-ENOTBLK-77"></a></var><br>
+<blockquote><!-- errno 15 @c DO NOT REMOVE -->
+        <p>A file that isn't a block special file was given in a situation that
+requires one.  For example, trying to mount an ordinary file as a file
+system in Unix gives this error. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Device or resource busy -->
+<div class="defun">
+&mdash; Macro: int <b>EBUSY</b><var><a name="index-EBUSY-78"></a></var><br>
+<blockquote><!-- errno 16 @c DO NOT REMOVE -->
+        <p>Resource busy; a system resource that can't be shared is already in use. 
+For example, if you try to delete a file that is the root of a currently
+mounted filesystem, you get this error. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: File exists -->
+<div class="defun">
+&mdash; Macro: int <b>EEXIST</b><var><a name="index-EEXIST-79"></a></var><br>
+<blockquote><!-- errno 17 @c DO NOT REMOVE -->
+        <p>File exists; an existing file was specified in a context where it only
+makes sense to specify a new file. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Invalid cross-device link -->
+<div class="defun">
+&mdash; Macro: int <b>EXDEV</b><var><a name="index-EXDEV-80"></a></var><br>
+<blockquote><!-- errno 18 @c DO NOT REMOVE -->
+        <p>An attempt to make an improper link across file systems was detected. 
+This happens not only when you use <code>link</code> (see <a href="Hard-Links.html#Hard-Links">Hard Links</a>) but
+also when you rename a file with <code>rename</code> (see <a href="Renaming-Files.html#Renaming-Files">Renaming Files</a>). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No such device -->
+<div class="defun">
+&mdash; Macro: int <b>ENODEV</b><var><a name="index-ENODEV-81"></a></var><br>
+<blockquote><!-- errno 19 @c DO NOT REMOVE -->
+        <p>The wrong type of device was given to a function that expects a
+particular sort of device. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Not a directory -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTDIR</b><var><a name="index-ENOTDIR-82"></a></var><br>
+<blockquote><!-- errno 20 @c DO NOT REMOVE -->
+        <p>A file that isn't a directory was specified when a directory is required. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Is a directory -->
+<div class="defun">
+&mdash; Macro: int <b>EISDIR</b><var><a name="index-EISDIR-83"></a></var><br>
+<blockquote><!-- errno 21 @c DO NOT REMOVE -->
+        <p>File is a directory; you cannot open a directory for writing,
+or create or remove hard links to it. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Invalid argument -->
+<div class="defun">
+&mdash; Macro: int <b>EINVAL</b><var><a name="index-EINVAL-84"></a></var><br>
+<blockquote><!-- errno 22 @c DO NOT REMOVE -->
+        <p>Invalid argument.  This is used to indicate various kinds of problems
+with passing the wrong argument to a library function. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Too many open files -->
+<div class="defun">
+&mdash; Macro: int <b>EMFILE</b><var><a name="index-EMFILE-85"></a></var><br>
+<blockquote><!-- errno 24 @c DO NOT REMOVE -->
+        <p>The current process has too many files open and can't open any more. 
+Duplicate descriptors do count toward this limit.
+
+        <p>In BSD and GNU, the number of open files is controlled by a resource
+limit that can usually be increased.  If you get this error, you might
+want to increase the <code>RLIMIT_NOFILE</code> limit or make it unlimited;
+see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Too many open files in system -->
+<div class="defun">
+&mdash; Macro: int <b>ENFILE</b><var><a name="index-ENFILE-86"></a></var><br>
+<blockquote><!-- errno 23 @c DO NOT REMOVE -->
+        <p>There are too many distinct file openings in the entire system.  Note
+that any number of linked channels count as just one file opening; see
+<a href="Linked-Channels.html#Linked-Channels">Linked Channels</a>.  This error never occurs in the GNU system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Inappropriate ioctl for device -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTTY</b><var><a name="index-ENOTTY-87"></a></var><br>
+<blockquote><!-- errno 25 @c DO NOT REMOVE -->
+        <p>Inappropriate I/O control operation, such as trying to set terminal
+modes on an ordinary file. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Text file busy -->
+<div class="defun">
+&mdash; Macro: int <b>ETXTBSY</b><var><a name="index-ETXTBSY-88"></a></var><br>
+<blockquote><!-- errno 26 @c DO NOT REMOVE -->
+        <p>An attempt to execute a file that is currently open for writing, or
+write to a file that is currently being executed.  Often using a
+debugger to run a program is considered having it open for writing and
+will cause this error.  (The name stands for &ldquo;text file busy&rdquo;.)  This
+is not an error in the GNU system; the text is copied as necessary. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: File too large -->
+<div class="defun">
+&mdash; Macro: int <b>EFBIG</b><var><a name="index-EFBIG-89"></a></var><br>
+<blockquote><!-- errno 27 @c DO NOT REMOVE -->
+        <p>File too big; the size of a file would be larger than allowed by the system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No space left on device -->
+<div class="defun">
+&mdash; Macro: int <b>ENOSPC</b><var><a name="index-ENOSPC-90"></a></var><br>
+<blockquote><!-- errno 28 @c DO NOT REMOVE -->
+        <p>No space left on device; write operation on a file failed because the
+disk is full. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Illegal seek -->
+<div class="defun">
+&mdash; Macro: int <b>ESPIPE</b><var><a name="index-ESPIPE-91"></a></var><br>
+<blockquote><!-- errno 29 @c DO NOT REMOVE -->
+        <p>Invalid seek operation (such as on a pipe). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Read-only file system -->
+<div class="defun">
+&mdash; Macro: int <b>EROFS</b><var><a name="index-EROFS-92"></a></var><br>
+<blockquote><!-- errno 30 @c DO NOT REMOVE -->
+        <p>An attempt was made to modify something on a read-only file system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Too many links -->
+<div class="defun">
+&mdash; Macro: int <b>EMLINK</b><var><a name="index-EMLINK-93"></a></var><br>
+<blockquote><!-- errno 31 @c DO NOT REMOVE -->
+        <p>Too many links; the link count of a single file would become too large. 
+<code>rename</code> can cause this error if the file being renamed already has
+as many links as it can take (see <a href="Renaming-Files.html#Renaming-Files">Renaming Files</a>). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Broken pipe -->
+<div class="defun">
+&mdash; Macro: int <b>EPIPE</b><var><a name="index-EPIPE-94"></a></var><br>
+<blockquote><!-- errno 32 @c DO NOT REMOVE -->
+        <p>Broken pipe; there is no process reading from the other end of a pipe. 
+Every library function that returns this error code also generates a
+<code>SIGPIPE</code> signal; this signal terminates the program if not handled
+or blocked.  Thus, your program will never actually see <code>EPIPE</code>
+unless it has handled or blocked <code>SIGPIPE</code>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- ISO: Numerical argument out of domain -->
+<div class="defun">
+&mdash; Macro: int <b>EDOM</b><var><a name="index-EDOM-95"></a></var><br>
+<blockquote><!-- errno 33 @c DO NOT REMOVE -->
+        <p>Domain error; used by mathematical functions when an argument value does
+not fall into the domain over which the function is defined. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- ISO: Numerical result out of range -->
+<div class="defun">
+&mdash; Macro: int <b>ERANGE</b><var><a name="index-ERANGE-96"></a></var><br>
+<blockquote><!-- errno 34 @c DO NOT REMOVE -->
+        <p>Range error; used by mathematical functions when the result value is
+not representable because of overflow or underflow. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Resource temporarily unavailable -->
+<div class="defun">
+&mdash; Macro: int <b>EAGAIN</b><var><a name="index-EAGAIN-97"></a></var><br>
+<blockquote><!-- errno 35 @c DO NOT REMOVE -->
+        <p>Resource temporarily unavailable; the call might work if you try again
+later.  The macro <code>EWOULDBLOCK</code> is another name for <code>EAGAIN</code>;
+they are always the same in the GNU C library.
+
+        <p>This error can happen in a few different situations:
+
+          <ul>
+<li>An operation that would block was attempted on an object that has
+non-blocking mode selected.  Trying the same operation again will block
+until some external condition makes it possible to read, write, or
+connect (whatever the operation).  You can use <code>select</code> to find out
+when the operation will be possible; see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>.
+
+          <p><strong>Portability Note:</strong> In many older Unix systems, this condition
+was indicated by <code>EWOULDBLOCK</code>, which was a distinct error code
+different from <code>EAGAIN</code>.  To make your program portable, you should
+check for both codes and treat them the same.
+
+          <li>A temporary resource shortage made an operation impossible.  <code>fork</code>
+can return this error.  It indicates that the shortage is expected to
+pass, so your program can try the call again later and it may succeed. 
+It is probably a good idea to delay for a few seconds before trying it
+again, to allow time for other processes to release scarce resources. 
+Such shortages are usually fairly serious and affect the whole system,
+so usually an interactive program should report the error to the user
+and return to its command loop. 
+</ul>
+        </p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Operation would block -->
+<div class="defun">
+&mdash; Macro: int <b>EWOULDBLOCK</b><var><a name="index-EWOULDBLOCK-98"></a></var><br>
+<blockquote><!-- errno EAGAIN @c DO NOT REMOVE -->
+        <p>In the GNU C library, this is another name for <code>EAGAIN</code> (above). 
+The values are always the same, on every operating system.
+
+        <p>C libraries in many older Unix systems have <code>EWOULDBLOCK</code> as a
+separate error code. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Operation now in progress -->
+<div class="defun">
+&mdash; Macro: int <b>EINPROGRESS</b><var><a name="index-EINPROGRESS-99"></a></var><br>
+<blockquote><!-- errno 36 @c DO NOT REMOVE -->
+        <p>An operation that cannot complete immediately was initiated on an object
+that has non-blocking mode selected.  Some functions that must always
+block (such as <code>connect</code>; see <a href="Connecting.html#Connecting">Connecting</a>) never return
+<code>EAGAIN</code>.  Instead, they return <code>EINPROGRESS</code> to indicate that
+the operation has begun and will take some time.  Attempts to manipulate
+the object before the call completes return <code>EALREADY</code>.  You can
+use the <code>select</code> function to find out when the pending operation
+has completed; see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Operation already in progress -->
+<div class="defun">
+&mdash; Macro: int <b>EALREADY</b><var><a name="index-EALREADY-100"></a></var><br>
+<blockquote><!-- errno 37 @c DO NOT REMOVE -->
+        <p>An operation is already in progress on an object that has non-blocking
+mode selected. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Socket operation on non-socket -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTSOCK</b><var><a name="index-ENOTSOCK-101"></a></var><br>
+<blockquote><!-- errno 38 @c DO NOT REMOVE -->
+        <p>A file that isn't a socket was specified when a socket is required. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Message too long -->
+<div class="defun">
+&mdash; Macro: int <b>EMSGSIZE</b><var><a name="index-EMSGSIZE-102"></a></var><br>
+<blockquote><!-- errno 40 @c DO NOT REMOVE -->
+        <p>The size of a message sent on a socket was larger than the supported
+maximum size. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Protocol wrong type for socket -->
+<div class="defun">
+&mdash; Macro: int <b>EPROTOTYPE</b><var><a name="index-EPROTOTYPE-103"></a></var><br>
+<blockquote><!-- errno 41 @c DO NOT REMOVE -->
+        <p>The socket type does not support the requested communications protocol. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Protocol not available -->
+<div class="defun">
+&mdash; Macro: int <b>ENOPROTOOPT</b><var><a name="index-ENOPROTOOPT-104"></a></var><br>
+<blockquote><!-- errno 42 @c DO NOT REMOVE -->
+        <p>You specified a socket option that doesn't make sense for the
+particular protocol being used by the socket.  See <a href="Socket-Options.html#Socket-Options">Socket Options</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Protocol not supported -->
+<div class="defun">
+&mdash; Macro: int <b>EPROTONOSUPPORT</b><var><a name="index-EPROTONOSUPPORT-105"></a></var><br>
+<blockquote><!-- errno 43 @c DO NOT REMOVE -->
+        <p>The socket domain does not support the requested communications protocol
+(perhaps because the requested protocol is completely invalid). 
+See <a href="Creating-a-Socket.html#Creating-a-Socket">Creating a Socket</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Socket type not supported -->
+<div class="defun">
+&mdash; Macro: int <b>ESOCKTNOSUPPORT</b><var><a name="index-ESOCKTNOSUPPORT-106"></a></var><br>
+<blockquote><!-- errno 44 @c DO NOT REMOVE -->
+        <p>The socket type is not supported. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Operation not supported -->
+<div class="defun">
+&mdash; Macro: int <b>EOPNOTSUPP</b><var><a name="index-EOPNOTSUPP-107"></a></var><br>
+<blockquote><!-- errno 45 @c DO NOT REMOVE -->
+        <p>The operation you requested is not supported.  Some socket functions
+don't make sense for all types of sockets, and others may not be
+implemented for all communications protocols.  In the GNU system, this
+error can happen for many calls when the object does not support the
+particular operation; it is a generic indication that the server knows
+nothing to do for that call. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Protocol family not supported -->
+<div class="defun">
+&mdash; Macro: int <b>EPFNOSUPPORT</b><var><a name="index-EPFNOSUPPORT-108"></a></var><br>
+<blockquote><!-- errno 46 @c DO NOT REMOVE -->
+        <p>The socket communications protocol family you requested is not supported. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Address family not supported by protocol -->
+<div class="defun">
+&mdash; Macro: int <b>EAFNOSUPPORT</b><var><a name="index-EAFNOSUPPORT-109"></a></var><br>
+<blockquote><!-- errno 47 @c DO NOT REMOVE -->
+        <p>The address family specified for a socket is not supported; it is
+inconsistent with the protocol being used on the socket.  See <a href="Sockets.html#Sockets">Sockets</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Address already in use -->
+<div class="defun">
+&mdash; Macro: int <b>EADDRINUSE</b><var><a name="index-EADDRINUSE-110"></a></var><br>
+<blockquote><!-- errno 48 @c DO NOT REMOVE -->
+        <p>The requested socket address is already in use.  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Cannot assign requested address -->
+<div class="defun">
+&mdash; Macro: int <b>EADDRNOTAVAIL</b><var><a name="index-EADDRNOTAVAIL-111"></a></var><br>
+<blockquote><!-- errno 49 @c DO NOT REMOVE -->
+        <p>The requested socket address is not available; for example, you tried
+to give a socket a name that doesn't match the local host name. 
+See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Network is down -->
+<div class="defun">
+&mdash; Macro: int <b>ENETDOWN</b><var><a name="index-ENETDOWN-112"></a></var><br>
+<blockquote><!-- errno 50 @c DO NOT REMOVE -->
+        <p>A socket operation failed because the network was down. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Network is unreachable -->
+<div class="defun">
+&mdash; Macro: int <b>ENETUNREACH</b><var><a name="index-ENETUNREACH-113"></a></var><br>
+<blockquote><!-- errno 51 @c DO NOT REMOVE -->
+        <p>A socket operation failed because the subnet containing the remote host
+was unreachable. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Network dropped connection on reset -->
+<div class="defun">
+&mdash; Macro: int <b>ENETRESET</b><var><a name="index-ENETRESET-114"></a></var><br>
+<blockquote><!-- errno 52 @c DO NOT REMOVE -->
+        <p>A network connection was reset because the remote host crashed. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Software caused connection abort -->
+<div class="defun">
+&mdash; Macro: int <b>ECONNABORTED</b><var><a name="index-ECONNABORTED-115"></a></var><br>
+<blockquote><!-- errno 53 @c DO NOT REMOVE -->
+        <p>A network connection was aborted locally. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Connection reset by peer -->
+<div class="defun">
+&mdash; Macro: int <b>ECONNRESET</b><var><a name="index-ECONNRESET-116"></a></var><br>
+<blockquote><!-- errno 54 @c DO NOT REMOVE -->
+        <p>A network connection was closed for reasons outside the control of the
+local host, such as by the remote machine rebooting or an unrecoverable
+protocol violation. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: No buffer space available -->
+<div class="defun">
+&mdash; Macro: int <b>ENOBUFS</b><var><a name="index-ENOBUFS-117"></a></var><br>
+<blockquote><!-- errno 55 @c DO NOT REMOVE -->
+        <p>The kernel's buffers for I/O operations are all in use.  In GNU, this
+error is always synonymous with <code>ENOMEM</code>; you may get one or the
+other from network operations. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Transport endpoint is already connected -->
+<div class="defun">
+&mdash; Macro: int <b>EISCONN</b><var><a name="index-EISCONN-118"></a></var><br>
+<blockquote><!-- errno 56 @c DO NOT REMOVE -->
+        <p>You tried to connect a socket that is already connected. 
+See <a href="Connecting.html#Connecting">Connecting</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Transport endpoint is not connected -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTCONN</b><var><a name="index-ENOTCONN-119"></a></var><br>
+<blockquote><!-- errno 57 @c DO NOT REMOVE -->
+        <p>The socket is not connected to anything.  You get this error when you
+try to transmit data over a socket, without first specifying a
+destination for the data.  For a connectionless socket (for datagram
+protocols, such as UDP), you get <code>EDESTADDRREQ</code> instead. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Destination address required -->
+<div class="defun">
+&mdash; Macro: int <b>EDESTADDRREQ</b><var><a name="index-EDESTADDRREQ-120"></a></var><br>
+<blockquote><!-- errno 39 @c DO NOT REMOVE -->
+        <p>No default destination address was set for the socket.  You get this
+error when you try to transmit data over a connectionless socket,
+without first specifying a destination for the data with <code>connect</code>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Cannot send after transport endpoint shutdown -->
+<div class="defun">
+&mdash; Macro: int <b>ESHUTDOWN</b><var><a name="index-ESHUTDOWN-121"></a></var><br>
+<blockquote><!-- errno 58 @c DO NOT REMOVE -->
+        <p>The socket has already been shut down. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Too many references: cannot splice -->
+<div class="defun">
+&mdash; Macro: int <b>ETOOMANYREFS</b><var><a name="index-ETOOMANYREFS-122"></a></var><br>
+<blockquote><!-- errno 59 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Connection timed out -->
+<div class="defun">
+&mdash; Macro: int <b>ETIMEDOUT</b><var><a name="index-ETIMEDOUT-123"></a></var><br>
+<blockquote><!-- errno 60 @c DO NOT REMOVE -->
+        <p>A socket operation with a specified timeout received no response during
+the timeout period. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Connection refused -->
+<div class="defun">
+&mdash; Macro: int <b>ECONNREFUSED</b><var><a name="index-ECONNREFUSED-124"></a></var><br>
+<blockquote><!-- errno 61 @c DO NOT REMOVE -->
+        <p>A remote host refused to allow the network connection (typically because
+it is not running the requested service). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Too many levels of symbolic links -->
+<div class="defun">
+&mdash; Macro: int <b>ELOOP</b><var><a name="index-ELOOP-125"></a></var><br>
+<blockquote><!-- errno 62 @c DO NOT REMOVE -->
+        <p>Too many levels of symbolic links were encountered in looking up a file name. 
+This often indicates a cycle of symbolic links. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: File name too long -->
+<div class="defun">
+&mdash; Macro: int <b>ENAMETOOLONG</b><var><a name="index-ENAMETOOLONG-126"></a></var><br>
+<blockquote><!-- errno 63 @c DO NOT REMOVE -->
+        <p>Filename too long (longer than <code>PATH_MAX</code>; see <a href="Limits-for-Files.html#Limits-for-Files">Limits for Files</a>) or host name too long (in <code>gethostname</code> or
+<code>sethostname</code>; see <a href="Host-Identification.html#Host-Identification">Host Identification</a>). 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Host is down -->
+<div class="defun">
+&mdash; Macro: int <b>EHOSTDOWN</b><var><a name="index-EHOSTDOWN-127"></a></var><br>
+<blockquote><!-- errno 64 @c DO NOT REMOVE -->
+        <p>The remote host for a requested network connection is down. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: No route to host -->
+<div class="defun">
+&mdash; Macro: int <b>EHOSTUNREACH</b><var><a name="index-EHOSTUNREACH-128"></a></var><br>
+<blockquote><!-- errno 65 @c DO NOT REMOVE -->
+        <p>The remote host for a requested network connection is not reachable. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Directory not empty -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTEMPTY</b><var><a name="index-ENOTEMPTY-129"></a></var><br>
+<blockquote><!-- errno 66 @c DO NOT REMOVE -->
+        <p>Directory not empty, where an empty directory was expected.  Typically,
+this error occurs when you are trying to delete a directory. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Too many processes -->
+<div class="defun">
+&mdash; Macro: int <b>EPROCLIM</b><var><a name="index-EPROCLIM-130"></a></var><br>
+<blockquote><!-- errno 67 @c DO NOT REMOVE -->
+        <p>This means that the per-user limit on new process would be exceeded by
+an attempted <code>fork</code>.  See <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>, for details on
+the <code>RLIMIT_NPROC</code> limit. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Too many users -->
+<div class="defun">
+&mdash; Macro: int <b>EUSERS</b><var><a name="index-EUSERS-131"></a></var><br>
+<blockquote><!-- errno 68 @c DO NOT REMOVE -->
+        <p>The file quota system is confused because there are too many users. 
+<!-- This can probably happen in a GNU system when using NFS. -->
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Disk quota exceeded -->
+<div class="defun">
+&mdash; Macro: int <b>EDQUOT</b><var><a name="index-EDQUOT-132"></a></var><br>
+<blockquote><!-- errno 69 @c DO NOT REMOVE -->
+        <p>The user's disk quota was exceeded. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Stale NFS file handle -->
+<div class="defun">
+&mdash; Macro: int <b>ESTALE</b><var><a name="index-ESTALE-133"></a></var><br>
+<blockquote><!-- errno 70 @c DO NOT REMOVE -->
+        <p>Stale NFS file handle.  This indicates an internal confusion in the NFS
+system which is due to file system rearrangements on the server host. 
+Repairing this condition usually requires unmounting and remounting
+the NFS file system on the local host. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Object is remote -->
+<div class="defun">
+&mdash; Macro: int <b>EREMOTE</b><var><a name="index-EREMOTE-134"></a></var><br>
+<blockquote><!-- errno 71 @c DO NOT REMOVE -->
+        <p>An attempt was made to NFS-mount a remote file system with a file name that
+already specifies an NFS-mounted file. 
+(This is an error on some operating systems, but we expect it to work
+properly on the GNU system, making this error code impossible.) 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: RPC struct is bad -->
+<div class="defun">
+&mdash; Macro: int <b>EBADRPC</b><var><a name="index-EBADRPC-135"></a></var><br>
+<blockquote><!-- errno 72 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: RPC version wrong -->
+<div class="defun">
+&mdash; Macro: int <b>ERPCMISMATCH</b><var><a name="index-ERPCMISMATCH-136"></a></var><br>
+<blockquote><!-- errno 73 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: RPC program not available -->
+<div class="defun">
+&mdash; Macro: int <b>EPROGUNAVAIL</b><var><a name="index-EPROGUNAVAIL-137"></a></var><br>
+<blockquote><!-- errno 74 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: RPC program version wrong -->
+<div class="defun">
+&mdash; Macro: int <b>EPROGMISMATCH</b><var><a name="index-EPROGMISMATCH-138"></a></var><br>
+<blockquote><!-- errno 75 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: RPC bad procedure for program -->
+<div class="defun">
+&mdash; Macro: int <b>EPROCUNAVAIL</b><var><a name="index-EPROCUNAVAIL-139"></a></var><br>
+<blockquote><!-- errno 76 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: No locks available -->
+<div class="defun">
+&mdash; Macro: int <b>ENOLCK</b><var><a name="index-ENOLCK-140"></a></var><br>
+<blockquote><!-- errno 77 @c DO NOT REMOVE -->
+        <p>No locks available.  This is used by the file locking facilities; see
+<a href="File-Locks.html#File-Locks">File Locks</a>.  This error is never generated by the GNU system, but
+it can result from an operation to an NFS server running another
+operating system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Inappropriate file type or format -->
+<div class="defun">
+&mdash; Macro: int <b>EFTYPE</b><var><a name="index-EFTYPE-141"></a></var><br>
+<blockquote><!-- errno 79 @c DO NOT REMOVE -->
+        <p>Inappropriate file type or format.  The file was the wrong type for the
+operation, or a data file had the wrong format.
+
+        <p>On some systems <code>chmod</code> returns this error if you try to set the
+sticky bit on a non-directory file; see <a href="Setting-Permissions.html#Setting-Permissions">Setting Permissions</a>. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Authentication error -->
+<div class="defun">
+&mdash; Macro: int <b>EAUTH</b><var><a name="index-EAUTH-142"></a></var><br>
+<blockquote><!-- errno 80 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- BSD: Need authenticator -->
+<div class="defun">
+&mdash; Macro: int <b>ENEEDAUTH</b><var><a name="index-ENEEDAUTH-143"></a></var><br>
+<blockquote><!-- errno 81 @c DO NOT REMOVE -->
+        <p>??? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Function not implemented -->
+<div class="defun">
+&mdash; Macro: int <b>ENOSYS</b><var><a name="index-ENOSYS-144"></a></var><br>
+<blockquote><!-- errno 78 @c DO NOT REMOVE -->
+        <p>Function not implemented.  This indicates that the function called is
+not implemented at all, either in the C library itself or in the
+operating system.  When you get this error, you can be sure that this
+particular function will always fail with <code>ENOSYS</code> unless you
+install a new version of the C library or the operating system. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Not supported -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTSUP</b><var><a name="index-ENOTSUP-145"></a></var><br>
+<blockquote><!-- errno 118 @c DO NOT REMOVE -->
+        <p>Not supported.  A function returns this error when certain parameter
+values are valid, but the functionality they request is not available. 
+This can mean that the function does not implement a particular command
+or option value or flag bit at all.  For functions that operate on some
+object given in a parameter, such as a file descriptor or a port, it
+might instead mean that only <em>that specific object</em> (file
+descriptor, port, etc.) is unable to support the other parameters given;
+different file descriptors might support different ranges of parameter
+values.
+
+        <p>If the entire function is not available at all in the implementation,
+it returns <code>ENOSYS</code> instead. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- ISO: Invalid or incomplete multibyte or wide character -->
+<div class="defun">
+&mdash; Macro: int <b>EILSEQ</b><var><a name="index-EILSEQ-146"></a></var><br>
+<blockquote><!-- errno 106 @c DO NOT REMOVE -->
+        <p>While decoding a multibyte character the function came along an invalid
+or an incomplete sequence of bytes or the given wide character is invalid. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: Inappropriate operation for background process -->
+<div class="defun">
+&mdash; Macro: int <b>EBACKGROUND</b><var><a name="index-EBACKGROUND-147"></a></var><br>
+<blockquote><!-- errno 100 @c DO NOT REMOVE -->
+        <p>In the GNU system, servers supporting the <code>term</code> protocol return
+this error for certain operations when the caller is not in the
+foreground process group of the terminal.  Users do not usually see this
+error because functions such as <code>read</code> and <code>write</code> translate
+it into a <code>SIGTTIN</code> or <code>SIGTTOU</code> signal.  See <a href="Job-Control.html#Job-Control">Job Control</a>,
+for information on process groups and these signals. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: Translator died -->
+<div class="defun">
+&mdash; Macro: int <b>EDIED</b><var><a name="index-EDIED-148"></a></var><br>
+<blockquote><!-- errno 101 @c DO NOT REMOVE -->
+        <p>In the GNU system, opening a file returns this error when the file is
+translated by a program and the translator program dies while starting
+up, before it has connected to the file. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: ? -->
+<div class="defun">
+&mdash; Macro: int <b>ED</b><var><a name="index-ED-149"></a></var><br>
+<blockquote><!-- errno 102 @c DO NOT REMOVE -->
+        <p>The experienced user will know what is wrong. 
+<!-- This error code is a joke.  Its perror text is part of the joke. -->
+<!-- Don't change it. -->
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: You really blew it this time -->
+<div class="defun">
+&mdash; Macro: int <b>EGREGIOUS</b><var><a name="index-EGREGIOUS-150"></a></var><br>
+<blockquote><!-- errno 103 @c DO NOT REMOVE -->
+        <p>You did <strong>what</strong>? 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: Computer bought the farm -->
+<div class="defun">
+&mdash; Macro: int <b>EIEIO</b><var><a name="index-EIEIO-151"></a></var><br>
+<blockquote><!-- errno 104 @c DO NOT REMOVE -->
+        <p>Go home and have a glass of warm, dairy-fresh milk. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- GNU: Gratuitous error -->
+<div class="defun">
+&mdash; Macro: int <b>EGRATUITOUS</b><var><a name="index-EGRATUITOUS-152"></a></var><br>
+<blockquote><!-- errno 105 @c DO NOT REMOVE -->
+        <p>This error code has no purpose. 
+</p></blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Bad message -->
+<div class="defun">
+&mdash; Macro: int <b>EBADMSG</b><var><a name="index-EBADMSG-153"></a></var><br>
+<blockquote><!-- errno 107 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Identifier removed -->
+<div class="defun">
+&mdash; Macro: int <b>EIDRM</b><var><a name="index-EIDRM-154"></a></var><br>
+<blockquote><!-- errno 108 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Multihop attempted -->
+<div class="defun">
+&mdash; Macro: int <b>EMULTIHOP</b><var><a name="index-EMULTIHOP-155"></a></var><br>
+<blockquote><!-- errno 109 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: No data available -->
+<div class="defun">
+&mdash; Macro: int <b>ENODATA</b><var><a name="index-ENODATA-156"></a></var><br>
+<blockquote><!-- errno 110 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Link has been severed -->
+<div class="defun">
+&mdash; Macro: int <b>ENOLINK</b><var><a name="index-ENOLINK-157"></a></var><br>
+<blockquote><!-- errno 111 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: No message of desired type -->
+<div class="defun">
+&mdash; Macro: int <b>ENOMSG</b><var><a name="index-ENOMSG-158"></a></var><br>
+<blockquote><!-- errno 112 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Out of streams resources -->
+<div class="defun">
+&mdash; Macro: int <b>ENOSR</b><var><a name="index-ENOSR-159"></a></var><br>
+<blockquote><!-- errno 113 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Device not a stream -->
+<div class="defun">
+&mdash; Macro: int <b>ENOSTR</b><var><a name="index-ENOSTR-160"></a></var><br>
+<blockquote><!-- errno 114 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Value too large for defined data type -->
+<div class="defun">
+&mdash; Macro: int <b>EOVERFLOW</b><var><a name="index-EOVERFLOW-161"></a></var><br>
+<blockquote><!-- errno 115 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Protocol error -->
+<div class="defun">
+&mdash; Macro: int <b>EPROTO</b><var><a name="index-EPROTO-162"></a></var><br>
+<blockquote><!-- errno 116 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- XOPEN: Timer expired -->
+<div class="defun">
+&mdash; Macro: int <b>ETIME</b><var><a name="index-ETIME-163"></a></var><br>
+<blockquote><!-- errno 117 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- POSIX.1: Operation canceled -->
+<div class="defun">
+&mdash; Macro: int <b>ECANCELED</b><var><a name="index-ECANCELED-164"></a></var><br>
+<blockquote><!-- errno 119 -->
+        <p>Operation canceled; an asynchronous operation was canceled before it
+completed.  See <a href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>.  When you call <code>aio_cancel</code>,
+the normal result is for the operations affected to complete with this
+error; see <a href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>. 
+</p></blockquote></div>
+
+   <p><em>The following error codes are defined by the Linux/i386 kernel. 
+They are not yet documented.</em>
+
+<!-- errno.h -->
+<!-- Linux???: Interrupted system call should be restarted -->
+<div class="defun">
+&mdash; Macro: int <b>ERESTART</b><var><a name="index-ERESTART-165"></a></var><br>
+<blockquote><!-- errno ???/85 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Channel number out of range -->
+<div class="defun">
+&mdash; Macro: int <b>ECHRNG</b><var><a name="index-ECHRNG-166"></a></var><br>
+<blockquote><!-- errno ???/44 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Obsolete: Level 2 not synchronized -->
+<div class="defun">
+&mdash; Macro: int <b>EL2NSYNC</b><var><a name="index-EL2NSYNC-167"></a></var><br>
+<blockquote><!-- errno ???/45 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Obsolete: Level 3 halted -->
+<div class="defun">
+&mdash; Macro: int <b>EL3HLT</b><var><a name="index-EL3HLT-168"></a></var><br>
+<blockquote><!-- errno ???/46 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Obsolete: Level 3 reset -->
+<div class="defun">
+&mdash; Macro: int <b>EL3RST</b><var><a name="index-EL3RST-169"></a></var><br>
+<blockquote><!-- errno ???/47 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Link number out of range -->
+<div class="defun">
+&mdash; Macro: int <b>ELNRNG</b><var><a name="index-ELNRNG-170"></a></var><br>
+<blockquote><!-- errno ???/48 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Protocol driver not attached -->
+<div class="defun">
+&mdash; Macro: int <b>EUNATCH</b><var><a name="index-EUNATCH-171"></a></var><br>
+<blockquote><!-- errno ???/49 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: No CSI structure available -->
+<div class="defun">
+&mdash; Macro: int <b>ENOCSI</b><var><a name="index-ENOCSI-172"></a></var><br>
+<blockquote><!-- errno ???/50 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Obsolete: Level 2 halted -->
+<div class="defun">
+&mdash; Macro: int <b>EL2HLT</b><var><a name="index-EL2HLT-173"></a></var><br>
+<blockquote><!-- errno ???/51 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Invalid exchange -->
+<div class="defun">
+&mdash; Macro: int <b>EBADE</b><var><a name="index-EBADE-174"></a></var><br>
+<blockquote><!-- errno ???/52 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Invalid request descriptor -->
+<div class="defun">
+&mdash; Macro: int <b>EBADR</b><var><a name="index-EBADR-175"></a></var><br>
+<blockquote><!-- errno ???/53 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Exchange full -->
+<div class="defun">
+&mdash; Macro: int <b>EXFULL</b><var><a name="index-EXFULL-176"></a></var><br>
+<blockquote><!-- errno ???/54 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: No anode -->
+<div class="defun">
+&mdash; Macro: int <b>ENOANO</b><var><a name="index-ENOANO-177"></a></var><br>
+<blockquote><!-- errno ???/55 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Invalid request code -->
+<div class="defun">
+&mdash; Macro: int <b>EBADRQC</b><var><a name="index-EBADRQC-178"></a></var><br>
+<blockquote><!-- errno ???/56 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Invalid slot -->
+<div class="defun">
+&mdash; Macro: int <b>EBADSLT</b><var><a name="index-EBADSLT-179"></a></var><br>
+<blockquote><!-- errno ???/57 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: File locking deadlock error -->
+<div class="defun">
+&mdash; Macro: int <b>EDEADLOCK</b><var><a name="index-EDEADLOCK-180"></a></var><br>
+<blockquote><!-- errno ???/58 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Bad font file format -->
+<div class="defun">
+&mdash; Macro: int <b>EBFONT</b><var><a name="index-EBFONT-181"></a></var><br>
+<blockquote><!-- errno ???/59 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Machine is not on the network -->
+<div class="defun">
+&mdash; Macro: int <b>ENONET</b><var><a name="index-ENONET-182"></a></var><br>
+<blockquote><!-- errno ???/64 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Package not installed -->
+<div class="defun">
+&mdash; Macro: int <b>ENOPKG</b><var><a name="index-ENOPKG-183"></a></var><br>
+<blockquote><!-- errno ???/65 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Advertise error -->
+<div class="defun">
+&mdash; Macro: int <b>EADV</b><var><a name="index-EADV-184"></a></var><br>
+<blockquote><!-- errno ???/68 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Srmount error -->
+<div class="defun">
+&mdash; Macro: int <b>ESRMNT</b><var><a name="index-ESRMNT-185"></a></var><br>
+<blockquote><!-- errno ???/69 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Communication error on send -->
+<div class="defun">
+&mdash; Macro: int <b>ECOMM</b><var><a name="index-ECOMM-186"></a></var><br>
+<blockquote><!-- errno ???/70 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: RFS specific error -->
+<div class="defun">
+&mdash; Macro: int <b>EDOTDOT</b><var><a name="index-EDOTDOT-187"></a></var><br>
+<blockquote><!-- errno ???/73 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Name not unique on network -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTUNIQ</b><var><a name="index-ENOTUNIQ-188"></a></var><br>
+<blockquote><!-- errno ???/76 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: File descriptor in bad state -->
+<div class="defun">
+&mdash; Macro: int <b>EBADFD</b><var><a name="index-EBADFD-189"></a></var><br>
+<blockquote><!-- errno ???/77 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Remote address changed -->
+<div class="defun">
+&mdash; Macro: int <b>EREMCHG</b><var><a name="index-EREMCHG-190"></a></var><br>
+<blockquote><!-- errno ???/78 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Can not access a needed shared library -->
+<div class="defun">
+&mdash; Macro: int <b>ELIBACC</b><var><a name="index-ELIBACC-191"></a></var><br>
+<blockquote><!-- errno ???/79 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Accessing a corrupted shared library -->
+<div class="defun">
+&mdash; Macro: int <b>ELIBBAD</b><var><a name="index-ELIBBAD-192"></a></var><br>
+<blockquote><!-- errno ???/80 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: .lib section in a.out corrupted -->
+<div class="defun">
+&mdash; Macro: int <b>ELIBSCN</b><var><a name="index-ELIBSCN-193"></a></var><br>
+<blockquote><!-- errno ???/81 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Attempting to link in too many shared libraries -->
+<div class="defun">
+&mdash; Macro: int <b>ELIBMAX</b><var><a name="index-ELIBMAX-194"></a></var><br>
+<blockquote><!-- errno ???/82 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Cannot exec a shared library directly -->
+<div class="defun">
+&mdash; Macro: int <b>ELIBEXEC</b><var><a name="index-ELIBEXEC-195"></a></var><br>
+<blockquote><!-- errno ???/83 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Streams pipe error -->
+<div class="defun">
+&mdash; Macro: int <b>ESTRPIPE</b><var><a name="index-ESTRPIPE-196"></a></var><br>
+<blockquote><!-- errno ???/86 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Structure needs cleaning -->
+<div class="defun">
+&mdash; Macro: int <b>EUCLEAN</b><var><a name="index-EUCLEAN-197"></a></var><br>
+<blockquote><!-- errno ???/117 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Not a XENIX named type file -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTNAM</b><var><a name="index-ENOTNAM-198"></a></var><br>
+<blockquote><!-- errno ???/118 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: No XENIX semaphores available -->
+<div class="defun">
+&mdash; Macro: int <b>ENAVAIL</b><var><a name="index-ENAVAIL-199"></a></var><br>
+<blockquote><!-- errno ???/119 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Is a named type file -->
+<div class="defun">
+&mdash; Macro: int <b>EISNAM</b><var><a name="index-EISNAM-200"></a></var><br>
+<blockquote><!-- errno ???/120 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Remote I/O error -->
+<div class="defun">
+&mdash; Macro: int <b>EREMOTEIO</b><var><a name="index-EREMOTEIO-201"></a></var><br>
+<blockquote><!-- errno ???/121 -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: No medium found -->
+<div class="defun">
+&mdash; Macro: int <b>ENOMEDIUM</b><var><a name="index-ENOMEDIUM-202"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux???: Wrong medium type -->
+<div class="defun">
+&mdash; Macro: int <b>EMEDIUMTYPE</b><var><a name="index-EMEDIUMTYPE-203"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: Required key not available -->
+<div class="defun">
+&mdash; Macro: int <b>ENOKEY</b><var><a name="index-ENOKEY-204"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: Key has expired -->
+<div class="defun">
+&mdash; Macro: int <b>EKEYEXPIRED</b><var><a name="index-EKEYEXPIRED-205"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: Key has been revoked -->
+<div class="defun">
+&mdash; Macro: int <b>EKEYREVOKED</b><var><a name="index-EKEYREVOKED-206"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: Key was rejected by service -->
+<div class="defun">
+&mdash; Macro: int <b>EKEYREJECTED</b><var><a name="index-EKEYREJECTED-207"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: Owner died -->
+<div class="defun">
+&mdash; Macro: int <b>EOWNERDEAD</b><var><a name="index-EOWNERDEAD-208"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+<!-- errno.h -->
+<!-- Linux: State not recoverable -->
+<div class="defun">
+&mdash; Macro: int <b>ENOTRECOVERABLE</b><var><a name="index-ENOTRECOVERABLE-209"></a></var><br>
+<blockquote><!-- errno ???/??? -->
+        </blockquote></div>
+
+   </body></html>
+

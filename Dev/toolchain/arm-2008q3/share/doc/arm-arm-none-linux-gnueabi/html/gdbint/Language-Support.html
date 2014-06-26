@@ -1,0 +1,155 @@
+<html lang="en">
+<head>
+<title>Language Support - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Symbol-Handling.html#Symbol-Handling" title="Symbol Handling">
+<link rel="next" href="Host-Definition.html#Host-Definition" title="Host Definition">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Language-Support"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Host-Definition.html#Host-Definition">Host Definition</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Symbol-Handling.html#Symbol-Handling">Symbol Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">8 Language Support</h2>
+
+<p><a name="index-language-support-158"></a><span class="sc">gdb</span>'s language support is mainly driven by the symbol reader,
+although it is possible for the user to set the source language
+manually.
+
+   <p><span class="sc">gdb</span> chooses the source language by looking at the extension
+of the file recorded in the debug info; <samp><span class="file">.c</span></samp> means C, <samp><span class="file">.f</span></samp>
+means Fortran, etc.  It may also use a special-purpose language
+identifier if the debug format supports it, like with DWARF.
+
+<h3 class="section">8.1 Adding a Source Language to <span class="sc">gdb</span></h3>
+
+<p><a name="index-adding-source-language-159"></a>To add other languages to <span class="sc">gdb</span>'s expression parser, follow the
+following steps:
+
+     <dl>
+<dt><em>Create the expression parser.</em><dd>
+<a name="index-expression-parser-160"></a>This should reside in a file <samp><var>lang</var><span class="file">-exp.y</span></samp>.  Routines for
+building parsed expressions into a <code>union exp_element</code> list are in
+<samp><span class="file">parse.c</span></samp>.
+
+     <p><a name="index-language-parser-161"></a>Since we can't depend upon everyone having Bison, and YACC produces
+parsers that define a bunch of global names, the following lines
+<strong>must</strong> be included at the top of the YACC parser, to prevent the
+various parsers from defining the same global names:
+
+     <pre class="smallexample">          #define yyparse         <var>lang</var>_parse
+          #define yylex           <var>lang</var>_lex
+          #define yyerror         <var>lang</var>_error
+          #define yylval          <var>lang</var>_lval
+          #define yychar          <var>lang</var>_char
+          #define yydebug         <var>lang</var>_debug
+          #define yypact          <var>lang</var>_pact
+          #define yyr1            <var>lang</var>_r1
+          #define yyr2            <var>lang</var>_r2
+          #define yydef           <var>lang</var>_def
+          #define yychk           <var>lang</var>_chk
+          #define yypgo           <var>lang</var>_pgo
+          #define yyact           <var>lang</var>_act
+          #define yyexca          <var>lang</var>_exca
+          #define yyerrflag       <var>lang</var>_errflag
+          #define yynerrs         <var>lang</var>_nerrs
+</pre>
+     <p>At the bottom of your parser, define a <code>struct language_defn</code> and
+initialize it with the right values for your language.  Define an
+<code>initialize_</code><var>lang</var> routine and have it call
+&lsquo;<samp><span class="samp">add_language(</span><var>lang</var><span class="samp">_language_defn)</span></samp>&rsquo; to tell the rest of <span class="sc">gdb</span>
+that your language exists.  You'll need some other supporting variables
+and functions, which will be used via pointers from your
+<var>lang</var><code>_language_defn</code>.  See the declaration of <code>struct
+language_defn</code> in <samp><span class="file">language.h</span></samp>, and the other <samp><span class="file">*-exp.y</span></samp> files,
+for more information.
+
+     <br><dt><em>Add any evaluation routines, if necessary</em><dd>
+<a name="index-expression-evaluation-routines-162"></a><a name="index-evaluate_005fsubexp-163"></a><a name="index-prefixify_005fsubexp-164"></a><a name="index-length_005fof_005fsubexp-165"></a>If you need new opcodes (that represent the operations of the language),
+add them to the enumerated type in <samp><span class="file">expression.h</span></samp>.  Add support
+code for these operations in the <code>evaluate_subexp</code> function
+defined in the file <samp><span class="file">eval.c</span></samp>.  Add cases
+for new opcodes in two functions from <samp><span class="file">parse.c</span></samp>:
+<code>prefixify_subexp</code> and <code>length_of_subexp</code>.  These compute
+the number of <code>exp_element</code>s that a given operation takes up.
+
+     <br><dt><em>Update some existing code</em><dd>
+Add an enumerated identifier for your language to the enumerated type
+<code>enum language</code> in <samp><span class="file">defs.h</span></samp>.
+
+     <p>Update the routines in <samp><span class="file">language.c</span></samp> so your language is included. 
+These routines include type predicates and such, which (in some cases)
+are language dependent.  If your language does not appear in the switch
+statement, an error is reported.
+
+     <p><a name="index-current_005flanguage-166"></a>Also included in <samp><span class="file">language.c</span></samp> is the code that updates the variable
+<code>current_language</code>, and the routines that translate the
+<code>language_</code><var>lang</var> enumerated identifier into a printable
+string.
+
+     <p><a name="index-g_t_005finitialize_005flanguage-167"></a>Update the function <code>_initialize_language</code> to include your
+language.  This function picks the default language upon startup, so is
+dependent upon which languages that <span class="sc">gdb</span> is built for.
+
+     <p><a name="index-allocate_005fsymtab-168"></a>Update <code>allocate_symtab</code> in <samp><span class="file">symfile.c</span></samp> and/or symbol-reading
+code so that the language of each symtab (source file) is set properly. 
+This is used to determine the language to use at each stack frame level. 
+Currently, the language is set based upon the extension of the source
+file.  If the language can be better inferred from the symbol
+information, please set the language of the symtab in the symbol-reading
+code.
+
+     <p><a name="index-print_005fsubexp-169"></a><a name="index-op_005fprint_005ftab-170"></a>Add helper code to <code>print_subexp</code> (in <samp><span class="file">expprint.c</span></samp>) to handle any new
+expression opcodes you have added to <samp><span class="file">expression.h</span></samp>.  Also, add the
+printed representations of your operators to <code>op_print_tab</code>.
+
+     <br><dt><em>Add a place of call</em><dd>
+<a name="index-parse_005fexp_005f1-171"></a>Add a call to <var>lang</var><code>_parse()</code> and <var>lang</var><code>_error</code> in
+<code>parse_exp_1</code> (defined in <samp><span class="file">parse.c</span></samp>).
+
+     <br><dt><em>Use macros to trim code</em><dd>
+<a name="index-trimming-language_002ddependent-code-172"></a>The user has the option of building <span class="sc">gdb</span> for some or all of the
+languages.  If the user decides to build <span class="sc">gdb</span> for the language
+<var>lang</var>, then every file dependent on <samp><span class="file">language.h</span></samp> will have the
+macro <code>_LANG_</code><var>lang</var> defined in it.  Use <code>#ifdef</code>s to
+leave out large routines that the user won't need if he or she is not
+using your language.
+
+     <p>Note that you do not need to do this in your YACC parser, since if <span class="sc">gdb</span>
+is not build for <var>lang</var>, then <samp><var>lang</var><span class="file">-exp.tab.o</span></samp> (the
+compiled form of your parser) is not linked into <span class="sc">gdb</span> at all.
+
+     <p>See the file <samp><span class="file">configure.in</span></samp> for how <span class="sc">gdb</span> is configured
+for different languages.
+
+     <br><dt><em>Edit </em><samp><span class="file">Makefile.in</span></samp><dd>
+Add dependencies in <samp><span class="file">Makefile.in</span></samp>.  Make sure you update the macro
+variables such as <code>HFILES</code> and <code>OBJS</code>, otherwise your code may
+not get linked in, or, worse yet, it may not get <code>tar</code>red into the
+distribution! 
+</dl>
+
+   </body></html>
+

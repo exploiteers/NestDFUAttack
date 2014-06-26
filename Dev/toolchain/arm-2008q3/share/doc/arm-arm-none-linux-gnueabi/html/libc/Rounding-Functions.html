@@ -1,0 +1,243 @@
+<html lang="en">
+<head>
+<title>Rounding Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="prev" href="Normalization-Functions.html#Normalization-Functions" title="Normalization Functions">
+<link rel="next" href="Remainder-Functions.html#Remainder-Functions" title="Remainder Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Rounding-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Remainder-Functions.html#Remainder-Functions">Remainder Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Normalization-Functions.html#Normalization-Functions">Normalization Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.3 Rounding Functions</h4>
+
+<p><a name="index-converting-floats-to-integers-2436"></a>
+<a name="index-math_002eh-2437"></a>The functions listed here perform operations such as rounding and
+truncation of floating-point values. Some of these functions convert
+floating point numbers to integer values.  They are all declared in
+<samp><span class="file">math.h</span></samp>.
+
+   <p>You can also convert floating-point numbers to integers simply by
+casting them to <code>int</code>.  This discards the fractional part,
+effectively rounding towards zero.  However, this only works if the
+result can actually be represented as an <code>int</code>&mdash;for very large
+numbers, this is impossible.  The functions listed here return the
+result as a <code>double</code> instead to get around this problem.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>ceil</b> (<var>double x</var>)<var><a name="index-ceil-2438"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>ceilf</b> (<var>float x</var>)<var><a name="index-ceilf-2439"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>ceill</b> (<var>long double x</var>)<var><a name="index-ceill-2440"></a></var><br>
+<blockquote><p>These functions round <var>x</var> upwards to the nearest integer,
+returning that value as a <code>double</code>.  Thus, <code>ceil (1.5)</code>
+is <code>2.0</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>floor</b> (<var>double x</var>)<var><a name="index-floor-2441"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>floorf</b> (<var>float x</var>)<var><a name="index-floorf-2442"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>floorl</b> (<var>long double x</var>)<var><a name="index-floorl-2443"></a></var><br>
+<blockquote><p>These functions round <var>x</var> downwards to the nearest
+integer, returning that value as a <code>double</code>.  Thus, <code>floor
+(1.5)</code> is <code>1.0</code> and <code>floor (-1.5)</code> is <code>-2.0</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>trunc</b> (<var>double x</var>)<var><a name="index-trunc-2444"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>truncf</b> (<var>float x</var>)<var><a name="index-truncf-2445"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>truncl</b> (<var>long double x</var>)<var><a name="index-truncl-2446"></a></var><br>
+<blockquote><p>The <code>trunc</code> functions round <var>x</var> towards zero to the nearest
+integer (returned in floating-point format).  Thus, <code>trunc (1.5)</code>
+is <code>1.0</code> and <code>trunc (-1.5)</code> is <code>-1.0</code>. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>rint</b> (<var>double x</var>)<var><a name="index-rint-2447"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>rintf</b> (<var>float x</var>)<var><a name="index-rintf-2448"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>rintl</b> (<var>long double x</var>)<var><a name="index-rintl-2449"></a></var><br>
+<blockquote><p>These functions round <var>x</var> to an integer value according to the
+current rounding mode.  See <a href="Floating-Point-Parameters.html#Floating-Point-Parameters">Floating Point Parameters</a>, for
+information about the various rounding modes.  The default
+rounding mode is to round to the nearest integer; some machines
+support other modes, but round-to-nearest is always used unless
+you explicitly select another.
+
+        <p>If <var>x</var> was not initially an integer, these functions raise the
+inexact exception. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>nearbyint</b> (<var>double x</var>)<var><a name="index-nearbyint-2450"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>nearbyintf</b> (<var>float x</var>)<var><a name="index-nearbyintf-2451"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>nearbyintl</b> (<var>long double x</var>)<var><a name="index-nearbyintl-2452"></a></var><br>
+<blockquote><p>These functions return the same value as the <code>rint</code> functions, but
+do not raise the inexact exception if <var>x</var> is not an integer. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>round</b> (<var>double x</var>)<var><a name="index-round-2453"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>roundf</b> (<var>float x</var>)<var><a name="index-roundf-2454"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>roundl</b> (<var>long double x</var>)<var><a name="index-roundl-2455"></a></var><br>
+<blockquote><p>These functions are similar to <code>rint</code>, but they round halfway
+cases away from zero instead of to the nearest even integer. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long int <b>lrint</b> (<var>double x</var>)<var><a name="index-lrint-2456"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long int <b>lrintf</b> (<var>float x</var>)<var><a name="index-lrintf-2457"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long int <b>lrintl</b> (<var>long double x</var>)<var><a name="index-lrintl-2458"></a></var><br>
+<blockquote><p>These functions are just like <code>rint</code>, but they return a
+<code>long int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long long int <b>llrint</b> (<var>double x</var>)<var><a name="index-llrint-2459"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long long int <b>llrintf</b> (<var>float x</var>)<var><a name="index-llrintf-2460"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long long int <b>llrintl</b> (<var>long double x</var>)<var><a name="index-llrintl-2461"></a></var><br>
+<blockquote><p>These functions are just like <code>rint</code>, but they return a
+<code>long long int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long int <b>lround</b> (<var>double x</var>)<var><a name="index-lround-2462"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long int <b>lroundf</b> (<var>float x</var>)<var><a name="index-lroundf-2463"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long int <b>lroundl</b> (<var>long double x</var>)<var><a name="index-lroundl-2464"></a></var><br>
+<blockquote><p>These functions are just like <code>round</code>, but they return a
+<code>long int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: long long int <b>llround</b> (<var>double x</var>)<var><a name="index-llround-2465"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long long int <b>llroundf</b> (<var>float x</var>)<var><a name="index-llroundf-2466"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long long int <b>llroundl</b> (<var>long double x</var>)<var><a name="index-llroundl-2467"></a></var><br>
+<blockquote><p>These functions are just like <code>round</code>, but they return a
+<code>long long int</code> instead of a floating-point number. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>modf</b> (<var>double value, double *integer-part</var>)<var><a name="index-modf-2468"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>modff</b> (<var>float value, float *integer-part</var>)<var><a name="index-modff-2469"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>modfl</b> (<var>long double value, long double *integer-part</var>)<var><a name="index-modfl-2470"></a></var><br>
+<blockquote><p>These functions break the argument <var>value</var> into an integer part and a
+fractional part (between <code>-1</code> and <code>1</code>, exclusive).  Their sum
+equals <var>value</var>.  Each of the parts has the same sign as <var>value</var>,
+and the integer part is always rounded toward zero.
+
+        <p><code>modf</code> stores the integer part in <code>*</code><var>integer-part</var>, and
+returns the fractional part.  For example, <code>modf (2.5, &amp;intpart)</code>
+returns <code>0.5</code> and stores <code>2.0</code> into <code>intpart</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

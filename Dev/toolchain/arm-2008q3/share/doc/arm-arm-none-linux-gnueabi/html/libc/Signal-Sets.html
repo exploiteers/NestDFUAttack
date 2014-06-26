@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+<title>Signal Sets - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Why-Block.html#Why-Block" title="Why Block">
+<link rel="next" href="Process-Signal-Mask.html#Process-Signal-Mask" title="Process Signal Mask">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Sets"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Why-Block.html#Why-Block">Why Block</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.2 Signal Sets</h4>
+
+<p>All of the signal blocking functions use a data structure called a
+<dfn>signal set</dfn> to specify what signals are affected.  Thus, every
+activity involves two stages: creating the signal set, and then passing
+it as an argument to a library function. 
+<a name="index-signal-set-2956"></a>
+These facilities are declared in the header file <samp><span class="file">signal.h</span></samp>. 
+<a name="index-signal_002eh-2957"></a>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Data Type: <b>sigset_t</b><var><a name="index-sigset_005ft-2958"></a></var><br>
+<blockquote><p>The <code>sigset_t</code> data type is used to represent a signal set. 
+Internally, it may be implemented as either an integer or structure
+type.
+
+        <p>For portability, use only the functions described in this section to
+initialize, change, and retrieve information from <code>sigset_t</code>
+objects&mdash;don't try to manipulate them directly. 
+</p></blockquote></div>
+
+   <p>There are two ways to initialize a signal set.  You can initially
+specify it to be empty with <code>sigemptyset</code> and then add specified
+signals individually.  Or you can specify it to be full with
+<code>sigfillset</code> and then delete specified signals individually.
+
+   <p>You must always initialize the signal set with one of these two
+functions before using it in any other way.  Don't try to set all the
+signals explicitly because the <code>sigset_t</code> object might include some
+other information (like a version field) that needs to be initialized as
+well.  (In addition, it's not wise to put into your program an
+assumption that the system has no signals aside from the ones you know
+about.)
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigemptyset</b> (<var>sigset_t *set</var>)<var><a name="index-sigemptyset-2959"></a></var><br>
+<blockquote><p>This function initializes the signal set <var>set</var> to exclude all of the
+defined signals.  It always returns <code>0</code>. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigfillset</b> (<var>sigset_t *set</var>)<var><a name="index-sigfillset-2960"></a></var><br>
+<blockquote><p>This function initializes the signal set <var>set</var> to include
+all of the defined signals.  Again, the return value is <code>0</code>. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigaddset</b> (<var>sigset_t *set, int signum</var>)<var><a name="index-sigaddset-2961"></a></var><br>
+<blockquote><p>This function adds the signal <var>signum</var> to the signal set <var>set</var>. 
+All <code>sigaddset</code> does is modify <var>set</var>; it does not block or
+unblock any signals.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure. 
+The following <code>errno</code> error condition is defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The <var>signum</var> argument doesn't specify a valid signal. 
+</dl>
+        </p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigdelset</b> (<var>sigset_t *set, int signum</var>)<var><a name="index-sigdelset-2962"></a></var><br>
+<blockquote><p>This function removes the signal <var>signum</var> from the signal set
+<var>set</var>.  All <code>sigdelset</code> does is modify <var>set</var>; it does not
+block or unblock any signals.  The return value and error conditions are
+the same as for <code>sigaddset</code>. 
+</p></blockquote></div>
+
+   <p>Finally, there is a function to test what signals are in a signal set:
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>sigismember</b> (<var>const sigset_t *set, int signum</var>)<var><a name="index-sigismember-2963"></a></var><br>
+<blockquote><p>The <code>sigismember</code> function tests whether the signal <var>signum</var> is
+a member of the signal set <var>set</var>.  It returns <code>1</code> if the signal
+is in the set, <code>0</code> if not, and <code>-1</code> if there is an error.
+
+        <p>The following <code>errno</code> error condition is defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The <var>signum</var> argument doesn't specify a valid signal. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

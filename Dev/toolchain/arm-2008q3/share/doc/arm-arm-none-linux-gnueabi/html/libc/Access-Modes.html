@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+<title>Access Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Status-Flags.html#File-Status-Flags" title="File Status Flags">
+<link rel="next" href="Open_002dtime-Flags.html#Open_002dtime-Flags" title="Open-time Flags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Access-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.14.1 File Access Modes</h4>
+
+<p>The file access modes allow a file descriptor to be used for reading,
+writing, or both.  (In the GNU system, they can also allow none of these,
+and allow execution of the file as a program.)  The access modes are chosen
+when the file is opened, and never change.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_RDONLY</b><var><a name="index-O_005fRDONLY-1329"></a></var><br>
+<blockquote><p>Open the file for read access. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_WRONLY</b><var><a name="index-O_005fWRONLY-1330"></a></var><br>
+<blockquote><p>Open the file for write access. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_RDWR</b><var><a name="index-O_005fRDWR-1331"></a></var><br>
+<blockquote><p>Open the file for both reading and writing. 
+</p></blockquote></div>
+
+   <p>In the GNU system (and not in other systems), <code>O_RDONLY</code> and
+<code>O_WRONLY</code> are independent bits that can be bitwise-ORed together,
+and it is valid for either bit to be set or clear.  This means that
+<code>O_RDWR</code> is the same as <code>O_RDONLY|O_WRONLY</code>.  A file access
+mode of zero is permissible; it allows no operations that do input or
+output to the file, but does allow other operations such as
+<code>fchmod</code>.  On the GNU system, since &ldquo;read-only&rdquo; or &ldquo;write-only&rdquo;
+is a misnomer, <samp><span class="file">fcntl.h</span></samp> defines additional names for the file
+access modes.  These names are preferred when writing GNU-specific code. 
+But most programs will want to be portable to other POSIX.1 systems and
+should use the POSIX.1 names above instead.
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_READ</b><var><a name="index-O_005fREAD-1332"></a></var><br>
+<blockquote><p>Open the file for reading.  Same as <code>O_RDONLY</code>; only defined on GNU. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_WRITE</b><var><a name="index-O_005fWRITE-1333"></a></var><br>
+<blockquote><p>Open the file for writing.  Same as <code>O_WRONLY</code>; only defined on GNU. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_EXEC</b><var><a name="index-O_005fEXEC-1334"></a></var><br>
+<blockquote><p>Open the file for executing.  Only defined on GNU. 
+</p></blockquote></div>
+
+   <p>To determine the file access mode with <code>fcntl</code>, you must extract
+the access mode bits from the retrieved file status flags.  In the GNU
+system, you can just test the <code>O_READ</code> and <code>O_WRITE</code> bits in
+the flags word.  But in other POSIX.1 systems, reading and writing
+access modes are not stored as distinct bit flags.  The portable way to
+extract the file access mode bits is with <code>O_ACCMODE</code>.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_ACCMODE</b><var><a name="index-O_005fACCMODE-1335"></a></var><br>
+<blockquote><p>This macro stands for a mask that can be bitwise-ANDed with the file
+status flag value to produce a value representing the file access mode. 
+The mode will be <code>O_RDONLY</code>, <code>O_WRONLY</code>, or <code>O_RDWR</code>. 
+(In the GNU system it could also be zero, and it never includes the
+<code>O_EXEC</code> bit.) 
+</p></blockquote></div>
+
+   </body></html>
+

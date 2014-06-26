@@ -1,0 +1,352 @@
+<html lang="en">
+<head>
+<title>Classification of Wide Characters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Character-Handling.html#Character-Handling" title="Character Handling">
+<link rel="prev" href="Case-Conversion.html#Case-Conversion" title="Case Conversion">
+<link rel="next" href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes" title="Using Wide Char Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Classification-of-Wide-Characters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes">Using Wide Char Classes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Case-Conversion.html#Case-Conversion">Case Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Character-Handling.html#Character-Handling">Character Handling</a>
+<hr>
+</div>
+
+<h3 class="section">4.3 Character class determination for wide characters</h3>
+
+<p>Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> defines functions to classify wide
+characters.  Although the original ISO&nbsp;C90<!-- /@w --> standard already defined
+the type <code>wchar_t</code>, no functions operating on them were defined.
+
+   <p>The general design of the classification functions for wide characters
+is more general.  It allows extensions to the set of available
+classifications, beyond those which are always available.  The POSIX
+standard specifies how extensions can be made, and this is already
+implemented in the GNU C library implementation of the <code>localedef</code>
+program.
+
+   <p>The character class functions are normally implemented with bitsets,
+with a bitset per character.  For a given character, the appropriate
+bitset is read from a table and a test is performed as to whether a
+certain bit is set.  Which bit is tested for is determined by the
+class.
+
+   <p>For the wide character classification functions this is made visible. 
+There is a type classification type defined, a function to retrieve this
+value for a given class, and a function to test whether a given
+character is in this class, using the classification value.  On top of
+this the normal character classification functions as used for
+<code>char</code> objects can be defined.
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data type: <b>wctype_t</b><var><a name="index-wctype_005ft-404"></a></var><br>
+<blockquote><p>The <code>wctype_t</code> can hold a value which represents a character class. 
+The only defined way to generate such a value is by using the
+<code>wctype</code> function.
+
+        <p><a name="index-wctype_002eh-405"></a>This type is defined in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wctype_t <b>wctype</b> (<var>const char *property</var>)<var><a name="index-wctype-406"></a></var><br>
+<blockquote><p>The <code>wctype</code> returns a value representing a class of wide
+characters which is identified by the string <var>property</var>.  Beside
+some standard properties each locale can define its own ones.  In case
+no property with the given name is known for the current locale
+selected for the <code>LC_CTYPE</code> category, the function returns zero.
+
+     <p class="noindent">The properties known in every locale are:
+
+        <p><table summary=""><tr align="left"><td valign="top" width="25%"><code>"alnum"</code> </td><td valign="top" width="25%"><code>"alpha"</code> </td><td valign="top" width="25%"><code>"cntrl"</code> </td><td valign="top" width="25%"><code>"digit"</code>
+<br></td></tr><tr align="left"><td valign="top" width="25%"><code>"graph"</code> </td><td valign="top" width="25%"><code>"lower"</code> </td><td valign="top" width="25%"><code>"print"</code> </td><td valign="top" width="25%"><code>"punct"</code>
+<br></td></tr><tr align="left"><td valign="top" width="25%"><code>"space"</code> </td><td valign="top" width="25%"><code>"upper"</code> </td><td valign="top" width="25%"><code>"xdigit"</code>
+        <br></td></tr></table>
+
+        <p><a name="index-wctype_002eh-407"></a>This function is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>To test the membership of a character to one of the non-standard classes
+the ISO&nbsp;C<!-- /@w --> standard defines a completely new function.
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>iswctype</b> (<var>wint_t wc, wctype_t desc</var>)<var><a name="index-iswctype-408"></a></var><br>
+<blockquote><p>This function returns a nonzero value if <var>wc</var> is in the character
+class specified by <var>desc</var>.  <var>desc</var> must previously be returned
+by a successful call to <code>wctype</code>.
+
+        <p><a name="index-wctype_002eh-409"></a>This function is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>To make it easier to use the commonly-used classification functions,
+they are defined in the C library.  There is no need to use
+<code>wctype</code> if the property string is one of the known character
+classes.  In some situations it is desirable to construct the property
+strings, and then it is important that <code>wctype</code> can also handle the
+standard classes.
+
+   <p><a name="index-alphanumeric-character-410"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswalnum</b> (<var>wint_t wc</var>)<var><a name="index-iswalnum-411"></a></var><br>
+<blockquote><p>This function returns a nonzero value if <var>wc</var> is an alphanumeric
+character (a letter or number); in other words, if either <code>iswalpha</code>
+or <code>iswdigit</code> is true of a character, then <code>iswalnum</code> is also
+true.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("alnum"))
+</pre>
+        <p><a name="index-wctype_002eh-412"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-alphabetic-character-413"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswalpha</b> (<var>wint_t wc</var>)<var><a name="index-iswalpha-414"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is an alphabetic character (a letter).  If
+<code>iswlower</code> or <code>iswupper</code> is true of a character, then
+<code>iswalpha</code> is also true.
+
+        <p>In some locales, there may be additional characters for which
+<code>iswalpha</code> is true&mdash;letters which are neither upper case nor lower
+case.  But in the standard <code>"C"</code> locale, there are no such
+additional characters.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("alpha"))
+</pre>
+        <p><a name="index-wctype_002eh-415"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-control-character-416"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswcntrl</b> (<var>wint_t wc</var>)<var><a name="index-iswcntrl-417"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a control character (that is, a character that
+is not a printing character).
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("cntrl"))
+</pre>
+        <p><a name="index-wctype_002eh-418"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-digit-character-419"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswdigit</b> (<var>wint_t wc</var>)<var><a name="index-iswdigit-420"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a digit (e.g., &lsquo;<samp><span class="samp">0</span></samp>&rsquo; through &lsquo;<samp><span class="samp">9</span></samp>&rsquo;). 
+Please note that this function does not only return a nonzero value for
+<em>decimal</em> digits, but for all kinds of digits.  A consequence is
+that code like the following will <strong>not</strong> work unconditionally for
+wide characters:
+
+     <pre class="smallexample">          n = 0;
+          while (iswdigit (*wc))
+            {
+              n *= 10;
+              n += *wc++ - L'0';
+            }
+</pre>
+        <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("digit"))
+</pre>
+        <p><a name="index-wctype_002eh-421"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-graphic-character-422"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswgraph</b> (<var>wint_t wc</var>)<var><a name="index-iswgraph-423"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a graphic character; that is, a character
+that has a glyph associated with it.  The whitespace characters are not
+considered graphic.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("graph"))
+</pre>
+        <p><a name="index-wctype_002eh-424"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-lower_002dcase-character-425"></a><!-- ctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswlower</b> (<var>wint_t wc</var>)<var><a name="index-iswlower-426"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a lower-case letter.  The letter need not be
+from the Latin alphabet, any alphabet representable is valid.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("lower"))
+</pre>
+        <p><a name="index-wctype_002eh-427"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-printing-character-428"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswprint</b> (<var>wint_t wc</var>)<var><a name="index-iswprint-429"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a printing character.  Printing characters
+include all the graphic characters, plus the space (&lsquo;<samp> </samp>&rsquo;) character.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("print"))
+</pre>
+        <p><a name="index-wctype_002eh-430"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-punctuation-character-431"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswpunct</b> (<var>wint_t wc</var>)<var><a name="index-iswpunct-432"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a punctuation character. 
+This means any printing character that is not alphanumeric or a space
+character.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("punct"))
+</pre>
+        <p><a name="index-wctype_002eh-433"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-whitespace-character-434"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswspace</b> (<var>wint_t wc</var>)<var><a name="index-iswspace-435"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a <dfn>whitespace</dfn> character.  In the standard
+<code>"C"</code> locale, <code>iswspace</code> returns true for only the standard
+whitespace characters:
+
+          <dl>
+<dt><code>L' '</code><dd>space
+
+          <br><dt><code>L'\f'</code><dd>formfeed
+
+          <br><dt><code>L'\n'</code><dd>newline
+
+          <br><dt><code>L'\r'</code><dd>carriage return
+
+          <br><dt><code>L'\t'</code><dd>horizontal tab
+
+          <br><dt><code>L'\v'</code><dd>vertical tab
+</dl>
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("space"))
+</pre>
+        <p><a name="index-wctype_002eh-436"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-upper_002dcase-character-437"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswupper</b> (<var>wint_t wc</var>)<var><a name="index-iswupper-438"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is an upper-case letter.  The letter need not be
+from the Latin alphabet, any alphabet representable is valid.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("upper"))
+</pre>
+        <p><a name="index-wctype_002eh-439"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p><a name="index-hexadecimal-digit-character-440"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswxdigit</b> (<var>wint_t wc</var>)<var><a name="index-iswxdigit-441"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a hexadecimal digit. 
+Hexadecimal digits include the normal decimal digits &lsquo;<samp><span class="samp">0</span></samp>&rsquo; through
+&lsquo;<samp><span class="samp">9</span></samp>&rsquo; and the letters &lsquo;<samp><span class="samp">A</span></samp>&rsquo; through &lsquo;<samp><span class="samp">F</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">a</span></samp>&rsquo; through &lsquo;<samp><span class="samp">f</span></samp>&rsquo;.
+
+     <p class="noindent">This function can be implemented using
+
+     <pre class="smallexample">          iswctype (wc, wctype ("xdigit"))
+</pre>
+        <p><a name="index-wctype_002eh-442"></a>It is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>The GNU C library also provides a function which is not defined in the
+ISO&nbsp;C<!-- /@w --> standard but which is available as a version for single byte
+characters as well.
+
+   <p><a name="index-blank-character-443"></a><!-- wctype.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>iswblank</b> (<var>wint_t wc</var>)<var><a name="index-iswblank-444"></a></var><br>
+<blockquote><p>Returns true if <var>wc</var> is a blank character; that is, a space or a tab. 
+This function was originally a GNU extension, but was added in ISO&nbsp;C99<!-- /@w -->. 
+It is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+<title>Stream/Descriptor Precautions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Descriptors-and-Streams.html#Descriptors-and-Streams" title="Descriptors and Streams">
+<link rel="next" href="Scatter_002dGather.html#Scatter_002dGather" title="Scatter-Gather">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Stream%2fDescriptor-Precautions"></a>
+<a name="Stream_002fDescriptor-Precautions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Scatter_002dGather.html#Scatter_002dGather">Scatter-Gather</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Descriptors-and-Streams.html#Descriptors-and-Streams">Descriptors and Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.5 Dangers of Mixing Streams and Descriptors</h3>
+
+<p><a name="index-channels-1241"></a><a name="index-streams-and-descriptors-1242"></a><a name="index-descriptors-and-streams-1243"></a><a name="index-mixing-descriptors-and-streams-1244"></a>
+You can have multiple file descriptors and streams (let's call both
+streams and descriptors &ldquo;channels&rdquo; for short) connected to the same
+file, but you must take care to avoid confusion between channels.  There
+are two cases to consider: <dfn>linked</dfn> channels that share a single
+file position value, and <dfn>independent</dfn> channels that have their own
+file positions.
+
+   <p>It's best to use just one channel in your program for actual data
+transfer to any given file, except when all the access is for input. 
+For example, if you open a pipe (something you can only do at the file
+descriptor level), either do all I/O with the descriptor, or construct a
+stream from the descriptor with <code>fdopen</code> and then do all I/O with
+the stream.
+
+<ul class="menu">
+<li><a accesskey="1" href="Linked-Channels.html#Linked-Channels">Linked Channels</a>: 	   Dealing with channels sharing a file position. 
+<li><a accesskey="2" href="Independent-Channels.html#Independent-Channels">Independent Channels</a>:    Dealing with separately opened, unlinked channels. 
+<li><a accesskey="3" href="Cleaning-Streams.html#Cleaning-Streams">Cleaning Streams</a>: 	   Cleaning a stream makes it safe to use
+                            another channel. 
+</ul>
+
+   </body></html>
+

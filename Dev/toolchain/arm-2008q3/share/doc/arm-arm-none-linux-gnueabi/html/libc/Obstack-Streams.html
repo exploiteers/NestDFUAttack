@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>Obstack Streams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams" title="Other Kinds of Streams">
+<link rel="prev" href="String-Streams.html#String-Streams" title="String Streams">
+<link rel="next" href="Custom-Streams.html#Custom-Streams" title="Custom Streams">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Obstack-Streams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Custom-Streams.html#Custom-Streams">Custom Streams</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="String-Streams.html#String-Streams">String Streams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Other-Kinds-of-Streams.html#Other-Kinds-of-Streams">Other Kinds of Streams</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.21.2 Obstack Streams</h4>
+
+<p>You can open an output stream that puts it data in an obstack. 
+See <a href="Obstacks.html#Obstacks">Obstacks</a>.
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: FILE * <b>open_obstack_stream</b> (<var>struct obstack *obstack</var>)<var><a name="index-open_005fobstack_005fstream-1158"></a></var><br>
+<blockquote><p>This function opens a stream for writing data into the obstack <var>obstack</var>. 
+This starts an object in the obstack and makes it grow as data is
+written (see <a href="Growing-Objects.html#Growing-Objects">Growing Objects</a>). 
+<!-- @end group  Doubly invalid because not nested right. -->
+
+        <p>Calling <code>fflush</code> on this stream updates the current size of the
+object to match the amount of data that has been written.  After a call
+to <code>fflush</code>, you can examine the object temporarily.
+
+        <p>You can move the file position of an obstack stream with <code>fseek</code> or
+<code>fseeko</code> (see <a href="File-Positioning.html#File-Positioning">File Positioning</a>).  Moving the file position past
+the end of the data written fills the intervening space with zeros.
+
+        <p>To make the object permanent, update the obstack with <code>fflush</code>, and
+then use <code>obstack_finish</code> to finalize the object and get its address. 
+The following write to the stream starts a new object in the obstack,
+and later writes add to that object until you do another <code>fflush</code>
+and <code>obstack_finish</code>.
+
+        <p>But how do you find out how long the object is?  You can get the length
+in bytes by calling <code>obstack_object_size</code> (see <a href="Status-of-an-Obstack.html#Status-of-an-Obstack">Status of an Obstack</a>), or you can null-terminate the object like this:
+
+     <pre class="smallexample">          obstack_1grow (<var>obstack</var>, 0);
+</pre>
+        <p>Whichever one you do, you must do it <em>before</em> calling
+<code>obstack_finish</code>.  (You can do both if you wish.) 
+</p></blockquote></div>
+
+   <p>Here is a sample function that uses <code>open_obstack_stream</code>:
+
+<pre class="smallexample">     char *
+     make_message_string (const char *a, int b)
+     {
+       FILE *stream = open_obstack_stream (&amp;message_obstack);
+       output_task (stream);
+       fprintf (stream, ": ");
+       fprintf (stream, a, b);
+       fprintf (stream, "\n");
+       fclose (stream);
+       obstack_1grow (&amp;message_obstack, 0);
+       return obstack_finish (&amp;message_obstack);
+     }
+</pre>
+   </body></html>
+

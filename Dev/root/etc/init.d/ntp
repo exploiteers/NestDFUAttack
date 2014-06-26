@@ -1,0 +1,58 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the network
+#      connection manager daemon, connmand.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+NTPD="${USRSBINDIR}/ntpd"
+NTPDPIDFILE="${VARDIR}/run/ntpd.pid"
+
+NTPDOPTS=`${CAT} ${CONFDIR}/ntpd.options 2> ${NULL}`
+NTPDOPTS="${NTPDOPTS} -p ${NTPDPIDFILE}"
+
+start_ntpd () {
+    if test -x ${NTPD}; then
+        ${STARTDAEMON} -q -p ${NTPDPIDFILE} -a ${NTPD} -- ${NTPDOPTS}
+	${ECHO} " ntpd\c"
+    fi
+}
+
+stop_ntpd () {
+    ${STOPDAEMON} -q -p ${NTPDPIDFILE}
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "Network Time Protocol daemon:\c"
+
+	if $CHECK ntpd; then
+	    start_ntpd
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	stop_ntpd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

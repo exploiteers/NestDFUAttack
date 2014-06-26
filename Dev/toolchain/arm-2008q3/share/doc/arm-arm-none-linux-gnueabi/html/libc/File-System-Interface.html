@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+<title>File System Interface - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="next" href="Pipes-and-FIFOs.html#Pipes-and-FIFOs" title="Pipes and FIFOs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="File-System-Interface"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Functions for manipulating files -->
+<h2 class="chapter">14 File System Interface</h2>
+
+<p>This chapter describes the GNU C library's functions for manipulating
+files.  Unlike the input and output functions (see <a href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>;
+see <a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>), these functions are concerned with operating
+on the files themselves rather than on their contents.
+
+   <p>Among the facilities described in this chapter are functions for
+examining or modifying directories, functions for renaming and deleting
+files, and functions for examining and setting file attributes such as
+access permissions and modification times.
+
+<ul class="menu">
+<li><a accesskey="1" href="Working-Directory.html#Working-Directory">Working Directory</a>:            This is used to resolve relative
+				 file names. 
+<li><a accesskey="2" href="Accessing-Directories.html#Accessing-Directories">Accessing Directories</a>:        Finding out what files a directory
+				 contains. 
+<li><a accesskey="3" href="Working-with-Directory-Trees.html#Working-with-Directory-Trees">Working with Directory Trees</a>:  Apply actions to all files or a selectable
+                                 subset of a directory hierarchy. 
+<li><a accesskey="4" href="Hard-Links.html#Hard-Links">Hard Links</a>:                   Adding alternate names to a file. 
+<li><a accesskey="5" href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>:               A file that ``points to'' a file name. 
+<li><a accesskey="6" href="Deleting-Files.html#Deleting-Files">Deleting Files</a>:               How to delete a file, and what that means. 
+<li><a accesskey="7" href="Renaming-Files.html#Renaming-Files">Renaming Files</a>:               Changing a file's name. 
+<li><a accesskey="8" href="Creating-Directories.html#Creating-Directories">Creating Directories</a>:         A system call just for creating a directory. 
+<li><a accesskey="9" href="File-Attributes.html#File-Attributes">File Attributes</a>:              Attributes of individual files. 
+<li><a href="Making-Special-Files.html#Making-Special-Files">Making Special Files</a>:         How to create special files. 
+<li><a href="Temporary-Files.html#Temporary-Files">Temporary Files</a>:              Naming and creating temporary files. 
+</ul>
+
+   </body></html>
+

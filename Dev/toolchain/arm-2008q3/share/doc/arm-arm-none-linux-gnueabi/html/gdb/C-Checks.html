@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+<title>C Checks - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="C.html#C" title="C">
+<link rel="prev" href="C-Defaults.html#C-Defaults" title="C Defaults">
+<link rel="next" href="Debugging-C.html#Debugging-C" title="Debugging C">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="C-Checks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Debugging-C.html#Debugging-C">Debugging C</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="C-Defaults.html#C-Defaults">C Defaults</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="C.html#C">C</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">13.4.1.5 C and C<tt>++</tt> Type and Range Checks</h5>
+
+<p><a name="index-C-and-C_0040t_007b_002b_002b_007d-checks-695"></a>
+By default, when <span class="sc">gdb</span> parses C or C<tt>++</tt> expressions, type checking
+is not used.  However, if you turn type checking on, <span class="sc">gdb</span>
+considers two variables type equivalent if:
+
+     <ul>
+<li>The two variables are structured and have the same structure, union, or
+enumerated tag.
+
+     <li>The two variables have the same type name, or types that have been
+declared equivalent through <code>typedef</code>.
+
+   </ul>
+
+   <p>Range checking, if turned on, is done on mathematical operations.  Array
+indices are not checked, since they are often used to index a pointer
+that is not itself an array.
+
+   </body></html>
+

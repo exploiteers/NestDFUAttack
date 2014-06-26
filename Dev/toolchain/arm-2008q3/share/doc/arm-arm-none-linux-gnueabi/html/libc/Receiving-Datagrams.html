@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Receiving Datagrams - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Datagrams.html#Datagrams" title="Datagrams">
+<link rel="prev" href="Sending-Datagrams.html#Sending-Datagrams" title="Sending Datagrams">
+<link rel="next" href="Datagram-Example.html#Datagram-Example" title="Datagram Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Receiving-Datagrams"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Datagram-Example.html#Datagram-Example">Datagram Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sending-Datagrams.html#Sending-Datagrams">Sending Datagrams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Datagrams.html#Datagrams">Datagrams</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.10.2 Receiving Datagrams</h4>
+
+<p><a name="index-receiving-datagrams-1822"></a>
+The <code>recvfrom</code> function reads a packet from a datagram socket and
+also tells you where it was sent from.  This function is declared in
+<samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>recvfrom</b> (<var>int socket, void *buffer, size_t size, int flags, struct sockaddr *addr, socklen_t *length-ptr</var>)<var><a name="index-recvfrom-1823"></a></var><br>
+<blockquote><p>The <code>recvfrom</code> function reads one packet from the socket
+<var>socket</var> into the buffer <var>buffer</var>.  The <var>size</var> argument
+specifies the maximum number of bytes to be read.
+
+        <p>If the packet is longer than <var>size</var> bytes, then you get the first
+<var>size</var> bytes of the packet and the rest of the packet is lost. 
+There's no way to read the rest of the packet.  Thus, when you use a
+packet protocol, you must always know how long a packet to expect.
+
+        <p>The <var>addr</var> and <var>length-ptr</var> arguments are used to return the
+address where the packet came from.  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>.  For a
+socket in the local domain the address information won't be meaningful,
+since you can't read the address of such a socket (see <a href="Local-Namespace.html#Local-Namespace">Local Namespace</a>).  You can specify a null pointer as the <var>addr</var> argument
+if you are not interested in this information.
+
+        <p>The <var>flags</var> are interpreted the same way as for <code>recv</code>
+(see <a href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>).  The return value and error conditions
+are also the same as for <code>recv</code>.
+
+        <p>This function is defined as a cancellation point in multi-threaded
+programs, so one has to be prepared for this and make sure that
+allocated resources (like memory, files descriptors, semaphores or
+whatever) are freed even if the thread is canceled. 
+<!-- @xref{pthread_cleanup_push}, for a method how to do this. -->
+</p></blockquote></div>
+
+   <p>You can use plain <code>recv</code> (see <a href="Receiving-Data.html#Receiving-Data">Receiving Data</a>) instead of
+<code>recvfrom</code> if you don't need to find out who sent the packet
+(either because you know where it should come from or because you
+treat all possible senders alike).  Even <code>read</code> can be used if
+you don't want to specify <var>flags</var> (see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>).
+
+   </body></html>
+

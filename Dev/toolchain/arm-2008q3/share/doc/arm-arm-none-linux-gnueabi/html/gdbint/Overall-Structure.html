@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+<title>Overall Structure - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Requirements.html#Requirements" title="Requirements">
+<link rel="next" href="Algorithms.html#Algorithms" title="Algorithms">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Overall-Structure"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Algorithms.html#Algorithms">Algorithms</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Requirements.html#Requirements">Requirements</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">2 Overall Structure</h2>
+
+<p><span class="sc">gdb</span> consists of three major subsystems: user interface,
+symbol handling (the <dfn>symbol side</dfn>), and target system handling (the
+<dfn>target side</dfn>).
+
+   <p>The user interface consists of several actual interfaces, plus
+supporting code.
+
+   <p>The symbol side consists of object file readers, debugging info
+interpreters, symbol table management, source language expression
+parsing, type and value printing.
+
+   <p>The target side consists of execution control, stack frame analysis, and
+physical target manipulation.
+
+   <p>The target side/symbol side division is not formal, and there are a
+number of exceptions.  For instance, core file support involves symbolic
+elements (the basic core file reader is in BFD) and target elements (it
+supplies the contents of memory and the values of registers).  Instead,
+this division is useful for understanding how the minor subsystems
+should fit together.
+
+<h3 class="section">2.1 The Symbol Side</h3>
+
+<p>The symbolic side of <span class="sc">gdb</span> can be thought of as &ldquo;everything
+you can do in <span class="sc">gdb</span> without having a live program running&rdquo;. 
+For instance, you can look at the types of variables, and evaluate
+many kinds of expressions.
+
+<h3 class="section">2.2 The Target Side</h3>
+
+<p>The target side of <span class="sc">gdb</span> is the &ldquo;bits and bytes manipulator&rdquo;. 
+Although it may make reference to symbolic info here and there, most
+of the target side will run with only a stripped executable
+available&mdash;or even no executable at all, in remote debugging cases.
+
+   <p>Operations such as disassembly, stack frame crawls, and register
+display, are able to work with no symbolic info at all.  In some cases,
+such as disassembly, <span class="sc">gdb</span> will use symbolic info to present addresses
+relative to symbols rather than as raw numbers, but it will work either
+way.
+
+<h3 class="section">2.3 Configurations</h3>
+
+<p><a name="index-host-2"></a><a name="index-target-3"></a><dfn>Host</dfn> refers to attributes of the system where <span class="sc">gdb</span> runs. 
+<dfn>Target</dfn> refers to the system where the program being debugged
+executes.  In most cases they are the same machine, in which case a
+third type of <dfn>Native</dfn> attributes come into play.
+
+   <p>Defines and include files needed to build on the host are host
+support.  Examples are tty support, system defined types, host byte
+order, host float format.  These are all calculated by <code>autoconf</code>
+when the debugger is built.
+
+   <p>Defines and information needed to handle the target format are target
+dependent.  Examples are the stack frame format, instruction set,
+breakpoint instruction, registers, and how to set up and tear down the stack
+to call a function.
+
+   <p>Information that is only needed when the host and target are the same,
+is native dependent.  One example is Unix child process support; if the
+host and target are not the same, calling <code>fork</code> to start the target
+process is a bad idea.  The various macros needed for finding the
+registers in the <code>upage</code>, running <code>ptrace</code>, and such are all
+in the native-dependent files.
+
+   <p>Another example of native-dependent code is support for features that
+are really part of the target environment, but which require
+<code>#include</code> files that are only available on the host system.  Core
+file handling and <code>setjmp</code> handling are two common cases.
+
+   <p>When you want to make <span class="sc">gdb</span> work as the traditional native debugger
+on a system, you will need to supply both target and native information.
+
+<h3 class="section">2.4 Source Tree Structure</h3>
+
+<p><a name="index-g_t_0040value_007bGDBN_007d-source-tree-structure-4"></a>
+The <span class="sc">gdb</span> source directory has a mostly flat structure&mdash;there
+are only a few subdirectories.  A file's name usually gives a hint as
+to what it does; for example, <samp><span class="file">stabsread.c</span></samp> reads stabs,
+<samp><span class="file">dwarf2read.c</span></samp> reads <span class="sc">DWARF 2</span>, etc.
+
+   <p>Files that are related to some common task have names that share
+common substrings.  For example, <samp><span class="file">*-thread.c</span></samp> files deal with
+debugging threads on various platforms; <samp><span class="file">*read.c</span></samp> files deal with
+reading various kinds of symbol and object files; <samp><span class="file">inf*.c</span></samp> files
+deal with direct control of the <dfn>inferior program</dfn> (<span class="sc">gdb</span>
+parlance for the program being debugged).
+
+   <p>There are several dozens of files in the <samp><span class="file">*-tdep.c</span></samp> family. 
+&lsquo;<samp><span class="samp">tdep</span></samp>&rsquo; stands for <dfn>target-dependent code</dfn>&mdash;each of these
+files implements debug support for a specific target architecture
+(sparc, mips, etc).  Usually, only one of these will be used in a
+specific <span class="sc">gdb</span> configuration (sometimes two, closely related).
+
+   <p>Similarly, there are many <samp><span class="file">*-nat.c</span></samp> files, each one for native
+debugging on a specific system (e.g., <samp><span class="file">sparc-linux-nat.c</span></samp> is for
+native debugging of Sparc machines running the Linux kernel).
+
+   <p>The few subdirectories of the source tree are:
+
+     <dl>
+<dt><samp><span class="file">cli</span></samp><dd>Code that implements <dfn>CLI</dfn>, the <span class="sc">gdb</span> Command-Line
+Interpreter.  See <a href="User-Interface.html#User-Interface">Command Interpreter</a>.
+
+     <br><dt><samp><span class="file">gdbserver</span></samp><dd>Code for the <span class="sc">gdb</span> remote server.
+
+     <br><dt><samp><span class="file">gdbtk</span></samp><dd>Code for Insight, the <span class="sc">gdb</span> TK-based GUI front-end.
+
+     <br><dt><samp><span class="file">mi</span></samp><dd>The <dfn>GDB/MI</dfn>, the <span class="sc">gdb</span> Machine Interface interpreter.
+
+     <br><dt><samp><span class="file">signals</span></samp><dd>Target signal translation code.
+
+     <br><dt><samp><span class="file">tui</span></samp><dd>Code for <dfn>TUI</dfn>, the <span class="sc">gdb</span> Text-mode full-screen User
+Interface.  See <a href="User-Interface.html#User-Interface">TUI</a>. 
+</dl>
+
+   </body></html>
+

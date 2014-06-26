@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Making Special Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="next" href="Temporary-Files.html#Temporary-Files" title="Temporary Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Making-Special-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Temporary-Files.html#Temporary-Files">Temporary Files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="File-Attributes.html#File-Attributes">File Attributes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.10 Making Special Files</h3>
+
+<p><a name="index-creating-special-files-1595"></a><a name="index-special-files-1596"></a>
+The <code>mknod</code> function is the primitive for making special files,
+such as files that correspond to devices.  The GNU library includes
+this function for compatibility with BSD.
+
+   <p>The prototype for <code>mknod</code> is declared in <samp><span class="file">sys/stat.h</span></samp>. 
+<a name="index-sys_002fstat_002eh-1597"></a>
+<!-- sys/stat.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>mknod</b> (<var>const char *filename, int mode, int dev</var>)<var><a name="index-mknod-1598"></a></var><br>
+<blockquote><p>The <code>mknod</code> function makes a special file with name <var>filename</var>. 
+The <var>mode</var> specifies the mode of the file, and may include the various
+special file bits, such as <code>S_IFCHR</code> (for a character special file)
+or <code>S_IFBLK</code> (for a block special file).  See <a href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>.
+
+        <p>The <var>dev</var> argument specifies which device the special file refers to. 
+Its exact interpretation depends on the kind of special file being created.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on error.  In addition
+to the usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EPERM</code><dd>The calling process is not privileged.  Only the superuser can create
+special files.
+
+          <br><dt><code>ENOSPC</code><dd>The directory or file system that would contain the new file is full
+and cannot be extended.
+
+          <br><dt><code>EROFS</code><dd>The directory containing the new file can't be modified because it's on
+a read-only file system.
+
+          <br><dt><code>EEXIST</code><dd>There is already a file named <var>filename</var>.  If you want to replace
+this file, you must remove the old file explicitly first. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

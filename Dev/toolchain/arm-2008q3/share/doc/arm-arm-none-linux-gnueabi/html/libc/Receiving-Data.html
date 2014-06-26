@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Receiving Data - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Transferring-Data.html#Transferring-Data" title="Transferring Data">
+<link rel="prev" href="Sending-Data.html#Sending-Data" title="Sending Data">
+<link rel="next" href="Socket-Data-Options.html#Socket-Data-Options" title="Socket Data Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Receiving-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Sending-Data.html#Sending-Data">Sending Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Transferring-Data.html#Transferring-Data">Transferring Data</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">16.9.5.2 Receiving Data</h5>
+
+<p><a name="index-sys_002fsocket_002eh-1807"></a>The <code>recv</code> function is declared in the header file
+<samp><span class="file">sys/socket.h</span></samp>.  If your <var>flags</var> argument is zero, you can
+just as well use <code>read</code> instead of <code>recv</code>; see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>recv</b> (<var>int socket, void *buffer, size_t size, int flags</var>)<var><a name="index-recv-1808"></a></var><br>
+<blockquote><p>The <code>recv</code> function is like <code>read</code>, but with the additional
+flags <var>flags</var>.  The possible values of <var>flags</var> are described
+in <a href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>.
+
+        <p>If nonblocking mode is set for <var>socket</var>, and no data are available to
+be read, <code>recv</code> fails immediately rather than waiting.  See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>, for information about nonblocking mode.
+
+        <p>This function returns the number of bytes received, or <code>-1</code> on failure. 
+The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>socket</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The descriptor <var>socket</var> is not a socket.
+
+          <br><dt><code>EWOULDBLOCK</code><dd>Nonblocking mode has been set on the socket, and the read operation
+would block.  (Normally, <code>recv</code> blocks until there is input
+available to be read.)
+
+          <br><dt><code>EINTR</code><dd>The operation was interrupted by a signal before any data was read. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.
+
+          <br><dt><code>ENOTCONN</code><dd>You never connected this socket. 
+</dl>
+
+        <p>This function is defined as a cancellation point in multi-threaded
+programs, so one has to be prepared for this and make sure that
+allocated resources (like memory, files descriptors, semaphores or
+whatever) are freed even if the thread is canceled. 
+<!-- @xref{pthread_cleanup_push}, for a method how to do this. -->
+</p></blockquote></div>
+
+   </body></html>
+

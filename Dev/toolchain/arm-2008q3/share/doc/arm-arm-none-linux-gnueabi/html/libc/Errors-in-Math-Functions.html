@@ -1,0 +1,1153 @@
+<html lang="en">
+<head>
+<title>Errors in Math Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mathematics.html#Mathematics" title="Mathematics">
+<link rel="prev" href="Special-Functions.html#Special-Functions" title="Special Functions">
+<link rel="next" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers" title="Pseudo-Random Numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Errors-in-Math-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pseudo_002dRandom-Numbers.html#Pseudo_002dRandom-Numbers">Pseudo-Random Numbers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Special-Functions.html#Special-Functions">Special Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mathematics.html#Mathematics">Mathematics</a>
+<hr>
+</div>
+
+<h3 class="section">19.7 Known Maximum Errors in Math Functions</h3>
+
+<p><a name="index-math-errors-2279"></a><a name="index-ulps-2280"></a>
+This section lists the known errors of the functions in the math
+library.  Errors are measured in &ldquo;units of the last place&rdquo;.  This is a
+measure for the relative error.  For a number z with the
+representation d.d<small class="dots">...</small>d&amp;middot;2^e (we assume IEEE
+floating-point numbers with base 2) the ULP is represented by
+
+<pre class="smallexample">     |d.d...d - (z / 2^e)| / 2^(p - 1)
+</pre>
+   <p class="noindent">where p is the number of bits in the mantissa of the
+floating-point number representation.  Ideally the error for all
+functions is always less than 0.5ulps.  Using rounding bits this is also
+possible and normally implemented for the basic operations.  To achieve
+the same for the complex math functions requires a lot more work and
+this has not yet been done.
+
+   <p>Therefore many of the functions in the math library have errors.  The
+table lists the maximum error for each function which is exposed by one
+of the existing tests in the test suite.  The table tries to cover as much
+as possible and list the actual maximum error (or at least a ballpark
+figure) but this is often not achieved due to the large search space.
+
+   <p>The table lists the ULP values for different architectures.  Different
+architectures have different results since their hardware support for
+floating-point operations varies and also the existing hardware support
+is different.
+
+<!-- This multitable does not fit on a single page -->
+   <p><table summary=""><tr align="left"><td valign="top">Function  </td><td valign="top">ARM </td><td valign="top">hppa/fpu </td><td valign="top">m68k/coldfire/fpu </td><td valign="top">m68k/m680x0/fpu </td><td valign="top">MIPS
+<br></td></tr><tr align="left"><td valign="top">acosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinf  </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asin  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">atanh  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">atan2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsf  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabs  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosf  </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">2 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacos  </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacoshf  </td><td valign="top">7 + i 3 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">7 + i 1 </td><td valign="top">7 + i 3
+<br></td></tr><tr align="left"><td valign="top">cacosh  </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cacoshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">6 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">carg  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinf  </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">5 + i 1 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">casin  </td><td valign="top">3 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">casinl  </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">3 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinhf  </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">19 + i 1 </td><td valign="top">1 + i 6
+<br></td></tr><tr align="left"><td valign="top">casinh  </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">6 + i 13 </td><td valign="top">5 + i 3
+<br></td></tr><tr align="left"><td valign="top">casinhl  </td><td valign="top">- </td><td valign="top">5 + i 3 </td><td valign="top">- </td><td valign="top">5 + i 6 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanf  </td><td valign="top">4 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">4 + i 1
+<br></td></tr><tr align="left"><td valign="top">catan  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">catanl  </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanhf  </td><td valign="top">1 + i 6 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 6
+<br></td></tr><tr align="left"><td valign="top">catanh  </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">- </td><td valign="top">4 + i 0
+<br></td></tr><tr align="left"><td valign="top">catanhl  </td><td valign="top">- </td><td valign="top">4 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrt  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cbrtl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccosf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccos  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">ccosl  </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccoshf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccosh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">ccoshl  </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceilf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceil  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceill  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cexp  </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimag  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogf  </td><td valign="top">1 + i 3 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 3
+<br></td></tr><tr align="left"><td valign="top">clog  </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog10f  </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 5
+<br></td></tr><tr align="left"><td valign="top">clog10  </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">clog10l  </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">1 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysign  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cos  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">cosl  </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpowf  </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">2 + i 6 </td><td valign="top">4 + i 2
+<br></td></tr><tr align="left"><td valign="top">cpow  </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">1 + i 2 </td><td valign="top">2 + i 2
+<br></td></tr><tr align="left"><td valign="top">cpowl  </td><td valign="top">- </td><td valign="top">2 + i 2 </td><td valign="top">- </td><td valign="top">15 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cproj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">crealf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creall  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinf  </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinhf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinh  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinhl  </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">csqrt  </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanf  </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctan  </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanl  </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">1 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanhf  </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">2 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanh  </td><td valign="top">2 + i 2 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">ctanhl  </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">erfl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfcf  </td><td valign="top">12 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfc  </td><td valign="top">24 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">erfcl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">exp10  </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">- </td><td valign="top">6
+<br></td></tr><tr align="left"><td valign="top">exp10l  </td><td valign="top">- </td><td valign="top">6 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expm1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expm1l  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdimf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdim  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdiml  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floor  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmax  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodf  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmod  </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gamma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">hypot  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0l  </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">j1l  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">jnf  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">5 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">jn  </td><td valign="top">6 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">1 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">jnl  </td><td valign="top">- </td><td valign="top">4 </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lgammaf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">lgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">lgammal  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logf  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">log10  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log10l  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log1p  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2f  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafter  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttoward  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">pow  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainder  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquof  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquo  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquol  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">round  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbn  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbln  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincos  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincosl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhf  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinh  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tan  </td><td valign="top">0.5 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tanl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhf  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanh  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgammaf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgammal  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">trunc  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncl  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">y0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y0l  </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y1  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">1 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">y1l  </td><td valign="top">- </td><td valign="top">3 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ynf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">yn  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">1 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">ynl  </td><td valign="top">- </td><td valign="top">3 </td><td valign="top">- </td><td valign="top">4 </td><td valign="top">-
+   <br></td></tr></table>
+   <p><table summary=""><tr align="left"><td valign="top">Function  </td><td valign="top">mips/mips64/n32 </td><td valign="top">mips/mips64/n64 </td><td valign="top">powerpc/nofpu </td><td valign="top">Alpha </td><td valign="top">Generic
+<br></td></tr><tr align="left"><td valign="top">acosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">3 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacoshf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">7 + i 3 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacoshl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">carg  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casin  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinhf  </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinh  </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinhl  </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">4 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catan  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 6 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanh  </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanhl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrt  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrtl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccosf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccos  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccosl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccoshf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccosh  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccoshl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceilf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceil  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceill  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimag  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 3 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog10f  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog10  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog10l  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">3 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysign  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cos  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpowf  </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpow  </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpowl  </td><td valign="top">10 + i 1 </td><td valign="top">10 + i 1 </td><td valign="top">2 + i 2 </td><td valign="top">10 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cproj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">crealf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creall  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinhf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinh  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinhl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctan  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanl  </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanhf  </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanh  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanhl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfcf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfc  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfcl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10  </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">8 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2l  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdimf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdim  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdiml  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floor  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmax  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmod  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gamma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypot  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0l  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j1l  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">1 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">jnf  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">jn  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">jnl  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lgammaf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">3 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1p  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafter  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttoward  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">pow  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainder  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquof  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquo  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquol  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">round  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbn  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbln  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincos  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tan  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgammaf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">trunc  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0l  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">2 </td><td valign="top">3 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y1  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ynf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">yn  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ynl  </td><td valign="top">5 </td><td valign="top">5 </td><td valign="top">2 </td><td valign="top">5 </td><td valign="top">-
+   <br></td></tr></table>
+   <p><table summary=""><tr align="left"><td valign="top">Function  </td><td valign="top">ix86 </td><td valign="top">IA64 </td><td valign="top">PowerPC </td><td valign="top">S/390 </td><td valign="top">SH4
+<br></td></tr><tr align="left"><td valign="top">acosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosl  </td><td valign="top">622 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">asin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">asinl  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">atanhl  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">atan2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cacos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">cacosl  </td><td valign="top">0 + i 2 </td><td valign="top">0 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacoshf  </td><td valign="top">9 + i 4 </td><td valign="top">7 + i 0 </td><td valign="top">7 + i 3 </td><td valign="top">7 + i 3 </td><td valign="top">7 + i 3
+<br></td></tr><tr align="left"><td valign="top">cacosh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cacoshl  </td><td valign="top">6 + i 1 </td><td valign="top">7 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">carg  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">2 + i 1
+<br></td></tr><tr align="left"><td valign="top">casin  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">3 + i 0
+<br></td></tr><tr align="left"><td valign="top">casinl  </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinhf  </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6
+<br></td></tr><tr align="left"><td valign="top">casinh  </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3
+<br></td></tr><tr align="left"><td valign="top">casinhl  </td><td valign="top">5 + i 5 </td><td valign="top">5 + i 5 </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 1
+<br></td></tr><tr align="left"><td valign="top">catan  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">catanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanhf  </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">0 + i 6 </td><td valign="top">0 + i 6 </td><td valign="top">1 + i 6
+<br></td></tr><tr align="left"><td valign="top">catanh  </td><td valign="top">2 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 1
+<br></td></tr><tr align="left"><td valign="top">catanhl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cbrtl  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccosf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccos  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccosl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ccoshf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccosh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccoshl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceilf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceil  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceill  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpf  </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">cexpl  </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimag  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 3 </td><td valign="top">1 + i 3 </td><td valign="top">0 + i 3
+<br></td></tr><tr align="left"><td valign="top">clog  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">clogl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clog10f  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 5
+<br></td></tr><tr align="left"><td valign="top">clog10  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">clog10l  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">3 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysign  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cos  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">cosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpowf  </td><td valign="top">4 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2
+<br></td></tr><tr align="left"><td valign="top">cpow  </td><td valign="top">1 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">1 + i 1.1031
+<br></td></tr><tr align="left"><td valign="top">cpowl  </td><td valign="top">763 + i 2 </td><td valign="top">6 + i 4 </td><td valign="top">2 + i 2 </td><td valign="top">10 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cproj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">crealf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creall  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">csin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinhf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinhl  </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtf  </td><td valign="top">- </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">csqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">csqrtl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanf  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctan  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanl  </td><td valign="top">439 + i 3 </td><td valign="top">2 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanhf  </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">2 + i 2
+<br></td></tr><tr align="left"><td valign="top">ctanhl  </td><td valign="top">5 + i 25 </td><td valign="top">1 + i 24 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfcf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">12
+<br></td></tr><tr align="left"><td valign="top">erfc  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">24
+<br></td></tr><tr align="left"><td valign="top">erfcl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10f  </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">exp10  </td><td valign="top">- </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6
+<br></td></tr><tr align="left"><td valign="top">exp10l  </td><td valign="top">8 </td><td valign="top">3 </td><td valign="top">8 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expm1  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1l  </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdimf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdim  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdiml  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floor  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmax  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">fmod  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">fmodl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gamma  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">hypot  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">hypotl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0l  </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j1f  </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">j1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">jnf  </td><td valign="top">2 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">jn  </td><td valign="top">5 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">4 </td><td valign="top">6
+<br></td></tr><tr align="left"><td valign="top">jnl  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lgammaf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">lgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">lgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">3 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">logl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log10  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log10l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log1p  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log1pl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log2l  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafter  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttoward  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">pow  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainder  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquof  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquo  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquol  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">round  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbn  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbln  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincos  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sinh  </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tan  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">0.5
+<br></td></tr><tr align="left"><td valign="top">tanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tanhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgammaf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgamma  </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">trunc  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">y0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y0l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">3 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y1  </td><td valign="top">2 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">y1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">2 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ynf  </td><td valign="top">3 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">yn  </td><td valign="top">2 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">ynl  </td><td valign="top">4 </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">5 </td><td valign="top">-
+   <br></td></tr></table>
+   <p><table summary=""><tr align="left"><td valign="top">Function  </td><td valign="top">Sparc 32-bit </td><td valign="top">Sparc 64-bit </td><td valign="top">x86_64/fpu
+<br></td></tr><tr align="left"><td valign="top">acosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">acoshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">acoshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">asinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">asinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">atanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atanhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">atan2f  </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">atan2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">atan2l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">cacos  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cacosl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 2
+<br></td></tr><tr align="left"><td valign="top">cacoshf  </td><td valign="top">7 + i 3 </td><td valign="top">7 + i 3 </td><td valign="top">7 + i 3
+<br></td></tr><tr align="left"><td valign="top">cacosh  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cacoshl  </td><td valign="top">5 + i 1 </td><td valign="top">5 + i 1 </td><td valign="top">6 + i 1
+<br></td></tr><tr align="left"><td valign="top">cargf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">carg  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cargl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">casinf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">casin  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">casinl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">2 + i 2
+<br></td></tr><tr align="left"><td valign="top">casinhf  </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6 </td><td valign="top">1 + i 6
+<br></td></tr><tr align="left"><td valign="top">casinh  </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3 </td><td valign="top">5 + i 3
+<br></td></tr><tr align="left"><td valign="top">casinhl  </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">5 + i 5
+<br></td></tr><tr align="left"><td valign="top">catanf  </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 1 </td><td valign="top">4 + i 1
+<br></td></tr><tr align="left"><td valign="top">catan  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">catanl  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">catanhf  </td><td valign="top">0 + i 6 </td><td valign="top">0 + i 6 </td><td valign="top">0 + i 6
+<br></td></tr><tr align="left"><td valign="top">catanh  </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0 </td><td valign="top">4 + i 0
+<br></td></tr><tr align="left"><td valign="top">catanhl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">cbrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cbrt  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cbrtl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">ccosf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccos  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">ccosl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccoshf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccosh  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ccoshl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">ceilf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceil  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ceill  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">cexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cexpl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">cimagf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimag  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cimagl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogf  </td><td valign="top">1 + i 3 </td><td valign="top">1 + i 3 </td><td valign="top">1 + i 3
+<br></td></tr><tr align="left"><td valign="top">clog  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">clogl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">clog10f  </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 5 </td><td valign="top">1 + i 5
+<br></td></tr><tr align="left"><td valign="top">clog10  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">clog10l  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">conjf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">conjl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysign  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">copysignl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">cos  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">cosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">coshf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cosh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">coshl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cpowf  </td><td valign="top">4 + i 2 </td><td valign="top">4 + i 2 </td><td valign="top">5 + i 2
+<br></td></tr><tr align="left"><td valign="top">cpow  </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2 </td><td valign="top">2 + i 2
+<br></td></tr><tr align="left"><td valign="top">cpowl  </td><td valign="top">10 + i 1 </td><td valign="top">10 + i 1 </td><td valign="top">5 + i 2
+<br></td></tr><tr align="left"><td valign="top">cprojf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cproj  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">cprojl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">crealf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">creall  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">csin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">csinhf  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinh  </td><td valign="top">0 + i 1 </td><td valign="top">0 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">csinhl  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 2
+<br></td></tr><tr align="left"><td valign="top">csqrtf  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0
+<br></td></tr><tr align="left"><td valign="top">csqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">csqrtl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ctanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">0 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctan  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanl  </td><td valign="top">1 + i 2 </td><td valign="top">1 + i 2 </td><td valign="top">439 + i 3
+<br></td></tr><tr align="left"><td valign="top">ctanhf  </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1 </td><td valign="top">2 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanh  </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 0 </td><td valign="top">1 + i 1
+<br></td></tr><tr align="left"><td valign="top">ctanhl  </td><td valign="top">1 + i 1 </td><td valign="top">1 + i 1 </td><td valign="top">5 + i 25
+<br></td></tr><tr align="left"><td valign="top">erff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">erfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfcf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">erfc  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">erfcl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">exp10  </td><td valign="top">6 </td><td valign="top">6 </td><td valign="top">6
+<br></td></tr><tr align="left"><td valign="top">exp10l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">8
+<br></td></tr><tr align="left"><td valign="top">exp2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">exp2l  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">expm1f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expm1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">expm1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabs  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fabsl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdimf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdim  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fdiml  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floor  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">floorl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmal  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmax  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmaxl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fminl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmod  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">fmodl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexp  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">frexpl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammaf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gamma  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">gammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">hypotf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">hypot  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">hypotl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">ilogbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">j0f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j0l  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">j1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">j1  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">j1l  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">jnf  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">jn  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">4
+<br></td></tr><tr align="left"><td valign="top">jnl  </td><td valign="top">4 </td><td valign="top">4 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">lgammaf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">lgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">lgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">lrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llrintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log10f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">log10  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log10l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log1pf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">log1p  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log1pl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2f  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">log2l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">logbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">lroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llround  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">llroundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modff  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">modfl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nearbyintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafter  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nextafterl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttoward  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">nexttowardl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">pow  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">powl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainder  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remainderl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquof  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquo  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">remquol  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rint  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">rintl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">round  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">roundl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalb  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbn  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalbln  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">scalblnl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sin  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sincosf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincos  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sincosl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">sinhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sinhl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrt  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">sqrtl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tan  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tanl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanh  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tanhl  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">tgammaf  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgamma  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">tgammal  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">truncf  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">trunc  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">truncl  </td><td valign="top">- </td><td valign="top">- </td><td valign="top">-
+<br></td></tr><tr align="left"><td valign="top">y0f  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">y0  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y0l  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">y1f  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">y1  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">y1l  </td><td valign="top">1 </td><td valign="top">1 </td><td valign="top">1
+<br></td></tr><tr align="left"><td valign="top">ynf  </td><td valign="top">2 </td><td valign="top">2 </td><td valign="top">2
+<br></td></tr><tr align="left"><td valign="top">yn  </td><td valign="top">3 </td><td valign="top">3 </td><td valign="top">3
+<br></td></tr><tr align="left"><td valign="top">ynl  </td><td valign="top">5 </td><td valign="top">5 </td><td valign="top">4
+   <br></td></tr></table>
+
+   </body></html>
+

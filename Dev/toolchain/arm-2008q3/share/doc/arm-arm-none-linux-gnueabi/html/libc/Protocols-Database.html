@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Protocols Database - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Internet-Namespace.html#Internet-Namespace" title="Internet Namespace">
+<link rel="prev" href="Host-Addresses.html#Host-Addresses" title="Host Addresses">
+<link rel="next" href="Ports.html#Ports" title="Ports">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Protocols-Database"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Ports.html#Ports">Ports</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.6.6 Protocols Database</h4>
+
+<p><a name="index-protocols-database-1756"></a>
+The communications protocol used with a socket controls low-level
+details of how data are exchanged.  For example, the protocol implements
+things like checksums to detect errors in transmissions, and routing
+instructions for messages.  Normal user programs have little reason to
+mess with these details directly.
+
+   <p><a name="index-TCP-_0028Internet-protocol_0029-1757"></a>The default communications protocol for the Internet namespace depends on
+the communication style.  For stream communication, the default is TCP
+(&ldquo;transmission control protocol&rdquo;).  For datagram communication, the
+default is UDP (&ldquo;user datagram protocol&rdquo;).  For reliable datagram
+communication, the default is RDP (&ldquo;reliable datagram protocol&rdquo;). 
+You should nearly always use the default.
+
+   <p><a name="index-g_t_002fetc_002fprotocols-1758"></a>Internet protocols are generally specified by a name instead of a
+number.  The network protocols that a host knows about are stored in a
+database.  This is usually either derived from the file
+<samp><span class="file">/etc/protocols</span></samp>, or it may be an equivalent provided by a name
+server.  You look up the protocol number associated with a named
+protocol in the database using the <code>getprotobyname</code> function.
+
+   <p>Here are detailed descriptions of the utilities for accessing the
+protocols database.  These are declared in <samp><span class="file">netdb.h</span></samp>. 
+<a name="index-netdb_002eh-1759"></a>
+<!-- netdb.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct protoent</b><var><a name="index-struct-protoent-1760"></a></var><br>
+<blockquote><p>This data type is used to represent entries in the network protocols
+database.  It has the following members:
+
+          <dl>
+<dt><code>char *p_name</code><dd>This is the official name of the protocol.
+
+          <br><dt><code>char **p_aliases</code><dd>These are alternate names for the protocol, specified as an array of
+strings.  The last element of the array is a null pointer.
+
+          <br><dt><code>int p_proto</code><dd>This is the protocol number (in host byte order); use this member as the
+<var>protocol</var> argument to <code>socket</code>. 
+</dl>
+        </p></blockquote></div>
+
+   <p>You can use <code>getprotobyname</code> and <code>getprotobynumber</code> to search
+the protocols database for a specific protocol.  The information is
+returned in a statically-allocated structure; you must copy the
+information if you need to save it across calls.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct protoent * <b>getprotobyname</b> (<var>const char *name</var>)<var><a name="index-getprotobyname-1761"></a></var><br>
+<blockquote><p>The <code>getprotobyname</code> function returns information about the
+network protocol named <var>name</var>.  If there is no such protocol, it
+returns a null pointer. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct protoent * <b>getprotobynumber</b> (<var>int protocol</var>)<var><a name="index-getprotobynumber-1762"></a></var><br>
+<blockquote><p>The <code>getprotobynumber</code> function returns information about the
+network protocol with number <var>protocol</var>.  If there is no such
+protocol, it returns a null pointer. 
+</p></blockquote></div>
+
+   <p>You can also scan the whole protocols database one protocol at a time by
+using <code>setprotoent</code>, <code>getprotoent</code> and <code>endprotoent</code>. 
+Be careful when using these functions because they are not reentrant.
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>setprotoent</b> (<var>int stayopen</var>)<var><a name="index-setprotoent-1763"></a></var><br>
+<blockquote><p>This function opens the protocols database to begin scanning it.
+
+        <p>If the <var>stayopen</var> argument is nonzero, this sets a flag so that
+subsequent calls to <code>getprotobyname</code> or <code>getprotobynumber</code> will
+not close the database (as they usually would).  This makes for more
+efficiency if you call those functions several times, by avoiding
+reopening the database for each call. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct protoent * <b>getprotoent</b> (<var>void</var>)<var><a name="index-getprotoent-1764"></a></var><br>
+<blockquote><p>This function returns the next entry in the protocols database.  It
+returns a null pointer if there are no more entries. 
+</p></blockquote></div>
+
+<!-- netdb.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>endprotoent</b> (<var>void</var>)<var><a name="index-endprotoent-1765"></a></var><br>
+<blockquote><p>This function closes the protocols database. 
+</p></blockquote></div>
+
+   </body></html>
+

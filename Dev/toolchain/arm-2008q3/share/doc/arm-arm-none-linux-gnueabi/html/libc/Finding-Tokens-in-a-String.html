@@ -1,0 +1,345 @@
+<html lang="en">
+<head>
+<title>Finding Tokens in a String - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Search-Functions.html#Search-Functions" title="Search Functions">
+<link rel="next" href="strfry.html#strfry" title="strfry">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Finding-Tokens-in-a-String"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="strfry.html#strfry">strfry</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Search-Functions.html#Search-Functions">Search Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.8 Finding Tokens in a String</h3>
+
+<p><a name="index-tokenizing-strings-567"></a><a name="index-breaking-a-string-into-tokens-568"></a><a name="index-parsing-tokens-from-a-string-569"></a>It's fairly common for programs to have a need to do some simple kinds
+of lexical analysis and parsing, such as splitting a command string up
+into tokens.  You can do this with the <code>strtok</code> function, declared
+in the header file <samp><span class="file">string.h</span></samp>. 
+<a name="index-string_002eh-570"></a>
+<!-- string.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: char * <b>strtok</b> (<var>char *restrict newstring, const char *restrict delimiters</var>)<var><a name="index-strtok-571"></a></var><br>
+<blockquote><p>A string can be split into tokens by making a series of calls to the
+function <code>strtok</code>.
+
+        <p>The string to be split up is passed as the <var>newstring</var> argument on
+the first call only.  The <code>strtok</code> function uses this to set up
+some internal state information.  Subsequent calls to get additional
+tokens from the same string are indicated by passing a null pointer as
+the <var>newstring</var> argument.  Calling <code>strtok</code> with another
+non-null <var>newstring</var> argument reinitializes the state information. 
+It is guaranteed that no other library function ever calls <code>strtok</code>
+behind your back (which would mess up this internal state information).
+
+        <p>The <var>delimiters</var> argument is a string that specifies a set of delimiters
+that may surround the token being extracted.  All the initial characters
+that are members of this set are discarded.  The first character that is
+<em>not</em> a member of this set of delimiters marks the beginning of the
+next token.  The end of the token is found by looking for the next
+character that is a member of the delimiter set.  This character in the
+original string <var>newstring</var> is overwritten by a null character, and the
+pointer to the beginning of the token in <var>newstring</var> is returned.
+
+        <p>On the next call to <code>strtok</code>, the searching begins at the next
+character beyond the one that marked the end of the previous token. 
+Note that the set of delimiters <var>delimiters</var> do not have to be the
+same on every call in a series of calls to <code>strtok</code>.
+
+        <p>If the end of the string <var>newstring</var> is reached, or if the remainder of
+string consists only of delimiter characters, <code>strtok</code> returns
+a null pointer.
+
+        <p>Note that &ldquo;character&rdquo; is here used in the sense of byte.  In a string
+using a multibyte character encoding (abstract) character consisting of
+more than one byte are not treated as an entity.  Each byte is treated
+separately.  The function is not locale-dependent. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wchar_t * <b>wcstok</b> (<var>wchar_t *newstring, const char *delimiters</var>)<var><a name="index-wcstok-572"></a></var><br>
+<blockquote><p>A string can be split into tokens by making a series of calls to the
+function <code>wcstok</code>.
+
+        <p>The string to be split up is passed as the <var>newstring</var> argument on
+the first call only.  The <code>wcstok</code> function uses this to set up
+some internal state information.  Subsequent calls to get additional
+tokens from the same wide character string are indicated by passing a
+null pointer as the <var>newstring</var> argument.  Calling <code>wcstok</code>
+with another non-null <var>newstring</var> argument reinitializes the state
+information.  It is guaranteed that no other library function ever calls
+<code>wcstok</code> behind your back (which would mess up this internal state
+information).
+
+        <p>The <var>delimiters</var> argument is a wide character string that specifies
+a set of delimiters that may surround the token being extracted.  All
+the initial wide characters that are members of this set are discarded. 
+The first wide character that is <em>not</em> a member of this set of
+delimiters marks the beginning of the next token.  The end of the token
+is found by looking for the next wide character that is a member of the
+delimiter set.  This wide character in the original wide character
+string <var>newstring</var> is overwritten by a null wide character, and the
+pointer to the beginning of the token in <var>newstring</var> is returned.
+
+        <p>On the next call to <code>wcstok</code>, the searching begins at the next
+wide character beyond the one that marked the end of the previous token. 
+Note that the set of delimiters <var>delimiters</var> do not have to be the
+same on every call in a series of calls to <code>wcstok</code>.
+
+        <p>If the end of the wide character string <var>newstring</var> is reached, or
+if the remainder of string consists only of delimiter wide characters,
+<code>wcstok</code> returns a null pointer.
+
+        <p>Note that &ldquo;character&rdquo; is here used in the sense of byte.  In a string
+using a multibyte character encoding (abstract) character consisting of
+more than one byte are not treated as an entity.  Each byte is treated
+separately.  The function is not locale-dependent. 
+</p></blockquote></div>
+
+   <p><strong>Warning:</strong> Since <code>strtok</code> and <code>wcstok</code> alter the string
+they is parsing, you should always copy the string to a temporary buffer
+before parsing it with <code>strtok</code>/<code>wcstok</code> (see <a href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>).  If you allow <code>strtok</code> or <code>wcstok</code> to modify
+a string that came from another part of your program, you are asking for
+trouble; that string might be used for other purposes after
+<code>strtok</code> or <code>wcstok</code> has modified it, and it would not have
+the expected value.
+
+   <p>The string that you are operating on might even be a constant.  Then
+when <code>strtok</code> or <code>wcstok</code> tries to modify it, your program
+will get a fatal signal for writing in read-only memory.  See <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>.  Even if the operation of <code>strtok</code> or <code>wcstok</code>
+would not require a modification of the string (e.g., if there is
+exactly one token) the string can (and in the GNU libc case will) be
+modified.
+
+   <p>This is a special case of a general principle: if a part of a program
+does not have as its purpose the modification of a certain data
+structure, then it is error-prone to modify the data structure
+temporarily.
+
+   <p>The functions <code>strtok</code> and <code>wcstok</code> are not reentrant. 
+See <a href="Nonreentrancy.html#Nonreentrancy">Nonreentrancy</a>, for a discussion of where and why reentrancy is
+important.
+
+   <p>Here is a simple example showing the use of <code>strtok</code>.
+
+<!-- Yes, this example has been tested. -->
+<pre class="smallexample">     #include &lt;string.h&gt;
+     #include &lt;stddef.h&gt;
+     
+     ...
+     
+     const char string[] = "words separated by spaces -- and, punctuation!";
+     const char delimiters[] = " .,;:!-";
+     char *token, *cp;
+     
+     ...
+     
+     cp = strdupa (string);                /* Make writable copy.  */
+     token = strtok (cp, delimiters);      /* token =&gt; "words" */
+     token = strtok (NULL, delimiters);    /* token =&gt; "separated" */
+     token = strtok (NULL, delimiters);    /* token =&gt; "by" */
+     token = strtok (NULL, delimiters);    /* token =&gt; "spaces" */
+     token = strtok (NULL, delimiters);    /* token =&gt; "and" */
+     token = strtok (NULL, delimiters);    /* token =&gt; "punctuation" */
+     token = strtok (NULL, delimiters);    /* token =&gt; NULL */
+</pre>
+   <p>The GNU C library contains two more functions for tokenizing a string
+which overcome the limitation of non-reentrancy.  They are only
+available for multibyte character strings.
+
+<!-- string.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: char * <b>strtok_r</b> (<var>char *newstring, const char *delimiters, char **save_ptr</var>)<var><a name="index-strtok_005fr-573"></a></var><br>
+<blockquote><p>Just like <code>strtok</code>, this function splits the string into several
+tokens which can be accessed by successive calls to <code>strtok_r</code>. 
+The difference is that the information about the next token is stored in
+the space pointed to by the third argument, <var>save_ptr</var>, which is a
+pointer to a string pointer.  Calling <code>strtok_r</code> with a null
+pointer for <var>newstring</var> and leaving <var>save_ptr</var> between the calls
+unchanged does the job without hindering reentrancy.
+
+        <p>This function is defined in POSIX.1 and can be found on many systems
+which support multi-threading. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>strsep</b> (<var>char **string_ptr, const char *delimiter</var>)<var><a name="index-strsep-574"></a></var><br>
+<blockquote><p>This function has a similar functionality as <code>strtok_r</code> with the
+<var>newstring</var> argument replaced by the <var>save_ptr</var> argument.  The
+initialization of the moving pointer has to be done by the user. 
+Successive calls to <code>strsep</code> move the pointer along the tokens
+separated by <var>delimiter</var>, returning the address of the next token
+and updating <var>string_ptr</var> to point to the beginning of the next
+token.
+
+        <p>One difference between <code>strsep</code> and <code>strtok_r</code> is that if the
+input string contains more than one character from <var>delimiter</var> in a
+row <code>strsep</code> returns an empty string for each pair of characters
+from <var>delimiter</var>.  This means that a program normally should test
+for <code>strsep</code> returning an empty string before processing it.
+
+        <p>This function was introduced in 4.3BSD and therefore is widely available. 
+</p></blockquote></div>
+
+   <p>Here is how the above example looks like when <code>strsep</code> is used.
+
+<!-- Yes, this example has been tested. -->
+<pre class="smallexample">     #include &lt;string.h&gt;
+     #include &lt;stddef.h&gt;
+     
+     ...
+     
+     const char string[] = "words separated by spaces -- and, punctuation!";
+     const char delimiters[] = " .,;:!-";
+     char *running;
+     char *token;
+     
+     ...
+     
+     running = strdupa (string);
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "words" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "separated" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "by" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "spaces" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "and" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "punctuation" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; "" */
+     token = strsep (&amp;running, delimiters);    /* token =&gt; NULL */
+</pre>
+   <!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>basename</b> (<var>const char *filename</var>)<var><a name="index-basename-575"></a></var><br>
+<blockquote><p>The GNU version of the <code>basename</code> function returns the last
+component of the path in <var>filename</var>.  This function is the preferred
+usage, since it does not modify the argument, <var>filename</var>, and
+respects trailing slashes.  The prototype for <code>basename</code> can be
+found in <samp><span class="file">string.h</span></samp>.  Note, this function is overriden by the XPG
+version, if <samp><span class="file">libgen.h</span></samp> is included.
+
+        <p>Example of using GNU <code>basename</code>:
+
+     <pre class="smallexample">          #include &lt;string.h&gt;
+          
+          int
+          main (int argc, char *argv[])
+          {
+            char *prog = basename (argv[0]);
+          
+            if (argc &lt; 2)
+              {
+                fprintf (stderr, "Usage %s &lt;arg&gt;\n", prog);
+                exit (1);
+              }
+          
+            ...
+          }
+</pre>
+        <p><strong>Portability Note:</strong> This function may produce different results
+on different systems.
+
+        </blockquote></div>
+
+<!-- libgen.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: char * <b>basename</b> (<var>char *path</var>)<var><a name="index-basename-576"></a></var><br>
+<blockquote><p>This is the standard XPG defined <code>basename</code>. It is similar in
+spirit to the GNU version, but may modify the <var>path</var> by removing
+trailing '/' characters.  If the <var>path</var> is made up entirely of '/'
+characters, then "/" will be returned.  Also, if <var>path</var> is
+<code>NULL</code> or an empty string, then "." is returned.  The prototype for
+the XPG version can be found in <samp><span class="file">libgen.h</span></samp>.
+
+        <p>Example of using XPG <code>basename</code>:
+
+     <pre class="smallexample">          #include &lt;libgen.h&gt;
+          
+          int
+          main (int argc, char *argv[])
+          {
+            char *prog;
+            char *path = strdupa (argv[0]);
+          
+            prog = basename (path);
+          
+            if (argc &lt; 2)
+              {
+                fprintf (stderr, "Usage %s &lt;arg&gt;\n", prog);
+                exit (1);
+              }
+          
+            ...
+          
+          }
+</pre>
+        </blockquote></div>
+
+<!-- libgen.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: char * <b>dirname</b> (<var>char *path</var>)<var><a name="index-dirname-577"></a></var><br>
+<blockquote><p>The <code>dirname</code> function is the compliment to the XPG version of
+<code>basename</code>.  It returns the parent directory of the file specified
+by <var>path</var>.  If <var>path</var> is <code>NULL</code>, an empty string, or
+contains no '/' characters, then "." is returned.  The prototype for this
+function can be found in <samp><span class="file">libgen.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

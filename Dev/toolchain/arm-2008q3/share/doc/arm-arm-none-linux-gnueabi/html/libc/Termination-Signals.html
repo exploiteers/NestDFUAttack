@@ -1,0 +1,155 @@
+<html lang="en">
+<head>
+<title>Termination Signals - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Standard-Signals.html#Standard-Signals" title="Standard Signals">
+<link rel="prev" href="Program-Error-Signals.html#Program-Error-Signals" title="Program Error Signals">
+<link rel="next" href="Alarm-Signals.html#Alarm-Signals" title="Alarm Signals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Termination-Signals"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Alarm-Signals.html#Alarm-Signals">Alarm Signals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Standard-Signals.html#Standard-Signals">Standard Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.2.2 Termination Signals</h4>
+
+<p><a name="index-program-termination-signals-2847"></a>
+These signals are all used to tell a process to terminate, in one way
+or another.  They have different names because they're used for slightly
+different purposes, and programs might want to handle them differently.
+
+   <p>The reason for handling these signals is usually so your program can
+tidy up as appropriate before actually terminating.  For example, you
+might want to save state information, delete temporary files, or restore
+the previous terminal modes.  Such a handler should end by specifying
+the default action for the signal that happened and then reraising it;
+this will cause the program to terminate with that signal, as if it had
+not had a handler.  (See <a href="Termination-in-Handler.html#Termination-in-Handler">Termination in Handler</a>.)
+
+   <p>The (obvious) default action for all of these signals is to cause the
+process to terminate.
+
+<!-- signal.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>SIGTERM</b><var><a name="index-SIGTERM-2848"></a></var><br>
+<blockquote><p><a name="index-termination-signal-2849"></a>The <code>SIGTERM</code> signal is a generic signal used to cause program
+termination.  Unlike <code>SIGKILL</code>, this signal can be blocked,
+handled, and ignored.  It is the normal way to politely ask a program to
+terminate.
+
+        <p>The shell command <code>kill</code> generates <code>SIGTERM</code> by default. 
+<a name="index-kill-2850"></a></p></blockquote></div>
+
+<!-- signal.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>SIGINT</b><var><a name="index-SIGINT-2851"></a></var><br>
+<blockquote><p><a name="index-interrupt-signal-2852"></a>The <code>SIGINT</code> (&ldquo;program interrupt&rdquo;) signal is sent when the user
+types the INTR character (normally <kbd>C-c</kbd>).  See <a href="Special-Characters.html#Special-Characters">Special Characters</a>, for information about terminal driver support for
+<kbd>C-c</kbd>. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>SIGQUIT</b><var><a name="index-SIGQUIT-2853"></a></var><br>
+<blockquote><p><a name="index-quit-signal-2854"></a><a name="index-quit-signal-2855"></a>The <code>SIGQUIT</code> signal is similar to <code>SIGINT</code>, except that it's
+controlled by a different key&mdash;the QUIT character, usually
+<kbd>C-\</kbd>&mdash;and produces a core dump when it terminates the process,
+just like a program error signal.  You can think of this as a
+program error condition &ldquo;detected&rdquo; by the user.
+
+        <p>See <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>, for information about core dumps. 
+See <a href="Special-Characters.html#Special-Characters">Special Characters</a>, for information about terminal driver
+support.
+
+        <p>Certain kinds of cleanups are best omitted in handling <code>SIGQUIT</code>. 
+For example, if the program creates temporary files, it should handle
+the other termination requests by deleting the temporary files.  But it
+is better for <code>SIGQUIT</code> not to delete them, so that the user can
+examine them in conjunction with the core dump. 
+</p></blockquote></div>
+
+<!-- signal.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>SIGKILL</b><var><a name="index-SIGKILL-2856"></a></var><br>
+<blockquote><p>The <code>SIGKILL</code> signal is used to cause immediate program termination. 
+It cannot be handled or ignored, and is therefore always fatal.  It is
+also not possible to block this signal.
+
+        <p>This signal is usually generated only by explicit request.  Since it
+cannot be handled, you should generate it only as a last resort, after
+first trying a less drastic method such as <kbd>C-c</kbd> or <code>SIGTERM</code>. 
+If a process does not respond to any other termination signals, sending
+it a <code>SIGKILL</code> signal will almost always cause it to go away.
+
+        <p>In fact, if <code>SIGKILL</code> fails to terminate a process, that by itself
+constitutes an operating system bug which you should report.
+
+        <p>The system will generate <code>SIGKILL</code> for a process itself under some
+unusual conditions where the program cannot possibly continue to run
+(even to run a signal handler). 
+</p></blockquote></div>
+   <a name="index-kill-signal-2857"></a>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>SIGHUP</b><var><a name="index-SIGHUP-2858"></a></var><br>
+<blockquote><p><a name="index-hangup-signal-2859"></a>The <code>SIGHUP</code> (&ldquo;hang-up&rdquo;) signal is used to report that the user's
+terminal is disconnected, perhaps because a network or telephone
+connection was broken.  For more information about this, see <a href="Control-Modes.html#Control-Modes">Control Modes</a>.
+
+        <p>This signal is also used to report the termination of the controlling
+process on a terminal to jobs associated with that session; this
+termination effectively disconnects all processes in the session from
+the controlling terminal.  For more information, see <a href="Termination-Internals.html#Termination-Internals">Termination Internals</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

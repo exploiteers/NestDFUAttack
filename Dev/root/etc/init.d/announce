@@ -1,0 +1,30 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to display system start-up and
+#      shutdown announcements.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+case "${1}" in
+
+'start')
+	${ECHO} "The system is starting up."
+	;;
+
+'stop')
+	${ECHO} "The system is shutting down."
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop>"
+	exit 1
+	;;
+
+esac

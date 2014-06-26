@@ -1,0 +1,198 @@
+<html lang="en">
+<head>
+<title>fstab - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mount-Information.html#Mount-Information" title="Mount Information">
+<link rel="next" href="mtab.html#mtab" title="mtab">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="fstab"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="mtab.html#mtab">mtab</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mount-Information.html#Mount-Information">Mount Information</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">30.3.1.1 The <samp><span class="file">fstab</span></samp> file</h5>
+
+<p>The internal representation for entries of the file is <code>struct&nbsp;fstab</code><!-- /@w -->, defined in <samp><span class="file">fstab.h</span></samp>.
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct fstab</b><var><a name="index-struct-fstab-3463"></a></var><br>
+<blockquote><p>This structure is used with the <code>getfsent</code>, <code>getfsspec</code>, and
+<code>getfsfile</code> functions.
+
+          <dl>
+<dt><code>char *fs_spec</code><dd>This element describes the device from which the filesystem is mounted. 
+Normally this is the name of a special device, such as a hard disk
+partition, but it could also be a more or less generic string.  For
+<dfn>NFS</dfn> it would be a hostname and directory name combination.
+
+          <p>Even though the element is not declared <code>const</code> it shouldn't be
+modified.  The missing <code>const</code> has historic reasons, since this
+function predates ISO&nbsp;C<!-- /@w -->.  The same is true for the other string
+elements of this structure.
+
+          <br><dt><code>char *fs_file</code><dd>This describes the mount point on the local system.  I.e., accessing any
+file in this filesystem has implicitly or explicitly this string as a
+prefix.
+
+          <br><dt><code>char *fs_vfstype</code><dd>This is the type of the filesystem.  Depending on what the underlying
+kernel understands it can be any string.
+
+          <br><dt><code>char *fs_mntops</code><dd>This is a string containing options passed to the kernel with the
+<code>mount</code> call.  Again, this can be almost anything.  There can be
+more than one option, separated from the others by a comma.  Each option
+consists of a name and an optional value part, introduced by an <code>=</code>
+character.
+
+          <p>If the value of this element must be processed it should ideally be done
+using the <code>getsubopt</code> function; see <a href="Suboptions.html#Suboptions">Suboptions</a>.
+
+          <br><dt><code>const char *fs_type</code><dd>This name is poorly chosen.  This element points to a string (possibly
+in the <code>fs_mntops</code> string) which describes the modes with which the
+filesystem is mounted.  <samp><span class="file">fstab</span></samp> defines five macros to describe the
+possible values:
+
+               <dl>
+<dt><code>FSTAB_RW</code><a name="index-FSTAB_005fRW-3464"></a><dd>The filesystems gets mounted with read and write enabled. 
+<br><dt><code>FSTAB_RQ</code><a name="index-FSTAB_005fRQ-3465"></a><dd>The filesystems gets mounted with read and write enabled.  Write access
+is restricted by quotas. 
+<br><dt><code>FSTAB_RO</code><a name="index-FSTAB_005fRO-3466"></a><dd>The filesystem gets mounted read-only. 
+<br><dt><code>FSTAB_SW</code><a name="index-FSTAB_005fSW-3467"></a><dd>This is not a real filesystem, it is a swap device. 
+<br><dt><code>FSTAB_XX</code><a name="index-FSTAB_005fXX-3468"></a><dd>This entry from the <samp><span class="file">fstab</span></samp> file is totally ignored. 
+</dl>
+
+          <p>Testing for equality with these value must happen using <code>strcmp</code>
+since these are all strings.  Comparing the pointer will probably always
+fail.
+
+          <br><dt><code>int fs_freq</code><dd>This element describes the dump frequency in days.
+
+          <br><dt><code>int fs_passno</code><dd>This element describes the pass number on parallel dumps.  It is closely
+related to the <code>dump</code> utility used on Unix systems. 
+</dl>
+        </p></blockquote></div>
+
+   <p>To read the entire content of the of the <samp><span class="file">fstab</span></samp> file the GNU libc
+contains a set of three functions which are designed in the usual way.
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setfsent</b> (<var>void</var>)<var><a name="index-setfsent-3469"></a></var><br>
+<blockquote><p>This function makes sure that the internal read pointer for the
+<samp><span class="file">fstab</span></samp> file is at the beginning of the file.  This is done by
+either opening the file or resetting the read pointer.
+
+        <p>Since the file handle is internal to the libc this function is not
+thread-safe.
+
+        <p>This function returns a non-zero value if the operation was successful
+and the <code>getfs*</code> functions can be used to read the entries of the
+file. 
+</p></blockquote></div>
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>endfsent</b> (<var>void</var>)<var><a name="index-endfsent-3470"></a></var><br>
+<blockquote><p>This function makes sure that all resources acquired by a prior call to
+<code>setfsent</code> (explicitly or implicitly by calling <code>getfsent</code>) are
+freed. 
+</p></blockquote></div>
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct fstab * <b>getfsent</b> (<var>void</var>)<var><a name="index-getfsent-3471"></a></var><br>
+<blockquote><p>This function returns the next entry of the <samp><span class="file">fstab</span></samp> file.  If this
+is the first call to any of the functions handling <samp><span class="file">fstab</span></samp> since
+program start or the last call of <code>endfsent</code>, the file will be
+opened.
+
+        <p>The function returns a pointer to a variable of type <code>struct
+fstab</code>.  This variable is shared by all threads and therefore this
+function is not thread-safe.  If an error occurred <code>getfsent</code>
+returns a <code>NULL</code> pointer. 
+</p></blockquote></div>
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct fstab * <b>getfsspec</b> (<var>const char *name</var>)<var><a name="index-getfsspec-3472"></a></var><br>
+<blockquote><p>This function returns the next entry of the <samp><span class="file">fstab</span></samp> file which has
+a string equal to <var>name</var> pointed to by the <code>fs_spec</code> element. 
+Since there is normally exactly one entry for each special device it
+makes no sense to call this function more than once for the same
+argument.  If this is the first call to any of the functions handling
+<samp><span class="file">fstab</span></samp> since program start or the last call of <code>endfsent</code>,
+the file will be opened.
+
+        <p>The function returns a pointer to a variable of type <code>struct
+fstab</code>.  This variable is shared by all threads and therefore this
+function is not thread-safe.  If an error occurred <code>getfsent</code>
+returns a <code>NULL</code> pointer. 
+</p></blockquote></div>
+
+<!-- fstab.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct fstab * <b>getfsfile</b> (<var>const char *name</var>)<var><a name="index-getfsfile-3473"></a></var><br>
+<blockquote><p>This function returns the next entry of the <samp><span class="file">fstab</span></samp> file which has
+a string equal to <var>name</var> pointed to by the <code>fs_file</code> element. 
+Since there is normally exactly one entry for each mount point it
+makes no sense to call this function more than once for the same
+argument.  If this is the first call to any of the functions handling
+<samp><span class="file">fstab</span></samp> since program start or the last call of <code>endfsent</code>,
+the file will be opened.
+
+        <p>The function returns a pointer to a variable of type <code>struct
+fstab</code>.  This variable is shared by all threads and therefore this
+function is not thread-safe.  If an error occurred <code>getfsent</code>
+returns a <code>NULL</code> pointer. 
+</p></blockquote></div>
+
+   </body></html>
+

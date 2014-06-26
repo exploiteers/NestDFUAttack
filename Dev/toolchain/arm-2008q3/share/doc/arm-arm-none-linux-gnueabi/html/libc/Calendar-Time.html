@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Calendar Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Date-and-Time.html#Date-and-Time" title="Date and Time">
+<link rel="prev" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time" title="Processor And CPU Time">
+<link rel="next" href="Setting-an-Alarm.html#Setting-an-Alarm" title="Setting an Alarm">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Calendar-Time"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Setting-an-Alarm.html#Setting-an-Alarm">Setting an Alarm</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Processor-And-CPU-Time.html#Processor-And-CPU-Time">Processor And CPU Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Date-and-Time.html#Date-and-Time">Date and Time</a>
+<hr>
+</div>
+
+<h3 class="section">21.4 Calendar Time</h3>
+
+<p>This section describes facilities for keeping track of calendar time. 
+See <a href="Time-Basics.html#Time-Basics">Time Basics</a>.
+
+   <p>The GNU C library represents calendar time three ways:
+
+     <ul>
+<li><dfn>Simple time</dfn> (the <code>time_t</code> data type) is a compact
+representation, typically giving the number of seconds of elapsed time
+since some implementation-specific base time. 
+<a name="index-simple-time-2616"></a>
+<li>There is also a "high-resolution time" representation.  Like simple
+time, this represents a calendar time as an elapsed time since a base
+time, but instead of measuring in whole seconds, it uses a <code>struct
+timeval</code> data type, which includes fractions of a second.  Use this time
+representation instead of simple time when you need greater precision. 
+<a name="index-high_002dresolution-time-2617"></a>
+<li><dfn>Local time</dfn> or <dfn>broken-down time</dfn> (the <code>struct tm</code> data
+type) represents a calendar time as a set of components specifying the
+year, month, and so on in the Gregorian calendar, for a specific time
+zone.  This calendar time representation is usually used only to
+communicate with people. 
+<a name="index-local-time-2618"></a><a name="index-broken_002ddown-time-2619"></a><a name="index-Gregorian-calendar-2620"></a><a name="index-calendar_002c-Gregorian-2621"></a></ul>
+
+<ul class="menu">
+<li><a accesskey="1" href="Simple-Calendar-Time.html#Simple-Calendar-Time">Simple Calendar Time</a>:         Facilities for manipulating calendar time. 
+<li><a accesskey="2" href="High_002dResolution-Calendar.html#High_002dResolution-Calendar">High-Resolution Calendar</a>:     A time representation with greater precision. 
+<li><a accesskey="3" href="Broken_002ddown-Time.html#Broken_002ddown-Time">Broken-down Time</a>:             Facilities for manipulating local time. 
+<li><a accesskey="4" href="High-Accuracy-Clock.html#High-Accuracy-Clock">High Accuracy Clock</a>:          Maintaining a high accuracy system clock. 
+<li><a accesskey="5" href="Formatting-Calendar-Time.html#Formatting-Calendar-Time">Formatting Calendar Time</a>:     Converting times to strings. 
+<li><a accesskey="6" href="Parsing-Date-and-Time.html#Parsing-Date-and-Time">Parsing Date and Time</a>:        Convert textual time and date information back
+                                 into broken-down time values. 
+<li><a accesskey="7" href="TZ-Variable.html#TZ-Variable">TZ Variable</a>:                  How users specify the time zone. 
+<li><a accesskey="8" href="Time-Zone-Functions.html#Time-Zone-Functions">Time Zone Functions</a>:          Functions to examine or specify the time zone. 
+<li><a accesskey="9" href="Time-Functions-Example.html#Time-Functions-Example">Time Functions Example</a>:       An example program showing use of some of
+				 the time functions. 
+</ul>
+
+   </body></html>
+

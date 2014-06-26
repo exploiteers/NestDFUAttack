@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+<title>Socket Data Options - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Transferring-Data.html#Transferring-Data" title="Transferring Data">
+<link rel="prev" href="Receiving-Data.html#Receiving-Data" title="Receiving Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Socket-Data-Options"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Receiving-Data.html#Receiving-Data">Receiving Data</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Transferring-Data.html#Transferring-Data">Transferring Data</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">16.9.5.3 Socket Data Options</h5>
+
+<p><a name="index-sys_002fsocket_002eh-1809"></a>The <var>flags</var> argument to <code>send</code> and <code>recv</code> is a bit
+mask.  You can bitwise-OR the values of the following macros together
+to obtain a value for this argument.  All are defined in the header
+file <samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>MSG_OOB</b><var><a name="index-MSG_005fOOB-1810"></a></var><br>
+<blockquote><p>Send or receive out-of-band data.  See <a href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data">Out-of-Band Data</a>. 
+</p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>MSG_PEEK</b><var><a name="index-MSG_005fPEEK-1811"></a></var><br>
+<blockquote><p>Look at the data but don't remove it from the input queue.  This is
+only meaningful with input functions such as <code>recv</code>, not with
+<code>send</code>. 
+</p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>MSG_DONTROUTE</b><var><a name="index-MSG_005fDONTROUTE-1812"></a></var><br>
+<blockquote><p>Don't include routing information in the message.  This is only
+meaningful with output operations, and is usually only of interest for
+diagnostic or routing programs.  We don't try to explain it here. 
+</p></blockquote></div>
+
+   </body></html>
+

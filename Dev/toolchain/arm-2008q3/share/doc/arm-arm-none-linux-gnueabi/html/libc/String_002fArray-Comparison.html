@@ -1,0 +1,327 @@
+<html lang="en">
+<head>
+<title>String/Array Comparison - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Copying-and-Concatenation.html#Copying-and-Concatenation" title="Copying and Concatenation">
+<link rel="next" href="Collation-Functions.html#Collation-Functions" title="Collation Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="String%2fArray-Comparison"></a>
+<a name="String_002fArray-Comparison"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Collation-Functions.html#Collation-Functions">Collation Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.5 String/Array Comparison</h3>
+
+<p><a name="index-comparing-strings-and-arrays-514"></a><a name="index-string-comparison-functions-515"></a><a name="index-array-comparison-functions-516"></a><a name="index-predicates-on-strings-517"></a><a name="index-predicates-on-arrays-518"></a>
+You can use the functions in this section to perform comparisons on the
+contents of strings and arrays.  As well as checking for equality, these
+functions can also be used as the ordering functions for sorting
+operations.  See <a href="Searching-and-Sorting.html#Searching-and-Sorting">Searching and Sorting</a>, for an example of this.
+
+   <p>Unlike most comparison operations in C, the string comparison functions
+return a nonzero value if the strings are <em>not</em> equivalent rather
+than if they are.  The sign of the value indicates the relative ordering
+of the first characters in the strings that are not equivalent:  a
+negative value indicates that the first string is &ldquo;less&rdquo; than the
+second, while a positive value indicates that the first string is
+&ldquo;greater&rdquo;.
+
+   <p>The most common use of these functions is to check only for equality. 
+This is canonically done with an expression like &lsquo;<samp><span class="samp">!&nbsp;strcmp&nbsp;(s1,&nbsp;s2)</span></samp>&rsquo;<!-- /@w -->.
+
+   <p>All of these functions are declared in the header file <samp><span class="file">string.h</span></samp>. 
+<a name="index-string_002eh-519"></a>
+<!-- string.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>memcmp</b> (<var>const void *a1, const void *a2, size_t size</var>)<var><a name="index-memcmp-520"></a></var><br>
+<blockquote><p>The function <code>memcmp</code> compares the <var>size</var> bytes of memory
+beginning at <var>a1</var> against the <var>size</var> bytes of memory beginning
+at <var>a2</var>.  The value returned has the same sign as the difference
+between the first differing pair of bytes (interpreted as <code>unsigned
+char</code> objects, then promoted to <code>int</code>).
+
+        <p>If the contents of the two blocks are equal, <code>memcmp</code> returns
+<code>0</code>. 
+</p></blockquote></div>
+
+<!-- wcjar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wmemcmp</b> (<var>const wchar_t *a1, const wchar_t *a2, size_t size</var>)<var><a name="index-wmemcmp-521"></a></var><br>
+<blockquote><p>The function <code>wmemcmp</code> compares the <var>size</var> wide characters
+beginning at <var>a1</var> against the <var>size</var> wide characters beginning
+at <var>a2</var>.  The value returned is smaller than or larger than zero
+depending on whether the first differing wide character is <var>a1</var> is
+smaller or larger than the corresponding character in <var>a2</var>.
+
+        <p>If the contents of the two blocks are equal, <code>wmemcmp</code> returns
+<code>0</code>. 
+</p></blockquote></div>
+
+   <p>On arbitrary arrays, the <code>memcmp</code> function is mostly useful for
+testing equality.  It usually isn't meaningful to do byte-wise ordering
+comparisons on arrays of things other than bytes.  For example, a
+byte-wise comparison on the bytes that make up floating-point numbers
+isn't likely to tell you anything about the relationship between the
+values of the floating-point numbers.
+
+   <p><code>wmemcmp</code> is really only useful to compare arrays of type
+<code>wchar_t</code> since the function looks at <code>sizeof (wchar_t)</code> bytes
+at a time and this number of bytes is system dependent.
+
+   <p>You should also be careful about using <code>memcmp</code> to compare objects
+that can contain &ldquo;holes&rdquo;, such as the padding inserted into structure
+objects to enforce alignment requirements, extra space at the end of
+unions, and extra characters at the ends of strings whose length is less
+than their allocated size.  The contents of these &ldquo;holes&rdquo; are
+indeterminate and may cause strange behavior when performing byte-wise
+comparisons.  For more predictable results, perform an explicit
+component-wise comparison.
+
+   <p>For example, given a structure type definition like:
+
+<pre class="smallexample">     struct foo
+       {
+         unsigned char tag;
+         union
+           {
+             double f;
+             long i;
+             char *p;
+           } value;
+       };
+</pre>
+   <p class="noindent">you are better off writing a specialized comparison function to compare
+<code>struct foo</code> objects instead of comparing them with <code>memcmp</code>.
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>strcmp</b> (<var>const char *s1, const char *s2</var>)<var><a name="index-strcmp-522"></a></var><br>
+<blockquote><p>The <code>strcmp</code> function compares the string <var>s1</var> against
+<var>s2</var>, returning a value that has the same sign as the difference
+between the first differing pair of characters (interpreted as
+<code>unsigned char</code> objects, then promoted to <code>int</code>).
+
+        <p>If the two strings are equal, <code>strcmp</code> returns <code>0</code>.
+
+        <p>A consequence of the ordering used by <code>strcmp</code> is that if <var>s1</var>
+is an initial substring of <var>s2</var>, then <var>s1</var> is considered to be
+&ldquo;less than&rdquo; <var>s2</var>.
+
+        <p><code>strcmp</code> does not take sorting conventions of the language the
+strings are written in into account.  To get that one has to use
+<code>strcoll</code>. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wcscmp</b> (<var>const wchar_t *ws1, const wchar_t *ws2</var>)<var><a name="index-wcscmp-523"></a></var><br>
+<blockquote>
+        <p>The <code>wcscmp</code> function compares the wide character string <var>ws1</var>
+against <var>ws2</var>.  The value returned is smaller than or larger than zero
+depending on whether the first differing wide character is <var>ws1</var> is
+smaller or larger than the corresponding character in <var>ws2</var>.
+
+        <p>If the two strings are equal, <code>wcscmp</code> returns <code>0</code>.
+
+        <p>A consequence of the ordering used by <code>wcscmp</code> is that if <var>ws1</var>
+is an initial substring of <var>ws2</var>, then <var>ws1</var> is considered to be
+&ldquo;less than&rdquo; <var>ws2</var>.
+
+        <p><code>wcscmp</code> does not take sorting conventions of the language the
+strings are written in into account.  To get that one has to use
+<code>wcscoll</code>. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>strcasecmp</b> (<var>const char *s1, const char *s2</var>)<var><a name="index-strcasecmp-524"></a></var><br>
+<blockquote><p>This function is like <code>strcmp</code>, except that differences in case are
+ignored.  How uppercase and lowercase characters are related is
+determined by the currently selected locale.  In the standard <code>"C"</code>
+locale the characters &Auml; and &auml; do not match but in a locale which
+regards these characters as parts of the alphabet they do match.
+
+     <p class="noindent"><code>strcasecmp</code> is derived from BSD. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>wcscasecmp</b> (<var>const wchar_t *ws1, const wchar_T *ws2</var>)<var><a name="index-wcscasecmp-525"></a></var><br>
+<blockquote><p>This function is like <code>wcscmp</code>, except that differences in case are
+ignored.  How uppercase and lowercase characters are related is
+determined by the currently selected locale.  In the standard <code>"C"</code>
+locale the characters &Auml; and &auml; do not match but in a locale which
+regards these characters as parts of the alphabet they do match.
+
+     <p class="noindent"><code>wcscasecmp</code> is a GNU extension. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>strncmp</b> (<var>const char *s1, const char *s2, size_t size</var>)<var><a name="index-strncmp-526"></a></var><br>
+<blockquote><p>This function is the similar to <code>strcmp</code>, except that no more than
+<var>size</var> characters are compared.  In other words, if the two
+strings are the same in their first <var>size</var> characters, the
+return value is zero. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wcsncmp</b> (<var>const wchar_t *ws1, const wchar_t *ws2, size_t size</var>)<var><a name="index-wcsncmp-527"></a></var><br>
+<blockquote><p>This function is the similar to <code>wcscmp</code>, except that no more than
+<var>size</var> wide characters are compared.  In other words, if the two
+strings are the same in their first <var>size</var> wide characters, the
+return value is zero. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>strncasecmp</b> (<var>const char *s1, const char *s2, size_t n</var>)<var><a name="index-strncasecmp-528"></a></var><br>
+<blockquote><p>This function is like <code>strncmp</code>, except that differences in case
+are ignored.  Like <code>strcasecmp</code>, it is locale dependent how
+uppercase and lowercase characters are related.
+
+     <p class="noindent"><code>strncasecmp</code> is a GNU extension. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>wcsncasecmp</b> (<var>const wchar_t *ws1, const wchar_t *s2, size_t n</var>)<var><a name="index-wcsncasecmp-529"></a></var><br>
+<blockquote><p>This function is like <code>wcsncmp</code>, except that differences in case
+are ignored.  Like <code>wcscasecmp</code>, it is locale dependent how
+uppercase and lowercase characters are related.
+
+     <p class="noindent"><code>wcsncasecmp</code> is a GNU extension. 
+</p></blockquote></div>
+
+   <p>Here are some examples showing the use of <code>strcmp</code> and
+<code>strncmp</code> (equivalent examples can be constructed for the wide
+character functions).  These examples assume the use of the ASCII
+character set.  (If some other character set&mdash;say, EBCDIC&mdash;is used
+instead, then the glyphs are associated with different numeric codes,
+and the return values and ordering may differ.)
+
+<pre class="smallexample">     strcmp ("hello", "hello")
+         &rArr; 0    /* <span class="roman">These two strings are the same.</span> */
+     strcmp ("hello", "Hello")
+         &rArr; 32   /* <span class="roman">Comparisons are case-sensitive.</span> */
+     strcmp ("hello", "world")
+         &rArr; -15  /* <span class="roman">The character </span><code>'h'</code><span class="roman"> comes before </span><code>'w'</code><span class="roman">.</span> */
+     strcmp ("hello", "hello, world")
+         &rArr; -44  /* <span class="roman">Comparing a null character against a comma.</span> */
+     strncmp ("hello", "hello, world", 5)
+         &rArr; 0    /* <span class="roman">The initial 5 characters are the same.</span> */
+     strncmp ("hello, world", "hello, stupid world!!!", 5)
+         &rArr; 0    /* <span class="roman">The initial 5 characters are the same.</span> */
+</pre>
+   <!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>strverscmp</b> (<var>const char *s1, const char *s2</var>)<var><a name="index-strverscmp-530"></a></var><br>
+<blockquote><p>The <code>strverscmp</code> function compares the string <var>s1</var> against
+<var>s2</var>, considering them as holding indices/version numbers.  Return
+value follows the same conventions as found in the <code>strverscmp</code>
+function.  In fact, if <var>s1</var> and <var>s2</var> contain no digits,
+<code>strverscmp</code> behaves like <code>strcmp</code>.
+
+        <p>Basically, we compare strings normally (character by character), until
+we find a digit in each string - then we enter a special comparison
+mode, where each sequence of digits is taken as a whole.  If we reach the
+end of these two parts without noticing a difference, we return to the
+standard comparison mode.  There are two types of numeric parts:
+"integral" and "fractional" (those  begin with a '0'). The types
+of the numeric parts affect the way we sort them:
+
+          <ul>
+<li>integral/integral: we compare values as you would expect.
+
+          <li>fractional/integral: the fractional part is less than the integral one. 
+Again, no surprise.
+
+          <li>fractional/fractional: the things become a bit more complex. 
+If the common prefix contains only leading zeroes, the longest part is less
+than the other one; else the comparison behaves normally. 
+</ul>
+
+     <pre class="smallexample">          strverscmp ("no digit", "no digit")
+              &rArr; 0    /* <span class="roman">same behavior as strcmp.</span> */
+          strverscmp ("item#99", "item#100")
+              &rArr; &lt;0   /* <span class="roman">same prefix, but 99 &lt; 100.</span> */
+          strverscmp ("alpha1", "alpha001")
+              &rArr; &gt;0   /* <span class="roman">fractional part inferior to integral one.</span> */
+          strverscmp ("part1_f012", "part1_f01")
+              &rArr; &gt;0   /* <span class="roman">two fractional parts.</span> */
+          strverscmp ("foo.009", "foo.0")
+              &rArr; &lt;0   /* <span class="roman">idem, but with leading zeroes only.</span> */
+</pre>
+        <p>This function is especially useful when dealing with filename sorting,
+because filenames frequently hold indices/version numbers.
+
+        <p><code>strverscmp</code> is a GNU extension. 
+</p></blockquote></div>
+
+<!-- string.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>bcmp</b> (<var>const void *a1, const void *a2, size_t size</var>)<var><a name="index-bcmp-531"></a></var><br>
+<blockquote><p>This is an obsolete alias for <code>memcmp</code>, derived from BSD. 
+</p></blockquote></div>
+
+   </body></html>
+

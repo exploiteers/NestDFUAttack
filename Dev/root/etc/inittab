@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2010-2011 Nest, Inc.
+# All rights reserved.
+#
+# Description:
+# This file implements the configuration for BusyBox init(8).
+#
+# System initialization
+::sysinit:/etc/init.d/rcS
+# Stuff to do when restarting the init process
+::restart:/sbin/init
+# Stuff to do before rebooting
+::ctrlaltdel:/sbin/reboot
+::shutdown:/etc/init.d/rcH

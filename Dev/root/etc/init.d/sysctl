@@ -1,0 +1,48 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to run sysctl to push any tunable
+#      kernel parameters into the kernel.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+SYSCTL=${SBINDIR}/sysctl
+SYSCTLCONF=${CONFDIR}/sysctl.conf
+
+case "${1}" in
+
+'start')
+	${ECHO} "Tuning kernel parameters: \c"
+
+	# Run sysctl with the default configuration file and turn the
+	# key/value pairs into progress dots ('.').
+
+	if $CHECK sysctl; then
+	    if [ -x ${SYSCTL} ] && [ -r ${SYSCTLCONF} ]; then
+		${SYSCTL} -p | ${SED} -e 's,^.\+$,\.,g' | ${TR} -d '\n'
+	    fi
+	fi
+
+	${ECHO} "."
+	;;
+
+'stop')
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

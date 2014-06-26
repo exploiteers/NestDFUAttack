@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Configuring Inetd - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Inetd.html#Inetd" title="Inetd">
+<link rel="prev" href="Inetd-Servers.html#Inetd-Servers" title="Inetd Servers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Configuring-Inetd"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Inetd-Servers.html#Inetd-Servers">Inetd Servers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Inetd.html#Inetd">Inetd</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.11.2 Configuring <code>inetd</code></h4>
+
+<p>The file <samp><span class="file">/etc/inetd.conf</span></samp> tells <code>inetd</code> which ports to listen to
+and what server programs to run for them.  Normally each entry in the
+file is one line, but you can split it onto multiple lines provided
+all but the first line of the entry start with whitespace.  Lines that
+start with &lsquo;<samp><span class="samp">#</span></samp>&rsquo; are comments.
+
+   <p>Here are two standard entries in <samp><span class="file">/etc/inetd.conf</span></samp>:
+
+<pre class="smallexample">     ftp	stream	tcp	nowait	root	/libexec/ftpd	ftpd
+     talk	dgram	udp	wait	root	/libexec/talkd	talkd
+</pre>
+   <p>An entry has this format:
+
+<pre class="smallexample">     <var>service</var> <var>style</var> <var>protocol</var> <var>wait</var> <var>username</var> <var>program</var> <var>arguments</var>
+</pre>
+   <p>The <var>service</var> field says which service this program provides.  It
+should be the name of a service defined in <samp><span class="file">/etc/services</span></samp>. 
+<code>inetd</code> uses <var>service</var> to decide which port to listen on for
+this entry.
+
+   <p>The fields <var>style</var> and <var>protocol</var> specify the communication
+style and the protocol to use for the listening socket.  The style
+should be the name of a communication style, converted to lower case
+and with &lsquo;<samp><span class="samp">SOCK_</span></samp>&rsquo; deleted&mdash;for example, &lsquo;<samp><span class="samp">stream</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">dgram</span></samp>&rsquo;.  <var>protocol</var> should be one of the protocols listed in
+<samp><span class="file">/etc/protocols</span></samp>.  The typical protocol names are &lsquo;<samp><span class="samp">tcp</span></samp>&rsquo; for
+byte stream connections and &lsquo;<samp><span class="samp">udp</span></samp>&rsquo; for unreliable datagrams.
+
+   <p>The <var>wait</var> field should be either &lsquo;<samp><span class="samp">wait</span></samp>&rsquo; or &lsquo;<samp><span class="samp">nowait</span></samp>&rsquo;. 
+Use &lsquo;<samp><span class="samp">wait</span></samp>&rsquo; if <var>style</var> is a connectionless style and the
+server, once started, handles multiple requests as they come in. 
+Use &lsquo;<samp><span class="samp">nowait</span></samp>&rsquo; if <code>inetd</code> should start a new process for each message
+or request that comes in.  If <var>style</var> uses connections, then
+<var>wait</var> <strong>must</strong> be &lsquo;<samp><span class="samp">nowait</span></samp>&rsquo;.
+
+   <p><var>user</var> is the user name that the server should run as.  <code>inetd</code> runs
+as root, so it can set the user ID of its children arbitrarily.  It's
+best to avoid using &lsquo;<samp><span class="samp">root</span></samp>&rsquo; for <var>user</var> if you can; but some
+servers, such as Telnet and FTP, read a username and password
+themselves.  These servers need to be root initially so they can log
+in as commanded by the data coming over the network.
+
+   <p><var>program</var> together with <var>arguments</var> specifies the command to
+run to start the server.  <var>program</var> should be an absolute file
+name specifying the executable file to run.  <var>arguments</var> consists
+of any number of whitespace-separated words, which become the
+command-line arguments of <var>program</var>.  The first word in
+<var>arguments</var> is argument zero, which should by convention be the
+program name itself (sans directories).
+
+   <p>If you edit <samp><span class="file">/etc/inetd.conf</span></samp>, you can tell <code>inetd</code> to reread the
+file and obey its new contents by sending the <code>inetd</code> process the
+<code>SIGHUP</code> signal.  You'll have to use <code>ps</code> to determine the
+process ID of the <code>inetd</code> process as it is not fixed.
+
+<!-- !!! could document /etc/inetd.sec -->
+   </body></html>
+

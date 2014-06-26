@@ -1,0 +1,44 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2011 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to restore the system clock from
+#      the hardware clock and save the system clock to the hardware
+#      clock.
+#
+#      Kernels configured with CONFIG_RTC_HCTOSYS need not run this on
+#      start-up, as the kernel handles restore itself.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+HWCLOCK="${SBINDIR}/hwclock -u"
+
+case "${1}" in
+
+restore|start)
+	${ECHO} "Restoring system clock: \c"
+
+		${HWCLOCK} -s
+
+	${ECHO} "done."
+	;;
+
+save|stop)
+        ${ECHO} "Saving system clock: \c"
+
+		${HWCLOCK} -w
+
+	${ECHO} "done."
+	;;
+
+*)
+	echo "Usage: ${0} <restore | save | start | stop>"
+	exit 1
+	;;
+
+esac

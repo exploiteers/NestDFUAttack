@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+<title>Initializing the Shell - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Implementing-a-Shell.html#Implementing-a-Shell" title="Implementing a Shell">
+<link rel="prev" href="Data-Structures.html#Data-Structures" title="Data Structures">
+<link rel="next" href="Launching-Jobs.html#Launching-Jobs" title="Launching Jobs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Initializing-the-Shell"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Launching-Jobs.html#Launching-Jobs">Launching Jobs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Data-Structures.html#Data-Structures">Data Structures</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.6.2 Initializing the Shell</h4>
+
+<p><a name="index-job-control_002c-enabling-3212"></a><a name="index-subshell-3213"></a>
+When a shell program that normally performs job control is started, it
+has to be careful in case it has been invoked from another shell that is
+already doing its own job control.
+
+   <p>A subshell that runs interactively has to ensure that it has been placed
+in the foreground by its parent shell before it can enable job control
+itself.  It does this by getting its initial process group ID with the
+<code>getpgrp</code> function, and comparing it to the process group ID of the
+current foreground job associated with its controlling terminal (which
+can be retrieved using the <code>tcgetpgrp</code> function).
+
+   <p>If the subshell is not running as a foreground job, it must stop itself
+by sending a <code>SIGTTIN</code> signal to its own process group.  It may not
+arbitrarily put itself into the foreground; it must wait for the user to
+tell the parent shell to do this.  If the subshell is continued again,
+it should repeat the check and stop itself again if it is still not in
+the foreground.
+
+   <p><a name="index-job-control_002c-enabling-3214"></a>Once the subshell has been placed into the foreground by its parent
+shell, it can enable its own job control.  It does this by calling
+<code>setpgid</code> to put itself into its own process group, and then
+calling <code>tcsetpgrp</code> to place this process group into the
+foreground.
+
+   <p>When a shell enables job control, it should set itself to ignore all the
+job control stop signals so that it doesn't accidentally stop itself. 
+You can do this by setting the action for all the stop signals to
+<code>SIG_IGN</code>.
+
+   <p>A subshell that runs non-interactively cannot and should not support job
+control.  It must leave all processes it creates in the same process
+group as the shell itself; this allows the non-interactive shell and its
+child processes to be treated as a single job by the parent shell.  This
+is easy to do&mdash;just don't use any of the job control primitives&mdash;but
+you must remember to make the shell do it.
+
+   <p>Here is the initialization code for the sample shell that shows how to
+do all of this.
+
+<pre class="smallexample">     /* <span class="roman">Keep track of attributes of the shell.</span>  */
+     
+     #include &lt;sys/types.h&gt;
+     #include &lt;termios.h&gt;
+     #include &lt;unistd.h&gt;
+     
+     pid_t shell_pgid;
+     struct termios shell_tmodes;
+     int shell_terminal;
+     int shell_is_interactive;
+     
+     
+     /* <span class="roman">Make sure the shell is running interactively as the foreground job</span>
+        <span class="roman">before proceeding.</span> */
+     
+     void
+     init_shell ()
+     {
+     
+       /* <span class="roman">See if we are running interactively.</span>  */
+       shell_terminal = STDIN_FILENO;
+       shell_is_interactive = isatty (shell_terminal);
+     
+       if (shell_is_interactive)
+         {
+           /* <span class="roman">Loop until we are in the foreground.</span>  */
+           while (tcgetpgrp (shell_terminal) != (shell_pgid = getpgrp ()))
+             kill (- shell_pgid, SIGTTIN);
+     
+           /* <span class="roman">Ignore interactive and job-control signals.</span>  */
+           signal (SIGINT, SIG_IGN);
+           signal (SIGQUIT, SIG_IGN);
+           signal (SIGTSTP, SIG_IGN);
+           signal (SIGTTIN, SIG_IGN);
+           signal (SIGTTOU, SIG_IGN);
+           signal (SIGCHLD, SIG_IGN);
+     
+           /* <span class="roman">Put ourselves in our own process group.</span>  */
+           shell_pgid = getpid ();
+           if (setpgid (shell_pgid, shell_pgid) &lt; 0)
+             {
+               perror ("Couldn't put the shell in its own process group");
+               exit (1);
+             }
+     
+           /* <span class="roman">Grab control of the terminal.</span>  */
+           tcsetpgrp (shell_terminal, shell_pgid);
+     
+           /* <span class="roman">Save default terminal attributes for shell.</span>  */
+           tcgetattr (shell_terminal, &amp;shell_tmodes);
+         }
+     }
+</pre>
+   </body></html>
+

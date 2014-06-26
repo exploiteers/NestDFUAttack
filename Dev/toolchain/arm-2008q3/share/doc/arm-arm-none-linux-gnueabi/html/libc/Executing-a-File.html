@@ -1,0 +1,226 @@
+<html lang="en">
+<head>
+<title>Executing a File - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="prev" href="Creating-a-Process.html#Creating-a-Process" title="Creating a Process">
+<link rel="next" href="Process-Completion.html#Process-Completion" title="Process Completion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Executing-a-File"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Process-Completion.html#Process-Completion">Process Completion</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.5 Executing a File</h3>
+
+<p><a name="index-executing-a-file-3168"></a><a name="index-g_t_0040code_007bexec_007d-functions-3169"></a>
+This section describes the <code>exec</code> family of functions, for executing
+a file as a process image.  You can use these functions to make a child
+process execute a new program after it has been forked.
+
+   <p>To see the effects of <code>exec</code> from the point of view of the called
+program, see <a href="Program-Basics.html#Program-Basics">Program Basics</a>.
+
+   <p><a name="index-unistd_002eh-3170"></a>The functions in this family differ in how you specify the arguments,
+but otherwise they all do the same thing.  They are declared in the
+header file <samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execv</b> (<var>const char *filename, char *const argv</var><tt>[]</tt>)<var><a name="index-execv-3171"></a></var><br>
+<blockquote><p>The <code>execv</code> function executes the file named by <var>filename</var> as a
+new process image.
+
+        <p>The <var>argv</var> argument is an array of null-terminated strings that is
+used to provide a value for the <code>argv</code> argument to the <code>main</code>
+function of the program to be executed.  The last element of this array
+must be a null pointer.  By convention, the first element of this array
+is the file name of the program sans directory names.  See <a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>, for full details on how programs can access these arguments.
+
+        <p>The environment for the new process image is taken from the
+<code>environ</code> variable of the current process image; see
+<a href="Environment-Variables.html#Environment-Variables">Environment Variables</a>, for information about environments. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execl</b> (<var>const char *filename, const char *arg0, <small class="dots">...</small></var>)<var><a name="index-execl-3172"></a></var><br>
+<blockquote><p>This is similar to <code>execv</code>, but the <var>argv</var> strings are
+specified individually instead of as an array.  A null pointer must be
+passed as the last such argument. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execve</b> (<var>const char *filename, char *const argv</var><tt>[]</tt><var>, char *const env</var><tt>[]</tt>)<var><a name="index-execve-3173"></a></var><br>
+<blockquote><p>This is similar to <code>execv</code>, but permits you to specify the environment
+for the new program explicitly as the <var>env</var> argument.  This should
+be an array of strings in the same format as for the <code>environ</code>
+variable; see <a href="Environment-Access.html#Environment-Access">Environment Access</a>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execle</b> (<var>const char *filename, const char *arg0, char *const env</var><tt>[]</tt><var>, <small class="dots">...</small></var>)<var><a name="index-execle-3174"></a></var><br>
+<blockquote><p>This is similar to <code>execl</code>, but permits you to specify the
+environment for the new program explicitly.  The environment argument is
+passed following the null pointer that marks the last <var>argv</var>
+argument, and should be an array of strings in the same format as for
+the <code>environ</code> variable. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execvp</b> (<var>const char *filename, char *const argv</var><tt>[]</tt>)<var><a name="index-execvp-3175"></a></var><br>
+<blockquote><p>The <code>execvp</code> function is similar to <code>execv</code>, except that it
+searches the directories listed in the <code>PATH</code> environment variable
+(see <a href="Standard-Environment.html#Standard-Environment">Standard Environment</a>) to find the full file name of a
+file from <var>filename</var> if <var>filename</var> does not contain a slash.
+
+        <p>This function is useful for executing system utility programs, because
+it looks for them in the places that the user has chosen.  Shells use it
+to run the commands that users type. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>execlp</b> (<var>const char *filename, const char *arg0, <small class="dots">...</small></var>)<var><a name="index-execlp-3176"></a></var><br>
+<blockquote><p>This function is like <code>execl</code>, except that it performs the same
+file name searching as the <code>execvp</code> function. 
+</p></blockquote></div>
+
+   <p>The size of the argument list and environment list taken together must
+not be greater than <code>ARG_MAX</code> bytes.  See <a href="General-Limits.html#General-Limits">General Limits</a>.  In
+the GNU system, the size (which compares against <code>ARG_MAX</code>)
+includes, for each string, the number of characters in the string, plus
+the size of a <code>char *</code>, plus one, rounded up to a multiple of the
+size of a <code>char *</code>.  Other systems may have somewhat different
+rules for counting.
+
+   <p>These functions normally don't return, since execution of a new program
+causes the currently executing program to go away completely.  A value
+of <code>-1</code> is returned in the event of a failure.  In addition to the
+usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following
+<code>errno</code> error conditions are defined for these functions:
+
+     <dl>
+<dt><code>E2BIG</code><dd>The combined size of the new program's argument list and environment
+list is larger than <code>ARG_MAX</code> bytes.  The GNU system has no
+specific limit on the argument list size, so this error code cannot
+result, but you may get <code>ENOMEM</code> instead if the arguments are too
+big for available memory.
+
+     <br><dt><code>ENOEXEC</code><dd>The specified file can't be executed because it isn't in the right format.
+
+     <br><dt><code>ENOMEM</code><dd>Executing the specified file requires more storage than is available. 
+</dl>
+
+   <p>If execution of the new file succeeds, it updates the access time field
+of the file as if the file had been read.  See <a href="File-Times.html#File-Times">File Times</a>, for more
+details about access times of files.
+
+   <p>The point at which the file is closed again is not specified, but
+is at some point before the process exits or before another process
+image is executed.
+
+   <p>Executing a new process image completely changes the contents of memory,
+copying only the argument and environment strings to new locations.  But
+many other attributes of the process are unchanged:
+
+     <ul>
+<li>The process ID and the parent process ID.  See <a href="Process-Creation-Concepts.html#Process-Creation-Concepts">Process Creation Concepts</a>.
+
+     <li>Session and process group membership.  See <a href="Concepts-of-Job-Control.html#Concepts-of-Job-Control">Concepts of Job Control</a>.
+
+     <li>Real user ID and group ID, and supplementary group IDs.  See <a href="Process-Persona.html#Process-Persona">Process Persona</a>.
+
+     <li>Pending alarms.  See <a href="Setting-an-Alarm.html#Setting-an-Alarm">Setting an Alarm</a>.
+
+     <li>Current working directory and root directory.  See <a href="Working-Directory.html#Working-Directory">Working Directory</a>.  In the GNU system, the root directory is not copied when
+executing a setuid program; instead the system default root directory
+is used for the new program.
+
+     <li>File mode creation mask.  See <a href="Setting-Permissions.html#Setting-Permissions">Setting Permissions</a>.
+
+     <li>Process signal mask; see <a href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>.
+
+     <li>Pending signals; see <a href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>.
+
+     <li>Elapsed processor time associated with the process; see <a href="Processor-Time.html#Processor-Time">Processor Time</a>. 
+</ul>
+
+   <p>If the set-user-ID and set-group-ID mode bits of the process image file
+are set, this affects the effective user ID and effective group ID
+(respectively) of the process.  These concepts are discussed in detail
+in <a href="Process-Persona.html#Process-Persona">Process Persona</a>.
+
+   <p>Signals that are set to be ignored in the existing process image are
+also set to be ignored in the new process image.  All other signals are
+set to the default action in the new process image.  For more
+information about signals, see <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.
+
+   <p>File descriptors open in the existing process image remain open in the
+new process image, unless they have the <code>FD_CLOEXEC</code>
+(close-on-exec) flag set.  The files that remain open inherit all
+attributes of the open file description from the existing process image,
+including file locks.  File descriptors are discussed in <a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>.
+
+   <p>Streams, by contrast, cannot survive through <code>exec</code> functions,
+because they are located in the memory of the process itself.  The new
+process image has no streams except those it creates afresh.  Each of
+the streams in the pre-<code>exec</code> process image has a descriptor inside
+it, and these descriptors do survive through <code>exec</code> (provided that
+they do not have <code>FD_CLOEXEC</code> set).  The new process image can
+reconnect these to new streams using <code>fdopen</code> (see <a href="Descriptors-and-Streams.html#Descriptors-and-Streams">Descriptors and Streams</a>).
+
+   </body></html>
+

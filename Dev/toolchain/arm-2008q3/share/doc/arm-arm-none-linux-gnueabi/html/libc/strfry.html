@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+<title>strfry - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="prev" href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String" title="Finding Tokens in a String">
+<link rel="next" href="Trivial-Encryption.html#Trivial-Encryption" title="Trivial Encryption">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="strfry"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Trivial-Encryption.html#Trivial-Encryption">Trivial Encryption</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Finding-Tokens-in-a-String.html#Finding-Tokens-in-a-String">Finding Tokens in a String</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.9 strfry</h3>
+
+<p>The function below addresses the perennial programming quandary: &ldquo;How do
+I take good data in string form and painlessly turn it into garbage?&rdquo;
+This is actually a fairly simple task for C programmers who do not use
+the GNU C library string functions, but for programs based on the GNU C
+library, the <code>strfry</code> function is the preferred method for
+destroying string data.
+
+   <p>The prototype for this function is in <samp><span class="file">string.h</span></samp>.
+
+<!-- string.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>strfry</b> (<var>char *string</var>)<var><a name="index-strfry-578"></a></var><br>
+<blockquote>
+        <p><code>strfry</code> creates a pseudorandom anagram of a string, replacing the
+input with the anagram in place.  For each position in the string,
+<code>strfry</code> swaps it with a position in the string selected at random
+(from a uniform distribution).  The two positions may be the same.
+
+        <p>The return value of <code>strfry</code> is always <var>string</var>.
+
+        <p><strong>Portability Note:</strong>  This function is unique to the GNU C library.
+
+        </blockquote></div>
+
+   </body></html>
+

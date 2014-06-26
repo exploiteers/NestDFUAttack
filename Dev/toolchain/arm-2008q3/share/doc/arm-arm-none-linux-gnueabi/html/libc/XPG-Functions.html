@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>XPG Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="User-Accounting-Database.html#User-Accounting-Database" title="User Accounting Database">
+<link rel="prev" href="Manipulating-the-Database.html#Manipulating-the-Database" title="Manipulating the Database">
+<link rel="next" href="Logging-In-and-Out.html#Logging-In-and-Out" title="Logging In and Out">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="XPG-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Logging-In-and-Out.html#Logging-In-and-Out">Logging In and Out</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Manipulating-the-Database.html#Manipulating-the-Database">Manipulating the Database</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="User-Accounting-Database.html#User-Accounting-Database">User Accounting Database</a>
+<hr>
+</div>
+
+<h4 class="subsection">29.12.2 XPG User Accounting Database Functions</h4>
+
+<p>These functions, described in the X/Open Portability Guide, are declared
+in the header file <samp><span class="file">utmpx.h</span></samp>. 
+<a name="index-utmpx_002eh-3362"></a>
+
+<div class="defun">
+&mdash; Data Type: <b>struct utmpx</b><var><a name="index-struct-utmpx-3363"></a></var><br>
+<blockquote><p>The <code>utmpx</code> data structure contains at least the following members:
+
+          <dl>
+<dt><code>short int ut_type</code><dd>Specifies the type of login; one of <code>EMPTY</code>, <code>RUN_LVL</code>,
+<code>BOOT_TIME</code>, <code>OLD_TIME</code>, <code>NEW_TIME</code>, <code>INIT_PROCESS</code>,
+<code>LOGIN_PROCESS</code>, <code>USER_PROCESS</code> or <code>DEAD_PROCESS</code>.
+
+          <br><dt><code>pid_t ut_pid</code><dd>The process ID number of the login process.
+
+          <br><dt><code>char ut_line[]</code><dd>The device name of the tty (without <samp><span class="file">/dev/</span></samp>).
+
+          <br><dt><code>char ut_id[]</code><dd>The inittab ID of the process.
+
+          <br><dt><code>char ut_user[]</code><dd>The user's login name.
+
+          <br><dt><code>struct timeval ut_tv</code><dd>Time the entry was made.  For entries of type <code>OLD_TIME</code> this is
+the time when the system clock changed, and for entries of type
+<code>NEW_TIME</code> this is the time the system clock was set to. 
+</dl>
+        On the GNU system, <code>struct utmpx</code> is identical to <code>struct
+utmp</code> except for the fact that including <samp><span class="file">utmpx.h</span></samp> does not make
+visible the declaration of <code>struct exit_status</code>. 
+</p></blockquote></div>
+
+   <p>The following macros are defined for use as values for the
+<code>ut_type</code> member of the <code>utmpx</code> structure.  The values are
+integer constants and are, on the GNU system, identical to the
+definitions in <samp><span class="file">utmp.h</span></samp>.
+
+     <dl>
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<a name="index-EMPTY-3364"></a><dt><code>EMPTY</code><dd>This macro is used to indicate that the entry contains no valid user
+accounting information.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-RUN_005fLVL-3365"></a><br><dt><code>RUN_LVL</code><dd>This macro is used to identify the systems runlevel.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-BOOT_005fTIME-3366"></a><br><dt><code>BOOT_TIME</code><dd>This macro is used to identify the time of system boot.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-OLD_005fTIME-3367"></a><br><dt><code>OLD_TIME</code><dd>This macro is used to identify the time when the system clock changed.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-NEW_005fTIME-3368"></a><br><dt><code>NEW_TIME</code><dd>This macro is used to identify the time after the system changed.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-INIT_005fPROCESS-3369"></a><br><dt><code>INIT_PROCESS</code><dd>This macro is used to identify a process spawned by the init process.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-LOGIN_005fPROCESS-3370"></a><br><dt><code>LOGIN_PROCESS</code><dd>This macro is used to identify the session leader of a logged in user.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-USER_005fPROCESS-3371"></a><br><dt><code>USER_PROCESS</code><dd>This macro is used to identify a user process.
+
+     <!-- utmpx.h -->
+     <!-- XPG4.2 -->
+     <p><a name="index-DEAD_005fPROCESS-3372"></a><br><dt><code>DEAD_PROCESS</code><dd>This macro is used to identify a terminated process. 
+</dl>
+
+   <p>The size of the <code>ut_line</code>, <code>ut_id</code> and <code>ut_user</code> arrays
+can be found using the <code>sizeof</code> operator.
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: void <b>setutxent</b> (<var>void</var>)<var><a name="index-setutxent-3373"></a></var><br>
+<blockquote><p>This function is similar to <code>setutent</code>.  On the GNU system it is
+simply an alias for <code>setutent</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: struct utmpx * <b>getutxent</b> (<var>void</var>)<var><a name="index-getutxent-3374"></a></var><br>
+<blockquote><p>The <code>getutxent</code> function is similar to <code>getutent</code>, but returns
+a pointer to a <code>struct utmpx</code> instead of <code>struct utmp</code>.  On
+the GNU system it simply is an alias for <code>getutent</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: void <b>endutxent</b> (<var>void</var>)<var><a name="index-endutxent-3375"></a></var><br>
+<blockquote><p>This function is similar to <code>endutent</code>.  On the GNU system it is
+simply an alias for <code>endutent</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: struct utmpx * <b>getutxid</b> (<var>const struct utmpx *id</var>)<var><a name="index-getutxid-3376"></a></var><br>
+<blockquote><p>This function is similar to <code>getutid</code>, but uses <code>struct utmpx</code>
+instead of <code>struct utmp</code>.  On the GNU system it is simply an alias
+for <code>getutid</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: struct utmpx * <b>getutxline</b> (<var>const struct utmpx *line</var>)<var><a name="index-getutxline-3377"></a></var><br>
+<blockquote><p>This function is similar to <code>getutid</code>, but uses <code>struct utmpx</code>
+instead of <code>struct utmp</code>.  On the GNU system it is simply an alias
+for <code>getutline</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: struct utmpx * <b>pututxline</b> (<var>const struct utmpx *utmp</var>)<var><a name="index-pututxline-3378"></a></var><br>
+<blockquote><p>The <code>pututxline</code> function is functionally identical to
+<code>pututline</code>, but uses <code>struct utmpx</code> instead of <code>struct
+utmp</code>.  On the GNU system, <code>pututxline</code> is simply an alias for
+<code>pututline</code>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- XPG4.2 -->
+<div class="defun">
+&mdash; Function: int <b>utmpxname</b> (<var>const char *file</var>)<var><a name="index-utmpxname-3379"></a></var><br>
+<blockquote><p>The <code>utmpxname</code> function is functionally identical to
+<code>utmpname</code>.  On the GNU system, <code>utmpxname</code> is simply an
+alias for <code>utmpname</code>. 
+</p></blockquote></div>
+
+   <p>You can translate between a traditional <code>struct utmp</code> and an XPG
+<code>struct utmpx</code> with the following functions.  On the GNU system,
+these functions are merely copies, since the two structures are
+identical.
+
+<!-- utmpx.h -->
+<!-- utmp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getutmp</b> (<var>const struct utmpx *utmpx, struct utmp *utmp</var>)<var><a name="index-getutmp-3380"></a></var><br>
+<blockquote><p><code>getutmp</code> copies the information, insofar as the structures are
+compatible, from <var>utmpx</var> to <var>utmp</var>. 
+</p></blockquote></div>
+
+<!-- utmpx.h -->
+<!-- utmp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getutmpx</b> (<var>const struct utmp *utmp, struct utmpx *utmpx</var>)<var><a name="index-getutmpx-3381"></a></var><br>
+<blockquote><p><code>getutmpx</code> copies the information, insofar as the structures are
+compatible, from <var>utmp</var> to <var>utmpx</var>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+<title>Example Receiver - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Datagrams.html#Datagrams" title="Datagrams">
+<link rel="prev" href="Datagram-Example.html#Datagram-Example" title="Datagram Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Example-Receiver"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Datagram-Example.html#Datagram-Example">Datagram Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Datagrams.html#Datagrams">Datagrams</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.10.4 Example of Reading Datagrams</h4>
+
+<p>Here is the client program corresponding to the server above.
+
+   <p>It sends a datagram to the server and then waits for a reply.  Notice
+that the socket for the client (as well as for the server) in this
+example has to be given a name.  This is so that the server can direct
+a message back to the client.  Since the socket has no associated
+connection state, the only way the server can do this is by
+referencing the name of the client.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;errno.h&gt;
+     #include &lt;unistd.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;sys/socket.h&gt;
+     #include &lt;sys/un.h&gt;
+     
+     #define SERVER  "/tmp/serversocket"
+     #define CLIENT  "/tmp/mysocket"
+     #define MAXMSG  512
+     #define MESSAGE "Yow!!! Are we having fun yet?!?"
+     
+     int
+     main (void)
+     {
+       extern int make_named_socket (const char *name);
+       int sock;
+       char message[MAXMSG];
+       struct sockaddr_un name;
+       size_t size;
+       int nbytes;
+     
+       /* <span class="roman">Make the socket.</span> */
+       sock = make_named_socket (CLIENT);
+     
+       /* <span class="roman">Initialize the server socket address.</span> */
+       name.sun_family = AF_LOCAL;
+       strcpy (name.sun_path, SERVER);
+       size = strlen (name.sun_path) + sizeof (name.sun_family);
+     
+       /* <span class="roman">Send the datagram.</span> */
+       nbytes = sendto (sock, MESSAGE, strlen (MESSAGE) + 1, 0,
+                        (struct sockaddr *) &amp; name, size);
+       if (nbytes &lt; 0)
+         {
+           perror ("sendto (client)");
+           exit (EXIT_FAILURE);
+         }
+     
+       /* <span class="roman">Wait for a reply.</span> */
+       nbytes = recvfrom (sock, message, MAXMSG, 0, NULL, 0);
+       if (nbytes &lt; 0)
+         {
+           perror ("recfrom (client)");
+           exit (EXIT_FAILURE);
+         }
+     
+       /* <span class="roman">Print a diagnostic message.</span> */
+       fprintf (stderr, "Client: got message: %s\n", message);
+     
+       /* <span class="roman">Clean up.</span> */
+       remove (CLIENT);
+       close (sock);
+     }
+</pre>
+   <p>Keep in mind that datagram socket communications are unreliable.  In
+this example, the client program waits indefinitely if the message
+never reaches the server or if the server's response never comes
+back.  It's up to the user running the program to kill and restart
+it if desired.  A more automatic solution could be to use
+<code>select</code> (see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>) to establish a timeout period
+for the reply, and in case of timeout either re-send the message or
+shut down the socket and exit.
+
+   </body></html>
+

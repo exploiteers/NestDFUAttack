@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Setting an Alarm - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Date-and-Time.html#Date-and-Time" title="Date and Time">
+<link rel="prev" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link rel="next" href="Sleeping.html#Sleeping" title="Sleeping">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Setting-an-Alarm"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sleeping.html#Sleeping">Sleeping</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Date-and-Time.html#Date-and-Time">Date and Time</a>
+<hr>
+</div>
+
+<h3 class="section">21.5 Setting an Alarm</h3>
+
+<p>The <code>alarm</code> and <code>setitimer</code> functions provide a mechanism for a
+process to interrupt itself in the future.  They do this by setting a
+timer; when the timer expires, the process receives a signal.
+
+   <p><a name="index-setting-an-alarm-2677"></a><a name="index-interval-timer_002c-setting-2678"></a><a name="index-alarms_002c-setting-2679"></a><a name="index-timers_002c-setting-2680"></a>Each process has three independent interval timers available:
+
+     <ul>
+<li>A real-time timer that counts elapsed time.  This timer sends a
+<code>SIGALRM</code> signal to the process when it expires. 
+<a name="index-real_002dtime-timer-2681"></a><a name="index-timer_002c-real_002dtime-2682"></a>
+<li>A virtual timer that counts processor time used by the process.  This timer
+sends a <code>SIGVTALRM</code> signal to the process when it expires. 
+<a name="index-virtual-timer-2683"></a><a name="index-timer_002c-virtual-2684"></a>
+<li>A profiling timer that counts both processor time used by the process,
+and processor time spent in system calls on behalf of the process.  This
+timer sends a <code>SIGPROF</code> signal to the process when it expires. 
+<a name="index-profiling-timer-2685"></a><a name="index-timer_002c-profiling-2686"></a>
+This timer is useful for profiling in interpreters.  The interval timer
+mechanism does not have the fine granularity necessary for profiling
+native code. 
+<!-- @xref{profil} !!! -->
+</ul>
+
+   <p>You can only have one timer of each kind set at any given time.  If you
+set a timer that has not yet expired, that timer is simply reset to the
+new value.
+
+   <p>You should establish a handler for the appropriate alarm signal using
+<code>signal</code> or <code>sigaction</code> before issuing a call to
+<code>setitimer</code> or <code>alarm</code>.  Otherwise, an unusual chain of events
+could cause the timer to expire before your program establishes the
+handler.  In this case it would be terminated, since termination is the
+default action for the alarm signals.  See <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.
+
+   <p>To be able to use the alarm function to interrupt a system call which
+might block otherwise indefinitely it is important to <em>not</em> set the
+<code>SA_RESTART</code> flag when registering the signal handler using
+<code>sigaction</code>.  When not using <code>sigaction</code> things get even
+uglier: the <code>signal</code> function has to fixed semantics with respect
+to restarts.  The BSD semantics for this function is to set the flag. 
+Therefore, if <code>sigaction</code> for whatever reason cannot be used, it is
+necessary to use <code>sysv_signal</code> and not <code>signal</code>.
+
+   <p>The <code>setitimer</code> function is the primary means for setting an alarm. 
+This facility is declared in the header file <samp><span class="file">sys/time.h</span></samp>.  The
+<code>alarm</code> function, declared in <samp><span class="file">unistd.h</span></samp>, provides a somewhat
+simpler interface for setting the real-time timer. 
+<a name="index-unistd_002eh-2687"></a><a name="index-sys_002ftime_002eh-2688"></a>
+<!-- sys/time.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct itimerval</b><var><a name="index-struct-itimerval-2689"></a></var><br>
+<blockquote><p>This structure is used to specify when a timer should expire.  It contains
+the following members:
+          <dl>
+<dt><code>struct timeval it_interval</code><dd>This is the period between successive timer interrupts.  If zero, the
+alarm will only be sent once.
+
+          <br><dt><code>struct timeval it_value</code><dd>This is the period between now and the first timer interrupt.  If zero,
+the alarm is disabled. 
+</dl>
+
+        <p>The <code>struct timeval</code> data type is described in <a href="Elapsed-Time.html#Elapsed-Time">Elapsed Time</a>. 
+</p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setitimer</b> (<var>int which, struct itimerval *new, struct itimerval *old</var>)<var><a name="index-setitimer-2690"></a></var><br>
+<blockquote><p>The <code>setitimer</code> function sets the timer specified by <var>which</var>
+according to <var>new</var>.  The <var>which</var> argument can have a value of
+<code>ITIMER_REAL</code>, <code>ITIMER_VIRTUAL</code>, or <code>ITIMER_PROF</code>.
+
+        <p>If <var>old</var> is not a null pointer, <code>setitimer</code> returns information
+about any previous unexpired timer of the same kind in the structure it
+points to.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The timer period is too large. 
+</dl>
+        </p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getitimer</b> (<var>int which, struct itimerval *old</var>)<var><a name="index-getitimer-2691"></a></var><br>
+<blockquote><p>The <code>getitimer</code> function stores information about the timer specified
+by <var>which</var> in the structure pointed at by <var>old</var>.
+
+        <p>The return value and error conditions are the same as for <code>setitimer</code>. 
+</p></blockquote></div>
+
+<!-- sys/time.h -->
+<!-- BSD -->
+     <dl>
+<dt><code>ITIMER_REAL</code><a name="index-ITIMER_005fREAL-2692"></a><dd>This constant can be used as the <var>which</var> argument to the
+<code>setitimer</code> and <code>getitimer</code> functions to specify the real-time
+timer.
+
+     <!-- sys/time.h -->
+     <!-- BSD -->
+     <br><dt><code>ITIMER_VIRTUAL</code><a name="index-ITIMER_005fVIRTUAL-2693"></a><dd>This constant can be used as the <var>which</var> argument to the
+<code>setitimer</code> and <code>getitimer</code> functions to specify the virtual
+timer.
+
+     <!-- sys/time.h -->
+     <!-- BSD -->
+     <br><dt><code>ITIMER_PROF</code><a name="index-ITIMER_005fPROF-2694"></a><dd>This constant can be used as the <var>which</var> argument to the
+<code>setitimer</code> and <code>getitimer</code> functions to specify the profiling
+timer. 
+</dl>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: unsigned int <b>alarm</b> (<var>unsigned int seconds</var>)<var><a name="index-alarm-2695"></a></var><br>
+<blockquote><p>The <code>alarm</code> function sets the real-time timer to expire in
+<var>seconds</var> seconds.  If you want to cancel any existing alarm, you
+can do this by calling <code>alarm</code> with a <var>seconds</var> argument of
+zero.
+
+        <p>The return value indicates how many seconds remain before the previous
+alarm would have been sent.  If there is no previous alarm, <code>alarm</code>
+returns zero. 
+</p></blockquote></div>
+
+   <p>The <code>alarm</code> function could be defined in terms of <code>setitimer</code>
+like this:
+
+<pre class="smallexample">     unsigned int
+     alarm (unsigned int seconds)
+     {
+       struct itimerval old, new;
+       new.it_interval.tv_usec = 0;
+       new.it_interval.tv_sec = 0;
+       new.it_value.tv_usec = 0;
+       new.it_value.tv_sec = (long int) seconds;
+       if (setitimer (ITIMER_REAL, &amp;new, &amp;old) &lt; 0)
+         return 0;
+       else
+         return old.it_value.tv_sec;
+     }
+</pre>
+   <p>There is an example showing the use of the <code>alarm</code> function in
+<a href="Handler-Returns.html#Handler-Returns">Handler Returns</a>.
+
+   <p>If you simply want your process to wait for a given number of seconds,
+you should use the <code>sleep</code> function.  See <a href="Sleeping.html#Sleeping">Sleeping</a>.
+
+   <p>You shouldn't count on the signal arriving precisely when the timer
+expires.  In a multiprocessing environment there is typically some
+amount of delay involved.
+
+   <p><strong>Portability Note:</strong> The <code>setitimer</code> and <code>getitimer</code>
+functions are derived from BSD Unix, while the <code>alarm</code> function is
+specified by the POSIX.1 standard.  <code>setitimer</code> is more powerful than
+<code>alarm</code>, but <code>alarm</code> is more widely used.
+
+   </body></html>
+

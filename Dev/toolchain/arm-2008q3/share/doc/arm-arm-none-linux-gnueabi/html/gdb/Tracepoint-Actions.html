@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Tracepoint Actions - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Set-Tracepoints.html#Set-Tracepoints" title="Set Tracepoints">
+<link rel="prev" href="Tracepoint-Passcounts.html#Tracepoint-Passcounts" title="Tracepoint Passcounts">
+<link rel="next" href="Listing-Tracepoints.html#Listing-Tracepoints" title="Listing Tracepoints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Tracepoint-Actions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Listing-Tracepoints.html#Listing-Tracepoints">Listing Tracepoints</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tracepoint-Passcounts.html#Tracepoint-Passcounts">Tracepoint Passcounts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Set-Tracepoints.html#Set-Tracepoints">Set Tracepoints</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.1.4 Tracepoint Action Lists</h4>
+
+     
+<a name="index-actions-612"></a>
+<a name="index-tracepoint-actions-613"></a>
+<dl><dt><code>actions </code><span class="roman">[</span><var>num</var><span class="roman">]</span><dd>This command will prompt for a list of actions to be taken when the
+tracepoint is hit.  If the tracepoint number <var>num</var> is not
+specified, this command sets the actions for the one that was most
+recently defined (so that you can define a tracepoint and then say
+<code>actions</code> without bothering about its number).  You specify the
+actions themselves on the following lines, one action at a time, and
+terminate the actions list with a line containing just <code>end</code>.  So
+far, the only defined actions are <code>collect</code> and
+<code>while-stepping</code>.
+
+     <p><a name="index-remove-actions-from-a-tracepoint-614"></a>To remove all actions from a tracepoint, type &lsquo;<samp><span class="samp">actions </span><var>num</var></samp>&rsquo;
+and follow it immediately with &lsquo;<samp><span class="samp">end</span></samp>&rsquo;.
+
+     <pre class="smallexample">          (gdb) <b>collect </b><var>data</var> // collect some data
+          
+          (gdb) <b>while-stepping 5</b> // single-step 5 times, collect data
+          
+          (gdb) <b>end</b>              // signals the end of actions.
+</pre>
+     <p>In the following example, the action list begins with <code>collect</code>
+commands indicating the things to be collected when the tracepoint is
+hit.  Then, in order to single-step and collect additional data
+following the tracepoint, a <code>while-stepping</code> command is used,
+followed by the list of things to be collected while stepping.  The
+<code>while-stepping</code> command is terminated by its own separate
+<code>end</code> command.  Lastly, the action list is terminated by an
+<code>end</code> command.
+
+     <pre class="smallexample">          (gdb) <b>trace foo</b>
+          (gdb) <b>actions</b>
+          Enter actions for tracepoint 1, one per line:
+          &gt; collect bar,baz
+          &gt; collect $regs
+          &gt; while-stepping 12
+            &gt; collect $fp, $sp
+            &gt; end
+          end
+</pre>
+     <p><a name="index-collect-_0040r_007b_0028tracepoints_0029_007d-615"></a><br><dt><code>collect </code><var>expr1</var><code>, </code><var>expr2</var><code>, ...</code><dd>Collect values of the given expressions when the tracepoint is hit. 
+This command accepts a comma-separated list of any valid expressions. 
+In addition to global, static, or local variables, the following
+special arguments are supported:
+
+          <dl>
+<dt><code>$regs</code><dd>collect all registers
+
+          <br><dt><code>$args</code><dd>collect all function arguments
+
+          <br><dt><code>$locals</code><dd>collect all local variables. 
+</dl>
+
+     <p>You can give several consecutive <code>collect</code> commands, each one
+with a single argument, or one <code>collect</code> command with several
+arguments separated by commas: the effect is the same.
+
+     <p>The command <code>info scope</code> (see <a href="Symbols.html#Symbols">info scope</a>) is
+particularly useful for figuring out what data to collect.
+
+     <p><a name="index-while_002dstepping-_0040r_007b_0028tracepoints_0029_007d-616"></a><br><dt><code>while-stepping </code><var>n</var><dd>Perform <var>n</var> single-step traces after the tracepoint, collecting
+new data at each step.  The <code>while-stepping</code> command is
+followed by the list of what to collect while stepping (followed by
+its own <code>end</code> command):
+
+     <pre class="smallexample">          &gt; while-stepping 12
+            &gt; collect $regs, myglobal
+            &gt; end
+          &gt;
+</pre>
+     <p class="noindent">You may abbreviate <code>while-stepping</code> as <code>ws</code> or
+<code>stepping</code>. 
+</dl>
+
+   </body></html>
+

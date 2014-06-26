@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Mount Information - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Filesystem-Handling.html#Filesystem-Handling" title="Filesystem Handling">
+<link rel="next" href="Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount" title="Mount-Unmount-Remount">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Mount-Information"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">Mount-Unmount-Remount</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Filesystem-Handling.html#Filesystem-Handling">Filesystem Handling</a>
+<hr>
+</div>
+
+<h4 class="subsection">30.3.1 Mount Information</h4>
+
+<p>For some programs it is desirable and necessary to access information
+about whether a certain filesystem is mounted and, if it is, where, or
+simply to get lists of all the available filesystems.  The GNU libc
+provides some functions to retrieve this information portably.
+
+   <p>Traditionally Unix systems have a file named <samp><span class="file">/etc/fstab</span></samp> which
+describes all possibly mounted filesystems.  The <code>mount</code> program
+uses this file to mount at startup time of the system all the
+necessary filesystems.  The information about all the filesystems
+actually mounted is normally kept in a file named either
+<samp><span class="file">/var/run/mtab</span></samp> or <samp><span class="file">/etc/mtab</span></samp>.  Both files share the same
+syntax and it is crucial that this syntax is followed all the time. 
+Therefore it is best to never directly write the files.  The functions
+described in this section can do this and they also provide the
+functionality to convert the external textual representation to the
+internal representation.
+
+   <p>Note that the <samp><span class="file">fstab</span></samp> and <samp><span class="file">mtab</span></samp> files are maintained on a
+system by <em>convention</em>.  It is possible for the files not to exist
+or not to be consistent with what is really mounted or available to
+mount, if the system's administration policy allows it.  But programs
+that mount and unmount filesystems typically maintain and use these
+files as described herein.
+
+   <p><a name="index-g_t_005fPATH_005fFSTAB-3457"></a><a name="index-g_t_005fPATH_005fMNTTAB-3458"></a><a name="index-g_t_005fPATH_005fMOUNTED-3459"></a><a name="index-FSTAB-3460"></a><a name="index-MNTTAB-3461"></a><a name="index-MOUNTED-3462"></a>The filenames given above should never be used directly.  The portable
+way to handle these file is to use the macro <code>_PATH_FSTAB</code>,
+defined in <samp><span class="file">fstab.h</span></samp>, or <code>_PATH_MNTTAB</code>, defined in
+<samp><span class="file">mntent.h</span></samp> and <samp><span class="file">paths.h</span></samp>, for <samp><span class="file">fstab</span></samp>; and the macro
+<code>_PATH_MOUNTED</code>, also defined in <samp><span class="file">mntent.h</span></samp> and
+<samp><span class="file">paths.h</span></samp>, for <samp><span class="file">mtab</span></samp>.  There are also two alternate macro
+names <code>FSTAB</code>, <code>MNTTAB</code>, and <code>MOUNTED</code> defined but
+these names are deprecated and kept only for backward compatibility. 
+The names <code>_PATH_MNTTAB</code> and <code>_PATH_MOUNTED</code> should always be used.
+
+<ul class="menu">
+<li><a accesskey="1" href="fstab.html#fstab">fstab</a>:                        The <samp><span class="file">fstab</span></samp> file
+<li><a accesskey="2" href="mtab.html#mtab">mtab</a>:                         The <samp><span class="file">mtab</span></samp> file
+<li><a accesskey="3" href="Other-Mount-Information.html#Other-Mount-Information">Other Mount Information</a>:      Other (non-libc) sources of mount information
+</ul>
+
+   </body></html>
+

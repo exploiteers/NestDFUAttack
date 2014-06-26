@@ -1,0 +1,281 @@
+<html lang="en">
+<head>
+<title>Calling Glob - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Globbing.html#Globbing" title="Globbing">
+<link rel="next" href="Flags-for-Globbing.html#Flags-for-Globbing" title="Flags for Globbing">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Calling-Glob"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Flags-for-Globbing.html#Flags-for-Globbing">Flags for Globbing</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Globbing.html#Globbing">Globbing</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.2.1 Calling <code>glob</code></h4>
+
+<p>The result of globbing is a vector of file names (strings).  To return
+this vector, <code>glob</code> uses a special data type, <code>glob_t</code>, which
+is a structure.  You pass <code>glob</code> the address of the structure, and
+it fills in the structure's fields to tell you about the results.
+
+<!-- glob.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Data Type: <b>glob_t</b><var><a name="index-glob_005ft-852"></a></var><br>
+<blockquote><p>This data type holds a pointer to a word vector.  More precisely, it
+records both the address of the word vector and its size.  The GNU
+implementation contains some more fields which are non-standard
+extensions.
+
+          <dl>
+<dt><code>gl_pathc</code><dd>The number of elements in the vector, excluding the initial null entries
+if the GLOB_DOOFFS flag is used (see gl_offs below).
+
+          <br><dt><code>gl_pathv</code><dd>The address of the vector.  This field has type <code>char&nbsp;**</code><!-- /@w -->.
+
+          <br><dt><code>gl_offs</code><dd>The offset of the first real element of the vector, from its nominal
+address in the <code>gl_pathv</code> field.  Unlike the other fields, this
+is always an input to <code>glob</code>, rather than an output from it.
+
+          <p>If you use a nonzero offset, then that many elements at the beginning of
+the vector are left empty.  (The <code>glob</code> function fills them with
+null pointers.)
+
+          <p>The <code>gl_offs</code> field is meaningful only if you use the
+<code>GLOB_DOOFFS</code> flag.  Otherwise, the offset is always zero
+regardless of what is in this field, and the first real element comes at
+the beginning of the vector.
+
+          <br><dt><code>gl_closedir</code><dd>The address of an alternative implementation of the <code>closedir</code>
+function.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit is set in
+the flag parameter.  The type of this field is
+<code>void&nbsp;(*)&nbsp;(void&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_readdir</code><dd>The address of an alternative implementation of the <code>readdir</code>
+function used to read the contents of a directory.  It is used if the
+<code>GLOB_ALTDIRFUNC</code> bit is set in the flag parameter.  The type of
+this field is <code>struct&nbsp;dirent&nbsp;*(*)&nbsp;(void&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_opendir</code><dd>The address of an alternative implementation of the <code>opendir</code>
+function.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit is set in
+the flag parameter.  The type of this field is
+<code>void&nbsp;*(*)&nbsp;(const&nbsp;char&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_stat</code><dd>The address of an alternative implementation of the <code>stat</code> function
+to get information about an object in the filesystem.  It is used if the
+<code>GLOB_ALTDIRFUNC</code> bit is set in the flag parameter.  The type of
+this field is <code>int&nbsp;(*)&nbsp;(const&nbsp;char&nbsp;*,&nbsp;struct&nbsp;stat&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_lstat</code><dd>The address of an alternative implementation of the <code>lstat</code>
+function to get information about an object in the filesystems, not
+following symbolic links.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit
+is set in the flag parameter.  The type of this field is <code>int&nbsp;(*)&nbsp;(const&nbsp;char&nbsp;*,<!-- /@w --> struct&nbsp;stat&nbsp;*)<!-- /@w --></code>.
+
+          <p>This is a GNU extension. 
+</dl>
+        </p></blockquote></div>
+
+   <p>For use in the <code>glob64</code> function <samp><span class="file">glob.h</span></samp> contains another
+definition for a very similar type.  <code>glob64_t</code> differs from
+<code>glob_t</code> only in the types of the members <code>gl_readdir</code>,
+<code>gl_stat</code>, and <code>gl_lstat</code>.
+
+<!-- glob.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>glob64_t</b><var><a name="index-glob64_005ft-853"></a></var><br>
+<blockquote><p>This data type holds a pointer to a word vector.  More precisely, it
+records both the address of the word vector and its size.  The GNU
+implementation contains some more fields which are non-standard
+extensions.
+
+          <dl>
+<dt><code>gl_pathc</code><dd>The number of elements in the vector, excluding the initial null entries
+if the GLOB_DOOFFS flag is used (see gl_offs below).
+
+          <br><dt><code>gl_pathv</code><dd>The address of the vector.  This field has type <code>char&nbsp;**</code><!-- /@w -->.
+
+          <br><dt><code>gl_offs</code><dd>The offset of the first real element of the vector, from its nominal
+address in the <code>gl_pathv</code> field.  Unlike the other fields, this
+is always an input to <code>glob</code>, rather than an output from it.
+
+          <p>If you use a nonzero offset, then that many elements at the beginning of
+the vector are left empty.  (The <code>glob</code> function fills them with
+null pointers.)
+
+          <p>The <code>gl_offs</code> field is meaningful only if you use the
+<code>GLOB_DOOFFS</code> flag.  Otherwise, the offset is always zero
+regardless of what is in this field, and the first real element comes at
+the beginning of the vector.
+
+          <br><dt><code>gl_closedir</code><dd>The address of an alternative implementation of the <code>closedir</code>
+function.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit is set in
+the flag parameter.  The type of this field is
+<code>void&nbsp;(*)&nbsp;(void&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_readdir</code><dd>The address of an alternative implementation of the <code>readdir64</code>
+function used to read the contents of a directory.  It is used if the
+<code>GLOB_ALTDIRFUNC</code> bit is set in the flag parameter.  The type of
+this field is <code>struct&nbsp;dirent64&nbsp;*(*)&nbsp;(void&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_opendir</code><dd>The address of an alternative implementation of the <code>opendir</code>
+function.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit is set in
+the flag parameter.  The type of this field is
+<code>void&nbsp;*(*)&nbsp;(const&nbsp;char&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_stat</code><dd>The address of an alternative implementation of the <code>stat64</code> function
+to get information about an object in the filesystem.  It is used if the
+<code>GLOB_ALTDIRFUNC</code> bit is set in the flag parameter.  The type of
+this field is <code>int&nbsp;(*)&nbsp;(const&nbsp;char&nbsp;*,&nbsp;struct&nbsp;stat64&nbsp;*)</code><!-- /@w -->.
+
+          <p>This is a GNU extension.
+
+          <br><dt><code>gl_lstat</code><dd>The address of an alternative implementation of the <code>lstat64</code>
+function to get information about an object in the filesystems, not
+following symbolic links.  It is used if the <code>GLOB_ALTDIRFUNC</code> bit
+is set in the flag parameter.  The type of this field is <code>int&nbsp;(*)&nbsp;(const&nbsp;char&nbsp;*,<!-- /@w --> struct&nbsp;stat64&nbsp;*)<!-- /@w --></code>.
+
+          <p>This is a GNU extension. 
+</dl>
+        </p></blockquote></div>
+
+<!-- glob.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: int <b>glob</b> (<var>const char *pattern, int flags, int </var>(<var>*errfunc</var>) (<var>const char *filename, int error-code</var>)<var>, glob_t *vector-ptr</var>)<var><a name="index-glob-854"></a></var><br>
+<blockquote><p>The function <code>glob</code> does globbing using the pattern <var>pattern</var>
+in the current directory.  It puts the result in a newly allocated
+vector, and stores the size and address of this vector into
+<code>*</code><var>vector-ptr</var>.  The argument <var>flags</var> is a combination of
+bit flags; see <a href="Flags-for-Globbing.html#Flags-for-Globbing">Flags for Globbing</a>, for details of the flags.
+
+        <p>The result of globbing is a sequence of file names.  The function
+<code>glob</code> allocates a string for each resulting word, then
+allocates a vector of type <code>char **</code> to store the addresses of
+these strings.  The last element of the vector is a null pointer. 
+This vector is called the <dfn>word vector</dfn>.
+
+        <p>To return this vector, <code>glob</code> stores both its address and its
+length (number of elements, not counting the terminating null pointer)
+into <code>*</code><var>vector-ptr</var>.
+
+        <p>Normally, <code>glob</code> sorts the file names alphabetically before
+returning them.  You can turn this off with the flag <code>GLOB_NOSORT</code>
+if you want to get the information as fast as possible.  Usually it's
+a good idea to let <code>glob</code> sort them&mdash;if you process the files in
+alphabetical order, the users will have a feel for the rate of progress
+that your application is making.
+
+        <p>If <code>glob</code> succeeds, it returns 0.  Otherwise, it returns one
+of these error codes:
+
+          <dl>
+<!-- glob.h -->
+<!-- POSIX.2 -->
+<dt><code>GLOB_ABORTED</code><a name="index-GLOB_005fABORTED-855"></a><dd>There was an error opening a directory, and you used the flag
+<code>GLOB_ERR</code> or your specified <var>errfunc</var> returned a nonzero
+value. 
+for an explanation of the <code>GLOB_ERR</code> flag and <var>errfunc</var>.
+
+          <!-- glob.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>GLOB_NOMATCH</code><a name="index-GLOB_005fNOMATCH-856"></a><dd>The pattern didn't match any existing files.  If you use the
+<code>GLOB_NOCHECK</code> flag, then you never get this error code, because
+that flag tells <code>glob</code> to <em>pretend</em> that the pattern matched
+at least one file.
+
+          <!-- glob.h -->
+          <!-- POSIX.2 -->
+          <br><dt><code>GLOB_NOSPACE</code><a name="index-GLOB_005fNOSPACE-857"></a><dd>It was impossible to allocate memory to hold the result. 
+</dl>
+
+        <p>In the event of an error, <code>glob</code> stores information in
+<code>*</code><var>vector-ptr</var> about all the matches it has found so far.
+
+        <p>It is important to notice that the <code>glob</code> function will not fail if
+it encounters directories or files which cannot be handled without the
+LFS interfaces.  The implementation of <code>glob</code> is supposed to use
+these functions internally.  This at least is the assumptions made by
+the Unix standard.  The GNU extension of allowing the user to provide
+own directory handling and <code>stat</code> functions complicates things a
+bit.  If these callback functions are used and a large file or directory
+is encountered <code>glob</code> <em>can</em> fail. 
+</p></blockquote></div>
+
+<!-- glob.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>glob64</b> (<var>const char *pattern, int flags, int </var>(<var>*errfunc</var>) (<var>const char *filename, int error-code</var>)<var>, glob64_t *vector-ptr</var>)<var><a name="index-glob64-858"></a></var><br>
+<blockquote><p>The <code>glob64</code> function was added as part of the Large File Summit
+extensions but is not part of the original LFS proposal.  The reason for
+this is simple: it is not necessary.  The necessity for a <code>glob64</code>
+function is added by the extensions of the GNU <code>glob</code>
+implementation which allows the user to provide own directory handling
+and <code>stat</code> functions.  The <code>readdir</code> and <code>stat</code> functions
+do depend on the choice of <code>_FILE_OFFSET_BITS</code> since the definition
+of the types <code>struct dirent</code> and <code>struct stat</code> will change
+depending on the choice.
+
+        <p>Beside this difference the <code>glob64</code> works just like <code>glob</code> in
+all aspects.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   </body></html>
+

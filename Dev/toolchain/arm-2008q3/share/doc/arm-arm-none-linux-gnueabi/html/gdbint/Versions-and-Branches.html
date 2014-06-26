@@ -1,0 +1,207 @@
+<html lang="en">
+<head>
+<title>Versions and Branches - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Porting-GDB.html#Porting-GDB" title="Porting GDB">
+<link rel="next" href="Start-of-New-Year-Procedure.html#Start-of-New-Year-Procedure" title="Start of New Year Procedure">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Versions-and-Branches"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Start-of-New-Year-Procedure.html#Start-of-New-Year-Procedure">Start of New Year Procedure</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Porting-GDB.html#Porting-GDB">Porting GDB</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">17 Versions and Branches</h2>
+
+<h3 class="section">17.1 Versions</h3>
+
+<p><span class="sc">gdb</span>'s version is determined by the file
+<samp><span class="file">gdb/version.in</span></samp> and takes one of the following forms:
+
+     <dl>
+<dt><var>major</var>.<var>minor</var><dt><var>major</var>.<var>minor</var>.<var>patchlevel</var><dd>an official release (e.g., 6.2 or 6.2.1)
+<br><dt><var>major</var>.<var>minor</var>.<var>patchlevel</var>.<var>YYYY</var><var>MM</var><var>DD</var><dd>a snapshot taken at <var>YYYY</var>-<var>MM</var>-<var>DD</var>-gmt (e.g.,
+6.1.50.20020302, 6.1.90.20020304, or 6.1.0.20020308)
+<br><dt><var>major</var>.<var>minor</var>.<var>patchlevel</var>.<var>YYYY</var><var>MM</var><var>DD</var>-cvs<dd>a <span class="sc">cvs</span> check out drawn on <var>YYYY</var>-<var>MM</var>-<var>DD</var> (e.g.,
+6.1.50.20020302-cvs, 6.1.90.20020304-cvs, or 6.1.0.20020308-cvs)
+<br><dt><var>major</var>.<var>minor</var>.<var>patchlevel</var>.<var>YYYY</var><var>MM</var><var>DD</var> (<var>vendor</var>)<dd>a vendor specific release of <span class="sc">gdb</span>, that while based on<br>
+<var>major</var>.<var>minor</var>.<var>patchlevel</var>.<var>YYYY</var><var>MM</var><var>DD</var>,
+may include additional changes
+</dl>
+
+   <p><span class="sc">gdb</span>'s mainline uses the <var>major</var> and <var>minor</var> version
+numbers from the most recent release branch, with a <var>patchlevel</var>
+of 50.  At the time each new release branch is created, the mainline's
+<var>major</var> and <var>minor</var> version numbers are updated.
+
+   <p><span class="sc">gdb</span>'s release branch is similar.  When the branch is cut, the
+<var>patchlevel</var> is changed from 50 to 90.  As draft releases are
+drawn from the branch, the <var>patchlevel</var> is incremented.  Once the
+first release (<var>major</var>.<var>minor</var>) has been made, the
+<var>patchlevel</var> is set to 0 and updates have an incremented
+<var>patchlevel</var>.
+
+   <p>For snapshots, and <span class="sc">cvs</span> check outs, it is also possible to
+identify the <span class="sc">cvs</span> origin:
+
+     <dl>
+<dt><var>major</var>.<var>minor</var>.50.<var>YYYY</var><var>MM</var><var>DD</var><dd>drawn from the <span class="sc">head</span> of mainline <span class="sc">cvs</span> (e.g., 6.1.50.20020302)
+<br><dt><var>major</var>.<var>minor</var>.90.<var>YYYY</var><var>MM</var><var>DD</var><dt><var>major</var>.<var>minor</var>.91.<var>YYYY</var><var>MM</var><var>DD</var> <small class="dots">...</small><dd>drawn from a release branch prior to the release (e.g.,
+6.1.90.20020304)
+<br><dt><var>major</var>.<var>minor</var>.0.<var>YYYY</var><var>MM</var><var>DD</var><dt><var>major</var>.<var>minor</var>.1.<var>YYYY</var><var>MM</var><var>DD</var> <small class="dots">...</small><dd>drawn from a release branch after the release (e.g., 6.2.0.20020308)
+</dl>
+
+   <p>If the previous <span class="sc">gdb</span> version is 6.1 and the current version is
+6.2, then, substituting 6 for <var>major</var> and 1 or 2 for <var>minor</var>,
+here's an illustration of a typical sequence:
+
+<pre class="smallexample">          &lt;HEAD&gt;
+             |
+     6.1.50.20020302-cvs
+             |
+             +--------------------------.
+             |                    &lt;gdb_6_2-branch&gt;
+             |                          |
+     6.2.50.20020303-cvs        6.1.90 (draft #1)
+             |                          |
+     6.2.50.20020304-cvs        6.1.90.20020304-cvs
+             |                          |
+     6.2.50.20020305-cvs        6.1.91 (draft #2)
+             |                          |
+     6.2.50.20020306-cvs        6.1.91.20020306-cvs
+             |                          |
+     6.2.50.20020307-cvs        6.2 (release)
+             |                          |
+     6.2.50.20020308-cvs        6.2.0.20020308-cvs
+             |                          |
+     6.2.50.20020309-cvs        6.2.1 (update)
+             |                          |
+     6.2.50.20020310-cvs         &lt;branch closed&gt;
+             |
+     6.2.50.20020311-cvs
+             |
+             +--------------------------.
+             |                     &lt;gdb_6_3-branch&gt;
+             |                          |
+     6.3.50.20020312-cvs        6.2.90 (draft #1)
+             |                          |
+</pre>
+   <h3 class="section">17.2 Release Branches</h3>
+
+<p><a name="index-Release-Branches-425"></a>
+<span class="sc">gdb</span> draws a release series (6.2, 6.2.1, <small class="dots">...</small>) from a
+single release branch, and identifies that branch using the <span class="sc">cvs</span>
+branch tags:
+
+<pre class="smallexample">     gdb_<var>major</var>_<var>minor</var>-<var>YYYY</var><var>MM</var><var>DD</var>-branchpoint
+     gdb_<var>major</var>_<var>minor</var>-branch
+     gdb_<var>major</var>_<var>minor</var>-<var>YYYY</var><var>MM</var><var>DD</var>-release
+</pre>
+   <p><em>Pragmatics: To help identify the date at which a branch or
+release is made, both the branchpoint and release tags include the
+date that they are cut (</em><var>YYYY</var><var>MM</var><var>DD</var><em>) in the tag.  The
+branch tag, denoting the head of the branch, does not need this.</em>
+
+<h3 class="section">17.3 Vendor Branches</h3>
+
+<p><a name="index-vendor-branches-426"></a>
+To avoid version conflicts, vendors are expected to modify the file
+<samp><span class="file">gdb/version.in</span></samp> to include a vendor unique alphabetic identifier
+(an official <span class="sc">gdb</span> release never uses alphabetic characters in
+its version identifier).  E.g., &lsquo;<samp><span class="samp">6.2widgit2</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">6.2 (Widgit
+Inc Patch 2)</span></samp>&rsquo;.
+
+<h3 class="section">17.4 Experimental Branches</h3>
+
+<p><a name="index-experimental-branches-427"></a>
+
+<h4 class="subsection">17.4.1 Guidelines</h4>
+
+<p><span class="sc">gdb</span> permits the creation of branches, cut from the <span class="sc">cvs</span>
+repository, for experimental development.  Branches make it possible
+for developers to share preliminary work, and maintainers to examine
+significant new developments.
+
+   <p>The following are a set of guidelines for creating such branches:
+
+     <dl>
+<dt><em>a branch has an owner</em><dd>The owner can set further policy for a branch, but may not change the
+ground rules.  In particular, they can set a policy for commits (be it
+adding more reviewers or deciding who can commit).
+
+     <br><dt><em>all commits are posted</em><dd>All changes committed to a branch shall also be posted to
+<a href="mailto:gdb-patches@sources.redhat.com">the <span class="sc">gdb</span> patches mailing list</a>.  While commentary on such changes are encouraged, people
+should remember that the changes only apply to a branch.
+
+     <br><dt><em>all commits are covered by an assignment</em><dd>This ensures that all changes belong to the Free Software Foundation,
+and avoids the possibility that the branch may become contaminated.
+
+     <br><dt><em>a branch is focused</em><dd>A focused branch has a single objective or goal, and does not contain
+unnecessary or irrelevant changes.  Cleanups, where identified, being
+be pushed into the mainline as soon as possible.
+
+     <br><dt><em>a branch tracks mainline</em><dd>This keeps the level of divergence under control.  It also keeps the
+pressure on developers to push cleanups and other stuff into the
+mainline.
+
+     <br><dt><em>a branch shall contain the entire </em><span class="sc">gdb</span><em> module</em><dd>The <span class="sc">gdb</span> module <code>gdb</code> should be specified when creating a
+branch (branches of individual files should be avoided).  See <a href="Tags.html#Tags">Tags</a>.
+
+     <br><dt><em>a branch shall be branded using </em><samp><span class="file">version.in</span></samp><dd>The file <samp><span class="file">gdb/version.in</span></samp> shall be modified so that it identifies
+the branch <var>owner</var> and branch <var>name</var>, e.g.,
+&lsquo;<samp><span class="samp">6.2.50.20030303_owner_name</span></samp>&rsquo; or &lsquo;<samp><span class="samp">6.2 (Owner Name)</span></samp>&rsquo;.
+
+   </dl>
+
+<h4 class="subsection">17.4.2 Tags</h4>
+
+<p><a name="Tags"></a>To simplify the identification of <span class="sc">gdb</span> branches, the following
+branch tagging convention is strongly recommended:
+
+     <dl>
+<dt><var>owner</var><code>_</code><var>name</var><code>-</code><var>YYYYMMDD</var><code>-branchpoint</code><dt><var>owner</var><code>_</code><var>name</var><code>-</code><var>YYYYMMDD</var><code>-branch</code><dd>The branch point and corresponding branch tag.  <var>YYYYMMDD</var> is the
+date that the branch was created.  A branch is created using the
+sequence: <a name="experimental-branch-tags"></a>
+     <pre class="smallexample">          cvs rtag <var>owner</var>_<var>name</var>-<var>YYYYMMDD</var>-branchpoint gdb
+          cvs rtag -b -r <var>owner</var>_<var>name</var>-<var>YYYYMMDD</var>-branchpoint \
+             <var>owner</var>_<var>name</var>-<var>YYYYMMDD</var>-branch gdb
+</pre>
+     <br><dt><var>owner</var><code>_</code><var>name</var><code>-</code><var>yyyymmdd</var><code>-mergepoint</code><dd>The tagged point, on the mainline, that was used when merging the branch
+on <var>yyyymmdd</var>.  To merge in all changes since the branch was cut,
+use a command sequence like:
+     <pre class="smallexample">          cvs rtag <var>owner</var>_<var>name</var>-<var>yyyymmdd</var>-mergepoint gdb
+          cvs update \
+             -j<var>owner</var>_<var>name</var>-<var>YYYYMMDD</var>-branchpoint
+             -j<var>owner</var>_<var>name</var>-<var>yyyymmdd</var>-mergepoint
+</pre>
+     <p class="noindent">Similar sequences can be used to just merge in changes since the last
+merge.
+
+   </dl>
+
+<p class="noindent">For further information on <span class="sc">cvs</span>, see
+<a href="http://www.gnu.org/software/cvs/">Concurrent Versions System</a>.
+
+   </body></html>
+

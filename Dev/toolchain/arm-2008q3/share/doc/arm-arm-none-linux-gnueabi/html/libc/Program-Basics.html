@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>Program Basics - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Signal-Handling.html#Signal-Handling" title="Signal Handling">
+<link rel="next" href="Processes.html#Processes" title="Processes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Program-Basics"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Processes.html#Processes">Processes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Signal-Handling.html#Signal-Handling">Signal Handling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% Writing the beginning and end of your program -->
+<h2 class="chapter">25 The Basic Program/System Interface</h2>
+
+<p><a name="index-process-3001"></a><a name="index-program-3002"></a><a name="index-address-space-3003"></a><a name="index-thread-of-control-3004"></a><dfn>Processes</dfn> are the primitive units for allocation of system
+resources.  Each process has its own address space and (usually) one
+thread of control.  A process executes a program; you can have multiple
+processes executing the same program, but each process has its own copy
+of the program within its own address space and executes it
+independently of the other copies.  Though it may have multiple threads
+of control within the same program and a program may be composed of
+multiple logically separate modules, a process always executes exactly
+one program.
+
+   <p>Note that we are using a specific definition of &ldquo;program&rdquo; for the
+purposes of this manual, which corresponds to a common definition in the
+context of Unix system.  In popular usage, &ldquo;program&rdquo; enjoys a much
+broader definition; it can refer for example to a system's kernel, an
+editor macro, a complex package of software, or a discrete section of
+code executing within a process.
+
+   <p>Writing the program is what this manual is all about.  This chapter
+explains the most basic interface between your program and the system
+that runs, or calls, it.  This includes passing of parameters (arguments
+and environment) from the system, requesting basic services from the
+system, and telling the system the program is done.
+
+   <p>A program starts another program with the <code>exec</code> family of system calls. 
+This chapter looks at program startup from the execee's point of view.  To
+see the event from the execor's point of view, see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Program-Arguments.html#Program-Arguments">Program Arguments</a>:            Parsing your program's command-line arguments. 
+<li><a accesskey="2" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>:        Less direct parameters affecting your program
+<li><a accesskey="3" href="System-Calls.html#System-Calls">System Calls</a>:                 Requesting service from the system
+<li><a accesskey="4" href="Program-Termination.html#Program-Termination">Program Termination</a>:          Telling the system you're done; return status
+</ul>
+
+   </body></html>
+

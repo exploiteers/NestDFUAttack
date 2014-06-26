@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>Transferring Data - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="prev" href="Who-is-Connected.html#Who-is-Connected" title="Who is Connected">
+<link rel="next" href="Byte-Stream-Example.html#Byte-Stream-Example" title="Byte Stream Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Transferring-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Byte-Stream-Example.html#Byte-Stream-Example">Byte Stream Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Who-is-Connected.html#Who-is-Connected">Who is Connected</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.5 Transferring Data</h4>
+
+<p><a name="index-reading-from-a-socket-1803"></a><a name="index-writing-to-a-socket-1804"></a>
+Once a socket has been connected to a peer, you can use the ordinary
+<code>read</code> and <code>write</code> operations (see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>) to
+transfer data.  A socket is a two-way communications channel, so read
+and write operations can be performed at either end.
+
+   <p>There are also some I/O modes that are specific to socket operations. 
+In order to specify these modes, you must use the <code>recv</code> and
+<code>send</code> functions instead of the more generic <code>read</code> and
+<code>write</code> functions.  The <code>recv</code> and <code>send</code> functions take
+an additional argument which you can use to specify various flags to
+control special I/O modes.  For example, you can specify the
+<code>MSG_OOB</code> flag to read or write out-of-band data, the
+<code>MSG_PEEK</code> flag to peek at input, or the <code>MSG_DONTROUTE</code> flag
+to control inclusion of routing information on output.
+
+<ul class="menu">
+<li><a accesskey="1" href="Sending-Data.html#Sending-Data">Sending Data</a>: 		Sending data with <code>send</code>. 
+<li><a accesskey="2" href="Receiving-Data.html#Receiving-Data">Receiving Data</a>: 		Reading data with <code>recv</code>. 
+<li><a accesskey="3" href="Socket-Data-Options.html#Socket-Data-Options">Socket Data Options</a>: 		Using <code>send</code> and <code>recv</code>. 
+</ul>
+
+   </body></html>
+

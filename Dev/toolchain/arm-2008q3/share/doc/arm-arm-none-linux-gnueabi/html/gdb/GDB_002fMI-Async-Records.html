@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>GDB/MI Async Records - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="GDB_002fMI-Output-Records.html#GDB_002fMI-Output-Records" title="GDB/MI Output Records">
+<link rel="prev" href="GDB_002fMI-Stream-Records.html#GDB_002fMI-Stream-Records" title="GDB/MI Stream Records">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="GDB%2fMI-Async-Records"></a>
+<a name="GDB_002fMI-Async-Records"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="GDB_002fMI-Stream-Records.html#GDB_002fMI-Stream-Records">GDB/MI Stream Records</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="GDB_002fMI-Output-Records.html#GDB_002fMI-Output-Records">GDB/MI Output Records</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.4.3 <span class="sc">gdb/mi</span> Async Records</h4>
+
+<p><a name="index-async-records-in-_0040sc_007bgdb_002fmi_007d-1484"></a><a name="index-g_t_0040sc_007bgdb_002fmi_007d_002c-async-records-1485"></a><dfn>Async</dfn> records are used to notify the <span class="sc">gdb/mi</span> client of
+additional changes that have occurred.  Those changes can either be a
+consequence of <span class="sc">gdb/mi</span> commands (e.g., a breakpoint modified) or a result of
+target activity (e.g., target stopped).
+
+   <p>The following is the list of possible async records:
+
+     <dl>
+<dt><code>*running,thread-id="</code><var>thread</var><code>"</code><dd>The target is now running.  The <var>thread</var> field tells which
+specific thread is now running, and can be &lsquo;<samp><span class="samp">all</span></samp>&rsquo; if all threads
+are running.  The frontend should assume that no interaction with a
+running thread is possible after this notification is produced. 
+The frontend should not assume that this notification is output
+only once for any command.  <span class="sc">gdb</span> may emit this notification
+several times, either for different threads, because it cannot resume
+all threads together, or even for a single thread, if the thread must
+be stepped though some code before letting it run freely.
+
+     <br><dt><code>*stopped,reason="</code><var>reason</var><code>"</code><dd>The target has stopped.  The <var>reason</var> field can have one of the
+following values:
+
+          <dl>
+<dt><code>breakpoint-hit</code><dd>A breakpoint was reached. 
+<br><dt><code>watchpoint-trigger</code><dd>A watchpoint was triggered. 
+<br><dt><code>read-watchpoint-trigger</code><dd>A read watchpoint was triggered. 
+<br><dt><code>access-watchpoint-trigger</code><dd>An access watchpoint was triggered. 
+<br><dt><code>function-finished</code><dd>An -exec-finish or similar CLI command was accomplished. 
+<br><dt><code>location-reached</code><dd>An -exec-until or similar CLI command was accomplished. 
+<br><dt><code>watchpoint-scope</code><dd>A watchpoint has gone out of scope. 
+<br><dt><code>end-stepping-range</code><dd>An -exec-next, -exec-next-instruction, -exec-step, -exec-step-instruction or
+similar CLI command was accomplished. 
+<br><dt><code>exited-signalled</code><dd>The inferior exited because of a signal. 
+<br><dt><code>exited</code><dd>The inferior exited. 
+<br><dt><code>exited-normally</code><dd>The inferior exited normally. 
+<br><dt><code>signal-received</code><dd>A signal was received by the inferior. 
+</dl>
+
+     <br><dt><code>=thread-created,id="</code><var>id</var><code>"</code><dt><code>=thread-exited,id="</code><var>id</var><code>"</code><dd>A thread either was created, or has exited.  The <var>id</var> field
+contains the <span class="sc">gdb</span> identifier of the thread. 
+</dl>
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+   </body></html>
+

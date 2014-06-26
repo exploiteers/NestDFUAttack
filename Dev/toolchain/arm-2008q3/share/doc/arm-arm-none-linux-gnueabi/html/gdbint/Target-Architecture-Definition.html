@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+<title>Target Architecture Definition - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Host-Definition.html#Host-Definition" title="Host Definition">
+<link rel="next" href="Target-Descriptions.html#Target-Descriptions" title="Target Descriptions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Target-Architecture-Definition"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Target-Descriptions.html#Target-Descriptions">Target Descriptions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Host-Definition.html#Host-Definition">Host Definition</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">10 Target Architecture Definition</h2>
+
+<p><a name="index-target-architecture-definition-197"></a><span class="sc">gdb</span>'s target architecture defines what sort of
+machine-language programs <span class="sc">gdb</span> can work with, and how it works
+with them.
+
+   <p>The target architecture object is implemented as the C structure
+<code>struct gdbarch *</code>.  The structure, and its methods, are generated
+using the Bourne shell script <samp><span class="file">gdbarch.sh</span></samp>.
+
+<ul class="menu">
+<li><a accesskey="1" href="OS-ABI-Variant-Handling.html#OS-ABI-Variant-Handling">OS ABI Variant Handling</a>
+<li><a accesskey="2" href="Initialize-New-Architecture.html#Initialize-New-Architecture">Initialize New Architecture</a>
+<li><a accesskey="3" href="Registers-and-Memory.html#Registers-and-Memory">Registers and Memory</a>
+<li><a accesskey="4" href="Pointers-and-Addresses.html#Pointers-and-Addresses">Pointers and Addresses</a>
+<li><a accesskey="5" href="Address-Classes.html#Address-Classes">Address Classes</a>
+<li><a accesskey="6" href="Raw-and-Virtual-Registers.html#Raw-and-Virtual-Registers">Raw and Virtual Registers</a>
+<li><a accesskey="7" href="Register-and-Memory-Data.html#Register-and-Memory-Data">Register and Memory Data</a>
+<li><a accesskey="8" href="Frame-Interpretation.html#Frame-Interpretation">Frame Interpretation</a>
+<li><a accesskey="9" href="Inferior-Call-Setup.html#Inferior-Call-Setup">Inferior Call Setup</a>
+<li><a href="Compiler-Characteristics.html#Compiler-Characteristics">Compiler Characteristics</a>
+<li><a href="Target-Conditionals.html#Target-Conditionals">Target Conditionals</a>
+<li><a href="Adding-a-New-Target.html#Adding-a-New-Target">Adding a New Target</a>
+</ul>
+
+   </body></html>
+

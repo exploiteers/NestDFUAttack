@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Interface Naming - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sockets.html#Sockets" title="Sockets">
+<link rel="prev" href="Socket-Addresses.html#Socket-Addresses" title="Socket Addresses">
+<link rel="next" href="Local-Namespace.html#Local-Namespace" title="Local Namespace">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Interface-Naming"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Local-Namespace.html#Local-Namespace">Local Namespace</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sockets.html#Sockets">Sockets</a>
+<hr>
+</div>
+
+<h3 class="section">16.4 Interface Naming</h3>
+
+<p>Each network interface has a name.  This usually consists of a few
+letters that relate to the type of interface, which may be followed by a
+number if there is more than one interface of that type.  Examples
+might be <code>lo</code> (the loopback interface) and <code>eth0</code> (the first
+Ethernet interface).
+
+   <p>Although such names are convenient for humans, it would be clumsy to
+have to use them whenever a program needs to refer to an interface.  In
+such situations an interface is referred to by its <dfn>index</dfn>, which is
+an arbitrarily-assigned small positive integer.
+
+   <p>The following functions, constants and data types are declared in the
+header file <samp><span class="file">net/if.h</span></samp>.
+
+<!-- net/if.h -->
+<div class="defun">
+&mdash; Constant: size_t <b>IFNAMSIZ</b><var><a name="index-IFNAMSIZ-1665"></a></var><br>
+<blockquote><p>This constant defines the maximum buffer size needed to hold an
+interface name, including its terminating zero byte. 
+</p></blockquote></div>
+
+<!-- net/if.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Function: unsigned int <b>if_nametoindex</b> (<var>const char *ifname</var>)<var><a name="index-if_005fnametoindex-1666"></a></var><br>
+<blockquote><p>This function yields the interface index corresponding to a particular
+name.  If no interface exists with the name given, it returns 0. 
+</p></blockquote></div>
+
+<!-- net/if.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Function: char * <b>if_indextoname</b> (<var>unsigned int ifindex, char *ifname</var>)<var><a name="index-if_005findextoname-1667"></a></var><br>
+<blockquote><p>This function maps an interface index to its corresponding name.  The
+returned name is placed in the buffer pointed to by <code>ifname</code>, which
+must be at least <code>IFNAMSIZ</code> bytes in length.  If the index was
+invalid, the function's return value is a null pointer, otherwise it is
+<code>ifname</code>. 
+</p></blockquote></div>
+
+<!-- net/if.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Data Type: <b>struct if_nameindex</b><var><a name="index-struct-if_005fnameindex-1668"></a></var><br>
+<blockquote><p>This data type is used to hold the information about a single
+interface.  It has the following members:
+
+          <dl>
+<dt><code>unsigned int if_index;</code><dd>This is the interface index.
+
+          <br><dt><code>char *if_name</code><dd>This is the null-terminated index name.
+
+        </dl>
+        </p></blockquote></div>
+
+<!-- net/if.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Function: struct if_nameindex * <b>if_nameindex</b> (<var>void</var>)<var><a name="index-if_005fnameindex-1669"></a></var><br>
+<blockquote><p>This function returns an array of <code>if_nameindex</code> structures, one
+for every interface that is present.  The end of the list is indicated
+by a structure with an interface of 0 and a null name pointer.  If an
+error occurs, this function returns a null pointer.
+
+        <p>The returned structure must be freed with <code>if_freenameindex</code> after
+use. 
+</p></blockquote></div>
+
+<!-- net/if.h -->
+<!-- IPv6 basic API -->
+<div class="defun">
+&mdash; Function: void <b>if_freenameindex</b> (<var>struct if_nameindex *ptr</var>)<var><a name="index-if_005ffreenameindex-1670"></a></var><br>
+<blockquote><p>This function frees the structure returned by an earlier call to
+<code>if_nameindex</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

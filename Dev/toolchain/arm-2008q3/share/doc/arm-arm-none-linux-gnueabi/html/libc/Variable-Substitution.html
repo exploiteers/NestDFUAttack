@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+<title>Variable Substitution - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Word-Expansion.html#Word-Expansion" title="Word Expansion">
+<link rel="prev" href="Tilde-Expansion.html#Tilde-Expansion" title="Tilde Expansion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Variable-Substitution"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Tilde-Expansion.html#Tilde-Expansion">Tilde Expansion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Word-Expansion.html#Word-Expansion">Word Expansion</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.4.6 Details of Variable Substitution</h4>
+
+<p>Part of ordinary shell syntax is the use of &lsquo;<samp><span class="samp">$</span><var>variable</var></samp>&rsquo; to
+substitute the value of a shell variable into a command.  This is called
+<dfn>variable substitution</dfn>, and it is one part of doing word expansion.
+
+   <p>There are two basic ways you can write a variable reference for
+substitution:
+
+     <dl>
+<dt><code>${</code><var>variable</var><code>}</code><dd>If you write braces around the variable name, then it is completely
+unambiguous where the variable name ends.  You can concatenate
+additional letters onto the end of the variable value by writing them
+immediately after the close brace.  For example, &lsquo;<samp><span class="samp">${foo}s</span></samp>&rsquo;
+expands into &lsquo;<samp><span class="samp">tractors</span></samp>&rsquo;.
+
+     <br><dt><code>$</code><var>variable</var><dd>If you do not put braces around the variable name, then the variable
+name consists of all the alphanumeric characters and underscores that
+follow the &lsquo;<samp><span class="samp">$</span></samp>&rsquo;.  The next punctuation character ends the variable
+name.  Thus, &lsquo;<samp><span class="samp">$foo-bar</span></samp>&rsquo; refers to the variable <code>foo</code> and expands
+into &lsquo;<samp><span class="samp">tractor-bar</span></samp>&rsquo;. 
+</dl>
+
+   <p>When you use braces, you can also use various constructs to modify the
+value that is substituted, or test it in various ways.
+
+     <dl>
+<dt><code>${</code><var>variable</var><code>:-</code><var>default</var><code>}</code><dd>Substitute the value of <var>variable</var>, but if that is empty or
+undefined, use <var>default</var> instead.
+
+     <br><dt><code>${</code><var>variable</var><code>:=</code><var>default</var><code>}</code><dd>Substitute the value of <var>variable</var>, but if that is empty or
+undefined, use <var>default</var> instead and set the variable to
+<var>default</var>.
+
+     <br><dt><code>${</code><var>variable</var><code>:?</code><var>message</var><code>}</code><dd>If <var>variable</var> is defined and not empty, substitute its value.
+
+     <p>Otherwise, print <var>message</var> as an error message on the standard error
+stream, and consider word expansion a failure.
+
+     <!-- ??? How does wordexp report such an error? -->
+     <!-- WRDE_BADVAL is returned. -->
+     <br><dt><code>${</code><var>variable</var><code>:+</code><var>replacement</var><code>}</code><dd>Substitute <var>replacement</var>, but only if <var>variable</var> is defined and
+nonempty.  Otherwise, substitute nothing for this construct. 
+</dl>
+
+     <dl>
+<dt><code>${#</code><var>variable</var><code>}</code><dd>Substitute a numeral which expresses in base ten the number of
+characters in the value of <var>variable</var>.  &lsquo;<samp><span class="samp">${#foo}</span></samp>&rsquo; stands for
+&lsquo;<samp><span class="samp">7</span></samp>&rsquo;, because &lsquo;<samp><span class="samp">tractor</span></samp>&rsquo; is seven characters. 
+</dl>
+
+   <p>These variants of variable substitution let you remove part of the
+variable's value before substituting it.  The <var>prefix</var> and
+<var>suffix</var> are not mere strings; they are wildcard patterns, just
+like the patterns that you use to match multiple file names.  But
+in this context, they match against parts of the variable value
+rather than against file names.
+
+     <dl>
+<dt><code>${</code><var>variable</var><code>%%</code><var>suffix</var><code>}</code><dd>Substitute the value of <var>variable</var>, but first discard from that
+variable any portion at the end that matches the pattern <var>suffix</var>.
+
+     <p>If there is more than one alternative for how to match against
+<var>suffix</var>, this construct uses the longest possible match.
+
+     <p>Thus, &lsquo;<samp><span class="samp">${foo%%r*}</span></samp>&rsquo; substitutes &lsquo;<samp><span class="samp">t</span></samp>&rsquo;, because the largest
+match for &lsquo;<samp><span class="samp">r*</span></samp>&rsquo; at the end of &lsquo;<samp><span class="samp">tractor</span></samp>&rsquo; is &lsquo;<samp><span class="samp">ractor</span></samp>&rsquo;.
+
+     <br><dt><code>${</code><var>variable</var><code>%</code><var>suffix</var><code>}</code><dd>Substitute the value of <var>variable</var>, but first discard from that
+variable any portion at the end that matches the pattern <var>suffix</var>.
+
+     <p>If there is more than one alternative for how to match against
+<var>suffix</var>, this construct uses the shortest possible alternative.
+
+     <p>Thus, &lsquo;<samp><span class="samp">${foo%r*}</span></samp>&rsquo; substitutes &lsquo;<samp><span class="samp">tracto</span></samp>&rsquo;, because the shortest
+match for &lsquo;<samp><span class="samp">r*</span></samp>&rsquo; at the end of &lsquo;<samp><span class="samp">tractor</span></samp>&rsquo; is just &lsquo;<samp><span class="samp">r</span></samp>&rsquo;.
+
+     <br><dt><code>${</code><var>variable</var><code>##</code><var>prefix</var><code>}</code><dd>Substitute the value of <var>variable</var>, but first discard from that
+variable any portion at the beginning that matches the pattern <var>prefix</var>.
+
+     <p>If there is more than one alternative for how to match against
+<var>prefix</var>, this construct uses the longest possible match.
+
+     <p>Thus, &lsquo;<samp><span class="samp">${foo##*t}</span></samp>&rsquo; substitutes &lsquo;<samp><span class="samp">or</span></samp>&rsquo;, because the largest
+match for &lsquo;<samp><span class="samp">*t</span></samp>&rsquo; at the beginning of &lsquo;<samp><span class="samp">tractor</span></samp>&rsquo; is &lsquo;<samp><span class="samp">tract</span></samp>&rsquo;.
+
+     <br><dt><code>${</code><var>variable</var><code>#</code><var>prefix</var><code>}</code><dd>Substitute the value of <var>variable</var>, but first discard from that
+variable any portion at the beginning that matches the pattern <var>prefix</var>.
+
+     <p>If there is more than one alternative for how to match against
+<var>prefix</var>, this construct uses the shortest possible alternative.
+
+     <p>Thus, &lsquo;<samp><span class="samp">${foo#*t}</span></samp>&rsquo; substitutes &lsquo;<samp><span class="samp">ractor</span></samp>&rsquo;, because the shortest
+match for &lsquo;<samp><span class="samp">*t</span></samp>&rsquo; at the beginning of &lsquo;<samp><span class="samp">tractor</span></samp>&rsquo; is just &lsquo;<samp><span class="samp">t</span></samp>&rsquo;.
+
+   </dl>
+
+   </body></html>
+

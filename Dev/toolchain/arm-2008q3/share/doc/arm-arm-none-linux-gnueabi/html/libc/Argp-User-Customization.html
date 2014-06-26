@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>Argp User Customization - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp.html#Argp" title="Argp">
+<link rel="prev" href="Argp-Examples.html#Argp-Examples" title="Argp Examples">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-User-Customization"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Examples.html#Argp-Examples">Argp Examples</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp.html#Argp">Argp</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.12 Argp User Customization</h4>
+
+<p><a name="index-ARGP_005fHELP_005fFMT-environment-variable-3095"></a>The formatting of argp &lsquo;<samp><span class="samp">--help</span></samp>&rsquo; output may be controlled to some
+extent by a program's users, by setting the <code>ARGP_HELP_FMT</code>
+environment variable to a comma-separated list of tokens.  Whitespace is
+ignored:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">dup-args</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">no-dup-args</span></samp>&rsquo;<dd>These turn <dfn>duplicate-argument-mode</dfn> on or off.  In duplicate
+argument mode, if an option that accepts an argument has multiple names,
+the argument is shown for each name.  Otherwise, it is only shown for the
+first long option.  A note is subsequently printed so the user knows that
+it applies to other names as well.  The default is &lsquo;<samp><span class="samp">no-dup-args</span></samp>&rsquo;,
+which is less consistent, but prettier.
+
+     <br><dt>&lsquo;<samp><span class="samp">dup-args-note</span></samp>&rsquo;<br><dt>&lsquo;<samp><span class="samp">no-dup-args-note</span></samp>&rsquo;<dd>These will enable or disable the note informing the user of suppressed
+option argument duplication.  The default is &lsquo;<samp><span class="samp">dup-args-note</span></samp>&rsquo;.
+
+     <br><dt>&lsquo;<samp><span class="samp">short-opt-col=</span><var>n</var></samp>&rsquo;<dd>This prints the first short option in column <var>n</var>.  The default is 2.
+
+     <br><dt>&lsquo;<samp><span class="samp">long-opt-col=</span><var>n</var></samp>&rsquo;<dd>This prints the first long option in column <var>n</var>.  The default is 6.
+
+     <br><dt>&lsquo;<samp><span class="samp">doc-opt-col=</span><var>n</var></samp>&rsquo;<dd>This prints `documentation options' (see <a href="Argp-Option-Flags.html#Argp-Option-Flags">Argp Option Flags</a>) in
+column <var>n</var>.  The default is 2.
+
+     <br><dt>&lsquo;<samp><span class="samp">opt-doc-col=</span><var>n</var></samp>&rsquo;<dd>This prints the documentation for options starting in column
+<var>n</var>.  The default is 29.
+
+     <br><dt>&lsquo;<samp><span class="samp">header-col=</span><var>n</var></samp>&rsquo;<dd>This will indent the group headers that document groups of options to
+column <var>n</var>.  The default is 1.
+
+     <br><dt>&lsquo;<samp><span class="samp">usage-indent=</span><var>n</var></samp>&rsquo;<dd>This will indent continuation lines in &lsquo;<samp><span class="samp">Usage:</span></samp>&rsquo; messages to column
+<var>n</var>.  The default is 12.
+
+     <br><dt>&lsquo;<samp><span class="samp">rmargin=</span><var>n</var></samp>&rsquo;<dd>This will word wrap help output at or before column <var>n</var>.  The default
+is 79. 
+</dl>
+
+   </body></html>
+

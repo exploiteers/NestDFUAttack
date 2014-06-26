@@ -1,0 +1,74 @@
+<html lang="en">
+<head>
+<title>Parsing of Numbers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Operations-on-Complex.html#Operations-on-Complex" title="Operations on Complex">
+<link rel="next" href="System-V-Number-Conversion.html#System-V-Number-Conversion" title="System V Number Conversion">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Parsing-of-Numbers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="System-V-Number-Conversion.html#System-V-Number-Conversion">System V Number Conversion</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Operations-on-Complex.html#Operations-on-Complex">Operations on Complex</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.11 Parsing of Numbers</h3>
+
+<p><a name="index-parsing-numbers-_0028in-formatted-input_0029-2543"></a><a name="index-converting-strings-to-numbers-2544"></a><a name="index-number-syntax_002c-parsing-2545"></a><a name="index-syntax_002c-for-reading-numbers-2546"></a>
+This section describes functions for &ldquo;reading&rdquo; integer and
+floating-point numbers from a string.  It may be more convenient in some
+cases to use <code>sscanf</code> or one of the related functions; see
+<a href="Formatted-Input.html#Formatted-Input">Formatted Input</a>.  But often you can make a program more robust by
+finding the tokens in the string by hand, then converting the numbers
+one by one.
+
+<ul class="menu">
+<li><a accesskey="1" href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>:          Functions for conversion of integer values. 
+<li><a accesskey="2" href="Parsing-of-Floats.html#Parsing-of-Floats">Parsing of Floats</a>:            Functions for conversion of floating-point
+				 values. 
+</ul>
+
+   </body></html>
+

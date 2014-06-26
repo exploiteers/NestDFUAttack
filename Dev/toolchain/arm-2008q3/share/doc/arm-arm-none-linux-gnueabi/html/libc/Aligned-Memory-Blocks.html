@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Aligned Memory Blocks - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="prev" href="Efficiency-and-Malloc.html#Efficiency-and-Malloc" title="Efficiency and Malloc">
+<link rel="next" href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters" title="Malloc Tunable Parameters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Aligned-Memory-Blocks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Malloc-Tunable-Parameters.html#Malloc-Tunable-Parameters">Malloc Tunable Parameters</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Efficiency-and-Malloc.html#Efficiency-and-Malloc">Efficiency and Malloc</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.2.7 Allocating Aligned Memory Blocks</h5>
+
+<p><a name="index-page-boundary-270"></a><a name="index-alignment-_0028with-_0040code_007bmalloc_007d_0029-271"></a><a name="index-stdlib_002eh-272"></a>The address of a block returned by <code>malloc</code> or <code>realloc</code> in
+the GNU system is always a multiple of eight (or sixteen on 64-bit
+systems).  If you need a block whose address is a multiple of a higher
+power of two than that, use <code>memalign</code>, <code>posix_memalign</code>, or
+<code>valloc</code>.  <code>memalign</code> is declared in <samp><span class="file">malloc.h</span></samp> and
+<code>posix_memalign</code> is declared in <samp><span class="file">stdlib.h</span></samp>.
+
+   <p>With the GNU library, you can use <code>free</code> to free the blocks that
+<code>memalign</code>, <code>posix_memalign</code>, and <code>valloc</code> return.  That
+does not work in BSD, however&mdash;BSD does not provide any way to free
+such blocks.
+
+<!-- malloc.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void * <b>memalign</b> (<var>size_t boundary, size_t size</var>)<var><a name="index-memalign-273"></a></var><br>
+<blockquote><p>The <code>memalign</code> function allocates a block of <var>size</var> bytes whose
+address is a multiple of <var>boundary</var>.  The <var>boundary</var> must be a
+power of two!  The function <code>memalign</code> works by allocating a
+somewhat larger block, and then returning an address within the block
+that is on the specified boundary. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>posix_memalign</b> (<var>void **memptr, size_t alignment, size_t size</var>)<var><a name="index-posix_005fmemalign-274"></a></var><br>
+<blockquote><p>The <code>posix_memalign</code> function is similar to the <code>memalign</code>
+function in that it returns a buffer of <var>size</var> bytes aligned to a
+multiple of <var>alignment</var>.  But it adds one requirement to the
+parameter <var>alignment</var>: the value must be a power of two multiple of
+<code>sizeof (void *)</code>.
+
+        <p>If the function succeeds in allocation memory a pointer to the allocated
+memory is returned in <code>*</code><var>memptr</var> and the return value is zero. 
+Otherwise the function returns an error value indicating the problem.
+
+        <p>This function was introduced in POSIX 1003.1d. 
+</p></blockquote></div>
+
+<!-- malloc.h stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void * <b>valloc</b> (<var>size_t size</var>)<var><a name="index-valloc-275"></a></var><br>
+<blockquote><p>Using <code>valloc</code> is like using <code>memalign</code> and passing the page size
+as the value of the second argument.  It is implemented like this:
+
+     <pre class="smallexample">          void *
+          valloc (size_t size)
+          {
+            return memalign (getpagesize (), size);
+          }
+</pre>
+        <p><a href="Query-Memory-Parameters.html#Query-Memory-Parameters">Query Memory Parameters</a> for more information about the memory
+subsystem. 
+</p></blockquote></div>
+
+   </body></html>
+

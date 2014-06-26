@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Cryptographic Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="next" href="Debugging-Support.html#Debugging-Support" title="Debugging Support">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Cryptographic-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Debugging-Support.html#Debugging-Support">Debugging Support</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="System-Configuration.html#System-Configuration">System Configuration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- @node Cryptographic Functions, Debugging Support, System Configuration, Top -->
+<h2 class="chapter">32 DES Encryption and Password Handling</h2>
+
+<!-- %MENU% DES encryption and password handling -->
+<p>On many systems, it is unnecessary to have any kind of user
+authentication; for instance, a workstation which is not connected to a
+network probably does not need any user authentication, because to use
+the machine an intruder must have physical access.
+
+   <p>Sometimes, however, it is necessary to be sure that a user is authorized
+to use some service a machine provides&mdash;for instance, to log in as a
+particular user id (see <a href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>).  One traditional way of
+doing this is for each user to choose a secret <dfn>password</dfn>; then, the
+system can ask someone claiming to be a user what the user's password
+is, and if the person gives the correct password then the system can
+grant the appropriate privileges.
+
+   <p>If all the passwords are just stored in a file somewhere, then this file
+has to be very carefully protected.  To avoid this, passwords are run
+through a <dfn>one-way function</dfn>, a function which makes it difficult to
+work out what its input was by looking at its output, before storing in
+the file.
+
+   <p>The GNU C library provides a one-way function that is compatible with
+the behavior of the <code>crypt</code> function introduced in FreeBSD 2.0. 
+It supports two one-way algorithms: one based on the MD5
+message-digest algorithm that is compatible with modern BSD systems,
+and the other based on the Data Encryption Standard (DES) that is
+compatible with Unix systems.
+
+   <p>It also provides support for Secure RPC, and some library functions that
+can be used to perform normal DES encryption.
+
+<ul class="menu">
+<li><a accesskey="1" href="Legal-Problems.html#Legal-Problems">Legal Problems</a>:               This software can get you locked up, or worse. 
+<li><a accesskey="2" href="getpass.html#getpass">getpass</a>:                      Prompting the user for a password. 
+<li><a accesskey="3" href="crypt.html#crypt">crypt</a>:                        A one-way function for passwords. 
+<li><a accesskey="4" href="DES-Encryption.html#DES-Encryption">DES Encryption</a>:               Routines for DES encryption. 
+</ul>
+
+   </body></html>
+

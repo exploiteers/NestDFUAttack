@@ -1,0 +1,97 @@
+<html lang="en">
+<head>
+<title>Using Pause - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal" title="Waiting for a Signal">
+<link rel="next" href="Pause-Problems.html#Pause-Problems" title="Pause Problems">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Using-Pause"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pause-Problems.html#Pause-Problems">Pause Problems</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.8.1 Using <code>pause</code></h4>
+
+<p>The simple way to wait until a signal arrives is to call <code>pause</code>. 
+Please read about its disadvantages, in the following section, before
+you use it.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>pause</b> ()<var><a name="index-pause-2980"></a></var><br>
+<blockquote><p>The <code>pause</code> function suspends program execution until a signal
+arrives whose action is either to execute a handler function, or to
+terminate the process.
+
+        <p>If the signal causes a handler function to be executed, then
+<code>pause</code> returns.  This is considered an unsuccessful return (since
+&ldquo;successful&rdquo; behavior would be to suspend the program forever), so the
+return value is <code>-1</code>.  Even if you specify that other primitives
+should resume when a system handler returns (see <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>), this has no effect on <code>pause</code>; it always fails when a
+signal is handled.
+
+        <p>The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EINTR</code><dd>The function was interrupted by delivery of a signal. 
+</dl>
+
+        <p>If the signal causes program termination, <code>pause</code> doesn't return
+(obviously).
+
+        <p>This function is a cancellation point in multithreaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>pause</code> is
+called.  If the thread gets cancelled these resources stay allocated
+until the program ends.  To avoid this calls to <code>pause</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The <code>pause</code> function is declared in  <samp><span class="file">unistd.h</span></samp>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Allocation Debugging - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Allocation.html#Memory-Allocation" title="Memory Allocation">
+<link rel="prev" href="Unconstrained-Allocation.html#Unconstrained-Allocation" title="Unconstrained Allocation">
+<link rel="next" href="Obstacks.html#Obstacks" title="Obstacks">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Allocation-Debugging"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Obstacks.html#Obstacks">Obstacks</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.2.3 Allocation Debugging</h4>
+
+<p><a name="index-allocation-debugging-295"></a><a name="index-malloc-debugger-296"></a>
+A complicated task when programming with languages which do not use
+garbage collected dynamic memory allocation is to find memory leaks. 
+Long running programs must assure that dynamically allocated objects are
+freed at the end of their lifetime.  If this does not happen the system
+runs out of memory, sooner or later.
+
+   <p>The <code>malloc</code> implementation in the GNU C library provides some
+simple means to detect such leaks and obtain some information to find
+the location.  To do this the application must be started in a special
+mode which is enabled by an environment variable.  There are no speed
+penalties for the program if the debugging mode is not enabled.
+
+<ul class="menu">
+<li><a accesskey="1" href="Tracing-malloc.html#Tracing-malloc">Tracing malloc</a>:                How to install the tracing functionality. 
+<li><a accesskey="2" href="Using-the-Memory-Debugger.html#Using-the-Memory-Debugger">Using the Memory Debugger</a>:     Example programs excerpts. 
+<li><a accesskey="3" href="Tips-for-the-Memory-Debugger.html#Tips-for-the-Memory-Debugger">Tips for the Memory Debugger</a>:  Some more or less clever ideas. 
+<li><a accesskey="4" href="Interpreting-the-traces.html#Interpreting-the-traces">Interpreting the traces</a>:       What do all these lines mean? 
+</ul>
+
+   </body></html>
+

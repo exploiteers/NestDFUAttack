@@ -1,0 +1,155 @@
+<html lang="en">
+<head>
+<title>System Calls - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link rel="prev" href="Environment-Variables.html#Environment-Variables" title="Environment Variables">
+<link rel="next" href="Program-Termination.html#Program-Termination" title="Program Termination">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-Calls"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Program-Termination.html#Program-Termination">Program Termination</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Basics.html#Program-Basics">Program Basics</a>
+<hr>
+</div>
+
+<h3 class="section">25.5 System Calls</h3>
+
+<p><a name="index-system-call-3125"></a>A system call is a request for service that a program makes of the
+kernel.  The service is generally something that only the kernel has
+the privilege to do, such as doing I/O.  Programmers don't normally
+need to be concerned with system calls because there are functions in
+the GNU C library to do virtually everything that system calls do. 
+These functions work by making system calls themselves.  For example,
+there is a system call that changes the permissions of a file, but
+you don't need to know about it because you can just use the GNU C
+library's <code>chmod</code> function.
+
+   <p><a name="index-kernel-call-3126"></a>System calls are sometimes called kernel calls.
+
+   <p>However, there are times when you want to make a system call explicitly,
+and for that, the GNU C library provides the <code>syscall</code> function. 
+<code>syscall</code> is harder to use and less portable than functions like
+<code>chmod</code>, but easier and more portable than coding the system call
+in assembler instructions.
+
+   <p><code>syscall</code> is most useful when you are working with a system call
+which is special to your system or is newer than the GNU C library you
+are using.  <code>syscall</code> is implemented in an entirely generic way;
+the function does not know anything about what a particular system
+call does or even if it is valid.
+
+   <p>The description of <code>syscall</code> in this section assumes a certain
+protocol for system calls on the various platforms on which the GNU C
+library runs.  That protocol is not defined by any strong authority, but
+we won't describe it here either because anyone who is coding
+<code>syscall</code> probably won't accept anything less than kernel and C
+library source code as a specification of the interface between them
+anyway.
+
+   <p><code>syscall</code> is declared in <samp><span class="file">unistd.h</span></samp>.
+
+<!-- unistd.h -->
+<!-- ??? -->
+<div class="defun">
+&mdash; Function: long int <b>syscall</b> (<var>long int sysno, ...</var>)<var><a name="index-syscall-3127"></a></var><br>
+<blockquote>
+        <p><code>syscall</code> performs a generic system call.
+
+        <p><a name="index-system-call-number-3128"></a><var>sysno</var> is the system call number.  Each kind of system call is
+identified by a number.  Macros for all the possible system call numbers
+are defined in <samp><span class="file">sys/syscall.h</span></samp>
+
+        <p>The remaining arguments are the arguments for the system call, in
+order, and their meanings depend on the kind of system call.  Each kind
+of system call has a definite number of arguments, from zero to five. 
+If you code more arguments than the system call takes, the extra ones to
+the right are ignored.
+
+        <p>The return value is the return value from the system call, unless the
+system call failed.  In that case, <code>syscall</code> returns <code>-1</code> and
+sets <code>errno</code> to an error code that the system call returned.  Note
+that system calls do not return <code>-1</code> when they succeed. 
+<a name="index-errno-3129"></a>
+If you specify an invalid <var>sysno</var>, <code>syscall</code> returns <code>-1</code>
+with <code>errno</code> = <code>ENOSYS</code>.
+
+        <p>Example:
+
+     <pre class="smallexample">          
+          #include &lt;unistd.h&gt;
+          #include &lt;sys/syscall.h&gt;
+          #include &lt;errno.h&gt;
+          
+          ...
+          
+          int rc;
+          
+          rc = syscall(SYS_chmod, "/etc/passwd", 0444);
+          
+          if (rc == -1)
+             fprintf(stderr, "chmod failed, errno = %d\n", errno);
+          
+</pre>
+        <p>This, if all the compatibility stars are aligned, is equivalent to the
+following preferable code:
+
+     <pre class="smallexample">          
+          #include &lt;sys/types.h&gt;
+          #include &lt;sys/stat.h&gt;
+          #include &lt;errno.h&gt;
+          
+          ...
+          
+          int rc;
+          
+          rc = chmod("/etc/passwd", 0444);
+          if (rc == -1)
+             fprintf(stderr, "chmod failed, errno = %d\n", errno);
+          
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

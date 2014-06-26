@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>How Change Persona - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Users-and-Groups.html#Users-and-Groups" title="Users and Groups">
+<link rel="prev" href="Why-Change-Persona.html#Why-Change-Persona" title="Why Change Persona">
+<link rel="next" href="Reading-Persona.html#Reading-Persona" title="Reading Persona">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="How-Change-Persona"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Reading-Persona.html#Reading-Persona">Reading Persona</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Why-Change-Persona.html#Why-Change-Persona">Why Change Persona</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Users-and-Groups.html#Users-and-Groups">Users and Groups</a>
+<hr>
+</div>
+
+<h3 class="section">29.4 How an Application Can Change Persona</h3>
+
+<p><a name="index-g_t_0040code_007bsetuid_007d-programs-3300"></a><a name="index-saved-set_002duser_002dID-3301"></a><a name="index-saved-set_002dgroup_002dID-3302"></a><a name="index-g_t_0040code_007b_005fPOSIX_005fSAVED_005fIDS_007d-3303"></a>
+The ability to change the persona of a process can be a source of
+unintentional privacy violations, or even intentional abuse.  Because of
+the potential for problems, changing persona is restricted to special
+circumstances.
+
+   <p>You can't arbitrarily set your user ID or group ID to anything you want;
+only privileged processes can do that.  Instead, the normal way for a
+program to change its persona is that it has been set up in advance to
+change to a particular user or group.  This is the function of the setuid
+and setgid bits of a file's access mode.  See <a href="Permission-Bits.html#Permission-Bits">Permission Bits</a>.
+
+   <p>When the setuid bit of an executable file is on, executing that file
+gives the process a third user ID: the <dfn>file user ID</dfn>.  This ID is
+set to the owner ID of the file.  The system then changes the effective
+user ID to the file user ID.  The real user ID remains as it was. 
+Likewise, if the setgid bit is on, the process is given a <dfn>file
+group ID</dfn> equal to the group ID of the file, and its effective group ID
+is changed to the file group ID.
+
+   <p>If a process has a file ID (user or group), then it can at any time
+change its effective ID to its real ID and back to its file ID. 
+Programs use this feature to relinquish their special privileges except
+when they actually need them.  This makes it less likely that they can
+be tricked into doing something inappropriate with their privileges.
+
+   <p><strong>Portability Note:</strong> Older systems do not have file IDs. 
+To determine if a system has this feature, you can test the compiler
+define <code>_POSIX_SAVED_IDS</code>.  (In the POSIX standard, file IDs are
+known as saved IDs.)
+
+   <p>See <a href="File-Attributes.html#File-Attributes">File Attributes</a>, for a more general discussion of file modes and
+accessibility.
+
+   </body></html>
+

@@ -1,0 +1,427 @@
+<html lang="en">
+<head>
+<title>Formatting Calendar Time - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Calendar-Time.html#Calendar-Time" title="Calendar Time">
+<link rel="prev" href="High-Accuracy-Clock.html#High-Accuracy-Clock" title="High Accuracy Clock">
+<link rel="next" href="Parsing-Date-and-Time.html#Parsing-Date-and-Time" title="Parsing Date and Time">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Formatting-Calendar-Time"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Parsing-Date-and-Time.html#Parsing-Date-and-Time">Parsing Date and Time</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="High-Accuracy-Clock.html#High-Accuracy-Clock">High Accuracy Clock</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Calendar-Time.html#Calendar-Time">Calendar Time</a>
+<hr>
+</div>
+
+<h4 class="subsection">21.4.5 Formatting Calendar Time</h4>
+
+<p>The functions described in this section format calendar time values as
+strings.  These functions are declared in the header file <samp><span class="file">time.h</span></samp>. 
+<a name="index-time_002eh-2655"></a>
+<!-- time.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: char * <b>asctime</b> (<var>const struct tm *brokentime</var>)<var><a name="index-asctime-2656"></a></var><br>
+<blockquote><p>The <code>asctime</code> function converts the broken-down time value that
+<var>brokentime</var> points to into a string in a standard format:
+
+     <pre class="smallexample">          "Tue May 21 13:46:22 1991\n"
+</pre>
+        <p>The abbreviations for the days of week are: &lsquo;<samp><span class="samp">Sun</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Mon</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">Tue</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Wed</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Thu</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Fri</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">Sat</span></samp>&rsquo;.
+
+        <p>The abbreviations for the months are: &lsquo;<samp><span class="samp">Jan</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Feb</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">Mar</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Apr</span></samp>&rsquo;, &lsquo;<samp><span class="samp">May</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Jun</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Jul</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Aug</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">Sep</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Oct</span></samp>&rsquo;, &lsquo;<samp><span class="samp">Nov</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">Dec</span></samp>&rsquo;.
+
+        <p>The return value points to a statically allocated string, which might be
+overwritten by subsequent calls to <code>asctime</code> or <code>ctime</code>. 
+(But no other library function overwrites the contents of this
+string.) 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- POSIX.1c -->
+<div class="defun">
+&mdash; Function: char * <b>asctime_r</b> (<var>const struct tm *brokentime, char *buffer</var>)<var><a name="index-asctime_005fr-2657"></a></var><br>
+<blockquote><p>This function is similar to <code>asctime</code> but instead of placing the
+result in a static buffer it writes the string in the buffer pointed to
+by the parameter <var>buffer</var>.  This buffer should have room
+for at least 26 bytes, including the terminating null.
+
+        <p>If no error occurred the function returns a pointer to the string the
+result was written into, i.e., it returns <var>buffer</var>.  Otherwise
+return <code>NULL</code>. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: char * <b>ctime</b> (<var>const time_t *time</var>)<var><a name="index-ctime-2658"></a></var><br>
+<blockquote><p>The <code>ctime</code> function is similar to <code>asctime</code>, except that you
+specify the calendar time argument as a <code>time_t</code> simple time value
+rather than in broken-down local time format.  It is equivalent to
+
+     <pre class="smallexample">          asctime (localtime (<var>time</var>))
+</pre>
+        <p><code>ctime</code> sets the variable <code>tzname</code>, because <code>localtime</code>
+does so.  See <a href="Time-Zone-Functions.html#Time-Zone-Functions">Time Zone Functions</a>. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- POSIX.1c -->
+<div class="defun">
+&mdash; Function: char * <b>ctime_r</b> (<var>const time_t *time, char *buffer</var>)<var><a name="index-ctime_005fr-2659"></a></var><br>
+<blockquote><p>This function is similar to <code>ctime</code>, but places the result in the
+string pointed to by <var>buffer</var>.  It is equivalent to (written using
+gcc extensions, see <a href="../gcc/Statement-Exprs.html#Statement-Exprs">Statement Exprs</a>):
+
+     <pre class="smallexample">          ({ struct tm tm; asctime_r (localtime_r (time, &amp;tm), buf); })
+</pre>
+        <p>If no error occurred the function returns a pointer to the string the
+result was written into, i.e., it returns <var>buffer</var>.  Otherwise
+return <code>NULL</code>. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>strftime</b> (<var>char *s, size_t size, const char *template, const struct tm *brokentime</var>)<var><a name="index-strftime-2660"></a></var><br>
+<blockquote><p>This function is similar to the <code>sprintf</code> function (see <a href="Formatted-Input.html#Formatted-Input">Formatted Input</a>), but the conversion specifications that can appear in the format
+template <var>template</var> are specialized for printing components of the date
+and time <var>brokentime</var> according to the locale currently specified for
+time conversion (see <a href="Locales.html#Locales">Locales</a>).
+
+        <p>Ordinary characters appearing in the <var>template</var> are copied to the
+output string <var>s</var>; this can include multibyte character sequences. 
+Conversion specifiers are introduced by a &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character, followed
+by an optional flag which can be one of the following.  These flags
+are all GNU extensions. The first three affect only the output of
+numbers:
+
+          <dl>
+<dt><code>_</code><dd>The number is padded with spaces.
+
+          <br><dt><code>-</code><dd>The number is not padded at all.
+
+          <br><dt><code>0</code><dd>The number is padded with zeros even if the format specifies padding
+with spaces.
+
+          <br><dt><code>^</code><dd>The output uses uppercase characters, but only if this is possible
+(see <a href="Case-Conversion.html#Case-Conversion">Case Conversion</a>). 
+</dl>
+
+        <p>The default action is to pad the number with zeros to keep it a constant
+width.  Numbers that do not have a range indicated below are never
+padded, since there is no natural width for them.
+
+        <p>Following the flag an optional specification of the width is possible. 
+This is specified in decimal notation.  If the natural size of the
+output is of the field has less than the specified number of characters,
+the result is written right adjusted and space padded to the given
+size.
+
+        <p>An optional modifier can follow the optional flag and width
+specification.  The modifiers, which were first standardized by
+POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->, are:
+
+          <dl>
+<dt><code>E</code><dd>Use the locale's alternate representation for date and time.  This
+modifier applies to the <code>%c</code>, <code>%C</code>, <code>%x</code>, <code>%X</code>,
+<code>%y</code> and <code>%Y</code> format specifiers.  In a Japanese locale, for
+example, <code>%Ex</code> might yield a date format based on the Japanese
+Emperors' reigns.
+
+          <br><dt><code>O</code><dd>Use the locale's alternate numeric symbols for numbers.  This modifier
+applies only to numeric format specifiers. 
+</dl>
+
+        <p>If the format supports the modifier but no alternate representation
+is available, it is ignored.
+
+        <p>The conversion specifier ends with a format specifier taken from the
+following list.  The whole &lsquo;<samp><span class="samp">%</span></samp>&rsquo; sequence is replaced in the output
+string as follows:
+
+          <dl>
+<dt><code>%a</code><dd>The abbreviated weekday name according to the current locale.
+
+          <br><dt><code>%A</code><dd>The full weekday name according to the current locale.
+
+          <br><dt><code>%b</code><dd>The abbreviated month name according to the current locale.
+
+          <br><dt><code>%B</code><dd>The full month name according to the current locale.
+
+          <p>Using <code>%B</code> together with <code>%d</code> produces grammatically
+incorrect results for some locales.
+
+          <br><dt><code>%c</code><dd>The preferred calendar time representation for the current locale.
+
+          <br><dt><code>%C</code><dd>The century of the year.  This is equivalent to the greatest integer not
+greater than the year divided by 100.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%d</code><dd>The day of the month as a decimal number (range <code>01</code> through <code>31</code>).
+
+          <br><dt><code>%D</code><dd>The date using the format <code>%m/%d/%y</code>.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%e</code><dd>The day of the month like with <code>%d</code>, but padded with blank (range
+<code> 1</code> through <code>31</code>).
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%F</code><dd>The date using the format <code>%Y-%m-%d</code>.  This is the form specified
+in the ISO&nbsp;8601<!-- /@w --> standard and is the preferred form for all uses.
+
+          <p>This format was first standardized by ISO&nbsp;C99<!-- /@w --> and by POSIX.1-2001.
+
+          <br><dt><code>%g</code><dd>The year corresponding to the ISO week number, but without the century
+(range <code>00</code> through <code>99</code>).  This has the same format and value
+as <code>%y</code>, except that if the ISO week number (see <code>%V</code>) belongs
+to the previous or next year, that year is used instead.
+
+          <p>This format was first standardized by ISO&nbsp;C99<!-- /@w --> and by POSIX.1-2001.
+
+          <br><dt><code>%G</code><dd>The year corresponding to the ISO week number.  This has the same format
+and value as <code>%Y</code>, except that if the ISO week number (see
+<code>%V</code>) belongs to the previous or next year, that year is used
+instead.
+
+          <p>This format was first standardized by ISO&nbsp;C99<!-- /@w --> and by POSIX.1-2001
+but was previously available as a GNU extension.
+
+          <br><dt><code>%h</code><dd>The abbreviated month name according to the current locale.  The action
+is the same as for <code>%b</code>.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%H</code><dd>The hour as a decimal number, using a 24-hour clock (range <code>00</code> through
+<code>23</code>).
+
+          <br><dt><code>%I</code><dd>The hour as a decimal number, using a 12-hour clock (range <code>01</code> through
+<code>12</code>).
+
+          <br><dt><code>%j</code><dd>The day of the year as a decimal number (range <code>001</code> through <code>366</code>).
+
+          <br><dt><code>%k</code><dd>The hour as a decimal number, using a 24-hour clock like <code>%H</code>, but
+padded with blank (range <code> 0</code> through <code>23</code>).
+
+          <p>This format is a GNU extension.
+
+          <br><dt><code>%l</code><dd>The hour as a decimal number, using a 12-hour clock like <code>%I</code>, but
+padded with blank (range <code> 1</code> through <code>12</code>).
+
+          <p>This format is a GNU extension.
+
+          <br><dt><code>%m</code><dd>The month as a decimal number (range <code>01</code> through <code>12</code>).
+
+          <br><dt><code>%M</code><dd>The minute as a decimal number (range <code>00</code> through <code>59</code>).
+
+          <br><dt><code>%n</code><dd>A single &lsquo;<samp><span class="samp">\n</span></samp>&rsquo; (newline) character.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%p</code><dd>Either &lsquo;<samp><span class="samp">AM</span></samp>&rsquo; or &lsquo;<samp><span class="samp">PM</span></samp>&rsquo;, according to the given time value; or the
+corresponding strings for the current locale.  Noon is treated as
+&lsquo;<samp><span class="samp">PM</span></samp>&rsquo; and midnight as &lsquo;<samp><span class="samp">AM</span></samp>&rsquo;.  In most locales
+&lsquo;<samp><span class="samp">AM</span></samp>&rsquo;/&lsquo;<samp><span class="samp">PM</span></samp>&rsquo; format is not supported, in such cases <code>"%p"</code>
+yields an empty string.
+
+          <br><dt><code>%P</code><dd>Either &lsquo;<samp><span class="samp">am</span></samp>&rsquo; or &lsquo;<samp><span class="samp">pm</span></samp>&rsquo;, according to the given time value; or the
+corresponding strings for the current locale, printed in lowercase
+characters.  Noon is treated as &lsquo;<samp><span class="samp">pm</span></samp>&rsquo; and midnight as &lsquo;<samp><span class="samp">am</span></samp>&rsquo;.  In
+most locales &lsquo;<samp><span class="samp">AM</span></samp>&rsquo;/&lsquo;<samp><span class="samp">PM</span></samp>&rsquo; format is not supported, in such cases
+<code>"%P"</code> yields an empty string.
+
+          <p>This format is a GNU extension.
+
+          <br><dt><code>%r</code><dd>The complete calendar time using the AM/PM format of the current locale.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->. 
+In the POSIX locale, this format is equivalent to <code>%I:%M:%S %p</code>.
+
+          <br><dt><code>%R</code><dd>The hour and minute in decimal numbers using the format <code>%H:%M</code>.
+
+          <p>This format was first standardized by ISO&nbsp;C99<!-- /@w --> and by POSIX.1-2001
+but was previously available as a GNU extension.
+
+          <br><dt><code>%s</code><dd>The number of seconds since the epoch, i.e., since 1970-01-01 00:00:00 UTC. 
+Leap seconds are not counted unless leap second support is available.
+
+          <p>This format is a GNU extension.
+
+          <br><dt><code>%S</code><dd>The seconds as a decimal number (range <code>00</code> through <code>60</code>).
+
+          <br><dt><code>%t</code><dd>A single &lsquo;<samp><span class="samp">\t</span></samp>&rsquo; (tabulator) character.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%T</code><dd>The time of day using decimal numbers using the format <code>%H:%M:%S</code>.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%u</code><dd>The day of the week as a decimal number (range <code>1</code> through
+<code>7</code>), Monday being <code>1</code>.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%U</code><dd>The week number of the current year as a decimal number (range <code>00</code>
+through <code>53</code>), starting with the first Sunday as the first day of
+the first week.  Days preceding the first Sunday in the year are
+considered to be in week <code>00</code>.
+
+          <br><dt><code>%V</code><dd>The ISO&nbsp;8601:1988<!-- /@w --> week number as a decimal number (range <code>01</code>
+through <code>53</code>).  ISO weeks start with Monday and end with Sunday. 
+Week <code>01</code> of a year is the first week which has the majority of its
+days in that year; this is equivalent to the week containing the year's
+first Thursday, and it is also equivalent to the week containing January
+4.  Week <code>01</code> of a year can contain days from the previous year. 
+The week before week <code>01</code> of a year is the last week (<code>52</code> or
+<code>53</code>) of the previous year even if it contains days from the new
+year.
+
+          <p>This format was first standardized by POSIX.2-1992 and by ISO&nbsp;C99<!-- /@w -->.
+
+          <br><dt><code>%w</code><dd>The day of the week as a decimal number (range <code>0</code> through
+<code>6</code>), Sunday being <code>0</code>.
+
+          <br><dt><code>%W</code><dd>The week number of the current year as a decimal number (range <code>00</code>
+through <code>53</code>), starting with the first Monday as the first day of
+the first week.  All days preceding the first Monday in the year are
+considered to be in week <code>00</code>.
+
+          <br><dt><code>%x</code><dd>The preferred date representation for the current locale.
+
+          <br><dt><code>%X</code><dd>The preferred time of day representation for the current locale.
+
+          <br><dt><code>%y</code><dd>The year without a century as a decimal number (range <code>00</code> through
+<code>99</code>).  This is equivalent to the year modulo 100.
+
+          <br><dt><code>%Y</code><dd>The year as a decimal number, using the Gregorian calendar.  Years
+before the year <code>1</code> are numbered <code>0</code>, <code>-1</code>, and so on.
+
+          <br><dt><code>%z</code><dd>RFC&nbsp;822<!-- /@w -->/ISO&nbsp;8601:1988<!-- /@w --> style numeric time zone (e.g.,
+<code>-0600</code> or <code>+0100</code>), or nothing if no time zone is
+determinable.
+
+          <p>This format was first standardized by ISO&nbsp;C99<!-- /@w --> and by POSIX.1-2001
+but was previously available as a GNU extension.
+
+          <p>In the POSIX locale, a full RFC&nbsp;822<!-- /@w --> timestamp is generated by the format
+&lsquo;<samp><span class="samp">"%a,&nbsp;%d&nbsp;%b&nbsp;%Y&nbsp;%H:%M:%S&nbsp;%z"</span></samp>&rsquo;<!-- /@w --> (or the equivalent
+&lsquo;<samp><span class="samp">"%a,&nbsp;%d&nbsp;%b&nbsp;%Y&nbsp;%T&nbsp;%z"</span></samp>&rsquo;<!-- /@w -->).
+
+          <br><dt><code>%Z</code><dd>The time zone abbreviation (empty if the time zone can't be determined).
+
+          <br><dt><code>%%</code><dd>A literal &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character. 
+</dl>
+
+        <p>The <var>size</var> parameter can be used to specify the maximum number of
+characters to be stored in the array <var>s</var>, including the terminating
+null character.  If the formatted time requires more than <var>size</var>
+characters, <code>strftime</code> returns zero and the contents of the array
+<var>s</var> are undefined.  Otherwise the return value indicates the
+number of characters placed in the array <var>s</var>, not including the
+terminating null character.
+
+        <p><em>Warning:</em> This convention for the return value which is prescribed
+in ISO&nbsp;C<!-- /@w --> can lead to problems in some situations.  For certain
+format strings and certain locales the output really can be the empty
+string and this cannot be discovered by testing the return value only. 
+E.g., in most locales the AM/PM time format is not supported (most of
+the world uses the 24 hour time representation).  In such locales
+<code>"%p"</code> will return the empty string, i.e., the return value is
+zero.  To detect situations like this something similar to the following
+code should be used:
+
+     <pre class="smallexample">          buf[0] = '\1';
+          len = strftime (buf, bufsize, format, tp);
+          if (len == 0 &amp;&amp; buf[0] != '\0')
+            {
+              /* Something went wrong in the strftime call.  */
+              ...
+            }
+</pre>
+        <p>If <var>s</var> is a null pointer, <code>strftime</code> does not actually write
+anything, but instead returns the number of characters it would have written.
+
+        <p>According to POSIX.1 every call to <code>strftime</code> implies a call to
+<code>tzset</code>.  So the contents of the environment variable <code>TZ</code>
+is examined before any output is produced.
+
+        <p>For an example of <code>strftime</code>, see <a href="Time-Functions-Example.html#Time-Functions-Example">Time Functions Example</a>. 
+</p></blockquote></div>
+
+<!-- time.h -->
+<!-- ISO/Amend1 -->
+<div class="defun">
+&mdash; Function: size_t <b>wcsftime</b> (<var>wchar_t *s, size_t size, const wchar_t *template, const struct tm *brokentime</var>)<var><a name="index-wcsftime-2661"></a></var><br>
+<blockquote><p>The <code>wcsftime</code> function is equivalent to the <code>strftime</code>
+function with the difference that it operates on wide character
+strings.  The buffer where the result is stored, pointed to by <var>s</var>,
+must be an array of wide characters.  The parameter <var>size</var> which
+specifies the size of the output buffer gives the number of wide
+character, not the number of bytes.
+
+        <p>Also the format string <var>template</var> is a wide character string.  Since
+all characters needed to specify the format string are in the basic
+character set it is portably possible to write format strings in the C
+source code using the <code>L"..."</code> notation.  The parameter
+<var>brokentime</var> has the same meaning as in the <code>strftime</code> call.
+
+        <p>The <code>wcsftime</code> function supports the same flags, modifiers, and
+format specifiers as the <code>strftime</code> function.
+
+        <p>The return value of <code>wcsftime</code> is the number of wide characters
+stored in <code>s</code>.  When more characters would have to be written than
+can be placed in the buffer <var>s</var> the return value is zero, with the
+same problems indicated in the <code>strftime</code> documentation. 
+</p></blockquote></div>
+
+   </body></html>
+

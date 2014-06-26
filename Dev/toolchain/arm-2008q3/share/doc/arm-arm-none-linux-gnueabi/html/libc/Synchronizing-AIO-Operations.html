@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+<title>Synchronizing AIO Operations - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO" title="Asynchronous I/O">
+<link rel="prev" href="Status-of-AIO-Operations.html#Status-of-AIO-Operations" title="Status of AIO Operations">
+<link rel="next" href="Cancel-AIO-Operations.html#Cancel-AIO-Operations" title="Cancel AIO Operations">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Synchronizing-AIO-Operations"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Cancel-AIO-Operations.html#Cancel-AIO-Operations">Cancel AIO Operations</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Status-of-AIO-Operations.html#Status-of-AIO-Operations">Status of AIO Operations</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Asynchronous-I_002fO.html#Asynchronous-I_002fO">Asynchronous I/O</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.10.3 Getting into a Consistent State</h4>
+
+<p>When dealing with asynchronous operations it is sometimes necessary to
+get into a consistent state.  This would mean for AIO that one wants to
+know whether a certain request or a group of request were processed. 
+This could be done by waiting for the notification sent by the system
+after the operation terminated, but this sometimes would mean wasting
+resources (mainly computation time).  Instead POSIX.1b defines two
+functions which will help with most kinds of consistency.
+
+   <p>The <code>aio_fsync</code> and <code>aio_fsync64</code> functions are only available
+if the symbol <code>_POSIX_SYNCHRONIZED_IO</code> is defined in <samp><span class="file">unistd.h</span></samp>.
+
+   <p><a name="index-synchronizing-1301"></a><!-- aio.h -->
+<!-- POSIX.1b -->
+
+<div class="defun">
+&mdash; Function: int <b>aio_fsync</b> (<var>int op, struct aiocb *aiocbp</var>)<var><a name="index-aio_005ffsync-1302"></a></var><br>
+<blockquote><p>Calling this function forces all I/O operations operating queued at the
+time of the function call operating on the file descriptor
+<code>aiocbp-&gt;aio_fildes</code> into the synchronized I/O completion state
+(see <a href="Synchronizing-I_002fO.html#Synchronizing-I_002fO">Synchronizing I/O</a>).  The <code>aio_fsync</code> function returns
+immediately but the notification through the method described in
+<code>aiocbp-&gt;aio_sigevent</code> will happen only after all requests for this
+file descriptor have terminated and the file is synchronized.  This also
+means that requests for this very same file descriptor which are queued
+after the synchronization request are not affected.
+
+        <p>If <var>op</var> is <code>O_DSYNC</code> the synchronization happens as with a call
+to <code>fdatasync</code>.  Otherwise <var>op</var> should be <code>O_SYNC</code> and
+the synchronization happens as with <code>fsync</code>.
+
+        <p>As long as the synchronization has not happened, a call to
+<code>aio_error</code> with the reference to the object pointed to by
+<var>aiocbp</var> returns <code>EINPROGRESS</code>.  Once the synchronization is
+done <code>aio_error</code> return 0 if the synchronization was not
+successful.  Otherwise the value returned is the value to which the
+<code>fsync</code> or <code>fdatasync</code> function would have set the
+<code>errno</code> variable.  In this case nothing can be assumed about the
+consistency for the data written to this file descriptor.
+
+        <p>The return value of this function is 0 if the request was
+successfully enqueued.  Otherwise the return value is -1 and
+<code>errno</code> is set to one of the following values:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>The request could not be enqueued due to temporary lack of resources. 
+<br><dt><code>EBADF</code><dd>The file descriptor <code>aiocbp-&gt;aio_fildes</code> is not valid or not open
+for writing. 
+<br><dt><code>EINVAL</code><dd>The implementation does not support I/O synchronization or the <var>op</var>
+parameter is other than <code>O_DSYNC</code> and <code>O_SYNC</code>. 
+<br><dt><code>ENOSYS</code><dd>This function is not implemented. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>aio_fsync64</code> since the LFS interface
+transparently replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>aio_fsync64</b> (<var>int op, struct aiocb64 *aiocbp</var>)<var><a name="index-aio_005ffsync64-1303"></a></var><br>
+<blockquote><p>This function is similar to <code>aio_fsync</code> with the only difference
+that the argument is a reference to a variable of type <code>struct
+aiocb64</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is available under the name <code>aio_fsync</code> and so
+transparently replaces the interface for small files on 32 bit
+machines. 
+</p></blockquote></div>
+
+   <p>Another method of synchronization is to wait until one or more requests of a
+specific set terminated.  This could be achieved by the <code>aio_*</code>
+functions to notify the initiating process about the termination but in
+some situations this is not the ideal solution.  In a program which
+constantly updates clients somehow connected to the server it is not
+always the best solution to go round robin since some connections might
+be slow.  On the other hand letting the <code>aio_*</code> function notify the
+caller might also be not the best solution since whenever the process
+works on preparing data for on client it makes no sense to be
+interrupted by a notification since the new client will not be handled
+before the current client is served.  For situations like this
+<code>aio_suspend</code> should be used.
+
+<!-- aio.h -->
+<!-- POSIX.1b -->
+<div class="defun">
+&mdash; Function: int <b>aio_suspend</b> (<var>const struct aiocb *const list</var>[]<var>, int nent, const struct timespec *timeout</var>)<var><a name="index-aio_005fsuspend-1304"></a></var><br>
+<blockquote><p>When calling this function, the calling thread is suspended until at
+least one of the requests pointed to by the <var>nent</var> elements of the
+array <var>list</var> has completed.  If any of the requests has already
+completed at the time <code>aio_suspend</code> is called, the function returns
+immediately.  Whether a request has terminated or not is determined by
+comparing the error status of the request with <code>EINPROGRESS</code>.  If
+an element of <var>list</var> is <code>NULL</code>, the entry is simply ignored.
+
+        <p>If no request has finished, the calling process is suspended.  If
+<var>timeout</var> is <code>NULL</code>, the process is not woken until a request
+has finished.  If <var>timeout</var> is not <code>NULL</code>, the process remains
+suspended at least as long as specified in <var>timeout</var>.  In this case,
+<code>aio_suspend</code> returns with an error.
+
+        <p>The return value of the function is 0 if one or more requests
+from the <var>list</var> have terminated.  Otherwise the function returns
+-1 and <code>errno</code> is set to one of the following values:
+
+          <dl>
+<dt><code>EAGAIN</code><dd>None of the requests from the <var>list</var> completed in the time specified
+by <var>timeout</var>. 
+<br><dt><code>EINTR</code><dd>A signal interrupted the <code>aio_suspend</code> function.  This signal might
+also be sent by the AIO implementation while signalling the termination
+of one of the requests. 
+<br><dt><code>ENOSYS</code><dd>The <code>aio_suspend</code> function is not implemented. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>aio_suspend64</code> since the LFS interface
+transparently replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- aio.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>aio_suspend64</b> (<var>const struct aiocb64 *const list</var>[]<var>, int nent, const struct timespec *timeout</var>)<var><a name="index-aio_005fsuspend64-1305"></a></var><br>
+<blockquote><p>This function is similar to <code>aio_suspend</code> with the only difference
+that the argument is a reference to a variable of type <code>struct
+aiocb64</code>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is available under the name <code>aio_suspend</code> and so
+transparently replaces the interface for small files on 32 bit
+machines. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+<title>Analyze Collected Data - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Tracepoints.html#Tracepoints" title="Tracepoints">
+<link rel="prev" href="Set-Tracepoints.html#Set-Tracepoints" title="Set Tracepoints">
+<link rel="next" href="Tracepoint-Variables.html#Tracepoint-Variables" title="Tracepoint Variables">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Analyze-Collected-Data"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tracepoint-Variables.html#Tracepoint-Variables">Tracepoint Variables</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Set-Tracepoints.html#Set-Tracepoints">Set Tracepoints</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Tracepoints.html#Tracepoints">Tracepoints</a>
+<hr>
+</div>
+
+<h3 class="section">11.2 Using the Collected Data</h3>
+
+<p>After the tracepoint experiment ends, you use <span class="sc">gdb</span> commands
+for examining the trace data.  The basic idea is that each tracepoint
+collects a trace <dfn>snapshot</dfn> every time it is hit and another
+snapshot every time it single-steps.  All these snapshots are
+consecutively numbered from zero and go into a buffer, and you can
+examine them later.  The way you examine them is to <dfn>focus</dfn> on a
+specific trace snapshot.  When the remote stub is focused on a trace
+snapshot, it will respond to all <span class="sc">gdb</span> requests for memory and
+registers by reading from the buffer which belongs to that snapshot,
+rather than from <em>real</em> memory or registers of the program being
+debugged.  This means that <strong>all</strong> <span class="sc">gdb</span> commands
+(<code>print</code>, <code>info registers</code>, <code>backtrace</code>, etc.) will
+behave as if we were currently debugging the program state as it was
+when the tracepoint occurred.  Any requests for data that are not in
+the buffer will fail.
+
+<ul class="menu">
+<li><a accesskey="1" href="tfind.html#tfind">tfind</a>:                        How to select a trace snapshot
+<li><a accesskey="2" href="tdump.html#tdump">tdump</a>:                        How to display all data for a snapshot
+<li><a accesskey="3" href="save_002dtracepoints.html#save_002dtracepoints">save-tracepoints</a>:             How to save tracepoints for a future run
+</ul>
+
+   </body></html>
+

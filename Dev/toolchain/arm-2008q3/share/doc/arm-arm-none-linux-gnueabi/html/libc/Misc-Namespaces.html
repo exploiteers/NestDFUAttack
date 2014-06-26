@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+<title>Misc Namespaces - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Sockets.html#Sockets" title="Sockets">
+<link rel="prev" href="Internet-Namespace.html#Internet-Namespace" title="Internet Namespace">
+<link rel="next" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets" title="Open/Close Sockets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Misc-Namespaces"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">Open/Close Sockets</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Sockets.html#Sockets">Sockets</a>
+<hr>
+</div>
+
+<h3 class="section">16.7 Other Namespaces</h3>
+
+<p><a name="index-PF_005fNS-1766"></a><a name="index-PF_005fISO-1767"></a><a name="index-PF_005fCCITT-1768"></a><a name="index-PF_005fIMPLINK-1769"></a><a name="index-PF_005fROUTE-1770"></a>Certain other namespaces and associated protocol families are supported
+but not documented yet because they are not often used.  <code>PF_NS</code>
+refers to the Xerox Network Software protocols.  <code>PF_ISO</code> stands
+for Open Systems Interconnect.  <code>PF_CCITT</code> refers to protocols from
+CCITT.  <samp><span class="file">socket.h</span></samp> defines these symbols and others naming protocols
+not actually implemented.
+
+   <p><code>PF_IMPLINK</code> is used for communicating between hosts and Internet
+Message Processors.  For information on this and <code>PF_ROUTE</code>, an
+occasionally-used local area routing protocol, see the GNU Hurd Manual
+(to appear in the future).
+
+   </body></html>
+

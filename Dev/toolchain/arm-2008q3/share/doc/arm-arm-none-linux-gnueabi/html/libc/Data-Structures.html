@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Data Structures - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Implementing-a-Shell.html#Implementing-a-Shell" title="Implementing a Shell">
+<link rel="next" href="Initializing-the-Shell.html#Initializing-the-Shell" title="Initializing the Shell">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Data-Structures"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Initializing-the-Shell.html#Initializing-the-Shell">Initializing the Shell</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.6.1 Data Structures for the Shell</h4>
+
+<p>All of the program examples included in this chapter are part of
+a simple shell program.  This section presents data structures
+and utility functions which are used throughout the example.
+
+   <p>The sample shell deals mainly with two data structures.  The
+<code>job</code> type contains information about a job, which is a
+set of subprocesses linked together with pipes.  The <code>process</code> type
+holds information about a single subprocess.  Here are the relevant
+data structure declarations:
+
+<pre class="smallexample">     /* <span class="roman">A process is a single process.</span>  */
+     typedef struct process
+     {
+       struct process *next;       /* <span class="roman">next process in pipeline</span> */
+       char **argv;                /* <span class="roman">for exec</span> */
+       pid_t pid;                  /* <span class="roman">process ID</span> */
+       char completed;             /* <span class="roman">true if process has completed</span> */
+       char stopped;               /* <span class="roman">true if process has stopped</span> */
+       int status;                 /* <span class="roman">reported status value</span> */
+     } process;
+     
+     /* <span class="roman">A job is a pipeline of processes.</span>  */
+     typedef struct job
+     {
+       struct job *next;           /* <span class="roman">next active job</span> */
+       char *command;              /* <span class="roman">command line, used for messages</span> */
+       process *first_process;     /* <span class="roman">list of processes in this job</span> */
+       pid_t pgid;                 /* <span class="roman">process group ID</span> */
+       char notified;              /* <span class="roman">true if user told about stopped job</span> */
+       struct termios tmodes;      /* <span class="roman">saved terminal modes</span> */
+       int stdin, stdout, stderr;  /* <span class="roman">standard i/o channels</span> */
+     } job;
+     
+     /* <span class="roman">The active jobs are linked into a list.  This is its head.</span>   */
+     job *first_job = NULL;
+</pre>
+   <p>Here are some utility functions that are used for operating on <code>job</code>
+objects.
+
+<pre class="smallexample">     /* <span class="roman">Find the active job with the indicated </span><var>pgid</var><span class="roman">.</span>  */
+     job *
+     find_job (pid_t pgid)
+     {
+       job *j;
+     
+       for (j = first_job; j; j = j-&gt;next)
+         if (j-&gt;pgid == pgid)
+           return j;
+       return NULL;
+     }
+     
+     /* <span class="roman">Return true if all processes in the job have stopped or completed.</span>  */
+     int
+     job_is_stopped (job *j)
+     {
+       process *p;
+     
+       for (p = j-&gt;first_process; p; p = p-&gt;next)
+         if (!p-&gt;completed &amp;&amp; !p-&gt;stopped)
+           return 0;
+       return 1;
+     }
+     
+     /* <span class="roman">Return true if all processes in the job have completed.</span>  */
+     int
+     job_is_completed (job *j)
+     {
+       process *p;
+     
+       for (p = j-&gt;first_process; p; p = p-&gt;next)
+         if (!p-&gt;completed)
+           return 0;
+       return 1;
+     }
+</pre>
+   </body></html>
+

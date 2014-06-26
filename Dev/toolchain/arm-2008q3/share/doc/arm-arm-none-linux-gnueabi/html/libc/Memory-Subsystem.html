@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Memory Subsystem - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Resources.html#Memory-Resources" title="Memory Resources">
+<link rel="next" href="Query-Memory-Parameters.html#Query-Memory-Parameters" title="Query Memory Parameters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Memory-Subsystem"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Query-Memory-Parameters.html#Query-Memory-Parameters">Query Memory Parameters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Resources.html#Memory-Resources">Memory Resources</a>
+<hr>
+</div>
+
+<h4 class="subsection">22.4.1 Overview about traditional Unix memory handling</h4>
+
+<p><a name="index-address-space-2771"></a><a name="index-physical-memory-2772"></a><a name="index-physical-address-2773"></a>Unix systems normally provide processes virtual address spaces.  This
+means that the addresses of the memory regions do not have to correspond
+directly to the addresses of the actual physical memory which stores the
+data.  An extra level of indirection is introduced which translates
+virtual addresses into physical addresses.  This is normally done by the
+hardware of the processor.
+
+   <p><a name="index-shared-memory-2774"></a>Using a virtual address space has several advantage.  The most important
+is process isolation.  The different processes running on the system
+cannot interfere directly with each other.  No process can write into
+the address space of another process (except when shared memory is used
+but then it is wanted and controlled).
+
+   <p>Another advantage of virtual memory is that the address space the
+processes see can actually be larger than the physical memory available. 
+The physical memory can be extended by storage on an external media
+where the content of currently unused memory regions is stored.  The
+address translation can then intercept accesses to these memory regions
+and make memory content available again by loading the data back into
+memory.  This concept makes it necessary that programs which have to use
+lots of memory know the difference between available virtual address
+space and available physical memory.  If the working set of virtual
+memory of all the processes is larger than the available physical memory
+the system will slow down dramatically due to constant swapping of
+memory content from the memory to the storage media and back.  This is
+called &ldquo;thrashing&rdquo;. 
+<a name="index-thrashing-2775"></a>
+<a name="index-memory-page-2776"></a><a name="index-page_002c-memory-2777"></a>A final aspect of virtual memory which is important and follows from
+what is said in the last paragraph is the granularity of the virtual
+address space handling.  When we said that the virtual address handling
+stores memory content externally it cannot do this on a byte-by-byte
+basis.  The administrative overhead does not allow this (leaving alone
+the processor hardware).  Instead several thousand bytes are handled
+together and form a <dfn>page</dfn>.  The size of each page is always a power
+of two byte.  The smallest page size in use today is 4096, with 8192,
+16384, and 65536 being other popular sizes.
+
+   </body></html>
+

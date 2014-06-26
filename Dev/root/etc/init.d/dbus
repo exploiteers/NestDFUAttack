@@ -1,0 +1,66 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file implements a script to start/stop the D-Bus
+#      system message bus (IPC) daemon.
+#
+
+# Source common library
+. /etc/init.d/functions
+
+DBUSDNAME=dbus-daemon
+DBUSD=${BINDIR}/${DBUSDNAME}
+DBUSUUIDGEN=${BINDIR}/dbus-uuidgen
+DBUSRUNDIR=${VARDIR}/run/dbus
+DBUSPIDFILE=${DBUSRUNDIR}/pid
+
+pre_start () {
+    mkdir -p ${DBUSRUNDIR}
+    chown messagebus:messagebus ${DBUSRUNDIR}
+
+    test -x ${DBUSUUIDGEN} && ${DBUSUUIDGEN} --ensure
+}
+
+start_dbusd() {
+	if test -x ${DBUSD}; then
+		pre_start
+
+		${RM} ${DBUSPIDFILE}
+		${STARTDAEMON} -q -p ${DBUSPIDFILE} -x ${DBUSD} -- `${CAT} ${CONFDIR}/${DBUSDNAME}.options 2> ${NULL}`
+		${ECHO} " ${DBUSDNAME}\c"
+	fi
+}
+
+stop_dbusd () {
+	${STOPDAEMON} -q -p ${DBUSPIDFILE} 2> ${NULL} 1>&2
+}
+
+case "${1}" in
+
+'start')
+	${ECHO} "D-Bus IPC daemon:\c"
+
+	start_dbusd
+
+	${ECHO} "."
+	;;
+
+'stop')
+	stop_dbusd
+	;;
+
+'restart')
+	${0} stop
+	${0} start
+	;;
+
+*)
+	echo "Usage: ${0} <start | stop | restart>"
+	exit 1
+	;;
+
+esac

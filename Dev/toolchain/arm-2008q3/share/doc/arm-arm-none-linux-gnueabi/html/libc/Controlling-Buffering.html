@@ -1,0 +1,225 @@
+<html lang="en">
+<head>
+<title>Controlling Buffering - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Stream-Buffering.html#Stream-Buffering" title="Stream Buffering">
+<link rel="prev" href="Flushing-Buffers.html#Flushing-Buffers" title="Flushing Buffers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Controlling-Buffering"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Flushing-Buffers.html#Flushing-Buffers">Flushing Buffers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Stream-Buffering.html#Stream-Buffering">Stream Buffering</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.20.3 Controlling Which Kind of Buffering</h4>
+
+<p>After opening a stream (but before any other operations have been
+performed on it), you can explicitly specify what kind of buffering you
+want it to have using the <code>setvbuf</code> function. 
+<a name="index-buffering_002c-controlling-1140"></a>
+The facilities listed in this section are declared in the header
+file <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1141"></a>
+<!-- stdio.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: int <b>setvbuf</b> (<var>FILE *stream, char *buf, int mode, size_t size</var>)<var><a name="index-setvbuf-1142"></a></var><br>
+<blockquote><p>This function is used to specify that the stream <var>stream</var> should
+have the buffering mode <var>mode</var>, which can be either <code>_IOFBF</code>
+(for full buffering), <code>_IOLBF</code> (for line buffering), or
+<code>_IONBF</code> (for unbuffered input/output).
+
+        <p>If you specify a null pointer as the <var>buf</var> argument, then <code>setvbuf</code>
+allocates a buffer itself using <code>malloc</code>.  This buffer will be freed
+when you close the stream.
+
+        <p>Otherwise, <var>buf</var> should be a character array that can hold at least
+<var>size</var> characters.  You should not free the space for this array as
+long as the stream remains open and this array remains its buffer.  You
+should usually either allocate it statically, or <code>malloc</code>
+(see <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>) the buffer.  Using an automatic array
+is not a good idea unless you close the file before exiting the block
+that declares the array.
+
+        <p>While the array remains a stream buffer, the stream I/O functions will
+use the buffer for their internal purposes.  You shouldn't try to access
+the values in the array directly while the stream is using it for
+buffering.
+
+        <p>The <code>setvbuf</code> function returns zero on success, or a nonzero value
+if the value of <var>mode</var> is not valid or if the request could not
+be honored. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>_IOFBF</b><var><a name="index-g_t_005fIOFBF-1143"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that can be
+used as the <var>mode</var> argument to the <code>setvbuf</code> function to
+specify that the stream should be fully buffered. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>_IOLBF</b><var><a name="index-g_t_005fIOLBF-1144"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that can be
+used as the <var>mode</var> argument to the <code>setvbuf</code> function to
+specify that the stream should be line buffered. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>_IONBF</b><var><a name="index-g_t_005fIONBF-1145"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that can be
+used as the <var>mode</var> argument to the <code>setvbuf</code> function to
+specify that the stream should be unbuffered. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>BUFSIZ</b><var><a name="index-BUFSIZ-1146"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that is good
+to use for the <var>size</var> argument to <code>setvbuf</code>.  This value is
+guaranteed to be at least <code>256</code>.
+
+        <p>The value of <code>BUFSIZ</code> is chosen on each system so as to make stream
+I/O efficient.  So it is a good idea to use <code>BUFSIZ</code> as the size
+for the buffer when you call <code>setvbuf</code>.
+
+        <p>Actually, you can get an even better value to use for the buffer size
+by means of the <code>fstat</code> system call: it is found in the
+<code>st_blksize</code> field of the file attributes.  See <a href="Attribute-Meanings.html#Attribute-Meanings">Attribute Meanings</a>.
+
+        <p>Sometimes people also use <code>BUFSIZ</code> as the allocation size of
+buffers used for related purposes, such as strings used to receive a
+line of input with <code>fgets</code> (see <a href="Character-Input.html#Character-Input">Character Input</a>).  There is no
+particular reason to use <code>BUFSIZ</code> for this instead of any other
+integer, except that it might lead to doing I/O in chunks of an
+efficient size. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: void <b>setbuf</b> (<var>FILE *stream, char *buf</var>)<var><a name="index-setbuf-1147"></a></var><br>
+<blockquote><p>If <var>buf</var> is a null pointer, the effect of this function is
+equivalent to calling <code>setvbuf</code> with a <var>mode</var> argument of
+<code>_IONBF</code>.  Otherwise, it is equivalent to calling <code>setvbuf</code>
+with <var>buf</var>, and a <var>mode</var> of <code>_IOFBF</code> and a <var>size</var>
+argument of <code>BUFSIZ</code>.
+
+        <p>The <code>setbuf</code> function is provided for compatibility with old code;
+use <code>setvbuf</code> in all new programs. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>setbuffer</b> (<var>FILE *stream, char *buf, size_t size</var>)<var><a name="index-setbuffer-1148"></a></var><br>
+<blockquote><p>If <var>buf</var> is a null pointer, this function makes <var>stream</var> unbuffered. 
+Otherwise, it makes <var>stream</var> fully buffered using <var>buf</var> as the
+buffer.  The <var>size</var> argument specifies the length of <var>buf</var>.
+
+        <p>This function is provided for compatibility with old BSD code.  Use
+<code>setvbuf</code> instead. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>setlinebuf</b> (<var>FILE *stream</var>)<var><a name="index-setlinebuf-1149"></a></var><br>
+<blockquote><p>This function makes <var>stream</var> be line buffered, and allocates the
+buffer for you.
+
+        <p>This function is provided for compatibility with old BSD code.  Use
+<code>setvbuf</code> instead. 
+</p></blockquote></div>
+
+   <p>It is possible to query whether a given stream is line buffered or not
+using a non-standard function introduced in Solaris and available in the
+GNU C library.
+
+<!-- stdio_ext.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>__flbf</b> (<var>FILE *stream</var>)<var><a name="index-g_t_005f_005fflbf-1150"></a></var><br>
+<blockquote><p>The <code>__flbf</code> function will return a nonzero value in case the
+stream <var>stream</var> is line buffered.  Otherwise the return value is
+zero.
+
+        <p>This function is declared in the <samp><span class="file">stdio_ext.h</span></samp> header. 
+</p></blockquote></div>
+
+   <p>Two more extensions allow to determine the size of the buffer and how
+much of it is used.  These functions were also introduced in Solaris.
+
+<!-- stdio_ext.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>__fbufsize</b> (<var>FILE *stream</var>)<var><a name="index-g_t_005f_005ffbufsize-1151"></a></var><br>
+<blockquote><p>The <code>__fbufsize</code> function return the size of the buffer in the
+stream <var>stream</var>.  This value can be used to optimize the use of the
+stream.
+
+        <p>This function is declared in the <samp><span class="file">stdio_ext.h</span></samp> header. 
+</p></blockquote></div>
+
+<!-- stdio_ext.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: size_t <b>__fpending</b> (<var>FILE *stream</var>)<var> The </var><code>__fpending</code><var><a name="index-g_t_005f_005ffpending-1152"></a></var><br>
+<blockquote><p>function returns the number of bytes currently in the output buffer. 
+For wide-oriented stream the measuring unit is wide characters.  This
+function should not be used on buffers in read mode or opened read-only.
+
+        <p>This function is declared in the <samp><span class="file">stdio_ext.h</span></samp> header. 
+</p></blockquote></div>
+
+   </body></html>
+

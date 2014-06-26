@@ -1,0 +1,196 @@
+<html lang="en">
+<head>
+<title>Resource Usage - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation" title="Resource Usage And Limitation">
+<link rel="next" href="Limits-on-Resources.html#Limits-on-Resources" title="Limits on Resources">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Resource-Usage"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Resource-Usage-And-Limitation.html#Resource-Usage-And-Limitation">Resource Usage And Limitation</a>
+<hr>
+</div>
+
+<h3 class="section">22.1 Resource Usage</h3>
+
+<p><a name="index-sys_002fresource_002eh-2698"></a>The function <code>getrusage</code> and the data type <code>struct rusage</code>
+are used to examine the resource usage of a process.  They are declared
+in <samp><span class="file">sys/resource.h</span></samp>.
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getrusage</b> (<var>int processes, struct rusage *rusage</var>)<var><a name="index-getrusage-2699"></a></var><br>
+<blockquote><p>This function reports resource usage totals for processes specified by
+<var>processes</var>, storing the information in <code>*</code><var>rusage</var>.
+
+        <p>In most systems, <var>processes</var> has only two valid values:
+
+          <dl>
+<!-- sys/resource.h -->
+<!-- BSD -->
+<dt><code>RUSAGE_SELF</code><dd>Just the current process.
+
+          <!-- sys/resource.h -->
+          <!-- BSD -->
+          <br><dt><code>RUSAGE_CHILDREN</code><dd>All child processes (direct and indirect) that have already terminated. 
+</dl>
+
+        <p>In the GNU system, you can also inquire about a particular child process
+by specifying its process ID.
+
+        <p>The return value of <code>getrusage</code> is zero for success, and <code>-1</code>
+for failure.
+
+          <dl>
+<dt><code>EINVAL</code><dd>The argument <var>processes</var> is not valid. 
+</dl>
+        </p></blockquote></div>
+
+   <p>One way of getting resource usage for a particular child process is with
+the function <code>wait4</code>, which returns totals for a child when it
+terminates.  See <a href="BSD-Wait-Functions.html#BSD-Wait-Functions">BSD Wait Functions</a>.
+
+<!-- sys/resource.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct rusage</b><var><a name="index-struct-rusage-2700"></a></var><br>
+<blockquote><p>This data type stores various resource usage statistics.  It has the
+following members, and possibly others:
+
+          <dl>
+<dt><code>struct timeval ru_utime</code><dd>Time spent executing user instructions.
+
+          <br><dt><code>struct timeval ru_stime</code><dd>Time spent in operating system code on behalf of <var>processes</var>.
+
+          <br><dt><code>long int ru_maxrss</code><dd>The maximum resident set size used, in kilobytes.  That is, the maximum
+number of kilobytes of physical memory that <var>processes</var> used
+simultaneously.
+
+          <br><dt><code>long int ru_ixrss</code><dd>An integral value expressed in kilobytes times ticks of execution, which
+indicates the amount of memory used by text that was shared with other
+processes.
+
+          <br><dt><code>long int ru_idrss</code><dd>An integral value expressed the same way, which is the amount of
+unshared memory used for data.
+
+          <br><dt><code>long int ru_isrss</code><dd>An integral value expressed the same way, which is the amount of
+unshared memory used for stack space.
+
+          <br><dt><code>long int ru_minflt</code><dd>The number of page faults which were serviced without requiring any I/O.
+
+          <br><dt><code>long int ru_majflt</code><dd>The number of page faults which were serviced by doing I/O.
+
+          <br><dt><code>long int ru_nswap</code><dd>The number of times <var>processes</var> was swapped entirely out of main memory.
+
+          <br><dt><code>long int ru_inblock</code><dd>The number of times the file system had to read from the disk on behalf
+of <var>processes</var>.
+
+          <br><dt><code>long int ru_oublock</code><dd>The number of times the file system had to write to the disk on behalf
+of <var>processes</var>.
+
+          <br><dt><code>long int ru_msgsnd</code><dd>Number of IPC messages sent.
+
+          <br><dt><code>long int ru_msgrcv</code><dd>Number of IPC messages received.
+
+          <br><dt><code>long int ru_nsignals</code><dd>Number of signals received.
+
+          <br><dt><code>long int ru_nvcsw</code><dd>The number of times <var>processes</var> voluntarily invoked a context switch
+(usually to wait for some service).
+
+          <br><dt><code>long int ru_nivcsw</code><dd>The number of times an involuntary context switch took place (because
+a time slice expired, or another process of higher priority was
+scheduled). 
+</dl>
+        </p></blockquote></div>
+
+   <p><code>vtimes</code> is a historical function that does some of what
+<code>getrusage</code> does.  <code>getrusage</code> is a better choice.
+
+   <p><code>vtimes</code> and its <code>vtimes</code> data structure are declared in
+<samp><span class="file">sys/vtimes.h</span></samp>. 
+<a name="index-sys_002fvtimes_002eh-2701"></a><!-- vtimes.h -->
+
+<div class="defun">
+&mdash; Function: int <b>vtimes</b> (<var>struct vtimes current, struct vtimes child</var>)<var><a name="index-vtimes-2702"></a></var><br>
+<blockquote>
+        <p><code>vtimes</code> reports resource usage totals for a process.
+
+        <p>If <var>current</var> is non-null, <code>vtimes</code> stores resource usage totals for
+the invoking process alone in the structure to which it points.  If
+<var>child</var> is non-null, <code>vtimes</code> stores resource usage totals for all
+past children (which have terminated) of the invoking process in the structure
+to which it points.
+
+     <div class="defun">
+&mdash; Data Type: <b>struct vtimes</b><var><a name="index-struct-vtimes-2703"></a></var><br>
+<blockquote> <p>This data type contains information about the resource usage of a process. 
+Each member corresponds to a member of the <code>struct rusage</code> data type
+described above.
+
+               <dl>
+<dt><code>vm_utime</code><dd>User CPU time.  Analogous to <code>ru_utime</code> in <code>struct rusage</code>
+<br><dt><code>vm_stime</code><dd>System CPU time.  Analogous to <code>ru_stime</code> in <code>struct rusage</code>
+<br><dt><code>vm_idsrss</code><dd>Data and stack memory.  The sum of the values that would be reported as
+<code>ru_idrss</code> and <code>ru_isrss</code> in <code>struct rusage</code>
+<br><dt><code>vm_ixrss</code><dd>Shared memory.  Analogous to <code>ru_ixrss</code> in <code>struct rusage</code>
+<br><dt><code>vm_maxrss</code><dd>Maximent resident set size.  Analogous to <code>ru_maxrss</code> in
+<code>struct rusage</code>
+<br><dt><code>vm_majflt</code><dd>Major page faults.  Analogous to <code>ru_majflt</code> in <code>struct rusage</code>
+<br><dt><code>vm_minflt</code><dd>Minor page faults.  Analogous to <code>ru_minflt</code> in <code>struct rusage</code>
+<br><dt><code>vm_nswap</code><dd>Swap count.  Analogous to <code>ru_nswap</code> in <code>struct rusage</code>
+<br><dt><code>vm_inblk</code><dd>Disk reads.  Analogous to <code>ru_inblk</code> in <code>struct rusage</code>
+<br><dt><code>vm_oublk</code><dd>Disk writes.  Analogous to <code>ru_oublk</code> in <code>struct rusage</code>
+</dl>
+             </p></blockquote></div>
+
+        <p>The return value is zero if the function succeeds; <code>-1</code> otherwise.
+
+        </blockquote></div>
+   An additional historical function for examining resource usage,
+<code>vtimes</code>, is supported but not documented here.  It is declared in
+<samp><span class="file">sys/vtimes.h</span></samp>.
+
+   </body></html>
+

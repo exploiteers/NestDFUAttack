@@ -1,0 +1,231 @@
+<html lang="en">
+<head>
+<title>Host Identification - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Management.html#System-Management" title="System Management">
+<link rel="next" href="Platform-Type.html#Platform-Type" title="Platform Type">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Host-Identification"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Platform-Type.html#Platform-Type">Platform Type</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Management.html#System-Management">System Management</a>
+<hr>
+</div>
+
+<h3 class="section">30.1 Host Identification</h3>
+
+<p>This section explains how to identify the particular system on which your
+program is running.  First, let's review the various ways computer systems
+are named, which is a little complicated because of the history of the
+development of the Internet.
+
+   <p>Every Unix system (also known as a host) has a host name, whether it's
+connected to a network or not.  In its simplest form, as used before
+computer networks were an issue, it's just a word like &lsquo;<samp><span class="samp">chicken</span></samp>&rsquo;. 
+<a name="index-host-name-3429"></a>
+But any system attached to the Internet or any network like it conforms
+to a more rigorous naming convention as part of the Domain Name System
+(DNS).  In DNS, every host name is composed of two parts:
+<a name="index-DNS-3430"></a><a name="index-Domain-Name-System-3431"></a>
+     <ol type=1 start=1>
+<li>hostname
+<a name="index-hostname-3432"></a><li>domain name
+<a name="index-domain-name-3433"></a>
+        </ol>
+
+   <p>You will note that &ldquo;hostname&rdquo; looks a lot like &ldquo;host name&rdquo;, but is
+not the same thing, and that people often incorrectly refer to entire
+host names as &ldquo;domain names.&rdquo;
+
+   <p>In DNS, the full host name is properly called the FQDN (Fully Qualified
+Domain Name) and consists of the hostname, then a period, then the
+domain name.  The domain name itself usually has multiple components
+separated by periods.  So for example, a system's hostname may be
+&lsquo;<samp><span class="samp">chicken</span></samp>&rsquo; and its domain name might be &lsquo;<samp><span class="samp">ai.mit.edu</span></samp>&rsquo;, so
+its FQDN (which is its host name) is &lsquo;<samp><span class="samp">chicken.ai.mit.edu</span></samp>&rsquo;. 
+<a name="index-FQDN-3434"></a>
+Adding to the confusion, though, is that DNS is not the only name space
+in which a computer needs to be known.  Another name space is the
+NIS (aka YP) name space.  For NIS purposes, there is another domain
+name, which is called the NIS domain name or the YP domain name.  It
+need not have anything to do with the DNS domain name. 
+<a name="index-YP-3435"></a><a name="index-NIS-3436"></a><a name="index-NIS-domain-name-3437"></a><a name="index-YP-domain-name-3438"></a>
+Confusing things even more is the fact that in DNS, it is possible for
+multiple FQDNs to refer to the same system.  However, there is always
+exactly one of them that is the true host name, and it is called the
+canonical FQDN.
+
+   <p>In some contexts, the host name is called a &ldquo;node name.&rdquo;
+
+   <p>For more information on DNS host naming, see <a href="Host-Names.html#Host-Names">Host Names</a>.
+
+   <p><a name="index-hostname-3439"></a><a name="index-hostid-3440"></a><a name="index-unistd_002eh-3441"></a>Prototypes for these functions appear in <samp><span class="file">unistd.h</span></samp>.
+
+   <p>The programs <code>hostname</code>, <code>hostid</code>, and <code>domainname</code> work
+by calling these functions.
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>gethostname</b> (<var>char *name, size_t size</var>)<var><a name="index-gethostname-3442"></a></var><br>
+<blockquote><p>This function returns the host name of the system on which it is called,
+in the array <var>name</var>.  The <var>size</var> argument specifies the size of
+this array, in bytes.  Note that this is <em>not</em> the DNS hostname. 
+If the system participates in DNS, this is the FQDN (see above).
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure.  In
+the GNU C library, <code>gethostname</code> fails if <var>size</var> is not large
+enough; then you can try again with a larger array.  The following
+<code>errno</code> error condition is defined for this function:
+
+          <dl>
+<dt><code>ENAMETOOLONG</code><dd>The <var>size</var> argument is less than the size of the host name plus one. 
+</dl>
+
+        <p><a name="index-sys_002fparam_002eh-3443"></a>On some systems, there is a symbol for the maximum possible host name
+length: <code>MAXHOSTNAMELEN</code>.  It is defined in <samp><span class="file">sys/param.h</span></samp>. 
+But you can't count on this to exist, so it is cleaner to handle
+failure and try again.
+
+        <p><code>gethostname</code> stores the beginning of the host name in <var>name</var>
+even if the host name won't entirely fit.  For some purposes, a
+truncated host name is good enough.  If it is, you can ignore the
+error code. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>sethostname</b> (<var>const char *name, size_t length</var>)<var><a name="index-sethostname-3444"></a></var><br>
+<blockquote><p>The <code>sethostname</code> function sets the host name of the system that
+calls it to <var>name</var>, a string with length <var>length</var>.  Only
+privileged processes are permitted to do this.
+
+        <p>Usually <code>sethostname</code> gets called just once, at system boot time. 
+Often, the program that calls it sets it to the value it finds in the
+file <code>/etc/hostname</code>. 
+<a name="index-g_t_002fetc_002fhostname-3445"></a>
+Be sure to set the host name to the full host name, not just the DNS
+hostname (see above).
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure. 
+The following <code>errno</code> error condition is defined for this function:
+
+          <dl>
+<dt><code>EPERM</code><dd>This process cannot set the host name because it is not privileged. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- ??? -->
+<div class="defun">
+&mdash; Function: int <b>getdomainnname</b> (<var>char *name, size_t length</var>)<var><a name="index-getdomainnname-3446"></a></var><br>
+<blockquote><p><a name="index-NIS-domain-name-3447"></a><a name="index-YP-domain-name-3448"></a>
+<code>getdomainname</code> returns the NIS (aka YP) domain name of the system
+on which it is called.  Note that this is not the more popular DNS
+domain name.  Get that with <code>gethostname</code>.
+
+        <p>The specifics of this function are analogous to <code>gethostname</code>, above.
+
+        </blockquote></div>
+
+<!-- unistd.h -->
+<!-- ??? -->
+<div class="defun">
+&mdash; Function: int <b>setdomainname</b> (<var>const char *name, size_t length</var>)<var><a name="index-setdomainname-3449"></a></var><br>
+<blockquote><p><a name="index-NIS-domain-name-3450"></a><a name="index-YP-domain-name-3451"></a>
+<code>getdomainname</code> sets the NIS (aka YP) domain name of the system
+on which it is called.  Note that this is not the more popular DNS
+domain name.  Set that with <code>sethostname</code>.
+
+        <p>The specifics of this function are analogous to <code>sethostname</code>, above.
+
+        </blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: long int <b>gethostid</b> (<var>void</var>)<var><a name="index-gethostid-3452"></a></var><br>
+<blockquote><p>This function returns the &ldquo;host ID&rdquo; of the machine the program is
+running on.  By convention, this is usually the primary Internet IP address
+of that machine, converted to a <code>long&nbsp;int</code><!-- /@w -->.  However, on some
+systems it is a meaningless but unique number which is hard-coded for
+each machine.
+
+        <p>This is not widely used.  It arose in BSD 4.2, but was dropped in BSD 4.4. 
+It is not required by POSIX.
+
+        <p>The proper way to query the IP address is to use <code>gethostbyname</code>
+on the results of <code>gethostname</code>.  For more information on IP addresses,
+See <a href="Host-Addresses.html#Host-Addresses">Host Addresses</a>. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>sethostid</b> (<var>long int id</var>)<var><a name="index-sethostid-3453"></a></var><br>
+<blockquote><p>The <code>sethostid</code> function sets the &ldquo;host ID&rdquo; of the host machine
+to <var>id</var>.  Only privileged processes are permitted to do this.  Usually
+it happens just once, at system boot time.
+
+        <p>The proper way to establish the primary IP address of a system
+is to configure the IP address resolver to associate that IP address with
+the system's host name as returned by <code>gethostname</code>.  For example,
+put a record for the system in <samp><span class="file">/etc/hosts</span></samp>.
+
+        <p>See <code>gethostid</code> above for more information on host ids.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on failure. 
+The following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EPERM</code><dd>This process cannot set the host name because it is not privileged.
+
+          <br><dt><code>ENOSYS</code><dd>The operating system does not support setting the host ID.  On some
+systems, the host ID is a meaningless but unique number hard-coded for
+each machine. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+

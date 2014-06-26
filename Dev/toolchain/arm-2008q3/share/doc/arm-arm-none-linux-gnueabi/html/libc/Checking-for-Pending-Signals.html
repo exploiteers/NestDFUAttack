@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Checking for Pending Signals - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Blocking-Signals.html#Blocking-Signals" title="Blocking Signals">
+<link rel="prev" href="Blocking-for-Handler.html#Blocking-for-Handler" title="Blocking for Handler">
+<link rel="next" href="Remembering-a-Signal.html#Remembering-a-Signal" title="Remembering a Signal">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Checking-for-Pending-Signals"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Remembering-a-Signal.html#Remembering-a-Signal">Remembering a Signal</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.7.6 Checking for Pending Signals</h4>
+
+<p><a name="index-pending-signals_002c-checking-for-2972"></a><a name="index-blocked-signals_002c-checking-for-2973"></a><a name="index-checking-for-pending-signals-2974"></a>
+You can find out which signals are pending at any time by calling
+<code>sigpending</code>.  This function is declared in <samp><span class="file">signal.h</span></samp>. 
+<a name="index-signal_002eh-2975"></a>
+<!-- signal.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>sigpending</b> (<var>sigset_t *set</var>)<var><a name="index-sigpending-2976"></a></var><br>
+<blockquote><p>The <code>sigpending</code> function stores information about pending signals
+in <var>set</var>.  If there is a pending signal that is blocked from
+delivery, then that signal is a member of the returned set.  (You can
+test whether a particular signal is a member of this set using
+<code>sigismember</code>; see <a href="Signal-Sets.html#Signal-Sets">Signal Sets</a>.)
+
+        <p>The return value is <code>0</code> if successful, and <code>-1</code> on failure. 
+</p></blockquote></div>
+
+   <p>Testing whether a signal is pending is not often useful.  Testing when
+that signal is not blocked is almost certainly bad design.
+
+   <p>Here is an example.
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;stddef.h&gt;
+     
+     sigset_t base_mask, waiting_mask;
+     
+     sigemptyset (&amp;base_mask);
+     sigaddset (&amp;base_mask, SIGINT);
+     sigaddset (&amp;base_mask, SIGTSTP);
+     
+     /* <span class="roman">Block user interrupts while doing other processing.</span> */
+     sigprocmask (SIG_SETMASK, &amp;base_mask, NULL);
+     ...
+     
+     /* <span class="roman">After a while, check to see whether any signals are pending.</span> */
+     sigpending (&amp;waiting_mask);
+     if (sigismember (&amp;waiting_mask, SIGINT)) {
+       /* <span class="roman">User has tried to kill the process.</span> */
+     }
+     else if (sigismember (&amp;waiting_mask, SIGTSTP)) {
+       /* <span class="roman">User has tried to stop the process.</span> */
+     }
+</pre>
+   <p>Remember that if there is a particular signal pending for your process,
+additional signals of that same type that arrive in the meantime might
+be discarded.  For example, if a <code>SIGINT</code> signal is pending when
+another <code>SIGINT</code> signal arrives, your program will probably only
+see one of them when you unblock this signal.
+
+   <p><strong>Portability Note:</strong> The <code>sigpending</code> function is new in
+POSIX.1.  Older systems have no equivalent facility.
+
+   </body></html>
+

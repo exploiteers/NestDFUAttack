@@ -1,0 +1,317 @@
+<html lang="en">
+<head>
+<title>Feature Test Macros - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-the-Library.html#Using-the-Library" title="Using the Library">
+<link rel="prev" href="Reserved-Names.html#Reserved-Names" title="Reserved Names">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Feature-Test-Macros"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Reserved-Names.html#Reserved-Names">Reserved Names</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-the-Library.html#Using-the-Library">Using the Library</a>
+<hr>
+</div>
+
+<h4 class="subsection">1.3.4 Feature Test Macros</h4>
+
+<p><a name="index-feature-test-macros-37"></a>The exact set of features available when you compile a source file
+is controlled by which <dfn>feature test macros</dfn> you define.
+
+   <p>If you compile your programs using &lsquo;<samp><span class="samp">gcc -ansi</span></samp>&rsquo;, you get only the
+ISO&nbsp;C<!-- /@w --> library features, unless you explicitly request additional
+features by defining one or more of the feature macros. 
+See <a href="../gcc/Invoking-GCC.html#Invoking-GCC">GNU CC Command Options</a>,
+for more information about GCC options.
+
+   <p>You should define these macros by using &lsquo;<samp><span class="samp">#define</span></samp>&rsquo; preprocessor
+directives at the top of your source code files.  These directives
+<em>must</em> come before any <code>#include</code> of a system header file.  It
+is best to make them the very first thing in the file, preceded only by
+comments.  You could also use the &lsquo;<samp><span class="samp">-D</span></samp>&rsquo; option to GCC, but it's
+better if you make the source files indicate their own meaning in a
+self-contained way.
+
+   <p>This system exists to allow the library to conform to multiple standards. 
+Although the different standards are often described as supersets of each
+other, they are usually incompatible because larger standards require
+functions with names that smaller ones reserve to the user program.  This
+is not mere pedantry &mdash; it has been a problem in practice.  For instance,
+some non-GNU programs define functions named <code>getline</code> that have
+nothing to do with this library's <code>getline</code>.  They would not be
+compilable if all features were enabled indiscriminately.
+
+   <p>This should not be used to verify that a program conforms to a limited
+standard.  It is insufficient for this purpose, as it will not protect you
+from including header files outside the standard, or relying on semantics
+undefined within the standard.
+
+<!-- (none) -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: <b>_POSIX_SOURCE</b><var><a name="index-g_t_005fPOSIX_005fSOURCE-38"></a></var><br>
+<blockquote><p>If you define this macro, then the functionality from the POSIX.1
+standard (IEEE Standard 1003.1) is available, as well as all of the
+ISO&nbsp;C<!-- /@w --> facilities.
+
+        <p>The state of <code>_POSIX_SOURCE</code> is irrelevant if you define the
+macro <code>_POSIX_C_SOURCE</code> to a positive integer. 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Macro: <b>_POSIX_C_SOURCE</b><var><a name="index-g_t_005fPOSIX_005fC_005fSOURCE-39"></a></var><br>
+<blockquote><p>Define this macro to a positive integer to control which POSIX
+functionality is made available.  The greater the value of this macro,
+the more functionality is made available.
+
+        <p>If you define this macro to a value greater than or equal to <code>1</code>,
+then the functionality from the 1990 edition of the POSIX.1 standard
+(IEEE Standard 1003.1-1990) is made available.
+
+        <p>If you define this macro to a value greater than or equal to <code>2</code>,
+then the functionality from the 1992 edition of the POSIX.2 standard
+(IEEE Standard 1003.2-1992) is made available.
+
+        <p>If you define this macro to a value greater than or equal to <code>199309L</code>,
+then the functionality from the 1993 edition of the POSIX.1b standard
+(IEEE Standard 1003.1b-1993) is made available.
+
+        <p>Greater values for <code>_POSIX_C_SOURCE</code> will enable future extensions. 
+The POSIX standards process will define these values as necessary, and
+the GNU C Library should support them some time after they become standardized. 
+The 1996 edition of POSIX.1 (ISO/IEC 9945-1: 1996) states that
+if you define <code>_POSIX_C_SOURCE</code> to a value greater than
+or equal to <code>199506L</code>, then the functionality from the 1996
+edition is made available. 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>_BSD_SOURCE</b><var><a name="index-g_t_005fBSD_005fSOURCE-40"></a></var><br>
+<blockquote><p>If you define this macro, functionality derived from 4.3 BSD Unix is
+included as well as the ISO&nbsp;C<!-- /@w -->, POSIX.1, and POSIX.2 material.
+
+        <p>Some of the features derived from 4.3 BSD Unix conflict with the
+corresponding features specified by the POSIX.1 standard.  If this
+macro is defined, the 4.3 BSD definitions take precedence over the
+POSIX definitions.
+
+        <p>Due to the nature of some of the conflicts between 4.3 BSD and POSIX.1,
+you need to use a special <dfn>BSD compatibility library</dfn> when linking
+programs compiled for BSD compatibility.  This is because some functions
+must be defined in two different ways, one of them in the normal C
+library, and one of them in the compatibility library.  If your program
+defines <code>_BSD_SOURCE</code>, you must give the option &lsquo;<samp><span class="samp">-lbsd-compat</span></samp>&rsquo;
+to the compiler or linker when linking the program, to tell it to find
+functions in this special compatibility library before looking for them in
+the normal C library. 
+<a name="index-g_t_002dlbsd_002dcompat-41"></a><a name="index-bsd_002dcompat-42"></a><a name="index-BSD-compatibility-library_002e-43"></a></p></blockquote></div>
+
+<!-- (none) -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>_SVID_SOURCE</b><var><a name="index-g_t_005fSVID_005fSOURCE-44"></a></var><br>
+<blockquote><p>If you define this macro, functionality derived from SVID is
+included as well as the ISO&nbsp;C<!-- /@w -->, POSIX.1, POSIX.2, and X/Open material. 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Macro: <b>_XOPEN_SOURCE</b><var><a name="index-g_t_005fXOPEN_005fSOURCE-45"></a></var><br>
+<blockquote><!-- (none) -->
+     <!-- X/Open -->
+   &mdash; Macro: <b>_XOPEN_SOURCE_EXTENDED</b><var><a name="index-g_t_005fXOPEN_005fSOURCE_005fEXTENDED-46"></a></var><br>
+<blockquote><p>If you define this macro, functionality described in the X/Open
+Portability Guide is included.  This is a superset of the POSIX.1 and
+POSIX.2 functionality and in fact <code>_POSIX_SOURCE</code> and
+<code>_POSIX_C_SOURCE</code> are automatically defined.
+
+        <p>As the unification of all Unices, functionality only available in
+BSD and SVID is also included.
+
+        <p>If the macro <code>_XOPEN_SOURCE_EXTENDED</code> is also defined, even more
+functionality is available.  The extra functions will make all functions
+available which are necessary for the X/Open Unix brand.
+
+        <p>If the macro <code>_XOPEN_SOURCE</code> has the value 500 this includes
+all functionality described so far plus some new definitions from the
+Single Unix Specification, version&nbsp;2<!-- /@w -->. 
+</p></blockquote></div>
+
+<!-- (NONE) -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Macro: <b>_LARGEFILE_SOURCE</b><var><a name="index-g_t_005fLARGEFILE_005fSOURCE-47"></a></var><br>
+<blockquote><p>If this macro is defined some extra functions are available which
+rectify a few shortcomings in all previous standards.  Specifically,
+the functions <code>fseeko</code> and <code>ftello</code> are available.  Without
+these functions the difference between the ISO&nbsp;C<!-- /@w --> interface
+(<code>fseek</code>, <code>ftell</code>) and the low-level POSIX interface
+(<code>lseek</code>) would lead to problems.
+
+        <p>This macro was introduced as part of the Large File Support extension (LFS). 
+</p></blockquote></div>
+
+<!-- (NONE) -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Macro: <b>_LARGEFILE64_SOURCE</b><var><a name="index-g_t_005fLARGEFILE64_005fSOURCE-48"></a></var><br>
+<blockquote><p>If you define this macro an additional set of functions is made available
+which enables 32&nbsp;bit<!-- /@w --> systems to use files of sizes beyond
+the usual limit of 2GB.  This interface is not available if the system
+does not support files that large.  On systems where the natural file
+size limit is greater than 2GB (i.e., on 64&nbsp;bit<!-- /@w --> systems) the new
+functions are identical to the replaced functions.
+
+        <p>The new functionality is made available by a new set of types and
+functions which replace the existing ones.  The names of these new objects
+contain <code>64</code> to indicate the intention, e.g., <code>off_t</code>
+vs. <code>off64_t</code> and <code>fseeko</code> vs. <code>fseeko64</code>.
+
+        <p>This macro was introduced as part of the Large File Support extension
+(LFS).  It is a transition interface for the period when 64&nbsp;bit<!-- /@w -->
+offsets are not generally used (see <code>_FILE_OFFSET_BITS</code>). 
+</p></blockquote></div>
+
+<!-- (NONE) -->
+<!-- X/Open -->
+<div class="defun">
+&mdash; Macro: <b>_FILE_OFFSET_BITS</b><var><a name="index-g_t_005fFILE_005fOFFSET_005fBITS-49"></a></var><br>
+<blockquote><p>This macro determines which file system interface shall be used, one
+replacing the other.  Whereas <code>_LARGEFILE64_SOURCE</code> makes the 64&nbsp;bit<!-- /@w --> interface available as an additional interface,
+<code>_FILE_OFFSET_BITS</code> allows the 64&nbsp;bit<!-- /@w --> interface to
+replace the old interface.
+
+        <p>If <code>_FILE_OFFSET_BITS</code> is undefined, or if it is defined to the
+value <code>32</code>, nothing changes.  The 32&nbsp;bit<!-- /@w --> interface is used and
+types like <code>off_t</code> have a size of 32&nbsp;bits<!-- /@w --> on 32&nbsp;bit<!-- /@w -->
+systems.
+
+        <p>If the macro is defined to the value <code>64</code>, the large file interface
+replaces the old interface.  I.e., the functions are not made available
+under different names (as they are with <code>_LARGEFILE64_SOURCE</code>). 
+Instead the old function names now reference the new functions, e.g., a
+call to <code>fseeko</code> now indeed calls <code>fseeko64</code>.
+
+        <p>This macro should only be selected if the system provides mechanisms for
+handling large files.  On 64&nbsp;bit<!-- /@w --> systems this macro has no effect
+since the <code>*64</code> functions are identical to the normal functions.
+
+        <p>This macro was introduced as part of the Large File Support extension
+(LFS). 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>_ISOC99_SOURCE</b><var><a name="index-g_t_005fISOC99_005fSOURCE-50"></a></var><br>
+<blockquote><p>Until the revised ISO&nbsp;C<!-- /@w --> standard is widely adopted the new features
+are not automatically enabled.  The GNU libc nevertheless has a complete
+implementation of the new standard and to enable the new features the
+macro <code>_ISOC99_SOURCE</code> should be defined. 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>_GNU_SOURCE</b><var><a name="index-g_t_005fGNU_005fSOURCE-51"></a></var><br>
+<blockquote><p>If you define this macro, everything is included: ISO&nbsp;C89<!-- /@w -->, ISO&nbsp;C99<!-- /@w -->, POSIX.1, POSIX.2, BSD, SVID, X/Open, LFS, and GNU extensions.  In
+the cases where POSIX.1 conflicts with BSD, the POSIX definitions take
+precedence.
+
+        <p>If you want to get the full effect of <code>_GNU_SOURCE</code> but make the
+BSD definitions take precedence over the POSIX definitions, use this
+sequence of definitions:
+
+     <pre class="smallexample">          #define _GNU_SOURCE
+          #define _BSD_SOURCE
+          #define _SVID_SOURCE
+</pre>
+        <p>Note that if you do this, you must link your program with the BSD
+compatibility library by passing the &lsquo;<samp><span class="samp">-lbsd-compat</span></samp>&rsquo; option to the
+compiler or linker.  <strong>Note:</strong> If you forget to do this, you may
+get very strange errors at run time. 
+</p></blockquote></div>
+
+<!-- (none) -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: <b>_REENTRANT</b><var><a name="index-g_t_005fREENTRANT-52"></a></var><br>
+&mdash; Macro: <b>_THREAD_SAFE</b><var><a name="index-g_t_005fTHREAD_005fSAFE-53"></a></var><br>
+<blockquote><p>If you define one of these macros, reentrant versions of several functions get
+declared.  Some of the functions are specified in POSIX.1c but many others
+are only available on a few other systems or are unique to GNU libc. 
+The problem is the delay in the standardization of the thread safe C library
+interface.
+
+        <p>Unlike on some other systems, no special version of the C library must be
+used for linking.  There is only one version but while compiling this
+it must have been specified to compile as thread safe. 
+</p></blockquote></div>
+
+   <p>We recommend you use <code>_GNU_SOURCE</code> in new programs.  If you don't
+specify the &lsquo;<samp><span class="samp">-ansi</span></samp>&rsquo; option to GCC and don't define any of these
+macros explicitly, the effect is the same as defining
+<code>_POSIX_C_SOURCE</code> to 2 and <code>_POSIX_SOURCE</code>,
+<code>_SVID_SOURCE</code>, and <code>_BSD_SOURCE</code> to 1.
+
+   <p>When you define a feature test macro to request a larger class of features,
+it is harmless to define in addition a feature test macro for a subset of
+those features.  For example, if you define <code>_POSIX_C_SOURCE</code>, then
+defining <code>_POSIX_SOURCE</code> as well has no effect.  Likewise, if you
+define <code>_GNU_SOURCE</code>, then defining either <code>_POSIX_SOURCE</code> or
+<code>_POSIX_C_SOURCE</code> or <code>_SVID_SOURCE</code> as well has no effect.
+
+   <p>Note, however, that the features of <code>_BSD_SOURCE</code> are not a subset of
+any of the other feature test macros supported.  This is because it defines
+BSD features that take precedence over the POSIX features that are
+requested by the other macros.  For this reason, defining
+<code>_BSD_SOURCE</code> in addition to the other feature test macros does have
+an effect: it causes the BSD features to take priority over the conflicting
+POSIX features.
+
+   </body></html>
+

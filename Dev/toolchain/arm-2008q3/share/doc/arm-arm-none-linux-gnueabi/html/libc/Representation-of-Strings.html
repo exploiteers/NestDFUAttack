@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+<title>Representation of Strings - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="String-and-Array-Utilities.html#String-and-Array-Utilities" title="String and Array Utilities">
+<link rel="next" href="String_002fArray-Conventions.html#String_002fArray-Conventions" title="String/Array Conventions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Representation-of-Strings"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="String_002fArray-Conventions.html#String_002fArray-Conventions">String/Array Conventions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="String-and-Array-Utilities.html#String-and-Array-Utilities">String and Array Utilities</a>
+<hr>
+</div>
+
+<h3 class="section">5.1 Representation of Strings</h3>
+
+<p><a name="index-string_002c-representation-of-455"></a>
+This section is a quick summary of string concepts for beginning C
+programmers.  It describes how character strings are represented in C
+and some common pitfalls.  If you are already familiar with this
+material, you can skip this section.
+
+   <p><a name="index-string-456"></a><a name="index-multibyte-character-string-457"></a>A <dfn>string</dfn> is an array of <code>char</code> objects.  But string-valued
+variables are usually declared to be pointers of type <code>char *</code>. 
+Such variables do not include space for the text of a string; that has
+to be stored somewhere else&mdash;in an array variable, a string constant,
+or dynamically allocated memory (see <a href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>).  It's up to
+you to store the address of the chosen memory space into the pointer
+variable.  Alternatively you can store a <dfn>null pointer</dfn> in the
+pointer variable.  The null pointer does not point anywhere, so
+attempting to reference the string it points to gets an error.
+
+   <p><a name="index-wide-character-string-458"></a>&ldquo;string&rdquo; normally refers to multibyte character strings as opposed to
+wide character strings.  Wide character strings are arrays of type
+<code>wchar_t</code> and as for multibyte character strings usually pointers
+of type <code>wchar_t *</code> are used.
+
+   <p><a name="index-null-character-459"></a><a name="index-null-wide-character-460"></a>By convention, a <dfn>null character</dfn>, <code>'\0'</code>, marks the end of a
+multibyte character string and the <dfn>null wide character</dfn>,
+<code>L'\0'</code>, marks the end of a wide character string.  For example, in
+testing to see whether the <code>char *</code> variable <var>p</var> points to a
+null character marking the end of a string, you can write
+<code>!*</code><var>p</var> or <code>*</code><var>p</var><code> == '\0'</code>.
+
+   <p>A null character is quite different conceptually from a null pointer,
+although both are represented by the integer <code>0</code>.
+
+   <p><a name="index-string-literal-461"></a><dfn>String literals</dfn> appear in C program source as strings of
+characters between double-quote characters (&lsquo;<samp><span class="samp">"</span></samp>&rsquo;) where the initial
+double-quote character is immediately preceded by a capital &lsquo;<samp><span class="samp">L</span></samp>&rsquo;
+(ell) character (as in <code>L"foo"</code>).  In ISO&nbsp;C<!-- /@w -->, string literals
+can also be formed by <dfn>string concatenation</dfn>: <code>"a" "b"</code> is the
+same as <code>"ab"</code>.  For wide character strings one can either use
+<code>L"a" L"b"</code> or <code>L"a" "b"</code>.  Modification of string literals is
+not allowed by the GNU C compiler, because literals are placed in
+read-only storage.
+
+   <p>Character arrays that are declared <code>const</code> cannot be modified
+either.  It's generally good style to declare non-modifiable string
+pointers to be of type <code>const char *</code>, since this often allows the
+C compiler to detect accidental modifications as well as providing some
+amount of documentation about what your program intends to do with the
+string.
+
+   <p>The amount of memory allocated for the character array may extend past
+the null character that normally marks the end of the string.  In this
+document, the term <dfn>allocated size</dfn> is always used to refer to the
+total amount of memory allocated for the string, while the term
+<dfn>length</dfn> refers to the number of characters up to (but not
+including) the terminating null character. 
+<a name="index-length-of-string-462"></a><a name="index-allocation-size-of-string-463"></a><a name="index-size-of-string-464"></a><a name="index-string-length-465"></a><a name="index-string-allocation-466"></a>
+A notorious source of program bugs is trying to put more characters in a
+string than fit in its allocated size.  When writing code that extends
+strings or moves characters into a pre-allocated array, you should be
+very careful to keep track of the length of the text and make explicit
+checks for overflowing the array.  Many of the library functions
+<em>do not</em> do this for you!  Remember also that you need to allocate
+an extra byte to hold the null character that marks the end of the
+string.
+
+   <p><a name="index-single_002dbyte-string-467"></a><a name="index-multibyte-string-468"></a>Originally strings were sequences of bytes where each byte represents a
+single character.  This is still true today if the strings are encoded
+using a single-byte character encoding.  Things are different if the
+strings are encoded using a multibyte encoding (for more information on
+encodings see <a href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>).  There is no difference in
+the programming interface for these two kind of strings; the programmer
+has to be aware of this and interpret the byte sequences accordingly.
+
+   <p>But since there is no separate interface taking care of these
+differences the byte-based string functions are sometimes hard to use. 
+Since the count parameters of these functions specify bytes a call to
+<code>strncpy</code> could cut a multibyte character in the middle and put an
+incomplete (and therefore unusable) byte sequence in the target buffer.
+
+   <p><a name="index-wide-character-string-469"></a>To avoid these problems later versions of the ISO&nbsp;C<!-- /@w --> standard
+introduce a second set of functions which are operating on <dfn>wide
+characters</dfn> (see <a href="Extended-Char-Intro.html#Extended-Char-Intro">Extended Char Intro</a>).  These functions don't have
+the problems the single-byte versions have since every wide character is
+a legal, interpretable value.  This does not mean that cutting wide
+character strings at arbitrary points is without problems.  It normally
+is for alphabet-based languages (except for non-normalized text) but
+languages based on syllables still have the problem that more than one
+wide character is necessary to complete a logical unit.  This is a
+higher level problem which the C&nbsp;library<!-- /@w --> functions are not designed
+to solve.  But it is at least good that no invalid byte sequences can be
+created.  Also, the higher level functions can also much easier operate
+on wide character than on multibyte characters so that a general advise
+is to use wide characters internally whenever text is more than simply
+copied.
+
+   <p>The remaining of this chapter will discuss the functions for handling
+wide character strings in parallel with the discussion of the multibyte
+character strings since there is almost always an exact equivalent
+available.
+
+   </body></html>
+

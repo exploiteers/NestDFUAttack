@@ -1,0 +1,141 @@
+<html lang="en">
+<head>
+<title>Overview of Syslog - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Syslog.html#Syslog" title="Syslog">
+<link rel="next" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages" title="Submitting Syslog Messages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Overview-of-Syslog"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Syslog.html#Syslog">Syslog</a>
+<hr>
+</div>
+
+<h3 class="section">18.1 Overview of Syslog</h3>
+
+<p>System administrators have to deal with lots of different kinds of
+messages from a plethora of subsystems within each system, and usually
+lots of systems as well.  For example, an FTP server might report every
+connection it gets.  The kernel might report hardware failures on a disk
+drive.  A DNS server might report usage statistics at regular intervals.
+
+   <p>Some of these messages need to be brought to a system administrator's
+attention immediately.  And it may not be just any system administrator
+&ndash; there may be a particular system administrator who deals with a
+particular kind of message.  Other messages just need to be recorded for
+future reference if there is a problem.  Still others may need to have
+information extracted from them by an automated process that generates
+monthly reports.
+
+   <p>To deal with these messages, most Unix systems have a facility called
+"Syslog."  It is generally based on a daemon called &ldquo;Syslogd&rdquo;
+Syslogd listens for messages on a Unix domain socket named
+<samp><span class="file">/dev/log</span></samp>.  Based on classification information in the messages
+and its configuration file (usually <samp><span class="file">/etc/syslog.conf</span></samp>), Syslogd
+routes them in various ways.  Some of the popular routings are:
+
+     <ul>
+<li>Write to the system console
+<li>Mail to a specific user
+<li>Write to a log file
+<li>Pass to another daemon
+<li>Discard
+</ul>
+
+   <p>Syslogd can also handle messages from other systems.  It listens on the
+<code>syslog</code> UDP port as well as the local socket for messages.
+
+   <p>Syslog can handle messages from the kernel itself.  But the kernel
+doesn't write to <samp><span class="file">/dev/log</span></samp>; rather, another daemon (sometimes
+called &ldquo;Klogd&rdquo;) extracts messages from the kernel and passes them on to
+Syslog as any other process would (and it properly identifies them as
+messages from the kernel).
+
+   <p>Syslog can even handle messages that the kernel issued before Syslogd or
+Klogd was running.  A Linux kernel, for example, stores startup messages
+in a kernel message ring and they are normally still there when Klogd
+later starts up.  Assuming Syslogd is running by the time Klogd starts,
+Klogd then passes everything in the message ring to it.
+
+   <p>In order to classify messages for disposition, Syslog requires any process
+that submits a message to it to provide two pieces of classification
+information with it:
+
+     <dl>
+<dt>facility<dd>This identifies who submitted the message.  There are a small number of
+facilities defined.  The kernel, the mail subsystem, and an FTP server
+are examples of recognized facilities.  For the complete list,
+See <a href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">syslog; vsyslog</a>.  Keep in mind that these are
+essentially arbitrary classifications.  "Mail subsystem" doesn't have any
+more meaning than the system administrator gives to it.
+
+     <br><dt>priority<dd>This tells how important the content of the message is.  Examples of
+defined priority values are: debug, informational, warning, critical. 
+For the complete list, see <a href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">syslog; vsyslog</a>.  Except for
+the fact that the priorities have a defined order, the meaning of each
+of these priorities is entirely determined by the system administrator.
+
+   </dl>
+
+   <p>A &ldquo;facility/priority&rdquo; is a number that indicates both the facility
+and the priority.
+
+   <p><strong>Warning:</strong> This terminology is not universal.  Some people use
+&ldquo;level&rdquo; to refer to the priority and &ldquo;priority&rdquo; to refer to the
+combination of facility and priority.  A Linux kernel has a concept of a
+message &ldquo;level,&rdquo; which corresponds both to a Syslog priority and to a
+Syslog facility/priority (It can be both because the facility code for
+the kernel is zero, and that makes priority and facility/priority the
+same value).
+
+   <p>The GNU C library provides functions to submit messages to Syslog.  They
+do it by writing to the <samp><span class="file">/dev/log</span></samp> socket.  See <a href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>.
+
+   <p>The GNU C library functions only work to submit messages to the Syslog
+facility on the same system.  To submit a message to the Syslog facility
+on another system, use the socket I/O functions to write a UDP datagram
+to the <code>syslog</code> UDP port on that system.  See <a href="Sockets.html#Sockets">Sockets</a>.
+
+   </body></html>
+

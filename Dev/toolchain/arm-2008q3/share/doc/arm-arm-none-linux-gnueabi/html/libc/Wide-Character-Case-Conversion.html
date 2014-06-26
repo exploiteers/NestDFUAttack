@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Wide Character Case Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Character-Handling.html#Character-Handling" title="Character Handling">
+<link rel="prev" href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes" title="Using Wide Char Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Wide-Character-Case-Conversion"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Wide-Char-Classes.html#Using-Wide-Char-Classes">Using Wide Char Classes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Character-Handling.html#Character-Handling">Character Handling</a>
+<hr>
+</div>
+
+<h3 class="section">4.5 Mapping of wide characters.</h3>
+
+<p>The classification functions are also generalized by the ISO&nbsp;C<!-- /@w -->
+standard.  Instead of just allowing the two standard mappings, a
+locale can contain others.  Again, the <code>localedef</code> program
+already supports generating such locale data files.
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>wctrans_t</b><var><a name="index-wctrans_005ft-445"></a></var><br>
+<blockquote><p>This data type is defined as a scalar type which can hold a value
+representing the locale-dependent character mapping.  There is no way to
+construct such a value apart from using the return value of the
+<code>wctrans</code> function.
+
+        <p><a name="index-wctype_002eh-446"></a>This type is defined in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wctrans_t <b>wctrans</b> (<var>const char *property</var>)<var><a name="index-wctrans-447"></a></var><br>
+<blockquote><p>The <code>wctrans</code> function has to be used to find out whether a named
+mapping is defined in the current locale selected for the
+<code>LC_CTYPE</code> category.  If the returned value is non-zero, you can use
+it afterwards in calls to <code>towctrans</code>.  If the return value is
+zero no such mapping is known in the current locale.
+
+        <p>Beside locale-specific mappings there are two mappings which are
+guaranteed to be available in every locale:
+
+        <p><table summary=""><tr align="left"><td valign="top" width="50%"><code>"tolower"</code> </td><td valign="top" width="50%"><code>"toupper"</code>
+        <br></td></tr></table>
+
+        <p><a name="index-wctype_002eh-448"></a>These functions are declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>towctrans</b> (<var>wint_t wc, wctrans_t desc</var>)<var><a name="index-towctrans-449"></a></var><br>
+<blockquote><p><code>towctrans</code> maps the input character <var>wc</var>
+according to the rules of the mapping for which <var>desc</var> is a
+descriptor, and returns the value it finds.  <var>desc</var> must be
+obtained by a successful call to <code>wctrans</code>.
+
+        <p><a name="index-wctype_002eh-450"></a>This function is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>For the generally available mappings, the ISO&nbsp;C<!-- /@w --> standard defines
+convenient shortcuts so that it is not necessary to call <code>wctrans</code>
+for them.
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>towlower</b> (<var>wint_t wc</var>)<var><a name="index-towlower-451"></a></var><br>
+<blockquote><p>If <var>wc</var> is an upper-case letter, <code>towlower</code> returns the corresponding
+lower-case letter.  If <var>wc</var> is not an upper-case letter,
+<var>wc</var> is returned unchanged.
+
+     <p class="noindent"><code>towlower</code> can be implemented using
+
+     <pre class="smallexample">          towctrans (wc, wctrans ("tolower"))
+</pre>
+        <p><a name="index-wctype_002eh-452"></a>This function is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- wctype.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>towupper</b> (<var>wint_t wc</var>)<var><a name="index-towupper-453"></a></var><br>
+<blockquote><p>If <var>wc</var> is a lower-case letter, <code>towupper</code> returns the corresponding
+upper-case letter.  Otherwise <var>wc</var> is returned unchanged.
+
+     <p class="noindent"><code>towupper</code> can be implemented using
+
+     <pre class="smallexample">          towctrans (wc, wctrans ("toupper"))
+</pre>
+        <p><a name="index-wctype_002eh-454"></a>This function is declared in <samp><span class="file">wctype.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>The same warnings given in the last section for the use of the wide
+character classification functions apply here.  It is not possible to
+simply cast a <code>char</code> type value to a <code>wint_t</code> and use it as an
+argument to <code>towctrans</code> calls.
+
+   </body></html>
+

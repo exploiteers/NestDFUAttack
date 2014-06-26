@@ -1,0 +1,180 @@
+<html lang="en">
+<head>
+<title>Server Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="prev" href="Byte-Stream-Example.html#Byte-Stream-Example" title="Byte Stream Example">
+<link rel="next" href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data" title="Out-of-Band Data">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Server-Example"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Out_002dof_002dBand-Data.html#Out_002dof_002dBand-Data">Out-of-Band Data</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Byte-Stream-Example.html#Byte-Stream-Example">Byte Stream Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.7 Byte Stream Connection Server Example</h4>
+
+<p>The server end is much more complicated.  Since we want to allow
+multiple clients to be connected to the server at the same time, it
+would be incorrect to wait for input from a single client by simply
+calling <code>read</code> or <code>recv</code>.  Instead, the right thing to do is
+to use <code>select</code> (see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>) to wait for input on
+all of the open sockets.  This also allows the server to deal with
+additional connection requests.
+
+   <p>This particular server doesn't do anything interesting once it has
+gotten a message from a client.  It does close the socket for that
+client when it detects an end-of-file condition (resulting from the
+client shutting down its end of the connection).
+
+   <p>This program uses <code>make_socket</code> to set up the socket address; see
+<a href="Inet-Example.html#Inet-Example">Inet Example</a>.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;errno.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;unistd.h&gt;
+     #include &lt;sys/types.h&gt;
+     #include &lt;sys/socket.h&gt;
+     #include &lt;netinet/in.h&gt;
+     #include &lt;netdb.h&gt;
+     
+     #define PORT    5555
+     #define MAXMSG  512
+     
+     int
+     read_from_client (int filedes)
+     {
+       char buffer[MAXMSG];
+       int nbytes;
+     
+       nbytes = read (filedes, buffer, MAXMSG);
+       if (nbytes &lt; 0)
+         {
+           /* <span class="roman">Read error.</span> */
+           perror ("read");
+           exit (EXIT_FAILURE);
+         }
+       else if (nbytes == 0)
+         /* <span class="roman">End-of-file.</span> */
+         return -1;
+       else
+         {
+           /* <span class="roman">Data read.</span> */
+           fprintf (stderr, "Server: got message: `%s'\n", buffer);
+           return 0;
+         }
+     }
+     
+     int
+     main (void)
+     {
+       extern int make_socket (uint16_t port);
+       int sock;
+       fd_set active_fd_set, read_fd_set;
+       int i;
+       struct sockaddr_in clientname;
+       size_t size;
+     
+       /* <span class="roman">Create the socket and set it up to accept connections.</span> */
+       sock = make_socket (PORT);
+       if (listen (sock, 1) &lt; 0)
+         {
+           perror ("listen");
+           exit (EXIT_FAILURE);
+         }
+     
+       /* <span class="roman">Initialize the set of active sockets.</span> */
+       FD_ZERO (&amp;active_fd_set);
+       FD_SET (sock, &amp;active_fd_set);
+     
+       while (1)
+         {
+           /* <span class="roman">Block until input arrives on one or more active sockets.</span> */
+           read_fd_set = active_fd_set;
+           if (select (FD_SETSIZE, &amp;read_fd_set, NULL, NULL, NULL) &lt; 0)
+             {
+               perror ("select");
+               exit (EXIT_FAILURE);
+             }
+     
+           /* <span class="roman">Service all the sockets with input pending.</span> */
+           for (i = 0; i &lt; FD_SETSIZE; ++i)
+             if (FD_ISSET (i, &amp;read_fd_set))
+               {
+                 if (i == sock)
+                   {
+                     /* <span class="roman">Connection request on original socket.</span> */
+                     int new;
+                     size = sizeof (clientname);
+                     new = accept (sock,
+                                   (struct sockaddr *) &amp;clientname,
+                                   &amp;size);
+                     if (new &lt; 0)
+                       {
+                         perror ("accept");
+                         exit (EXIT_FAILURE);
+                       }
+                     fprintf (stderr,
+                              "Server: connect from host %s, port %hd.\n",
+                              inet_ntoa (clientname.sin_addr),
+                              ntohs (clientname.sin_port));
+                     FD_SET (new, &amp;active_fd_set);
+                   }
+                 else
+                   {
+                     /* <span class="roman">Data arriving on an already-connected socket.</span> */
+                     if (read_from_client (i) &lt; 0)
+                       {
+                         close (i);
+                         FD_CLR (i, &amp;active_fd_set);
+                       }
+                   }
+               }
+         }
+     }
+</pre>
+   </body></html>
+

@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>NSS Configuration File - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Name-Service-Switch.html#Name-Service-Switch" title="Name Service Switch">
+<link rel="prev" href="NSS-Basics.html#NSS-Basics" title="NSS Basics">
+<link rel="next" href="NSS-Module-Internals.html#NSS-Module-Internals" title="NSS Module Internals">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="NSS-Configuration-File"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="NSS-Module-Internals.html#NSS-Module-Internals">NSS Module Internals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="NSS-Basics.html#NSS-Basics">NSS Basics</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a>
+<hr>
+</div>
+
+<h3 class="section">28.2 The NSS Configuration File</h3>
+
+<p><a name="index-g_t_0040file_007b_002fetc_002fnsswitch_002econf_007d-3272"></a><a name="index-g_t_0040file_007bnsswitch_002econf_007d-3273"></a>Somehow the NSS code must be told about the wishes of the user.  For
+this reason there is the file <samp><span class="file">/etc/nsswitch.conf</span></samp>.  For each
+database this file contain a specification how the lookup process should
+work.  The file could look like this:
+
+<pre class="example">     # /etc/nsswitch.conf
+     #
+     # Name Service Switch configuration file.
+     #
+     
+     passwd:     db files nis
+     shadow:     files
+     group:      db files nis
+     
+     hosts:      files nisplus nis dns
+     networks:   nisplus [NOTFOUND=return] files
+     
+     ethers:     nisplus [NOTFOUND=return] db files
+     protocols:  nisplus [NOTFOUND=return] db files
+     rpc:        nisplus [NOTFOUND=return] db files
+     services:   nisplus [NOTFOUND=return] db files
+</pre>
+   <p>The first column is the database as you can guess from the table above. 
+The rest of the line specifies how the lookup process works.  Please
+note that you specify the way it works for each database individually. 
+This cannot be done with the old way of a monolithic implementation.
+
+   <p>The configuration specification for each database can contain two
+different items:
+
+     <ul>
+<li>the service specification like <code>files</code>, <code>db</code>, or <code>nis</code>. 
+<li>the reaction on lookup result like <code>[NOTFOUND=return]</code>. 
+</ul>
+
+<ul class="menu">
+<li><a accesskey="1" href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">Services in the NSS configuration</a>:   Service names in the NSS configuration. 
+<li><a accesskey="2" href="Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a>:   React appropriately to the lookup result. 
+<li><a accesskey="3" href="Notes-on-NSS-Configuration-File.html#Notes-on-NSS-Configuration-File">Notes on NSS Configuration File</a>:   Things to take care about while
+                                     configuring NSS. 
+</ul>
+
+   </body></html>
+

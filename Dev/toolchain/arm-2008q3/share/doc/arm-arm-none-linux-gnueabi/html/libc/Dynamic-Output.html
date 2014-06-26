@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+<title>Dynamic Output - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Formatted-Output-Functions.html#Formatted-Output-Functions" title="Formatted Output Functions">
+<link rel="next" href="Variable-Arguments-Output.html#Variable-Arguments-Output" title="Variable Arguments Output">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Dynamic-Output"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variable-Arguments-Output.html#Variable-Arguments-Output">Variable Arguments Output</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Formatted-Output-Functions.html#Formatted-Output-Functions">Formatted Output Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.8 Dynamically Allocating Formatted Output</h4>
+
+<p>The functions in this section do formatted output and place the results
+in dynamically allocated memory.
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>asprintf</b> (<var>char **ptr, const char *template, <small class="dots">...</small></var>)<var><a name="index-asprintf-1033"></a></var><br>
+<blockquote><p>This function is similar to <code>sprintf</code>, except that it dynamically
+allocates a string (as with <code>malloc</code>; see <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>) to hold the output, instead of putting the output in a
+buffer you allocate in advance.  The <var>ptr</var> argument should be the
+address of a <code>char *</code> object, and a successful call to
+<code>asprintf</code> stores a pointer to the newly allocated string at that
+location.
+
+        <p>The return value is the number of characters allocated for the buffer, or
+less than zero if an error occurred. Usually this means that the buffer
+could not be allocated.
+
+        <p>Here is how to use <code>asprintf</code> to get the same result as the
+<code>snprintf</code> example, but more easily:
+
+     <pre class="smallexample">          /* <span class="roman">Construct a message describing the value of a variable</span>
+             <span class="roman">whose name is </span><var>name</var><span class="roman"> and whose value is </span><var>value</var><span class="roman">.</span> */
+          char *
+          make_message (char *name, char *value)
+          {
+            char *result;
+            if (asprintf (&amp;result, "value of %s is %s", name, value) &lt; 0)
+              return NULL;
+            return result;
+          }
+</pre>
+        </blockquote></div>
+
+<!-- stdio.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>obstack_printf</b> (<var>struct obstack *obstack, const char *template, <small class="dots">...</small></var>)<var><a name="index-obstack_005fprintf-1034"></a></var><br>
+<blockquote><p>This function is similar to <code>asprintf</code>, except that it uses the
+obstack <var>obstack</var> to allocate the space.  See <a href="Obstacks.html#Obstacks">Obstacks</a>.
+
+        <p>The characters are written onto the end of the current object. 
+To get at them, you must finish the object with <code>obstack_finish</code>
+(see <a href="Growing-Objects.html#Growing-Objects">Growing Objects</a>). 
+</p></blockquote></div>
+
+   </body></html>
+

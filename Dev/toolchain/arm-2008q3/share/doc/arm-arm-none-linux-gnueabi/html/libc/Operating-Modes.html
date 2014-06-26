@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Operating Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Status-Flags.html#File-Status-Flags" title="File Status Flags">
+<link rel="prev" href="Open_002dtime-Flags.html#Open_002dtime-Flags" title="Open-time Flags">
+<link rel="next" href="Getting-File-Status-Flags.html#Getting-File-Status-Flags" title="Getting File Status Flags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Operating-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Getting-File-Status-Flags.html#Getting-File-Status-Flags">Getting File Status Flags</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>
+<hr>
+</div>
+
+<h4 class="subsection">13.14.3 I/O Operating Modes</h4>
+
+<p>The operating modes affect how input and output operations using a file
+descriptor work.  These flags are set by <code>open</code> and can be fetched
+and changed with <code>fcntl</code>.
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_APPEND</b><var><a name="index-O_005fAPPEND-1354"></a></var><br>
+<blockquote><p>The bit that enables append mode for the file.  If set, then all
+<code>write</code> operations write the data at the end of the file, extending
+it, regardless of the current file position.  This is the only reliable
+way to append to a file.  In append mode, you are guaranteed that the
+data you write will always go to the current end of the file, regardless
+of other processes writing to the file.  Conversely, if you simply set
+the file position to the end of file and write, then another process can
+extend the file after you set the file position but before you write,
+resulting in your data appearing someplace before the real end of file. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>O_NONBLOCK</b><var><a name="index-O_005fNONBLOCK-1355"></a></var><br>
+<blockquote><p>The bit that enables nonblocking mode for the file.  If this bit is set,
+<code>read</code> requests on the file can return immediately with a failure
+status if there is no input immediately available, instead of blocking. 
+Likewise, <code>write</code> requests can also return immediately with a
+failure status if the output can't be written immediately.
+
+        <p>Note that the <code>O_NONBLOCK</code> flag is overloaded as both an I/O
+operating mode and a file name translation flag; see <a href="Open_002dtime-Flags.html#Open_002dtime-Flags">Open-time Flags</a>. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_NDELAY</b><var><a name="index-O_005fNDELAY-1356"></a></var><br>
+<blockquote><p>This is an obsolete name for <code>O_NONBLOCK</code>, provided for
+compatibility with BSD.  It is not defined by the POSIX.1 standard. 
+</p></blockquote></div>
+
+   <p>The remaining operating modes are BSD and GNU extensions.  They exist only
+on some systems.  On other systems, these macros are not defined.
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_ASYNC</b><var><a name="index-O_005fASYNC-1357"></a></var><br>
+<blockquote><p>The bit that enables asynchronous input mode.  If set, then <code>SIGIO</code>
+signals will be generated when input is available.  See <a href="Interrupt-Input.html#Interrupt-Input">Interrupt Input</a>.
+
+        <p>Asynchronous input mode is a BSD feature. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_FSYNC</b><var><a name="index-O_005fFSYNC-1358"></a></var><br>
+<blockquote><p>The bit that enables synchronous writing for the file.  If set, each
+<code>write</code> call will make sure the data is reliably stored on disk before
+returning. <!-- !!! xref fsync -->
+
+        <p>Synchronous writing is a BSD feature. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>O_SYNC</b><var><a name="index-O_005fSYNC-1359"></a></var><br>
+<blockquote><p>This is another name for <code>O_FSYNC</code>.  They have the same value. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>O_NOATIME</b><var><a name="index-O_005fNOATIME-1360"></a></var><br>
+<blockquote><p>If this bit is set, <code>read</code> will not update the access time of the
+file.  See <a href="File-Times.html#File-Times">File Times</a>.  This is used by programs that do backups, so
+that backing a file up does not count as reading it. 
+Only the owner of the file or the superuser may use this bit.
+
+        <p>This is a GNU extension. 
+</p></blockquote></div>
+
+   </body></html>
+

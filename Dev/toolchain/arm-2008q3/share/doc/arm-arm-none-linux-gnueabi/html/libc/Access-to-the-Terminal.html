@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Access to the Terminal - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Job-Control.html#Job-Control" title="Job Control">
+<link rel="prev" href="Controlling-Terminal.html#Controlling-Terminal" title="Controlling Terminal">
+<link rel="next" href="Orphaned-Process-Groups.html#Orphaned-Process-Groups" title="Orphaned Process Groups">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Access-to-the-Terminal"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Orphaned-Process-Groups.html#Orphaned-Process-Groups">Orphaned Process Groups</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Controlling-Terminal.html#Controlling-Terminal">Controlling Terminal</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Job-Control.html#Job-Control">Job Control</a>
+<hr>
+</div>
+
+<h3 class="section">27.4 Access to the Controlling Terminal</h3>
+
+<p><a name="index-controlling-terminal_002c-access-to-3208"></a>
+Processes in the foreground job of a controlling terminal have
+unrestricted access to that terminal; background processes do not.  This
+section describes in more detail what happens when a process in a
+background job tries to access its controlling terminal.
+
+   <p><a name="index-g_t_0040code_007bSIGTTIN_007d_002c-from-background-job-3209"></a>When a process in a background job tries to read from its controlling
+terminal, the process group is usually sent a <code>SIGTTIN</code> signal. 
+This normally causes all of the processes in that group to stop (unless
+they handle the signal and don't stop themselves).  However, if the
+reading process is ignoring or blocking this signal, then <code>read</code>
+fails with an <code>EIO</code> error instead.
+
+   <p><a name="index-g_t_0040code_007bSIGTTOU_007d_002c-from-background-job-3210"></a>Similarly, when a process in a background job tries to write to its
+controlling terminal, the default behavior is to send a <code>SIGTTOU</code>
+signal to the process group.  However, the behavior is modified by the
+<code>TOSTOP</code> bit of the local modes flags (see <a href="Local-Modes.html#Local-Modes">Local Modes</a>).  If
+this bit is not set (which is the default), then writing to the
+controlling terminal is always permitted without sending a signal. 
+Writing is also permitted if the <code>SIGTTOU</code> signal is being ignored
+or blocked by the writing process.
+
+   <p>Most other terminal operations that a program can do are treated as
+reading or as writing.  (The description of each operation should say
+which.)
+
+   <p>For more information about the primitive <code>read</code> and <code>write</code>
+functions, see <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>.
+
+   </body></html>
+

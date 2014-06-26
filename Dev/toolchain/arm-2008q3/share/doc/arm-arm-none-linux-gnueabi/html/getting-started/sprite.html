@@ -1,0 +1,190 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 6. Sourcery G++ Debug Sprite</title><link rel="stylesheet" href="cs.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><meta name="description" content=" 
+    This chapter describes the use of the Sourcery G++ Debug Sprite
+    for remote debugging.  
+    
+    
+      The Sprite is provided for debugging of the Linux or uClinux
+      kernel on the target board.
+    
+    This chapter includes information about the debugging devices and 
+    boards supported by the Sprite for ARM GNU/Linux.
+   "><link rel="start" href="index.html" title="Sourcery G++ Lite"><link rel="up" href="index.html" title="Sourcery G++ Lite"><link rel="prev" href="sec-remote-debugging.html" title="Running Applications from GDB"><link rel="next" href="sec-sprite-invocation.html" title="Invoking Sourcery G++ Debug Sprite"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 6. Sourcery G++ Debug Sprite</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="sec-remote-debugging.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="sec-sprite-invocation.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="sprite"></a>Chapter 6. Sourcery G++ Debug Sprite</h2></div><div><div class="abstract"><p class="title"><b></b></p><p>
+    This chapter describes the use of the Sourcery G++ Debug Sprite
+    for remote debugging.  
+    
+    <span>
+      The Sprite is provided for debugging of the Linux or uClinux
+      kernel on the target board.
+    </span>
+    This chapter includes information about the debugging devices and 
+    boards supported by the Sprite for ARM GNU/Linux.
+   </p></div></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="sprite.html#id306741">Debug Sprite Example</a></span></dt><dt><span class="section"><a href="sec-sprite-invocation.html">Invoking Sourcery G++ Debug Sprite</a></span></dt><dt><span class="section"><a href="sec-sprite-options.html">Sourcery G++ Debug Sprite Options</a></span></dt><dt><span class="section"><a href="debug-sprite-rdi-url.html">Remote Debug Interface Devices</a></span></dt><dt><span class="section"><a href="debug-sprite-flashpro-url.html">FlashPro Devices</a></span></dt><dt><span class="section"><a href="ch06s06.html">Debugging a Remote Board</a></span></dt><dt><span class="section"><a href="sec-sprite-supported-boards.html">Supported Board Files</a></span></dt><dt><span class="section"><a href="sec-sprite-board-file.html">Board File Syntax</a></span></dt></dl></div><p>Sourcery G++ Lite contains the Sourcery G++ Debug Sprite for ARM GNU/Linux.
+  This Sprite is provided to allow debugging of programs running on a 
+  bare board.  You can use the Sprite to
+  debug a program when there is no operating system on the board, or
+  for debugging the operating system itself.  If the board is running an
+  operating system, and you wish to debug a program running on that
+  OS, you should use the facilities provided by the OS itself (for
+  instance, using <span><strong class="command">gdbserver</strong></span>).</p><p>
+    The Sprite acts as an interface between GDB and external debug devices and
+    libraries.  Refer to <a href="sec-sprite-invocation.html" title="Invoking Sourcery G++ Debug Sprite">the section called &#8220;Invoking Sourcery G++ Debug Sprite&#8221;</a> for 
+    information about the specific devices supported by this version of 
+    Sourcery G++ Lite.
+  </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note for Linux/uClinux users</h3><p>
+      The Debug Sprite provided with Sourcery G++ Lite allows remote debugging 
+      of the Linux or uClinux kernel running on the target.  
+      For remote debugging of application programs, you should use
+      <span><strong class="command">gdbserver</strong></span> instead.  
+      <span>
+        See <a href="chap-release.html" title="Chapter 3. Sourcery G++ Lite for ARM GNU/Linux">Chapter 3, <i>Sourcery G++ Lite for ARM GNU/Linux</i></a> for details about how to install
+	and run <span><strong class="command">gdbserver</strong></span> on the target.
+      </span>
+    </p></div><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3><p>
+      The Sourcery G++ Debug Sprite is not part of the GNU Debugger and is
+      not free or open-source software. 
+      You may use the Sourcery G++ Debug Sprite only with the GNU Debugger.
+      You may not distribute the Sourcery G++ Debug Sprite to any third party.
+      You may use the ARM SWD support (as used for debugging Luminary Micro
+   Stellaris CPUs) only with target systems which contain Cortex-M1 or
+   Cortex-M3 microprocessor managed under license from ARM.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id306741"></a>Debug Sprite Example</h2></div></div></div><p>This section demonstrates execution and debugging of a simple
+  application.  Start by creating a file named
+  <code class="filename">fib.c</code>:
+
+  </p><pre class="programlisting">#include &lt;unistd.h&gt;
+
+static int Fib (unsigned n, unsigned a, unsigned b)
+{
+  unsigned count;
+
+  for (count = 0; count != b; count++)
+    write (1, ".", 1);
+  write (1, "\n", 1);
+  
+  if (n)
+    Fib (n - 1, b, a + b);
+}
+
+int main ()
+{
+  write (1, "Fibonacci\n", 10);
+  Fib (9, 0, 1);
+  return 0;
+}
+</pre><p>
+
+  First compile and link the program for the target board.  If it is a
+  stand-alone program for a ARM M-profile Simulator board use:
+
+</p><pre class="screen">&gt; arm-none-linux-gnueabi-gcc -mcpu=cortex-m3 -mthumb \
+  -Tgeneric-m-hosted.ld fib.c -o fib -g</pre><p>
+
+  For other boards you must make appropriate substitutions in the
+  preceding command.  If your program is an operating system kernel
+  such as uClinux or Linux, your usual build method should be
+  adequate, as the kernel contains the necessary initialization code
+  for interrupt handlers.</p><p>Verify that the Sourcery G++ Debug Sprite can detect your debug
+  hardware:
+
+</p><pre class="screen">&gt; arm-none-linux-gnueabi-sprite -i</pre><p>
+
+  This prints out a list of supported device types.  For devices that
+  can be autodetected, it additionally probes for and prints out a
+  list of attached devices.  For instance:
+
+</p><pre class="screen">CodeSourcery ARM Debug Sprite
+    (Sourcery G++ Lite Sourcery G++ Lite 2008q3-72)
+rdi: (rdi-library=&lt;file&gt;&amp;rdi-config=&lt;file&gt;) RDI Device
+  rdi:/// - RDI Device
+armusb: [speed=&lt;n:0-7&gt;] ARMUSB device
+  armusb:/// - ARMUSB Device</pre><p>
+
+  This shows that RDI and ARM­USB devices are supported.  The exact
+ set of supported devices depends on your host system and the version
+ of Sourcery G++ you have installed.</p><p>Start the debugger on your host system:
+
+</p><pre class="screen">&gt; arm-none-linux-gnueabi-gdb fib</pre><p>Connecting GDB to the board depends on the debug device you
+  are using.  If you are using a ARM­USB debug device, use:
+
+</p><pre class="screen">(gdb) target remote | arm-none-linux-gnueabi-sprite \
+armusb:///?speed=2 lm3s8xx
+Remote debugging using | arm-none-linux-gnueabi-sprite \
+armusb:///?speed=2 lm3s8xx
+arm-none-linux-gnueabi-sprite:Target reset
+0x00008936 in ?? ()</pre><p>
+  </p><p>
+    If you are connecting via RDI, you must specify the full path to the 
+    RDI library file and configuration file for that library:
+
+</p><pre class="screen">(gdb) target remote | arm-none-linux-gnueabi-sprite \
+"rdi:///?rdi-library=<em class="replaceable"><code>library</code></em>&amp;rdi-config=<em class="replaceable"><code>config</code></em>"
+Remote debugging using | arm-none-linux-gnueabi-sprite \
+"rdi:///?rdi-library=<em class="replaceable"><code>library</code></em>&amp;rdi-config=<em class="replaceable"><code>config</code></em>"
+ARMulator RVARMulatorISS1.4 [Build 297]
+For support please contact support-sw@arm.com
+Software supplied by: ARM Limited
+ARM1136JF-S
+ARM11 Instruction Set Simulator, May 24 2006
+ARM Instruction Set Simulator for  [Build number 297]
+, CP15, 8KB ICache, 8KB DCache 32KB DTCRam0 -Supports SmartCaching
+32KB ITCRam0 -Supports SmartCaching , VFP11 (no support code), \
+4GB, Pagetables, Mapfile, VIC - PL192
+VIC: this is a RELEASE build
+, Profiler, SIMRDI MemCallback, Tube, Millisecond [6666.67
+cycles_per_millisecond], Tracer
+Tracing: Instructions, Memory accesses, Events, Disassemble, \
+Trace bus, Trace registers, Opcode Fetch Mask \
+0x00000000-0x00000000, RDI Codesequences, Semihosting, \
+CP14 Debug(6,2,2)
+Little endian
+arm-none-linux-gnueabi-sprite:Missing config file; \
+this may not work
+arm-none-linux-gnueabi-sprite:Target reset
+0x00000000 in ?? ()</pre><p>
+  </p><p>
+  Refer to <a href="sec-sprite-invocation.html" title="Invoking Sourcery G++ Debug Sprite">the section called &#8220;Invoking Sourcery G++ Debug Sprite&#8221;</a> for more information
+  about the supported devices in Sourcery G++ Lite and details about the
+  command-line syntax for invoking the Sprite.</p><p>At this point you can use GDB to load your program onto the
+  target board and control its execution as required:
+
+</p><pre class="screen">(gdb) load
+Loading section .text, size 0xaa0 lma 0x0
+Loading section .ARM.exidx, size 0x8 lma 0xaa0
+Loading section .data, size 0xfc lma 0xaa8
+Start address 0x11, load size 2980
+Transfer rate: 6231 bits/sec, 596 bytes/write.</pre><p>
+
+  Set a breakpoint so that the debugger stops when your program
+  reaches <code class="function">main</code>:
+
+</p><pre class="screen">(gdb) break main
+Breakpoint 1 at 0x20000524: file fib.c, line 17.</pre><p>
+
+  Allow the program to execute until it reaches
+  <code class="function">main</code>: 
+
+</p><pre class="screen">(gdb) continue
+Continuing.
+main () at fib.c:13
+13         write (1, "Fibonacci\n", 10);
+(gdb) next
+Fibonacci
+14         Fib (9, 0, 1);</pre><p>
+
+  Permit the program to finish executing with:
+
+</p><pre class="screen">(gdb) continue
+Continuing.
+.
+.
+..
+...
+.....
+........
+.............
+.....................
+..................................
+.......................................................
+
+Program exited normally.</pre><p>
+  </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="sec-remote-debugging.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="sec-sprite-invocation.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Running Applications from GDB </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Invoking Sourcery G++ Debug Sprite</td></tr></table></div></body></html>

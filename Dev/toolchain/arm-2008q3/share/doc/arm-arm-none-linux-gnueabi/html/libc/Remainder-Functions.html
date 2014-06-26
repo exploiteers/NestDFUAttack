@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Remainder Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link rel="prev" href="Rounding-Functions.html#Rounding-Functions" title="Rounding Functions">
+<link rel="next" href="FP-Bit-Twiddling.html#FP-Bit-Twiddling" title="FP Bit Twiddling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Remainder-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="FP-Bit-Twiddling.html#FP-Bit-Twiddling">FP Bit Twiddling</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Rounding-Functions.html#Rounding-Functions">Rounding Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>
+<hr>
+</div>
+
+<h4 class="subsection">20.8.4 Remainder Functions</h4>
+
+<p>The functions in this section compute the remainder on division of two
+floating-point numbers.  Each is a little different; pick the one that
+suits your problem.
+
+<!-- math.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: double <b>fmod</b> (<var>double numerator, double denominator</var>)<var><a name="index-fmod-2471"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: float <b>fmodf</b> (<var>float numerator, float denominator</var>)<var><a name="index-fmodf-2472"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- ISO -->
+   &mdash; Function: long double <b>fmodl</b> (<var>long double numerator, long double denominator</var>)<var><a name="index-fmodl-2473"></a></var><br>
+<blockquote><p>These functions compute the remainder from the division of
+<var>numerator</var> by <var>denominator</var>.  Specifically, the return value is
+<var>numerator</var><code> - </code><var>n</var><code>&nbsp;*&nbsp;</code><var>denominator</var><code><!-- /@w --></code>, where <var>n</var>
+is the quotient of <var>numerator</var> divided by <var>denominator</var>, rounded
+towards zero to an integer.  Thus, <code>fmod&nbsp;(6.5,&nbsp;2.3)</code><!-- /@w --> returns
+<code>1.9</code>, which is <code>6.5</code> minus <code>4.6</code>.
+
+        <p>The result has the same sign as the <var>numerator</var> and has magnitude
+less than the magnitude of the <var>denominator</var>.
+
+        <p>If <var>denominator</var> is zero, <code>fmod</code> signals a domain error. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: double <b>drem</b> (<var>double numerator, double denominator</var>)<var><a name="index-drem-2474"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: float <b>dremf</b> (<var>float numerator, float denominator</var>)<var><a name="index-dremf-2475"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long double <b>dreml</b> (<var>long double numerator, long double denominator</var>)<var><a name="index-dreml-2476"></a></var><br>
+<blockquote><p>These functions are like <code>fmod</code> except that they round the
+internal quotient <var>n</var> to the nearest integer instead of towards zero
+to an integer.  For example, <code>drem (6.5, 2.3)</code> returns <code>-0.4</code>,
+which is <code>6.5</code> minus <code>6.9</code>.
+
+        <p>The absolute value of the result is less than or equal to half the
+absolute value of the <var>denominator</var>.  The difference between
+<code>fmod (</code><var>numerator</var><code>, </code><var>denominator</var><code>)</code> and <code>drem
+(</code><var>numerator</var><code>, </code><var>denominator</var><code>)</code> is always either
+<var>denominator</var>, minus <var>denominator</var>, or zero.
+
+        <p>If <var>denominator</var> is zero, <code>drem</code> signals a domain error. 
+</p></blockquote></div>
+
+<!-- math.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: double <b>remainder</b> (<var>double numerator, double denominator</var>)<var><a name="index-remainder-2477"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: float <b>remainderf</b> (<var>float numerator, float denominator</var>)<var><a name="index-remainderf-2478"></a></var><br>
+<blockquote><!-- math.h -->
+     <!-- BSD -->
+   &mdash; Function: long double <b>remainderl</b> (<var>long double numerator, long double denominator</var>)<var><a name="index-remainderl-2479"></a></var><br>
+<blockquote><p>This function is another name for <code>drem</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

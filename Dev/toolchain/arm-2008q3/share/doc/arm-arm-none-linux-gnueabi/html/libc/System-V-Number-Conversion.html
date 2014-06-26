@@ -1,0 +1,213 @@
+<html lang="en">
+<head>
+<title>System V Number Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Parsing-of-Numbers.html#Parsing-of-Numbers" title="Parsing of Numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="System-V-Number-Conversion"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Parsing-of-Numbers.html#Parsing-of-Numbers">Parsing of Numbers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.12 Old-fashioned System V number-to-string functions</h3>
+
+<p>The old System&nbsp;V<!-- /@w --> C library provided three functions to convert
+numbers to strings, with unusual and hard-to-use semantics.  The GNU C
+library also provides these functions and some natural extensions.
+
+   <p>These functions are only available in glibc and on systems descended
+from AT&amp;T Unix.  Therefore, unless these functions do precisely what you
+need, it is better to use <code>sprintf</code>, which is standard.
+
+   <p>All these functions are defined in <samp><span class="file">stdlib.h</span></samp>.
+
+<!-- stdlib.h -->
+<!-- SVID, Unix98 -->
+<div class="defun">
+&mdash; Function: char * <b>ecvt</b> (<var>double value, int ndigit, int *decpt, int *neg</var>)<var><a name="index-ecvt-2576"></a></var><br>
+<blockquote><p>The function <code>ecvt</code> converts the floating-point number <var>value</var>
+to a string with at most <var>ndigit</var> decimal digits.  The
+returned string contains no decimal point or sign. The first digit of
+the string is non-zero (unless <var>value</var> is actually zero) and the
+last digit is rounded to nearest.  <code>*</code><var>decpt</var> is set to the
+index in the string of the first digit after the decimal point. 
+<code>*</code><var>neg</var> is set to a nonzero value if <var>value</var> is negative,
+zero otherwise.
+
+        <p>If <var>ndigit</var> decimal digits would exceed the precision of a
+<code>double</code> it is reduced to a system-specific value.
+
+        <p>The returned string is statically allocated and overwritten by each call
+to <code>ecvt</code>.
+
+        <p>If <var>value</var> is zero, it is implementation defined whether
+<code>*</code><var>decpt</var> is <code>0</code> or <code>1</code>.
+
+        <p>For example: <code>ecvt (12.3, 5, &amp;d, &amp;n)</code> returns <code>"12300"</code>
+and sets <var>d</var> to <code>2</code> and <var>n</var> to <code>0</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, Unix98 -->
+<div class="defun">
+&mdash; Function: char * <b>fcvt</b> (<var>double value, int ndigit, int *decpt, int *neg</var>)<var><a name="index-fcvt-2577"></a></var><br>
+<blockquote><p>The function <code>fcvt</code> is like <code>ecvt</code>, but <var>ndigit</var> specifies
+the number of digits after the decimal point.  If <var>ndigit</var> is less
+than zero, <var>value</var> is rounded to the <var>ndigit</var>+1'th place to the
+left of the decimal point.  For example, if <var>ndigit</var> is <code>-1</code>,
+<var>value</var> will be rounded to the nearest 10.  If <var>ndigit</var> is
+negative and larger than the number of digits to the left of the decimal
+point in <var>value</var>, <var>value</var> will be rounded to one significant digit.
+
+        <p>If <var>ndigit</var> decimal digits would exceed the precision of a
+<code>double</code> it is reduced to a system-specific value.
+
+        <p>The returned string is statically allocated and overwritten by each call
+to <code>fcvt</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, Unix98 -->
+<div class="defun">
+&mdash; Function: char * <b>gcvt</b> (<var>double value, int ndigit, char *buf</var>)<var><a name="index-gcvt-2578"></a></var><br>
+<blockquote><p><code>gcvt</code> is functionally equivalent to &lsquo;<samp><span class="samp">sprintf(buf, "%*g",
+ndigit, value</span></samp>&rsquo;.  It is provided only for compatibility's sake.  It
+returns <var>buf</var>.
+
+        <p>If <var>ndigit</var> decimal digits would exceed the precision of a
+<code>double</code> it is reduced to a system-specific value. 
+</p></blockquote></div>
+
+   <p>As extensions, the GNU C library provides versions of these three
+functions that take <code>long double</code> arguments.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>qecvt</b> (<var>long double value, int ndigit, int *decpt, int *neg</var>)<var><a name="index-qecvt-2579"></a></var><br>
+<blockquote><p>This function is equivalent to <code>ecvt</code> except that it takes a
+<code>long double</code> for the first parameter and that <var>ndigit</var> is
+restricted by the precision of a <code>long double</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>qfcvt</b> (<var>long double value, int ndigit, int *decpt, int *neg</var>)<var><a name="index-qfcvt-2580"></a></var><br>
+<blockquote><p>This function is equivalent to <code>fcvt</code> except that it
+takes a <code>long double</code> for the first parameter and that <var>ndigit</var> is
+restricted by the precision of a <code>long double</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>qgcvt</b> (<var>long double value, int ndigit, char *buf</var>)<var><a name="index-qgcvt-2581"></a></var><br>
+<blockquote><p>This function is equivalent to <code>gcvt</code> except that it takes a
+<code>long double</code> for the first parameter and that <var>ndigit</var> is
+restricted by the precision of a <code>long double</code>. 
+</p></blockquote></div>
+
+   <p><a name="index-gcvt_005fr-2582"></a>The <code>ecvt</code> and <code>fcvt</code> functions, and their <code>long double</code>
+equivalents, all return a string located in a static buffer which is
+overwritten by the next call to the function.  The GNU C library
+provides another set of extended functions which write the converted
+string into a user-supplied buffer.  These have the conventional
+<code>_r</code> suffix.
+
+   <p><code>gcvt_r</code> is not necessary, because <code>gcvt</code> already uses a
+user-supplied buffer.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>ecvt_r</b> (<var>double value, int ndigit, int *decpt, int *neg, char *buf, size_t len</var>)<var><a name="index-ecvt_005fr-2583"></a></var><br>
+<blockquote><p>The <code>ecvt_r</code> function is the same as <code>ecvt</code>, except
+that it places its result into the user-specified buffer pointed to by
+<var>buf</var>, with length <var>len</var>.  The return value is <code>-1</code> in
+case of an error and zero otherwise.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>fcvt_r</b> (<var>double value, int ndigit, int *decpt, int *neg, char *buf, size_t len</var>)<var><a name="index-fcvt_005fr-2584"></a></var><br>
+<blockquote><p>The <code>fcvt_r</code> function is the same as <code>fcvt</code>, except that it
+places its result into the user-specified buffer pointed to by
+<var>buf</var>, with length <var>len</var>.  The return value is <code>-1</code> in
+case of an error and zero otherwise.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>qecvt_r</b> (<var>long double value, int ndigit, int *decpt, int *neg, char *buf, size_t len</var>)<var><a name="index-qecvt_005fr-2585"></a></var><br>
+<blockquote><p>The <code>qecvt_r</code> function is the same as <code>qecvt</code>, except
+that it places its result into the user-specified buffer pointed to by
+<var>buf</var>, with length <var>len</var>.  The return value is <code>-1</code> in
+case of an error and zero otherwise.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>qfcvt_r</b> (<var>long double value, int ndigit, int *decpt, int *neg, char *buf, size_t len</var>)<var><a name="index-qfcvt_005fr-2586"></a></var><br>
+<blockquote><p>The <code>qfcvt_r</code> function is the same as <code>qfcvt</code>, except
+that it places its result into the user-specified buffer pointed to by
+<var>buf</var>, with length <var>len</var>.  The return value is <code>-1</code> in
+case of an error and zero otherwise.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   </body></html>
+

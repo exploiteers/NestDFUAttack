@@ -1,0 +1,245 @@
+<html lang="en">
+<head>
+<title>Opening and Closing Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="next" href="I_002fO-Primitives.html#I_002fO-Primitives" title="I/O Primitives">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Opening-and-Closing-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.1 Opening and Closing Files</h3>
+
+<p><a name="index-opening-a-file-descriptor-1196"></a><a name="index-closing-a-file-descriptor-1197"></a>This section describes the primitives for opening and closing files
+using file descriptors.  The <code>open</code> and <code>creat</code> functions are
+declared in the header file <samp><span class="file">fcntl.h</span></samp>, while <code>close</code> is
+declared in <samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-1198"></a><a name="index-fcntl_002eh-1199"></a>
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>open</b> (<var>const char *filename, int flags</var>[<var>, mode_t mode</var>])<var><a name="index-open-1200"></a></var><br>
+<blockquote><p>The <code>open</code> function creates and returns a new file descriptor
+for the file named by <var>filename</var>.  Initially, the file position
+indicator for the file is at the beginning of the file.  The argument
+<var>mode</var> is used only when a file is created, but it doesn't hurt
+to supply the argument in any case.
+
+        <p>The <var>flags</var> argument controls how the file is to be opened.  This is
+a bit mask; you create the value by the bitwise OR of the appropriate
+parameters (using the &lsquo;<samp><span class="samp">|</span></samp>&rsquo; operator in C). 
+See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>, for the parameters available.
+
+        <p>The normal return value from <code>open</code> is a non-negative integer file
+descriptor.  In the case of an error, a value of -1 is returned
+instead.  In addition to the usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following <code>errno</code> error conditions are defined
+for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>The file exists but is not readable/writable as requested by the <var>flags</var>
+argument, the file does not exist and the directory is unwritable so
+it cannot be created.
+
+          <br><dt><code>EEXIST</code><dd>Both <code>O_CREAT</code> and <code>O_EXCL</code> are set, and the named file already
+exists.
+
+          <br><dt><code>EINTR</code><dd>The <code>open</code> operation was interrupted by a signal. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>.
+
+          <br><dt><code>EISDIR</code><dd>The <var>flags</var> argument specified write access, and the file is a directory.
+
+          <br><dt><code>EMFILE</code><dd>The process has too many files open. 
+The maximum number of file descriptors is controlled by the
+<code>RLIMIT_NOFILE</code> resource limit; see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>.
+
+          <br><dt><code>ENFILE</code><dd>The entire system, or perhaps the file system which contains the
+directory, cannot support any additional open files at the moment. 
+(This problem cannot happen on the GNU system.)
+
+          <br><dt><code>ENOENT</code><dd>The named file does not exist, and <code>O_CREAT</code> is not specified.
+
+          <br><dt><code>ENOSPC</code><dd>The directory or file system that would contain the new file cannot be
+extended, because there is no disk space left.
+
+          <br><dt><code>ENXIO</code><dd><code>O_NONBLOCK</code> and <code>O_WRONLY</code> are both set in the <var>flags</var>
+argument, the file named by <var>filename</var> is a FIFO (see <a href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>), and no process has the file open for reading.
+
+          <br><dt><code>EROFS</code><dd>The file resides on a read-only file system and any of <code>O_WRONLY</code><!-- /@w -->,
+<code>O_RDWR</code>, and <code>O_TRUNC</code> are set in the <var>flags</var> argument,
+or <code>O_CREAT</code> is set and the file does not already exist. 
+</dl>
+
+     <!-- !!! umask -->
+        <p>If on a 32 bit machine the sources are translated with
+<code>_FILE_OFFSET_BITS == 64</code> the function <code>open</code> returns a file
+descriptor opened in the large file mode which enables the file handling
+functions to use files up to 2^63 bytes in size and offset from
+-2^63 to 2^63.  This happens transparently for the user
+since all of the lowlevel file handling functions are equally replaced.
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>open</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this calls to <code>open</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The <code>open</code> function is the underlying primitive for the <code>fopen</code>
+and <code>freopen</code> functions, that create streams. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>open64</b> (<var>const char *filename, int flags</var>[<var>, mode_t mode</var>])<var><a name="index-open64-1201"></a></var><br>
+<blockquote><p>This function is similar to <code>open</code>.  It returns a file descriptor
+which can be used to access the file named by <var>filename</var>.  The only
+difference is that on 32 bit systems the file is opened in the
+large file mode.  I.e., file length and file offsets can exceed 31 bits.
+
+        <p>When the sources are translated with <code>_FILE_OFFSET_BITS == 64</code> this
+function is actually available under the name <code>open</code>.  I.e., the
+new, extended API using 64 bit file sizes and offsets transparently
+replaces the old API. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Obsolete function: int <b>creat</b> (<var>const char *filename, mode_t mode</var>)<var><a name="index-creat-1202"></a></var><br>
+<blockquote><p>This function is obsolete.  The call:
+
+     <pre class="smallexample">          creat (<var>filename</var>, <var>mode</var>)
+</pre>
+        <p class="noindent">is equivalent to:
+
+     <pre class="smallexample">          open (<var>filename</var>, O_WRONLY | O_CREAT | O_TRUNC, <var>mode</var>)
+</pre>
+        <p>If on a 32 bit machine the sources are translated with
+<code>_FILE_OFFSET_BITS == 64</code> the function <code>creat</code> returns a file
+descriptor opened in the large file mode which enables the file handling
+functions to use files up to 2^63 in size and offset from
+-2^63 to 2^63.  This happens transparently for the user
+since all of the lowlevel file handling functions are equally replaced. 
+</p></blockquote></div>
+
+<!-- fcntl.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Obsolete function: int <b>creat64</b> (<var>const char *filename, mode_t mode</var>)<var><a name="index-creat64-1203"></a></var><br>
+<blockquote><p>This function is similar to <code>creat</code>.  It returns a file descriptor
+which can be used to access the file named by <var>filename</var>.  The only
+the difference is that on 32 bit systems the file is opened in the
+large file mode.  I.e., file length and file offsets can exceed 31 bits.
+
+        <p>To use this file descriptor one must not use the normal operations but
+instead the counterparts named <code>*64</code>, e.g., <code>read64</code>.
+
+        <p>When the sources are translated with <code>_FILE_OFFSET_BITS == 64</code> this
+function is actually available under the name <code>open</code>.  I.e., the
+new, extended API using 64 bit file sizes and offsets transparently
+replaces the old API. 
+</p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>close</b> (<var>int filedes</var>)<var><a name="index-close-1204"></a></var><br>
+<blockquote><p>The function <code>close</code> closes the file descriptor <var>filedes</var>. 
+Closing a file has the following consequences:
+
+          <ul>
+<li>The file descriptor is deallocated.
+
+          <li>Any record locks owned by the process on the file are unlocked.
+
+          <li>When all file descriptors associated with a pipe or FIFO have been closed,
+any unread data is discarded. 
+</ul>
+
+        <p>This function is a cancellation point in multi-threaded programs.  This
+is a problem if the thread allocates some resources (like memory, file
+descriptors, semaphores or whatever) at the time <code>close</code> is
+called.  If the thread gets canceled these resources stay allocated
+until the program ends.  To avoid this, calls to <code>close</code> should be
+protected using cancellation handlers. 
+<!-- ref pthread_cleanup_push / pthread_cleanup_pop -->
+
+        <p>The normal return value from <code>close</code> is 0; a value of -1
+is returned in case of failure.  The following <code>errno</code> error
+conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EINTR</code><dd>The <code>close</code> call was interrupted by a signal. 
+See <a href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>. 
+Here is an example of how to handle <code>EINTR</code> properly:
+
+          <pre class="smallexample">               TEMP_FAILURE_RETRY (close (desc));
+</pre>
+          <br><dt><code>ENOSPC</code><dt><code>EIO</code><dt><code>EDQUOT</code><dd>When the file is accessed by NFS, these errors from <code>write</code> can sometimes
+not be detected until <code>close</code>.  See <a href="I_002fO-Primitives.html#I_002fO-Primitives">I/O Primitives</a>, for details
+on their meaning. 
+</dl>
+
+        <p>Please note that there is <em>no</em> separate <code>close64</code> function. 
+This is not necessary since this function does not determine nor depend
+on the mode of the file.  The kernel which performs the <code>close</code>
+operation knows which mode the descriptor is used for and can handle
+this situation. 
+</p></blockquote></div>
+
+   <p>To close a stream, call <code>fclose</code> (see <a href="Closing-Streams.html#Closing-Streams">Closing Streams</a>) instead
+of trying to close its underlying file descriptor with <code>close</code>. 
+This flushes any buffered output and updates the stream object to
+indicate that it is closed.
+
+   </body></html>
+

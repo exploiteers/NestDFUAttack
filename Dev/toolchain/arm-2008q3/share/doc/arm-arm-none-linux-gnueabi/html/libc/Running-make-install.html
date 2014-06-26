@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+<title>Running make install - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installation.html#Installation" title="Installation">
+<link rel="prev" href="Configuring-and-compiling.html#Configuring-and-compiling" title="Configuring and compiling">
+<link rel="next" href="Tools-for-Compilation.html#Tools-for-Compilation" title="Tools for Compilation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Running-make-install"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tools-for-Compilation.html#Tools-for-Compilation">Tools for Compilation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuring-and-compiling.html#Configuring-and-compiling">Configuring and compiling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installation.html#Installation">Installation</a>
+<hr>
+</div>
+
+<h3 class="appendixsec">C.2 Installing the C Library</h3>
+
+<p><a name="index-installing-3814"></a>
+To install the library and its header files, and the Info files of the
+manual, type <code>env LANGUAGE=C LC_ALL=C make install</code>.  This will
+build things, if necessary, before installing them; however, you should
+still compile everything first.  If you are installing glibc as your
+primary C library, we recommend that you shut the system down to
+single-user mode first, and reboot afterward.  This minimizes the risk
+of breaking things when the library changes out from underneath.
+
+   <p>If you're upgrading from Linux libc5 or some other C library, you need to
+replace the <samp><span class="file">/usr/include</span></samp> with a fresh directory before installing
+it.  The new <samp><span class="file">/usr/include</span></samp> should contain the Linux headers, but
+nothing else.
+
+   <p>You must first build the library (&lsquo;<samp><span class="samp">make</span></samp>&rsquo;), optionally check it
+(&lsquo;<samp><span class="samp">make check</span></samp>&rsquo;), switch the include directories and then install
+(&lsquo;<samp><span class="samp">make install</span></samp>&rsquo;).  The steps must be done in this order.  Not moving
+the directory before install will result in an unusable mixture of header
+files from both libraries, but configuring, building, and checking the
+library requires the ability to compile and run programs against the old
+library.
+
+   <p>If you are upgrading from a previous installation of glibc 2.0 or 2.1,
+&lsquo;<samp><span class="samp">make install</span></samp>&rsquo; will do the entire job.  You do not need to remove
+the old includes &ndash; if you want to do so anyway you must then follow the
+order given above.
+
+   <p>You may also need to reconfigure GCC to work with the new library.  The
+easiest way to do that is to figure out the compiler switches to make it
+work again (&lsquo;<samp><span class="samp">-Wl,--dynamic-linker=/lib/ld-linux.so.2</span></samp>&rsquo; should work on
+GNU/Linux systems) and use them to recompile gcc.  You can also edit the specs
+file (<samp><span class="file">/usr/lib/gcc-lib/</span><var>TARGET</var><span class="file">/</span><var>VERSION</var><span class="file">/specs</span></samp>), but that
+is a bit of a black art.
+
+   <p>You can install glibc somewhere other than where you configured it to go
+by setting the <code>install_root</code> variable on the command line for
+&lsquo;<samp><span class="samp">make install</span></samp>&rsquo;.  The value of this variable is prepended to all the
+paths for installation.  This is useful when setting up a chroot
+environment or preparing a binary distribution.  The directory should be
+specified with an absolute file name.
+
+   <p>Glibc 2.2 includes a daemon called <code>nscd</code>, which you
+may or may not want to run.  <code>nscd</code> caches name service lookups; it
+can dramatically improve performance with NIS+, and may help with DNS as
+well.
+
+   <p>One auxiliary program, <samp><span class="file">/usr/libexec/pt_chown</span></samp>, is installed setuid
+<code>root</code>.  This program is invoked by the <code>grantpt</code> function; it
+sets the permissions on a pseudoterminal so it can be used by the
+calling process.  This means programs like <code>xterm</code> and
+<code>screen</code> do not have to be setuid to get a pty.  (There may be
+other reasons why they need privileges.)  If you are using a 2.1 or
+newer Linux kernel with the <code>devptsfs</code> or <code>devfs</code> filesystems
+providing pty slaves, you don't need this program; otherwise you do. 
+The source for <samp><span class="file">pt_chown</span></samp> is in <samp><span class="file">login/programs/pt_chown.c</span></samp>.
+
+   <p>After installation you might want to configure the timezone and locale
+installation of your system.  The GNU C library comes with a locale
+database which gets configured with <code>localedef</code>.  For example, to
+set up a German locale with name <code>de_DE</code>, simply issue the command
+&lsquo;<samp><span class="samp">localedef -i de_DE -f ISO-8859-1 de_DE</span></samp>&rsquo;.  To configure all locales
+that are supported by glibc, you can issue from your build directory the
+command &lsquo;<samp><span class="samp">make localedata/install-locales</span></samp>&rsquo;.
+
+   <p>To configure the locally used timezone, set the <code>TZ</code> environment
+variable.  The script <code>tzselect</code> helps you to select the right value. 
+As an example, for Germany, <code>tzselect</code> would tell you to use
+&lsquo;<samp><span class="samp">TZ='Europe/Berlin'</span></samp>&rsquo;.  For a system wide installation (the given
+paths are for an installation with &lsquo;<samp><span class="samp">--prefix=/usr</span></samp>&rsquo;), link the
+timezone file which is in <samp><span class="file">/usr/share/zoneinfo</span></samp> to the file
+<samp><span class="file">/etc/localtime</span></samp>.  For Germany, you might execute &lsquo;<samp><span class="samp">ln -s
+/usr/share/zoneinfo/Europe/Berlin /etc/localtime</span></samp>&rsquo;.
+
+   </body></html>
+

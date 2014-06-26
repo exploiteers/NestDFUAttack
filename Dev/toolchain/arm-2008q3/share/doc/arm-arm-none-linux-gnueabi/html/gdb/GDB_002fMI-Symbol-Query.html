@@ -1,0 +1,247 @@
+<html lang="en">
+<head>
+<title>GDB/MI Symbol Query - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="GDB_002fMI.html#GDB_002fMI" title="GDB/MI">
+<link rel="prev" href="GDB_002fMI-Tracepoint-Commands.html#GDB_002fMI-Tracepoint-Commands" title="GDB/MI Tracepoint Commands">
+<link rel="next" href="GDB_002fMI-File-Commands.html#GDB_002fMI-File-Commands" title="GDB/MI File Commands">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="GDB%2fMI-Symbol-Query"></a>
+<a name="GDB_002fMI-Symbol-Query"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="GDB_002fMI-File-Commands.html#GDB_002fMI-File-Commands">GDB/MI File Commands</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="GDB_002fMI-Tracepoint-Commands.html#GDB_002fMI-Tracepoint-Commands">GDB/MI Tracepoint Commands</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="GDB_002fMI.html#GDB_002fMI">GDB/MI</a>
+<hr>
+</div>
+
+<h3 class="section">25.15 <span class="sc">gdb/mi</span> Symbol Query Commands</h3>
+
+<h4 class="subheading">The <code>-symbol-info-address</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dinfo_002daddress-1546"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-info-address <var>symbol</var>
+</pre>
+   <p>Describe where <var>symbol</var> is stored.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">info address</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-info-file</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dinfo_002dfile-1547"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-info-file
+</pre>
+   <p>Show the file for the symbol.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>There's no equivalent <span class="sc">gdb</span> command.  <code>gdbtk</code> has
+&lsquo;<samp><span class="samp">gdb_find_file</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-info-function</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dinfo_002dfunction-1548"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-info-function
+</pre>
+   <p>Show which function the symbol lives in.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>&lsquo;<samp><span class="samp">gdb_get_function</span></samp>&rsquo; in <code>gdbtk</code>.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-info-line</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dinfo_002dline-1549"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-info-line
+</pre>
+   <p>Show the core addresses of the code for a source line.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">info line</span></samp>&rsquo;. 
+<code>gdbtk</code> has the &lsquo;<samp><span class="samp">gdb_get_line</span></samp>&rsquo; and &lsquo;<samp><span class="samp">gdb_get_file</span></samp>&rsquo; commands.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-info-symbol</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dinfo_002dsymbol-1550"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-info-symbol <var>addr</var>
+</pre>
+   <p>Describe what symbol is at location <var>addr</var>.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">info symbol</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-list-functions</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dlist_002dfunctions-1551"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-list-functions
+</pre>
+   <p>List the functions in the executable.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>&lsquo;<samp><span class="samp">info functions</span></samp>&rsquo; in <span class="sc">gdb</span>, &lsquo;<samp><span class="samp">gdb_listfunc</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">gdb_search</span></samp>&rsquo; in <code>gdbtk</code>.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-list-lines</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dlist_002dlines-1552"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-list-lines <var>filename</var>
+</pre>
+   <p>Print the list of lines that contain code and their associated program
+addresses for the given source filename.  The entries are sorted in
+ascending PC order.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>There is no corresponding <span class="sc">gdb</span> command.
+
+<h5 class="subsubheading">Example</h5>
+
+<pre class="smallexample">     (gdb)
+     -symbol-list-lines basics.c
+     ^done,lines=[{pc="0x08048554",line="7"},{pc="0x0804855a",line="8"}]
+     (gdb)
+</pre>
+<h4 class="subheading">The <code>-symbol-list-types</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dlist_002dtypes-1553"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-list-types
+</pre>
+   <p>List all the type names.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding commands are &lsquo;<samp><span class="samp">info types</span></samp>&rsquo; in <span class="sc">gdb</span>,
+&lsquo;<samp><span class="samp">gdb_search</span></samp>&rsquo; in <code>gdbtk</code>.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-list-variables</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dlist_002dvariables-1554"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-list-variables
+</pre>
+   <p>List all the global and static variable names.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>&lsquo;<samp><span class="samp">info variables</span></samp>&rsquo; in <span class="sc">gdb</span>, &lsquo;<samp><span class="samp">gdb_search</span></samp>&rsquo; in <code>gdbtk</code>.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-locate</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dlocate-1555"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-locate
+</pre>
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>&lsquo;<samp><span class="samp">gdb_loc</span></samp>&rsquo; in <code>gdbtk</code>.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<h4 class="subheading">The <code>-symbol-type</code> Command</h4>
+
+<p><a name="index-g_t_002dsymbol_002dtype-1556"></a>
+
+<h5 class="subsubheading">Synopsis</h5>
+
+<pre class="smallexample">      -symbol-type <var>variable</var>
+</pre>
+   <p>Show type of <var>variable</var>.
+
+<h5 class="subsubheading"><span class="sc">gdb</span> Command</h5>
+
+<p>The corresponding <span class="sc">gdb</span> command is &lsquo;<samp><span class="samp">ptype</span></samp>&rsquo;, <code>gdbtk</code> has
+&lsquo;<samp><span class="samp">gdb_obj_variable</span></samp>&rsquo;.
+
+<h5 class="subsubheading">Example</h5>
+
+<p>N.A.
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%% SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+   </body></html>
+

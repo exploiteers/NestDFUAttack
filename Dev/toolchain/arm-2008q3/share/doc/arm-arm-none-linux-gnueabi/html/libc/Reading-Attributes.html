@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+<title>Reading Attributes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="Attribute-Meanings.html#Attribute-Meanings" title="Attribute Meanings">
+<link rel="next" href="Testing-File-Type.html#Testing-File-Type" title="Testing File Type">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Reading-Attributes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Testing-File-Type.html#Testing-File-Type">Testing File Type</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Attribute-Meanings.html#Attribute-Meanings">Attribute Meanings</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.2 Reading the Attributes of a File</h4>
+
+<p>To examine the attributes of files, use the functions <code>stat</code>,
+<code>fstat</code> and <code>lstat</code>.  They return the attribute information in
+a <code>struct stat</code> object.  All three functions are declared in the
+header file <samp><span class="file">sys/stat.h</span></samp>.
+
+<!-- sys/stat.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>stat</b> (<var>const char *filename, struct stat *buf</var>)<var><a name="index-stat-1504"></a></var><br>
+<blockquote><p>The <code>stat</code> function returns information about the attributes of the
+file named by <var>filename</var><!-- /@w --> in the structure pointed to by <var>buf</var>.
+
+        <p>If <var>filename</var> is the name of a symbolic link, the attributes you get
+describe the file that the link points to.  If the link points to a
+nonexistent file name, then <code>stat</code> fails reporting a nonexistent
+file.
+
+        <p>The return value is <code>0</code> if the operation is successful, or
+<code>-1</code> on failure.  In addition to the usual file name errors
+(see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>, the following <code>errno</code> error conditions
+are defined for this function:
+
+          <dl>
+<dt><code>ENOENT</code><dd>The file named by <var>filename</var> doesn't exist. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>stat64</code> since the LFS interface transparently
+replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>stat64</b> (<var>const char *filename, struct stat64 *buf</var>)<var><a name="index-stat64-1505"></a></var><br>
+<blockquote><p>This function is similar to <code>stat</code> but it is also able to work on
+files larger then 2^31 bytes on 32-bit systems.  To be able to do
+this the result is stored in a variable of type <code>struct stat64</code> to
+which <var>buf</var> must point.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is available under the name <code>stat</code> and so transparently
+replaces the interface for small files on 32-bit machines. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>fstat</b> (<var>int filedes, struct stat *buf</var>)<var><a name="index-fstat-1506"></a></var><br>
+<blockquote><p>The <code>fstat</code> function is like <code>stat</code>, except that it takes an
+open file descriptor as an argument instead of a file name. 
+See <a href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>.
+
+        <p>Like <code>stat</code>, <code>fstat</code> returns <code>0</code> on success and <code>-1</code>
+on failure.  The following <code>errno</code> error conditions are defined for
+<code>fstat</code>:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor. 
+</dl>
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>fstat64</code> since the LFS interface transparently
+replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>fstat64</b> (<var>int filedes, struct stat64 *buf</var>)<var><a name="index-fstat64-1507"></a></var><br>
+<blockquote><p>This function is similar to <code>fstat</code> but is able to work on large
+files on 32-bit platforms.  For large files the file descriptor
+<var>filedes</var> should be obtained by <code>open64</code> or <code>creat64</code>. 
+The <var>buf</var> pointer points to a variable of type <code>struct stat64</code>
+which is able to represent the larger values.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is available under the name <code>fstat</code> and so transparently
+replaces the interface for small files on 32-bit machines. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>lstat</b> (<var>const char *filename, struct stat *buf</var>)<var><a name="index-lstat-1508"></a></var><br>
+<blockquote><p>The <code>lstat</code> function is like <code>stat</code>, except that it does not
+follow symbolic links.  If <var>filename</var> is the name of a symbolic
+link, <code>lstat</code> returns information about the link itself; otherwise
+<code>lstat</code> works like <code>stat</code>.  See <a href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is in fact <code>lstat64</code> since the LFS interface transparently
+replaces the normal implementation. 
+</p></blockquote></div>
+
+<!-- sys/stat.h -->
+<!-- Unix98 -->
+<div class="defun">
+&mdash; Function: int <b>lstat64</b> (<var>const char *filename, struct stat64 *buf</var>)<var><a name="index-lstat64-1509"></a></var><br>
+<blockquote><p>This function is similar to <code>lstat</code> but it is also able to work on
+files larger then 2^31 bytes on 32-bit systems.  To be able to do
+this the result is stored in a variable of type <code>struct stat64</code> to
+which <var>buf</var> must point.
+
+        <p>When the sources are compiled with <code>_FILE_OFFSET_BITS == 64</code> this
+function is available under the name <code>lstat</code> and so transparently
+replaces the interface for small files on 32-bit machines. 
+</p></blockquote></div>
+
+   </body></html>
+

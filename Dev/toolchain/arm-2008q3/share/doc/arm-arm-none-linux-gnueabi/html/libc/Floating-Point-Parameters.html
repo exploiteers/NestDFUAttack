@@ -1,0 +1,253 @@
+<html lang="en">
+<head>
+<title>Floating Point Parameters - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Floating-Type-Macros.html#Floating-Type-Macros" title="Floating Type Macros">
+<link rel="prev" href="Floating-Point-Concepts.html#Floating-Point-Concepts" title="Floating Point Concepts">
+<link rel="next" href="IEEE-Floating-Point.html#IEEE-Floating-Point" title="IEEE Floating Point">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Floating-Point-Parameters"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="IEEE-Floating-Point.html#IEEE-Floating-Point">IEEE Floating Point</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Floating-Type-Macros.html#Floating-Type-Macros">Floating Type Macros</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">A.5.3.2 Floating Point Parameters</h5>
+
+<p><a name="index-float_002eh-3779"></a>These macro definitions can be accessed by including the header file
+<samp><span class="file">float.h</span></samp> in your program.
+
+   <p>Macro names starting with &lsquo;<samp><span class="samp">FLT_</span></samp>&rsquo; refer to the <code>float</code> type,
+while names beginning with &lsquo;<samp><span class="samp">DBL_</span></samp>&rsquo; refer to the <code>double</code> type
+and names beginning with &lsquo;<samp><span class="samp">LDBL_</span></samp>&rsquo; refer to the <code>long double</code>
+type.  (If GCC does not support <code>long double</code> as a distinct data
+type on a target machine then the values for the &lsquo;<samp><span class="samp">LDBL_</span></samp>&rsquo; constants
+are equal to the corresponding constants for the <code>double</code> type.)
+
+   <p>Of these macros, only <code>FLT_RADIX</code> is guaranteed to be a constant
+expression.  The other macros listed here cannot be reliably used in
+places that require constant expressions, such as &lsquo;<samp><span class="samp">#if</span></samp>&rsquo;
+preprocessing directives or in the dimensions of static arrays.
+
+   <p>Although the ISO&nbsp;C<!-- /@w --> standard specifies minimum and maximum values for
+most of these parameters, the GNU C implementation uses whatever values
+describe the floating point representation of the target machine.  So in
+principle GNU C actually satisfies the ISO&nbsp;C<!-- /@w --> requirements only if the
+target machine is suitable.  In practice, all the machines currently
+supported are suitable.
+
+     <dl>
+<!-- float.h -->
+<!-- ISO -->
+<dt><code>FLT_ROUNDS</code><a name="index-FLT_005fROUNDS-3780"></a><dd>This value characterizes the rounding mode for floating point addition. 
+The following values indicate standard rounding modes:
+
+          <dl>
+<dt><code>-1</code><dd>The mode is indeterminable. 
+<br><dt><code>0</code><dd>Rounding is towards zero. 
+<br><dt><code>1</code><dd>Rounding is to the nearest number. 
+<br><dt><code>2</code><dd>Rounding is towards positive infinity. 
+<br><dt><code>3</code><dd>Rounding is towards negative infinity. 
+</dl>
+
+     <p class="noindent">Any other value represents a machine-dependent nonstandard rounding
+mode.
+
+     <p>On most machines, the value is <code>1</code>, in accordance with the IEEE
+standard for floating point.
+
+     <p>Here is a table showing how certain values round for each possible value
+of <code>FLT_ROUNDS</code>, if the other aspects of the representation match
+the IEEE single-precision standard.
+
+     <pre class="smallexample">                          0      1             2             3
+           1.00000003    1.0    1.0           1.00000012    1.0
+           1.00000007    1.0    1.00000012    1.00000012    1.0
+          -1.00000003   -1.0   -1.0          -1.0          -1.00000012
+          -1.00000007   -1.0   -1.00000012   -1.0          -1.00000012
+</pre>
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_RADIX</code><a name="index-FLT_005fRADIX-3781"></a><dd>This is the value of the base, or radix, of the exponent representation. 
+This is guaranteed to be a constant expression, unlike the other macros
+described in this section.  The value is 2 on all machines we know of
+except the IBM 360 and derivatives.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MANT_DIG</code><a name="index-FLT_005fMANT_005fDIG-3782"></a><dd>This is the number of base-<code>FLT_RADIX</code> digits in the floating point
+mantissa for the <code>float</code> data type.  The following expression
+yields <code>1.0</code> (even though mathematically it should not) due to the
+limited number of mantissa digits:
+
+     <pre class="smallexample">          float radix = FLT_RADIX;
+          
+          1.0f + 1.0f / radix / radix / ... / radix
+</pre>
+     <p class="noindent">where <code>radix</code> appears <code>FLT_MANT_DIG</code> times.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MANT_DIG</code><a name="index-DBL_005fMANT_005fDIG-3783"></a><dt><code>LDBL_MANT_DIG</code><a name="index-LDBL_005fMANT_005fDIG-3784"></a><dd>This is the number of base-<code>FLT_RADIX</code> digits in the floating point
+mantissa for the data types <code>double</code> and <code>long double</code>,
+respectively.
+
+     <!-- Extra blank lines make it look better. -->
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_DIG</code><a name="index-FLT_005fDIG-3785"></a><dd>
+This is the number of decimal digits of precision for the <code>float</code>
+data type.  Technically, if <var>p</var> and <var>b</var> are the precision and
+base (respectively) for the representation, then the decimal precision
+<var>q</var> is the maximum number of decimal digits such that any floating
+point number with <var>q</var> base 10 digits can be rounded to a floating
+point number with <var>p</var> base <var>b</var> digits and back again, without
+change to the <var>q</var> decimal digits.
+
+     <p>The value of this macro is supposed to be at least <code>6</code>, to satisfy
+ISO&nbsp;C<!-- /@w -->.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_DIG</code><a name="index-DBL_005fDIG-3786"></a><dt><code>LDBL_DIG</code><a name="index-LDBL_005fDIG-3787"></a><dd>
+These are similar to <code>FLT_DIG</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.  The values of these
+macros are supposed to be at least <code>10</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MIN_EXP</code><a name="index-FLT_005fMIN_005fEXP-3788"></a><dd>This is the smallest possible exponent value for type <code>float</code>. 
+More precisely, is the minimum negative integer such that the value
+<code>FLT_RADIX</code> raised to this power minus 1 can be represented as a
+normalized floating point number of type <code>float</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MIN_EXP</code><a name="index-DBL_005fMIN_005fEXP-3789"></a><dt><code>LDBL_MIN_EXP</code><a name="index-LDBL_005fMIN_005fEXP-3790"></a><dd>
+These are similar to <code>FLT_MIN_EXP</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MIN_10_EXP</code><a name="index-FLT_005fMIN_005f10_005fEXP-3791"></a><dd>This is the minimum negative integer such that <code>10</code> raised to this
+power minus 1 can be represented as a normalized floating point number
+of type <code>float</code>.  This is supposed to be <code>-37</code> or even less.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MIN_10_EXP</code><a name="index-DBL_005fMIN_005f10_005fEXP-3792"></a><dt><code>LDBL_MIN_10_EXP</code><a name="index-LDBL_005fMIN_005f10_005fEXP-3793"></a><dd>These are similar to <code>FLT_MIN_10_EXP</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MAX_EXP</code><a name="index-FLT_005fMAX_005fEXP-3794"></a><dd>This is the largest possible exponent value for type <code>float</code>.  More
+precisely, this is the maximum positive integer such that value
+<code>FLT_RADIX</code> raised to this power minus 1 can be represented as a
+floating point number of type <code>float</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MAX_EXP</code><a name="index-DBL_005fMAX_005fEXP-3795"></a><dt><code>LDBL_MAX_EXP</code><a name="index-LDBL_005fMAX_005fEXP-3796"></a><dd>These are similar to <code>FLT_MAX_EXP</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MAX_10_EXP</code><a name="index-FLT_005fMAX_005f10_005fEXP-3797"></a><dd>This is the maximum positive integer such that <code>10</code> raised to this
+power minus 1 can be represented as a normalized floating point number
+of type <code>float</code>.  This is supposed to be at least <code>37</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MAX_10_EXP</code><a name="index-DBL_005fMAX_005f10_005fEXP-3798"></a><dt><code>LDBL_MAX_10_EXP</code><a name="index-LDBL_005fMAX_005f10_005fEXP-3799"></a><dd>These are similar to <code>FLT_MAX_10_EXP</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MAX</code><a name="index-FLT_005fMAX-3800"></a><dd>
+The value of this macro is the maximum number representable in type
+<code>float</code>.  It is supposed to be at least <code>1E+37</code>.  The value
+has type <code>float</code>.
+
+     <p>The smallest representable number is <code>- FLT_MAX</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MAX</code><a name="index-DBL_005fMAX-3801"></a><dt><code>LDBL_MAX</code><a name="index-LDBL_005fMAX-3802"></a><dd>
+These are similar to <code>FLT_MAX</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.  The type of the
+macro's value is the same as the type it describes.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_MIN</code><a name="index-FLT_005fMIN-3803"></a><dd>
+The value of this macro is the minimum normalized positive floating
+point number that is representable in type <code>float</code>.  It is supposed
+to be no more than <code>1E-37</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_MIN</code><a name="index-DBL_005fMIN-3804"></a><dt><code>LDBL_MIN</code><a name="index-LDBL_005fMIN-3805"></a><dd>
+These are similar to <code>FLT_MIN</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.  The type of the
+macro's value is the same as the type it describes.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>FLT_EPSILON</code><a name="index-FLT_005fEPSILON-3806"></a><dd>
+This is the minimum positive floating point number of type <code>float</code>
+such that <code>1.0 + FLT_EPSILON != 1.0</code> is true.  It's supposed to
+be no greater than <code>1E-5</code>.
+
+     <!-- float.h -->
+     <!-- ISO -->
+     <br><dt><code>DBL_EPSILON</code><a name="index-DBL_005fEPSILON-3807"></a><dt><code>LDBL_EPSILON</code><a name="index-LDBL_005fEPSILON-3808"></a><dd>
+These are similar to <code>FLT_EPSILON</code>, but for the data types
+<code>double</code> and <code>long double</code>, respectively.  The type of the
+macro's value is the same as the type it describes.  The values are not
+supposed to be greater than <code>1E-9</code>. 
+</dl>
+
+   </body></html>
+

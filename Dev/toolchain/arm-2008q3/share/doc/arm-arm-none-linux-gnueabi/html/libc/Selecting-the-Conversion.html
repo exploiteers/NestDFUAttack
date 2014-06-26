@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Selecting the Conversion - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion" title="Restartable multibyte conversion">
+<link rel="next" href="Keeping-the-state.html#Keeping-the-state" title="Keeping the state">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Selecting-the-Conversion"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Keeping-the-state.html#Keeping-the-state">Keeping the state</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.3.1 Selecting the conversion and its properties</h4>
+
+<p>We already said above that the currently selected locale for the
+<code>LC_CTYPE</code> category decides about the conversion that is performed
+by the functions we are about to describe.  Each locale uses its own
+character set (given as an argument to <code>localedef</code>) and this is the
+one assumed as the external multibyte encoding.  The wide character
+character set always is UCS-4, at least on GNU systems.
+
+   <p>A characteristic of each multibyte character set is the maximum number
+of bytes that can be necessary to represent one character.  This
+information is quite important when writing code that uses the
+conversion functions (as shown in the examples below). 
+The ISO&nbsp;C<!-- /@w --> standard defines two macros that provide this information.
+
+<!-- limits.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>MB_LEN_MAX</b><var><a name="index-MB_005fLEN_005fMAX-633"></a></var><br>
+<blockquote><p><code>MB_LEN_MAX</code> specifies the maximum number of bytes in the multibyte
+sequence for a single character in any of the supported locales.  It is
+a compile-time constant and is defined in <samp><span class="file">limits.h</span></samp>. 
+<a name="index-limits_002eh-634"></a></p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>MB_CUR_MAX</b><var><a name="index-MB_005fCUR_005fMAX-635"></a></var><br>
+<blockquote><p><code>MB_CUR_MAX</code> expands into a positive integer expression that is the
+maximum number of bytes in a multibyte character in the current locale. 
+The value is never greater than <code>MB_LEN_MAX</code>.  Unlike
+<code>MB_LEN_MAX</code> this macro need not be a compile-time constant, and in
+the GNU C library it is not.
+
+        <p><a name="index-stdlib_002eh-636"></a><code>MB_CUR_MAX</code> is defined in <samp><span class="file">stdlib.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Two different macros are necessary since strictly ISO&nbsp;C90<!-- /@w --> compilers
+do not allow variable length array definitions, but still it is desirable
+to avoid dynamic allocation.  This incomplete piece of code shows the
+problem:
+
+<pre class="smallexample">     {
+       char buf[MB_LEN_MAX];
+       ssize_t len = 0;
+     
+       while (! feof (fp))
+         {
+           fread (&amp;buf[len], 1, MB_CUR_MAX - len, fp);
+           /* <span class="roman">... process</span> buf */
+           len -= used;
+         }
+     }
+</pre>
+   <p>The code in the inner loop is expected to have always enough bytes in
+the array <var>buf</var> to convert one multibyte character.  The array
+<var>buf</var> has to be sized statically since many compilers do not allow a
+variable size.  The <code>fread</code> call makes sure that <code>MB_CUR_MAX</code>
+bytes are always available in <var>buf</var>.  Note that it isn't
+a problem if <code>MB_CUR_MAX</code> is not a compile-time constant.
+
+   </body></html>
+

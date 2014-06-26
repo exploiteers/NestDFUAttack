@@ -1,0 +1,115 @@
+<html lang="en">
+<head>
+<title>Important Data Types - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Language-Features.html#Language-Features" title="Language Features">
+<link rel="prev" href="Null-Pointer-Constant.html#Null-Pointer-Constant" title="Null Pointer Constant">
+<link rel="next" href="Data-Type-Measurements.html#Data-Type-Measurements" title="Data Type Measurements">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Important-Data-Types"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Data-Type-Measurements.html#Data-Type-Measurements">Data Type Measurements</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Null-Pointer-Constant.html#Null-Pointer-Constant">Null Pointer Constant</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Language-Features.html#Language-Features">Language Features</a>
+<hr>
+</div>
+
+<h3 class="section">A.4 Important Data Types</h3>
+
+<p>The result of subtracting two pointers in C is always an integer, but the
+precise data type varies from C compiler to C compiler.  Likewise, the
+data type of the result of <code>sizeof</code> also varies between compilers. 
+ISO defines standard aliases for these two types, so you can refer to
+them in a portable fashion.  They are defined in the header file
+<samp><span class="file">stddef.h</span></samp>. 
+<a name="index-stddef_002eh-3737"></a>
+<!-- stddef.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Data Type: <b>ptrdiff_t</b><var><a name="index-ptrdiff_005ft-3738"></a></var><br>
+<blockquote><p>This is the signed integer type of the result of subtracting two
+pointers.  For example, with the declaration <code>char *p1, *p2;</code>, the
+expression <code>p2 - p1</code> is of type <code>ptrdiff_t</code>.  This will
+probably be one of the standard signed integer types (<code>short&nbsp;int</code><!-- /@w -->, <code>int</code> or <code>long&nbsp;int</code><!-- /@w -->), but might be a nonstandard
+type that exists only for this purpose. 
+</p></blockquote></div>
+
+<!-- stddef.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data Type: <b>size_t</b><var><a name="index-size_005ft-3739"></a></var><br>
+<blockquote><p>This is an unsigned integer type used to represent the sizes of objects. 
+The result of the <code>sizeof</code> operator is of this type, and functions
+such as <code>malloc</code> (see <a href="Unconstrained-Allocation.html#Unconstrained-Allocation">Unconstrained Allocation</a>) and
+<code>memcpy</code> (see <a href="Copying-and-Concatenation.html#Copying-and-Concatenation">Copying and Concatenation</a>) accept arguments of
+this type to specify object sizes.
+
+        <p><strong>Usage Note:</strong> <code>size_t</code> is the preferred way to declare any
+arguments or variables that hold the size of an object. 
+</p></blockquote></div>
+
+   <p>In the GNU system <code>size_t</code> is equivalent to either
+<code>unsigned&nbsp;int</code><!-- /@w --> or <code>unsigned&nbsp;long&nbsp;int</code><!-- /@w -->.  These types
+have identical properties on the GNU system and, for most purposes, you
+can use them interchangeably.  However, they are distinct as data types,
+which makes a difference in certain contexts.
+
+   <p>For example, when you specify the type of a function argument in a
+function prototype, it makes a difference which one you use.  If the
+system header files declare <code>malloc</code> with an argument of type
+<code>size_t</code> and you declare <code>malloc</code> with an argument of type
+<code>unsigned int</code>, you will get a compilation error if <code>size_t</code>
+happens to be <code>unsigned long int</code> on your system.  To avoid any
+possibility of error, when a function argument or value is supposed to
+have type <code>size_t</code>, never declare its type in any other way.
+
+   <p><strong>Compatibility Note:</strong> Implementations of C before the advent of
+ISO&nbsp;C<!-- /@w --> generally used <code>unsigned int</code> for representing object sizes
+and <code>int</code> for pointer subtraction results.  They did not
+necessarily define either <code>size_t</code> or <code>ptrdiff_t</code>.  Unix
+systems did define <code>size_t</code>, in <samp><span class="file">sys/types.h</span></samp>, but the
+definition was usually a signed type.
+
+   </body></html>
+

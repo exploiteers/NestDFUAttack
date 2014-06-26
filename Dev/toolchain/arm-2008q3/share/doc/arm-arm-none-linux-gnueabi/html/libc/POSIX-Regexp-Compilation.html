@@ -1,0 +1,180 @@
+<html lang="en">
+<head>
+<title>POSIX Regexp Compilation - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Regular-Expressions.html#Regular-Expressions" title="Regular Expressions">
+<link rel="next" href="Flags-for-POSIX-Regexps.html#Flags-for-POSIX-Regexps" title="Flags for POSIX Regexps">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="POSIX-Regexp-Compilation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Flags-for-POSIX-Regexps.html#Flags-for-POSIX-Regexps">Flags for POSIX Regexps</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Regular-Expressions.html#Regular-Expressions">Regular Expressions</a>
+<hr>
+</div>
+
+<h4 class="subsection">10.3.1 POSIX Regular Expression Compilation</h4>
+
+<p>Before you can actually match a regular expression, you must
+<dfn>compile</dfn> it.  This is not true compilation&mdash;it produces a special
+data structure, not machine instructions.  But it is like ordinary
+compilation in that its purpose is to enable you to &ldquo;execute&rdquo; the
+pattern fast.  (See <a href="Matching-POSIX-Regexps.html#Matching-POSIX-Regexps">Matching POSIX Regexps</a>, for how to use the
+compiled regular expression for matching.)
+
+   <p>There is a special data type for compiled regular expressions:
+
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Data Type: <b>regex_t</b><var><a name="index-regex_005ft-876"></a></var><br>
+<blockquote><p>This type of object holds a compiled regular expression. 
+It is actually a structure.  It has just one field that your programs
+should look at:
+
+          <dl>
+<dt><code>re_nsub</code><dd>This field holds the number of parenthetical subexpressions in the
+regular expression that was compiled. 
+</dl>
+
+        <p>There are several other fields, but we don't describe them here, because
+only the functions in the library should use them. 
+</p></blockquote></div>
+
+   <p>After you create a <code>regex_t</code> object, you can compile a regular
+expression into it by calling <code>regcomp</code>.
+
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<div class="defun">
+&mdash; Function: int <b>regcomp</b> (<var>regex_t *restrict compiled, const char *restrict pattern, int cflags</var>)<var><a name="index-regcomp-877"></a></var><br>
+<blockquote><p>The function <code>regcomp</code> &ldquo;compiles&rdquo; a regular expression into a
+data structure that you can use with <code>regexec</code> to match against a
+string.  The compiled regular expression format is designed for
+efficient matching.  <code>regcomp</code> stores it into <code>*</code><var>compiled</var>.
+
+        <p>It's up to you to allocate an object of type <code>regex_t</code> and pass its
+address to <code>regcomp</code>.
+
+        <p>The argument <var>cflags</var> lets you specify various options that control
+the syntax and semantics of regular expressions.  See <a href="Flags-for-POSIX-Regexps.html#Flags-for-POSIX-Regexps">Flags for POSIX Regexps</a>.
+
+        <p>If you use the flag <code>REG_NOSUB</code>, then <code>regcomp</code> omits from
+the compiled regular expression the information necessary to record
+how subexpressions actually match.  In this case, you might as well
+pass <code>0</code> for the <var>matchptr</var> and <var>nmatch</var> arguments when
+you call <code>regexec</code>.
+
+        <p>If you don't use <code>REG_NOSUB</code>, then the compiled regular expression
+does have the capacity to record how subexpressions match.  Also,
+<code>regcomp</code> tells you how many subexpressions <var>pattern</var> has, by
+storing the number in <var>compiled</var><code>-&gt;re_nsub</code>.  You can use that
+value to decide how long an array to allocate to hold information about
+subexpression matches.
+
+        <p><code>regcomp</code> returns <code>0</code> if it succeeds in compiling the regular
+expression; otherwise, it returns a nonzero error code (see the table
+below).  You can use <code>regerror</code> to produce an error message string
+describing the reason for a nonzero value; see <a href="Regexp-Cleanup.html#Regexp-Cleanup">Regexp Cleanup</a>.
+
+        </blockquote></div>
+
+   <p>Here are the possible nonzero values that <code>regcomp</code> can return:
+
+     <dl>
+<!-- regex.h -->
+<!-- POSIX.2 -->
+<dt><code>REG_BADBR</code><dd>There was an invalid &lsquo;<samp><span class="samp">\{...\}</span></samp>&rsquo; construct in the regular
+expression.  A valid &lsquo;<samp><span class="samp">\{...\}</span></samp>&rsquo; construct must contain either
+a single number, or two numbers in increasing order separated by a
+comma.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_BADPAT</code><dd>There was a syntax error in the regular expression.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_BADRPT</code><dd>A repetition operator such as &lsquo;<samp><span class="samp">?</span></samp>&rsquo; or &lsquo;<samp><span class="samp">*</span></samp>&rsquo; appeared in a bad
+position (with no preceding subexpression to act on).
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ECOLLATE</code><dd>The regular expression referred to an invalid collating element (one not
+defined in the current locale for string collation).  See <a href="Locale-Categories.html#Locale-Categories">Locale Categories</a>.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ECTYPE</code><dd>The regular expression referred to an invalid character class name.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_EESCAPE</code><dd>The regular expression ended with &lsquo;<samp><span class="samp">\</span></samp>&rsquo;.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ESUBREG</code><dd>There was an invalid number in the &lsquo;<samp><span class="samp">\</span><var>digit</var></samp>&rsquo; construct.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_EBRACK</code><dd>There were unbalanced square brackets in the regular expression.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_EPAREN</code><dd>An extended regular expression had unbalanced parentheses,
+or a basic regular expression had unbalanced &lsquo;<samp><span class="samp">\(</span></samp>&rsquo; and &lsquo;<samp><span class="samp">\)</span></samp>&rsquo;.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_EBRACE</code><dd>The regular expression had unbalanced &lsquo;<samp><span class="samp">\{</span></samp>&rsquo; and &lsquo;<samp><span class="samp">\}</span></samp>&rsquo;.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ERANGE</code><dd>One of the endpoints in a range expression was invalid.
+
+     <!-- regex.h -->
+     <!-- POSIX.2 -->
+     <br><dt><code>REG_ESPACE</code><dd><code>regcomp</code> ran out of memory. 
+</dl>
+
+   </body></html>
+

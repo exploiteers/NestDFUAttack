@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Datagram Example - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Datagrams.html#Datagrams" title="Datagrams">
+<link rel="prev" href="Receiving-Datagrams.html#Receiving-Datagrams" title="Receiving Datagrams">
+<link rel="next" href="Example-Receiver.html#Example-Receiver" title="Example Receiver">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Datagram-Example"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Example-Receiver.html#Example-Receiver">Example Receiver</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Receiving-Datagrams.html#Receiving-Datagrams">Receiving Datagrams</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Datagrams.html#Datagrams">Datagrams</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.10.3 Datagram Socket Example</h4>
+
+<p>Here is a set of example programs that send messages over a datagram
+stream in the local namespace.  Both the client and server programs use
+the <code>make_named_socket</code> function that was presented in <a href="Local-Socket-Example.html#Local-Socket-Example">Local Socket Example</a>, to create and name their sockets.
+
+   <p>First, here is the server program.  It sits in a loop waiting for
+messages to arrive, bouncing each message back to the sender. 
+Obviously this isn't a particularly useful program, but it does show
+the general ideas involved.
+
+<pre class="smallexample">     #include &lt;stdio.h&gt;
+     #include &lt;errno.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;sys/socket.h&gt;
+     #include &lt;sys/un.h&gt;
+     
+     #define SERVER  "/tmp/serversocket"
+     #define MAXMSG  512
+     
+     int
+     main (void)
+     {
+       int sock;
+       char message[MAXMSG];
+       struct sockaddr_un name;
+       size_t size;
+       int nbytes;
+     
+       /* <span class="roman">Remove the filename first, it's ok if the call fails</span> */
+       unlink (SERVER);
+     
+       /* <span class="roman">Make the socket, then loop endlessly.</span> */
+       sock = make_named_socket (SERVER);
+       while (1)
+         {
+           /* <span class="roman">Wait for a datagram.</span> */
+           size = sizeof (name);
+           nbytes = recvfrom (sock, message, MAXMSG, 0,
+                              (struct sockaddr *) &amp; name, &amp;size);
+           if (nbytes &lt; 0)
+             {
+               perror ("recfrom (server)");
+               exit (EXIT_FAILURE);
+             }
+     
+           /* <span class="roman">Give a diagnostic message.</span> */
+           fprintf (stderr, "Server: got message: %s\n", message);
+     
+           /* <span class="roman">Bounce the message back to the sender.</span> */
+           nbytes = sendto (sock, message, nbytes, 0,
+                            (struct sockaddr *) &amp; name, size);
+           if (nbytes &lt; 0)
+             {
+               perror ("sendto (server)");
+               exit (EXIT_FAILURE);
+             }
+         }
+     }
+</pre>
+   </body></html>
+

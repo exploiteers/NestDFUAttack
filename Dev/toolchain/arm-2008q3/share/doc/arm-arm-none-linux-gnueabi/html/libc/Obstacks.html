@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+<title>Obstacks - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory-Allocation.html#Memory-Allocation" title="Memory Allocation">
+<link rel="prev" href="Allocation-Debugging.html#Allocation-Debugging" title="Allocation Debugging">
+<link rel="next" href="Variable-Size-Automatic.html#Variable-Size-Automatic" title="Variable Size Automatic">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Obstacks"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variable-Size-Automatic.html#Variable-Size-Automatic">Variable Size Automatic</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Allocation-Debugging.html#Allocation-Debugging">Allocation Debugging</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>
+<hr>
+</div>
+
+<h4 class="subsection">3.2.4 Obstacks</h4>
+
+<p><a name="index-obstacks-299"></a>
+An <dfn>obstack</dfn> is a pool of memory containing a stack of objects.  You
+can create any number of separate obstacks, and then allocate objects in
+specified obstacks.  Within each obstack, the last object allocated must
+always be the first one freed, but distinct obstacks are independent of
+each other.
+
+   <p>Aside from this one constraint of order of freeing, obstacks are totally
+general: an obstack can contain any number of objects of any size.  They
+are implemented with macros, so allocation is usually very fast as long as
+the objects are usually small.  And the only space overhead per object is
+the padding needed to start each object on a suitable boundary.
+
+<ul class="menu">
+<li><a accesskey="1" href="Creating-Obstacks.html#Creating-Obstacks">Creating Obstacks</a>: 		How to declare an obstack in your program. 
+<li><a accesskey="2" href="Preparing-for-Obstacks.html#Preparing-for-Obstacks">Preparing for Obstacks</a>: 	Preparations needed before you can
+				 use obstacks. 
+<li><a accesskey="3" href="Allocation-in-an-Obstack.html#Allocation-in-an-Obstack">Allocation in an Obstack</a>:     Allocating objects in an obstack. 
+<li><a accesskey="4" href="Freeing-Obstack-Objects.html#Freeing-Obstack-Objects">Freeing Obstack Objects</a>:      Freeing objects in an obstack. 
+<li><a accesskey="5" href="Obstack-Functions.html#Obstack-Functions">Obstack Functions</a>: 		The obstack functions are both
+				 functions and macros. 
+<li><a accesskey="6" href="Growing-Objects.html#Growing-Objects">Growing Objects</a>:              Making an object bigger by stages. 
+<li><a accesskey="7" href="Extra-Fast-Growing.html#Extra-Fast-Growing">Extra Fast Growing</a>: 		Extra-high-efficiency (though more
+				 complicated) growing objects. 
+<li><a accesskey="8" href="Status-of-an-Obstack.html#Status-of-an-Obstack">Status of an Obstack</a>:         Inquiries about the status of an obstack. 
+<li><a accesskey="9" href="Obstacks-Data-Alignment.html#Obstacks-Data-Alignment">Obstacks Data Alignment</a>:      Controlling alignment of objects in obstacks. 
+<li><a href="Obstack-Chunks.html#Obstack-Chunks">Obstack Chunks</a>:               How obstacks obtain and release chunks;
+				 efficiency considerations. 
+<li><a href="Summary-of-Obstacks.html#Summary-of-Obstacks">Summary of Obstacks</a>
+</ul>
+
+   </body></html>
+

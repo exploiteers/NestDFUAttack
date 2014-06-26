@@ -1,0 +1,161 @@
+<html lang="en">
+<head>
+<title>Extra Fast Growing - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Obstacks.html#Obstacks" title="Obstacks">
+<link rel="prev" href="Growing-Objects.html#Growing-Objects" title="Growing Objects">
+<link rel="next" href="Status-of-an-Obstack.html#Status-of-an-Obstack" title="Status of an Obstack">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Extra-Fast-Growing"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Status-of-an-Obstack.html#Status-of-an-Obstack">Status of an Obstack</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Growing-Objects.html#Growing-Objects">Growing Objects</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Obstacks.html#Obstacks">Obstacks</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.4.7 Extra Fast Growing Objects</h5>
+
+<p><a name="index-efficiency-and-obstacks-324"></a>
+The usual functions for growing objects incur overhead for checking
+whether there is room for the new growth in the current chunk.  If you
+are frequently constructing objects in small steps of growth, this
+overhead can be significant.
+
+   <p>You can reduce the overhead by using special &ldquo;fast growth&rdquo;
+functions that grow the object without checking.  In order to have a
+robust program, you must do the checking yourself.  If you do this checking
+in the simplest way each time you are about to add data to the object, you
+have not saved anything, because that is what the ordinary growth
+functions do.  But if you can arrange to check less often, or check
+more efficiently, then you make the program faster.
+
+   <p>The function <code>obstack_room</code> returns the amount of room available
+in the current chunk.  It is declared as follows:
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>obstack_room</b> (<var>struct obstack *obstack-ptr</var>)<var><a name="index-obstack_005froom-325"></a></var><br>
+<blockquote><p>This returns the number of bytes that can be added safely to the current
+growing object (or to an object about to be started) in obstack
+<var>obstack</var> using the fast growth functions. 
+</p></blockquote></div>
+
+   <p>While you know there is room, you can use these fast growth functions
+for adding data to a growing object:
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_1grow_fast</b> (<var>struct obstack *obstack-ptr, char c</var>)<var><a name="index-obstack_005f1grow_005ffast-326"></a></var><br>
+<blockquote><p>The function <code>obstack_1grow_fast</code> adds one byte containing the
+character <var>c</var> to the growing object in obstack <var>obstack-ptr</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_ptr_grow_fast</b> (<var>struct obstack *obstack-ptr, void *data</var>)<var><a name="index-obstack_005fptr_005fgrow_005ffast-327"></a></var><br>
+<blockquote><p>The function <code>obstack_ptr_grow_fast</code> adds <code>sizeof (void *)</code>
+bytes containing the value of <var>data</var> to the growing object in
+obstack <var>obstack-ptr</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_int_grow_fast</b> (<var>struct obstack *obstack-ptr, int data</var>)<var><a name="index-obstack_005fint_005fgrow_005ffast-328"></a></var><br>
+<blockquote><p>The function <code>obstack_int_grow_fast</code> adds <code>sizeof (int)</code> bytes
+containing the value of <var>data</var> to the growing object in obstack
+<var>obstack-ptr</var>. 
+</p></blockquote></div>
+
+<!-- obstack.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>obstack_blank_fast</b> (<var>struct obstack *obstack-ptr, int size</var>)<var><a name="index-obstack_005fblank_005ffast-329"></a></var><br>
+<blockquote><p>The function <code>obstack_blank_fast</code> adds <var>size</var> bytes to the
+growing object in obstack <var>obstack-ptr</var> without initializing them. 
+</p></blockquote></div>
+
+   <p>When you check for space using <code>obstack_room</code> and there is not
+enough room for what you want to add, the fast growth functions
+are not safe.  In this case, simply use the corresponding ordinary
+growth function instead.  Very soon this will copy the object to a
+new chunk; then there will be lots of room available again.
+
+   <p>So, each time you use an ordinary growth function, check afterward for
+sufficient space using <code>obstack_room</code>.  Once the object is copied
+to a new chunk, there will be plenty of space again, so the program will
+start using the fast growth functions again.
+
+   <p>Here is an example:
+
+<pre class="smallexample">     void
+     add_string (struct obstack *obstack, const char *ptr, int len)
+     {
+       while (len &gt; 0)
+         {
+           int room = obstack_room (obstack);
+           if (room == 0)
+             {
+               /* <span class="roman">Not enough room. Add one character slowly,</span>
+                  <span class="roman">which may copy to a new chunk and make room.</span>  */
+               obstack_1grow (obstack, *ptr++);
+               len--;
+             }
+           else
+             {
+               if (room &gt; len)
+                 room = len;
+               /* <span class="roman">Add fast as much as we have room for.</span> */
+               len -= room;
+               while (room-- &gt; 0)
+                 obstack_1grow_fast (obstack, *ptr++);
+             }
+         }
+     }
+</pre>
+   </body></html>
+

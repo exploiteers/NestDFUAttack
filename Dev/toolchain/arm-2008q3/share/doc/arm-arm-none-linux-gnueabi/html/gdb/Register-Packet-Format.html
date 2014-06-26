@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+<title>Register Packet Format - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Remote-Protocol.html#Remote-Protocol" title="Remote Protocol">
+<link rel="prev" href="General-Query-Packets.html#General-Query-Packets" title="General Query Packets">
+<link rel="next" href="Tracepoint-Packets.html#Tracepoint-Packets" title="Tracepoint Packets">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Register-Packet-Format"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tracepoint-Packets.html#Tracepoint-Packets">Tracepoint Packets</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="General-Query-Packets.html#General-Query-Packets">General Query Packets</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Remote-Protocol.html#Remote-Protocol">Remote Protocol</a>
+<hr>
+</div>
+
+<h3 class="section">D.6 Register Packet Format</h3>
+
+<p>The following <code>g</code>/<code>G</code> packets have previously been defined. 
+In the below, some thirty-two bit registers are transferred as
+sixty-four bits.  Those registers should be zero/sign extended (which?) 
+to fill the space allocated.  Register bytes are transferred in target
+byte order.  The two nibbles within a register byte are transferred
+most-significant - least-significant.
+
+     <dl>
+<dt><span class="roman">MIPS32</span><dd>
+All registers are transferred as thirty-two bit quantities in the order:
+32 general-purpose; sr; lo; hi; bad; cause; pc; 32 floating-point
+registers; fsr; fir; fp.
+
+     <br><dt><span class="roman">MIPS64</span><dd>
+All registers are transferred as sixty-four bit quantities (including
+thirty-two bit registers such as <code>sr</code>).  The ordering is the same
+as <code>MIPS32</code>.
+
+   </dl>
+
+   </body></html>
+

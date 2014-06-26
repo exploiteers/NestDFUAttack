@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+<title>Pseudo-Terminal Pairs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Pseudo_002dTerminals.html#Pseudo_002dTerminals" title="Pseudo-Terminals">
+<link rel="prev" href="Allocation.html#Allocation" title="Allocation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pseudo-Terminal-Pairs"></a>
+<a name="Pseudo_002dTerminal-Pairs"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Allocation.html#Allocation">Allocation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Pseudo_002dTerminals.html#Pseudo_002dTerminals">Pseudo-Terminals</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.8.2 Opening a Pseudo-Terminal Pair</h4>
+
+<p><a name="index-opening-a-pseudo_002dterminal-pair-2030"></a>
+These functions, derived from BSD, are available in the separate
+<samp><span class="file">libutil</span></samp> library, and declared in <samp><span class="file">pty.h</span></samp>.
+
+<!-- pty.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>openpty</b> (<var>int *amaster, int *aslave, char *name, const struct termios *termp, const struct winsize *winp</var>)<var><a name="index-openpty-2031"></a></var><br>
+<blockquote><p>This function allocates and opens a pseudo-terminal pair, returning the
+file descriptor for the master in <var>*amaster</var>, and the file
+descriptor for the slave in <var>*aslave</var>.  If the argument <var>name</var>
+is not a null pointer, the file name of the slave pseudo-terminal
+device is stored in <code>*name</code>.  If <var>termp</var> is not a null pointer,
+the terminal attributes of the slave are set to the ones specified in
+the structure that <var>termp</var> points to (see <a href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>). 
+Likewise, if the <var>winp</var> is not a null pointer, the screen size of
+the slave is set to the values specified in the structure that
+<var>winp</var> points to.
+
+        <p>The normal return value from <code>openpty</code> is 0; a value of
+-1 is returned in case of failure.  The following <code>errno</code>
+conditions are defined for this function:
+
+          <dl>
+<dt><code>ENOENT</code><dd>There are no free pseudo-terminal pairs available. 
+</dl>
+
+        <p><strong>Warning:</strong> Using the <code>openpty</code> function with <var>name</var> not
+set to <code>NULL</code> is <strong>very dangerous</strong> because it provides no
+protection against overflowing the string <var>name</var>.  You should use
+the <code>ttyname</code> function on the file descriptor returned in
+<var>*slave</var> to find out the file name of the slave pseudo-terminal
+device instead. 
+</p></blockquote></div>
+
+<!-- pty.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>forkpty</b> (<var>int *amaster, char *name, const struct termios *termp, const struct winsize *winp</var>)<var><a name="index-forkpty-2032"></a></var><br>
+<blockquote><p>This function is similar to the <code>openpty</code> function, but in
+addition, forks a new process (see <a href="Creating-a-Process.html#Creating-a-Process">Creating a Process</a>) and makes the
+newly opened slave pseudo-terminal device the controlling terminal
+(see <a href="Controlling-Terminal.html#Controlling-Terminal">Controlling Terminal</a>) for the child process.
+
+        <p>If the operation is successful, there are then both parent and child
+processes and both see <code>forkpty</code> return, but with different values:
+it returns a value of 0 in the child process and returns the child's
+process ID in the parent process.
+
+        <p>If the allocation of a pseudo-terminal pair or the process creation
+failed, <code>forkpty</code> returns a value of -1 in the parent
+process.
+
+        <p><strong>Warning:</strong> The <code>forkpty</code> function has the same problems with
+respect to the <var>name</var> argument as <code>openpty</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

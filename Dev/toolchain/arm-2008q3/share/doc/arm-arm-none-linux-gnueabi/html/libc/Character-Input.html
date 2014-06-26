@@ -1,0 +1,231 @@
+<html lang="en">
+<head>
+<title>Character Input - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="I_002fO-on-Streams.html#I_002fO-on-Streams" title="I/O on Streams">
+<link rel="prev" href="Simple-Output.html#Simple-Output" title="Simple Output">
+<link rel="next" href="Line-Input.html#Line-Input" title="Line Input">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Character-Input"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Line-Input.html#Line-Input">Line Input</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Simple-Output.html#Simple-Output">Simple Output</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="I_002fO-on-Streams.html#I_002fO-on-Streams">I/O on Streams</a>
+<hr>
+</div>
+
+<h3 class="section">12.8 Character Input</h3>
+
+<p><a name="index-reading-from-a-stream_002c-by-characters-977"></a>This section describes functions for performing character-oriented
+input.  These narrow streams functions are declared in the header file
+<samp><span class="file">stdio.h</span></samp> and the wide character functions are declared in
+<samp><span class="file">wchar.h</span></samp>. 
+<a name="index-stdio_002eh-978"></a><a name="index-wchar_002eh-979"></a>
+These functions return an <code>int</code> or <code>wint_t</code> value (for narrow
+and wide stream functions respectively) that is either a character of
+input, or the special value <code>EOF</code>/<code>WEOF</code> (usually -1).  For
+the narrow stream functions it is important to store the result of these
+functions in a variable of type <code>int</code> instead of <code>char</code>, even
+when you plan to use it only as a character.  Storing <code>EOF</code> in a
+<code>char</code> variable truncates its value to the size of a character, so
+that it is no longer distinguishable from the valid character
+&lsquo;<samp><span class="samp">(char) -1</span></samp>&rsquo;.  So always use an <code>int</code> for the result of
+<code>getc</code> and friends, and check for <code>EOF</code> after the call; once
+you've verified that the result is not <code>EOF</code>, you can be sure that
+it will fit in a &lsquo;<samp><span class="samp">char</span></samp>&rsquo; variable without loss of information.
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fgetc</b> (<var>FILE *stream</var>)<var><a name="index-fgetc-980"></a></var><br>
+<blockquote><p>This function reads the next character as an <code>unsigned char</code> from
+the stream <var>stream</var> and returns its value, converted to an
+<code>int</code>.  If an end-of-file condition or read error occurs,
+<code>EOF</code> is returned instead. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>fgetwc</b> (<var>FILE *stream</var>)<var><a name="index-fgetwc-981"></a></var><br>
+<blockquote><p>This function reads the next wide character from the stream <var>stream</var>
+and returns its value.  If an end-of-file condition or read error
+occurs, <code>WEOF</code> is returned instead. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>fgetc_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-fgetc_005funlocked-982"></a></var><br>
+<blockquote><p>The <code>fgetc_unlocked</code> function is equivalent to the <code>fgetc</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wint_t <b>fgetwc_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-fgetwc_005funlocked-983"></a></var><br>
+<blockquote><p>The <code>fgetwc_unlocked</code> function is equivalent to the <code>fgetwc</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>getc</b> (<var>FILE *stream</var>)<var><a name="index-getc-984"></a></var><br>
+<blockquote><p>This is just like <code>fgetc</code>, except that it is permissible (and
+typical) for it to be implemented as a macro that evaluates the
+<var>stream</var> argument more than once.  <code>getc</code> is often highly
+optimized, so it is usually the best function to use to read a single
+character. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>getwc</b> (<var>FILE *stream</var>)<var><a name="index-getwc-985"></a></var><br>
+<blockquote><p>This is just like <code>fgetwc</code>, except that it is permissible for it to
+be implemented as a macro that evaluates the <var>stream</var> argument more
+than once.  <code>getwc</code> can be highly optimized, so it is usually the
+best function to use to read a single wide character. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>getc_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-getc_005funlocked-986"></a></var><br>
+<blockquote><p>The <code>getc_unlocked</code> function is equivalent to the <code>getc</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wint_t <b>getwc_unlocked</b> (<var>FILE *stream</var>)<var><a name="index-getwc_005funlocked-987"></a></var><br>
+<blockquote><p>The <code>getwc_unlocked</code> function is equivalent to the <code>getwc</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>getchar</b> (<var>void</var>)<var><a name="index-getchar-988"></a></var><br>
+<blockquote><p>The <code>getchar</code> function is equivalent to <code>getc</code> with <code>stdin</code>
+as the value of the <var>stream</var> argument. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>getwchar</b> (<var>void</var>)<var><a name="index-getwchar-989"></a></var><br>
+<blockquote><p>The <code>getwchar</code> function is equivalent to <code>getwc</code> with <code>stdin</code>
+as the value of the <var>stream</var> argument. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Function: int <b>getchar_unlocked</b> (<var>void</var>)<var><a name="index-getchar_005funlocked-990"></a></var><br>
+<blockquote><p>The <code>getchar_unlocked</code> function is equivalent to the <code>getchar</code>
+function except that it does not implicitly lock the stream. 
+</p></blockquote></div>
+
+<!-- wchar.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: wint_t <b>getwchar_unlocked</b> (<var>void</var>)<var><a name="index-getwchar_005funlocked-991"></a></var><br>
+<blockquote><p>The <code>getwchar_unlocked</code> function is equivalent to the <code>getwchar</code>
+function except that it does not implicitly lock the stream.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   <p>Here is an example of a function that does input using <code>fgetc</code>.  It
+would work just as well using <code>getc</code> instead, or using
+<code>getchar ()</code> instead of <code>fgetc&nbsp;(stdin)</code><!-- /@w -->.  The code would
+also work the same for the wide character stream functions.
+
+<pre class="smallexample">     int
+     y_or_n_p (const char *question)
+     {
+       fputs (question, stdout);
+       while (1)
+         {
+           int c, answer;
+           /* <span class="roman">Write a space to separate answer from question.</span> */
+           fputc (' ', stdout);
+           /* <span class="roman">Read the first character of the line.</span>
+              <span class="roman">This should be the answer character, but might not be.</span> */
+           c = tolower (fgetc (stdin));
+           answer = c;
+           /* <span class="roman">Discard rest of input line.</span> */
+           while (c != '\n' &amp;&amp; c != EOF)
+             c = fgetc (stdin);
+           /* <span class="roman">Obey the answer if it was valid.</span> */
+           if (answer == 'y')
+             return 1;
+           if (answer == 'n')
+             return 0;
+           /* <span class="roman">Answer was invalid: ask for valid answer.</span> */
+           fputs ("Please answer y or n:", stdout);
+         }
+     }
+</pre>
+   <!-- stdio.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>getw</b> (<var>FILE *stream</var>)<var><a name="index-getw-992"></a></var><br>
+<blockquote><p>This function reads a word (that is, an <code>int</code>) from <var>stream</var>. 
+It's provided for compatibility with SVID.  We recommend you use
+<code>fread</code> instead (see <a href="Block-Input_002fOutput.html#Block-Input_002fOutput">Block Input/Output</a>).  Unlike <code>getc</code>,
+any <code>int</code> value could be a valid result.  <code>getw</code> returns
+<code>EOF</code> when it encounters end-of-file or an error, but there is no
+way to distinguish this from an input word with value -1. 
+</p></blockquote></div>
+
+   </body></html>
+

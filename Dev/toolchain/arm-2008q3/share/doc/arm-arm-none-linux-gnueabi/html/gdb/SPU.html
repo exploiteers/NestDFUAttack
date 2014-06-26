@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+<title>SPU - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Architectures.html#Architectures" title="Architectures">
+<link rel="prev" href="HPPA.html#HPPA" title="HPPA">
+<link rel="next" href="PowerPC.html#PowerPC" title="PowerPC">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="SPU"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="PowerPC.html#PowerPC">PowerPC</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="HPPA.html#HPPA">HPPA</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Architectures.html#Architectures">Architectures</a>
+<hr>
+</div>
+
+<h4 class="subsection">19.4.6 Cell Broadband Engine SPU architecture</h4>
+
+<p><a name="index-Cell-Broadband-Engine-1253"></a><a name="index-SPU-1254"></a>
+When <span class="sc">gdb</span> is debugging the Cell Broadband Engine SPU architecture,
+it provides the following special commands:
+
+     <dl>
+<dt><code>info spu event</code><dd><a name="index-info-spu-1255"></a>Display SPU event facility status.  Shows current event mask
+and pending event status.
+
+     <br><dt><code>info spu signal</code><dd>Display SPU signal notification facility status.  Shows pending
+signal-control word and signal notification mode of both signal
+notification channels.
+
+     <br><dt><code>info spu mailbox</code><dd>Display SPU mailbox facility status.  Shows all pending entries,
+in order of processing, in each of the SPU Write Outbound,
+SPU Write Outbound Interrupt, and SPU Read Inbound mailboxes.
+
+     <br><dt><code>info spu dma</code><dd>Display MFC DMA status.  Shows all pending commands in the MFC
+DMA queue.  For each entry, opcode, tag, class IDs, effective
+and local store addresses and transfer size are shown.
+
+     <br><dt><code>info spu proxydma</code><dd>Display MFC Proxy-DMA status.  Shows all pending commands in the MFC
+Proxy-DMA queue.  For each entry, opcode, tag, class IDs, effective
+and local store addresses and transfer size are shown.
+
+   </dl>
+
+   </body></html>
+

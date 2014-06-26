@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+<title>Starting and Stopping Trace Experiments - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Set-Tracepoints.html#Set-Tracepoints" title="Set Tracepoints">
+<link rel="prev" href="Listing-Tracepoints.html#Listing-Tracepoints" title="Listing Tracepoints">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Starting-and-Stopping-Trace-Experiments"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Listing-Tracepoints.html#Listing-Tracepoints">Listing Tracepoints</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Set-Tracepoints.html#Set-Tracepoints">Set Tracepoints</a>
+<hr>
+</div>
+
+<h4 class="subsection">11.1.6 Starting and Stopping Trace Experiments</h4>
+
+     
+<a name="index-tstart-620"></a>
+<a name="index-start-a-new-trace-experiment-621"></a>
+<a name="index-collected-data-discarded-622"></a>
+<dl><dt><code>tstart</code><dd>This command takes no arguments.  It starts the trace experiment, and
+begins collecting data.  This has the side effect of discarding all
+the data collected in the trace buffer during the previous trace
+experiment.
+
+     <p><a name="index-tstop-623"></a><a name="index-stop-a-running-trace-experiment-624"></a><br><dt><code>tstop</code><dd>This command takes no arguments.  It ends the trace experiment, and
+stops collecting data.
+
+     <p><strong>Note</strong>: a trace experiment and data collection may stop
+automatically if any tracepoint's passcount is reached
+(see <a href="Tracepoint-Passcounts.html#Tracepoint-Passcounts">Tracepoint Passcounts</a>), or if the trace buffer becomes full.
+
+     <p><a name="index-tstatus-625"></a><a name="index-status-of-trace-data-collection-626"></a><a name="index-trace-experiment_002c-status-of-627"></a><br><dt><code>tstatus</code><dd>This command displays the status of the current trace data
+collection. 
+</dl>
+
+   <p>Here is an example of the commands we described so far:
+
+<pre class="smallexample">     (gdb) <b>trace gdb_c_test</b>
+     (gdb) <b>actions</b>
+     Enter actions for tracepoint #1, one per line.
+     &gt; collect $regs,$locals,$args
+     &gt; while-stepping 11
+       &gt; collect $regs
+       &gt; end
+     &gt; end
+     (gdb) <b>tstart</b>
+     	[time passes ...]
+     (gdb) <b>tstop</b>
+</pre>
+   </body></html>
+

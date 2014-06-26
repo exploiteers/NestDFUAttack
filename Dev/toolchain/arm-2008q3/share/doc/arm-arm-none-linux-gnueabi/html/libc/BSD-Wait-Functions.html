@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>BSD Wait Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Processes.html#Processes" title="Processes">
+<link rel="prev" href="Process-Completion-Status.html#Process-Completion-Status" title="Process Completion Status">
+<link rel="next" href="Process-Creation-Example.html#Process-Creation-Example" title="Process Creation Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="BSD-Wait-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Process-Creation-Example.html#Process-Creation-Example">Process Creation Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Process-Completion-Status.html#Process-Completion-Status">Process Completion Status</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Processes.html#Processes">Processes</a>
+<hr>
+</div>
+
+<h3 class="section">26.8 BSD Process Wait Functions</h3>
+
+<p>The GNU library also provides these related facilities for compatibility
+with BSD Unix.  BSD uses the <code>union wait</code> data type to represent
+status values rather than an <code>int</code>.  The two representations are
+actually interchangeable; they describe the same bit patterns.  The GNU
+C Library defines macros such as <code>WEXITSTATUS</code> so that they will
+work on either kind of object, and the <code>wait</code> function is defined
+to accept either type of pointer as its <var>status-ptr</var> argument.
+
+   <p>These functions are declared in <samp><span class="file">sys/wait.h</span></samp>. 
+<a name="index-sys_002fwait_002eh-3192"></a>
+<!-- sys/wait.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>union wait</b><var><a name="index-union-wait-3193"></a></var><br>
+<blockquote><p>This data type represents program termination status values.  It has
+the following members:
+
+          <dl>
+<dt><code>int w_termsig</code><dd>The value of this member is the same as that of the
+<code>WTERMSIG</code> macro.
+
+          <br><dt><code>int w_coredump</code><dd>The value of this member is the same as that of the
+<code>WCOREDUMP</code> macro.
+
+          <br><dt><code>int w_retcode</code><dd>The value of this member is the same as that of the
+<code>WEXITSTATUS</code> macro.
+
+          <br><dt><code>int w_stopsig</code><dd>The value of this member is the same as that of the
+<code>WSTOPSIG</code> macro. 
+</dl>
+
+        <p>Instead of accessing these members directly, you should use the
+equivalent macros. 
+</p></blockquote></div>
+
+   <p>The <code>wait3</code> function is the predecessor to <code>wait4</code>, which is
+more flexible.  <code>wait3</code> is now obsolete.
+
+<!-- sys/wait.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: pid_t <b>wait3</b> (<var>union wait *status-ptr, int options, struct rusage *usage</var>)<var><a name="index-wait3-3194"></a></var><br>
+<blockquote><p>If <var>usage</var> is a null pointer, <code>wait3</code> is equivalent to
+<code>waitpid (-1, </code><var>status-ptr</var><code>, </code><var>options</var><code>)</code>.
+
+        <p>If <var>usage</var> is not null, <code>wait3</code> stores usage figures for the
+child process in <code>*</code><var>rusage</var> (but only if the child has
+terminated, not if it has stopped).  See <a href="Resource-Usage.html#Resource-Usage">Resource Usage</a>. 
+</p></blockquote></div>
+
+   </body></html>
+

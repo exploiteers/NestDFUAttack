@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+<title>syslog; vsyslog - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages" title="Submitting Syslog Messages">
+<link rel="prev" href="openlog.html#openlog" title="openlog">
+<link rel="next" href="closelog.html#closelog" title="closelog">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="syslog%3b-vsyslog"></a>
+<a name="syslog_003b-vsyslog"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="closelog.html#closelog">closelog</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="openlog.html#openlog">openlog</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>
+<hr>
+</div>
+
+<h4 class="subsection">18.2.2 syslog, vsyslog</h4>
+
+<p>The symbols referred to in this section are declared in the file
+<samp><span class="file">syslog.h</span></samp>.
+
+<!-- syslog() is implemented as a call to vsyslog(). -->
+<!-- syslog.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>syslog</b> (<var>int facility_priority, char *format, ...</var>)<var><a name="index-syslog-2034"></a></var><br>
+<blockquote>
+        <p><code>syslog</code> submits a message to the Syslog facility.  It does this by
+writing to the Unix domain socket <code>/dev/log</code>.
+
+        <p><code>syslog</code> submits the message with the facility and priority indicated
+by <var>facility_priority</var>.  The macro <code>LOG_MAKEPRI</code> generates a
+facility/priority from a facility and a priority, as in the following
+example:
+
+     <pre class="smallexample">          LOG_MAKEPRI(LOG_USER, LOG_WARNING)
+</pre>
+        <p>The possible values for the facility code are (macros):
+
+     <!-- Internally, there is also LOG_KERN, but LOG_KERN == 0, which means -->
+     <!-- if you try to use it here, just selects default. -->
+          <dl>
+<dt><code>LOG_USER</code><a name="index-LOG_005fUSER-2035"></a><dd>A miscellaneous user process
+<br><dt><code>LOG_MAIL</code><a name="index-LOG_005fMAIL-2036"></a><dd>Mail
+<br><dt><code>LOG_DAEMON</code><a name="index-LOG_005fDAEMON-2037"></a><dd>A miscellaneous system daemon
+<br><dt><code>LOG_AUTH</code><a name="index-LOG_005fAUTH-2038"></a><dd>Security (authorization)
+<br><dt><code>LOG_SYSLOG</code><a name="index-LOG_005fSYSLOG-2039"></a><dd>Syslog
+<br><dt><code>LOG_LPR</code><a name="index-LOG_005fLPR-2040"></a><dd>Central printer
+<br><dt><code>LOG_NEWS</code><a name="index-LOG_005fNEWS-2041"></a><dd>Network news (e.g. Usenet)
+<br><dt><code>LOG_UUCP</code><a name="index-LOG_005fUUCP-2042"></a><dd>UUCP
+<br><dt><code>LOG_CRON</code><a name="index-LOG_005fCRON-2043"></a><dd>Cron and At
+<br><dt><code>LOG_AUTHPRIV</code><a name="index-LOG_005fAUTHPRIV-2044"></a><dd>Private security (authorization)
+<br><dt><code>LOG_FTP</code><a name="index-LOG_005fFTP-2045"></a><dd>Ftp server
+<br><dt><code>LOG_LOCAL0</code><a name="index-LOG_005fLOCAL0-2046"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL1</code><a name="index-LOG_005fLOCAL1-2047"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL2</code><a name="index-LOG_005fLOCAL2-2048"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL3</code><a name="index-LOG_005fLOCAL3-2049"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL4</code><a name="index-LOG_005fLOCAL4-2050"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL5</code><a name="index-LOG_005fLOCAL5-2051"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL6</code><a name="index-LOG_005fLOCAL6-2052"></a><dd>Locally defined
+<br><dt><code>LOG_LOCAL7</code><a name="index-LOG_005fLOCAL7-2053"></a><dd>Locally defined
+</dl>
+
+        <p>Results are undefined if the facility code is anything else.
+
+        <p><strong>note:</strong> <code>syslog</code> recognizes one other facility code: that of
+the kernel.  But you can't specify that facility code with these
+functions.  If you try, it looks the same to <code>syslog</code> as if you are
+requesting the default facility.  But you wouldn't want to anyway,
+because any program that uses the GNU C library is not the kernel.
+
+        <p>You can use just a priority code as <var>facility_priority</var>.  In that
+case, <code>syslog</code> assumes the default facility established when the
+Syslog connection was opened.  See <a href="Syslog-Example.html#Syslog-Example">Syslog Example</a>.
+
+        <p>The possible values for the priority code are (macros):
+
+          <dl>
+<dt><code>LOG_EMERG</code><a name="index-LOG_005fEMERG-2054"></a><dd>The message says the system is unusable. 
+<br><dt><code>LOG_ALERT</code><a name="index-LOG_005fALERT-2055"></a><dd>Action on the message must be taken immediately. 
+<br><dt><code>LOG_CRIT</code><a name="index-LOG_005fCRIT-2056"></a><dd>The message states a critical condition. 
+<br><dt><code>LOG_ERR</code><a name="index-LOG_005fERR-2057"></a><dd>The message describes an error. 
+<br><dt><code>LOG_WARNING</code><a name="index-LOG_005fWARNING-2058"></a><dd>The message is a warning. 
+<br><dt><code>LOG_NOTICE</code><a name="index-LOG_005fNOTICE-2059"></a><dd>The message describes a normal but important event. 
+<br><dt><code>LOG_INFO</code><a name="index-LOG_005fINFO-2060"></a><dd>The message is purely informational. 
+<br><dt><code>LOG_DEBUG</code><a name="index-LOG_005fDEBUG-2061"></a><dd>The message is only for debugging purposes. 
+</dl>
+
+        <p>Results are undefined if the priority code is anything else.
+
+        <p>If the process does not presently have a Syslog connection open (i.e.,
+it did not call <code>openlog</code>), <code>syslog</code> implicitly opens the
+connection the same as <code>openlog</code> would, with the following defaults
+for information that would otherwise be included in an <code>openlog</code>
+call: The default identification string is the program name.  The
+default default facility is <code>LOG_USER</code>.  The default for all the
+connection options in <var>options</var> is as if those bits were off. 
+<code>syslog</code> leaves the Syslog connection open.
+
+        <p>If the <samp><span class="file">dev/log</span></samp> socket is not open and connected, <code>syslog</code>
+opens and connects it, the same as <code>openlog</code> with the
+<code>LOG_NDELAY</code> option would.
+
+        <p><code>syslog</code> leaves <samp><span class="file">/dev/log</span></samp> open and connected unless its attempt
+to send the message failed, in which case <code>syslog</code> closes it (with the
+hope that a future implicit open will restore the Syslog connection to a
+usable state).
+
+        <p>Example:
+
+     <pre class="smallexample">          
+          #include &lt;syslog.h&gt;
+          syslog (LOG_MAKEPRI(LOG_LOCAL1, LOG_ERROR),
+                  "Unable to make network connection to %s.  Error=%m", host);
+          
+</pre>
+        </blockquote></div>
+
+<!-- syslog.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>vsyslog</b> (<var>int facility_priority, char *format, va_list arglist</var>)<var><a name="index-vsyslog-2062"></a></var><br>
+<blockquote>
+        <p>This is functionally identical to <code>syslog</code>, with the BSD style variable
+length argument.
+
+        </blockquote></div>
+
+   </body></html>
+

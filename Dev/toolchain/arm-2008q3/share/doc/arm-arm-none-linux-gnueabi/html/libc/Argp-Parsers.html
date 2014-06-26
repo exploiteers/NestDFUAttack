@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Argp Parsers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argp.html#Argp" title="Argp">
+<link rel="prev" href="Argp-Global-Variables.html#Argp-Global-Variables" title="Argp Global Variables">
+<link rel="next" href="Argp-Flags.html#Argp-Flags" title="Argp Flags">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Argp-Parsers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Argp-Flags.html#Argp-Flags">Argp Flags</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argp-Global-Variables.html#Argp-Global-Variables">Argp Global Variables</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argp.html#Argp">Argp</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.3.3 Specifying Argp Parsers</h4>
+
+<p>The first argument to the <code>argp_parse</code> function is a pointer to a
+<code>struct argp</code>, which is known as an <dfn>argp parser</dfn>:
+
+<!-- argp.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Data Type: <b>struct argp</b><var><a name="index-struct-argp-3040"></a></var><br>
+<blockquote><p>This structure specifies how to parse a given set of options and
+arguments, perhaps in conjunction with other argp parsers.  It has the
+following fields:
+
+          <dl>
+<dt><code>const struct argp_option *options</code><dd>A pointer to a vector of <code>argp_option</code> structures specifying which
+options this argp parser understands; it may be zero if there are no
+options at all.  See <a href="Argp-Option-Vectors.html#Argp-Option-Vectors">Argp Option Vectors</a>.
+
+          <br><dt><code>argp_parser_t parser</code><dd>A pointer to a function that defines actions for this parser; it is
+called for each option parsed, and at other well-defined points in the
+parsing process.  A value of zero is the same as a pointer to a function
+that always returns <code>ARGP_ERR_UNKNOWN</code>.  See <a href="Argp-Parser-Functions.html#Argp-Parser-Functions">Argp Parser Functions</a>.
+
+          <br><dt><code>const char *args_doc</code><dd>If non-zero, a string describing what non-option arguments are called by
+this parser.  This is only used to print the &lsquo;<samp><span class="samp">Usage:</span></samp>&rsquo; message.  If
+it contains newlines, the strings separated by them are considered
+alternative usage patterns and printed on separate lines.  Lines after
+the first are prefixed by &lsquo;<samp><span class="samp"> or: </span></samp>&rsquo; instead of &lsquo;<samp><span class="samp">Usage:</span></samp>&rsquo;.
+
+          <br><dt><code>const char *doc</code><dd>If non-zero, a string containing extra text to be printed before and
+after the options in a long help message, with the two sections
+separated by a vertical tab (<code>'\v'</code>, <code>'\013'</code>) character.  By
+convention, the documentation before the options is just a short string
+explaining what the program does.  Documentation printed after the
+options describe behavior in more detail.
+
+          <br><dt><code>const struct argp_child *children</code><dd>A pointer to a vector of <code>argp_children</code> structures.  This pointer
+specifies which additional argp parsers should be combined with this
+one.  See <a href="Argp-Children.html#Argp-Children">Argp Children</a>.
+
+          <br><dt><code>char *(*help_filter)(int </code><var>key</var><code>, const char *</code><var>text</var><code>, void *</code><var>input</var><code>)</code><dd>If non-zero, a pointer to a function that filters the output of help
+messages.  See <a href="Argp-Help-Filtering.html#Argp-Help-Filtering">Argp Help Filtering</a>.
+
+          <br><dt><code>const char *argp_domain</code><dd>If non-zero, the strings used in the argp library are translated using
+the domain described by this string.  If zero, the current default domain
+is used.
+
+        </dl>
+        </p></blockquote></div>
+
+   <p>Of the above group, <code>options</code>, <code>parser</code>, <code>args_doc</code>, and
+the <code>doc</code> fields are usually all that are needed.  If an argp
+parser is defined as an initialized C variable, only the fields used
+need be specified in the initializer.  The rest will default to zero due
+to the way C structure initialization works.  This design is exploited in
+most argp structures; the most-used fields are grouped near the
+beginning, the unused fields left unspecified.
+
+<ul class="menu">
+<li><a accesskey="1" href="Argp-Option-Vectors.html#Argp-Option-Vectors">Options</a>:    Specifying options in an argp parser. 
+<li><a accesskey="2" href="Argp-Parser-Functions.html#Argp-Parser-Functions">Argp Parser Functions</a>:          Defining actions for an argp parser. 
+<li><a accesskey="3" href="Argp-Children.html#Argp-Children">Children</a>:         Combining multiple argp parsers. 
+<li><a accesskey="4" href="Argp-Help-Filtering.html#Argp-Help-Filtering">Help Filtering</a>:   Customizing help output for an argp parser. 
+</ul>
+
+   </body></html>
+

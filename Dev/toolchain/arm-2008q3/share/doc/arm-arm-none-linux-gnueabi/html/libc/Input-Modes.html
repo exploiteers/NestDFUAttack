@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Input Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Setting-Modes.html#Setting-Modes" title="Setting Modes">
+<link rel="next" href="Output-Modes.html#Output-Modes" title="Output Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Input-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Output-Modes.html#Output-Modes">Output Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Setting-Modes.html#Setting-Modes">Setting Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.4 Input Modes</h4>
+
+<p>This section describes the terminal attribute flags that control
+fairly low-level aspects of input processing: handling of parity errors,
+break signals, flow control, and &lt;RET&gt; and &lt;LFD&gt; characters.
+
+   <p>All of these flags are bits in the <code>c_iflag</code> member of the
+<code>struct termios</code> structure.  The member is an integer, and you
+change flags using the operators <code>&amp;</code>, <code>|</code> and <code>^</code>.  Don't
+try to specify the entire value for <code>c_iflag</code>&mdash;instead, change
+only specific flags and leave the rest untouched (see <a href="Setting-Modes.html#Setting-Modes">Setting Modes</a>).
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>INPCK</b><var><a name="index-INPCK-1868"></a></var><br>
+<blockquote><p><a name="index-parity-checking-1869"></a>If this bit is set, input parity checking is enabled.  If it is not set,
+no checking at all is done for parity errors on input; the
+characters are simply passed through to the application.
+
+        <p>Parity checking on input processing is independent of whether parity
+detection and generation on the underlying terminal hardware is enabled;
+see <a href="Control-Modes.html#Control-Modes">Control Modes</a>.  For example, you could clear the <code>INPCK</code>
+input mode flag and set the <code>PARENB</code> control mode flag to ignore
+parity errors on input, but still generate parity on output.
+
+        <p>If this bit is set, what happens when a parity error is detected depends
+on whether the <code>IGNPAR</code> or <code>PARMRK</code> bits are set.  If neither
+of these bits are set, a byte with a parity error is passed to the
+application as a <code>'\0'</code> character. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IGNPAR</b><var><a name="index-IGNPAR-1870"></a></var><br>
+<blockquote><p>If this bit is set, any byte with a framing or parity error is ignored. 
+This is only useful if <code>INPCK</code> is also set. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>PARMRK</b><var><a name="index-PARMRK-1871"></a></var><br>
+<blockquote><p>If this bit is set, input bytes with parity or framing errors are marked
+when passed to the program.  This bit is meaningful only when
+<code>INPCK</code> is set and <code>IGNPAR</code> is not set.
+
+        <p>The way erroneous bytes are marked is with two preceding bytes,
+<code>377</code> and <code>0</code>.  Thus, the program actually reads three bytes
+for one erroneous byte received from the terminal.
+
+        <p>If a valid byte has the value <code>0377</code>, and <code>ISTRIP</code> (see below)
+is not set, the program might confuse it with the prefix that marks a
+parity error.  So a valid byte <code>0377</code> is passed to the program as
+two bytes, <code>0377</code> <code>0377</code>, in this case. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ISTRIP</b><var><a name="index-ISTRIP-1872"></a></var><br>
+<blockquote><p>If this bit is set, valid input bytes are stripped to seven bits;
+otherwise, all eight bits are available for programs to read. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IGNBRK</b><var><a name="index-IGNBRK-1873"></a></var><br>
+<blockquote><p>If this bit is set, break conditions are ignored.
+
+        <p><a name="index-break-condition_002c-detecting-1874"></a>A <dfn>break condition</dfn> is defined in the context of asynchronous
+serial data transmission as a series of zero-value bits longer than a
+single byte. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>BRKINT</b><var><a name="index-BRKINT-1875"></a></var><br>
+<blockquote><p>If this bit is set and <code>IGNBRK</code> is not set, a break condition
+clears the terminal input and output queues and raises a <code>SIGINT</code>
+signal for the foreground process group associated with the terminal.
+
+        <p>If neither <code>BRKINT</code> nor <code>IGNBRK</code> are set, a break condition is
+passed to the application as a single <code>'\0'</code> character if
+<code>PARMRK</code> is not set, or otherwise as a three-character sequence
+<code>'\377'</code>, <code>'\0'</code>, <code>'\0'</code>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IGNCR</b><var><a name="index-IGNCR-1876"></a></var><br>
+<blockquote><p>If this bit is set, carriage return characters (<code>'\r'</code>) are
+discarded on input.  Discarding carriage return may be useful on
+terminals that send both carriage return and linefeed when you type the
+&lt;RET&gt; key. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>ICRNL</b><var><a name="index-ICRNL-1877"></a></var><br>
+<blockquote><p>If this bit is set and <code>IGNCR</code> is not set, carriage return characters
+(<code>'\r'</code>) received as input are passed to the application as newline
+characters (<code>'\n'</code>). 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>INLCR</b><var><a name="index-INLCR-1878"></a></var><br>
+<blockquote><p>If this bit is set, newline characters (<code>'\n'</code>) received as input
+are passed to the application as carriage return characters (<code>'\r'</code>). 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IXOFF</b><var><a name="index-IXOFF-1879"></a></var><br>
+<blockquote><p>If this bit is set, start/stop control on input is enabled.  In other
+words, the computer sends STOP and START characters as necessary to
+prevent input from coming in faster than programs are reading it.  The
+idea is that the actual terminal hardware that is generating the input
+data responds to a STOP character by suspending transmission, and to a
+START character by resuming transmission.  See <a href="Start_002fStop-Characters.html#Start_002fStop-Characters">Start/Stop Characters</a>. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IXON</b><var><a name="index-IXON-1880"></a></var><br>
+<blockquote><p>If this bit is set, start/stop control on output is enabled.  In other
+words, if the computer receives a STOP character, it suspends output
+until a START character is received.  In this case, the STOP and START
+characters are never passed to the application program.  If this bit is
+not set, then START and STOP can be read as ordinary characters. 
+See <a href="Start_002fStop-Characters.html#Start_002fStop-Characters">Start/Stop Characters</a>. 
+<!-- !!! mention this interferes with using C-s and C-q for programs like emacs -->
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IXANY</b><var><a name="index-IXANY-1881"></a></var><br>
+<blockquote><p>If this bit is set, any input character restarts output when output has
+been suspended with the STOP character.  Otherwise, only the START
+character restarts output.
+
+        <p>This is a BSD extension; it exists only on BSD systems and the GNU system. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>IMAXBEL</b><var><a name="index-IMAXBEL-1882"></a></var><br>
+<blockquote><p>If this bit is set, then filling up the terminal input buffer sends a
+BEL character (code <code>007</code>) to the terminal to ring the bell.
+
+        <p>This is a BSD extension. 
+</p></blockquote></div>
+
+   </body></html>
+

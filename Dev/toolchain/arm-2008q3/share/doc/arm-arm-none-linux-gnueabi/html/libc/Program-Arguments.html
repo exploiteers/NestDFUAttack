@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>Program Arguments - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link rel="next" href="Environment-Variables.html#Environment-Variables" title="Environment Variables">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Program-Arguments"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Basics.html#Program-Basics">Program Basics</a>
+<hr>
+</div>
+
+<h3 class="section">25.1 Program Arguments</h3>
+
+<p><a name="index-program-arguments-3005"></a><a name="index-command-line-arguments-3006"></a><a name="index-arguments_002c-to-program-3007"></a>
+<a name="index-program-startup-3008"></a><a name="index-startup-of-program-3009"></a><a name="index-invocation-of-program-3010"></a><a name="index-g_t_0040code_007bmain_007d-function-3011"></a><a name="index-main-3012"></a>The system starts a C program by calling the function <code>main</code>.  It
+is up to you to write a function named <code>main</code>&mdash;otherwise, you
+won't even be able to link your program without errors.
+
+   <p>In ISO&nbsp;C<!-- /@w --> you can define <code>main</code> either to take no arguments, or to
+take two arguments that represent the command line arguments to the
+program, like this:
+
+<pre class="smallexample">     int main (int <var>argc</var>, char *<var>argv</var>[])
+</pre>
+   <p><a name="index-argc-_0028program-argument-count_0029-3013"></a><a name="index-argv-_0028program-argument-vector_0029-3014"></a>The command line arguments are the whitespace-separated tokens given in
+the shell command used to invoke the program; thus, in &lsquo;<samp><span class="samp">cat foo
+bar</span></samp>&rsquo;, the arguments are &lsquo;<samp><span class="samp">foo</span></samp>&rsquo; and &lsquo;<samp><span class="samp">bar</span></samp>&rsquo;.  The only way a
+program can look at its command line arguments is via the arguments of
+<code>main</code>.  If <code>main</code> doesn't take arguments, then you cannot get
+at the command line.
+
+   <p>The value of the <var>argc</var> argument is the number of command line
+arguments.  The <var>argv</var> argument is a vector of C strings; its
+elements are the individual command line argument strings.  The file
+name of the program being run is also included in the vector as the
+first element; the value of <var>argc</var> counts this element.  A null
+pointer always follows the last element: <var>argv</var><code>[</code><var>argc</var><code>]</code>
+is this null pointer.
+
+   <p>For the command &lsquo;<samp><span class="samp">cat foo bar</span></samp>&rsquo;, <var>argc</var> is 3 and <var>argv</var> has
+three elements, <code>"cat"</code>, <code>"foo"</code> and <code>"bar"</code>.
+
+   <p>In Unix systems you can define <code>main</code> a third way, using three arguments:
+
+<pre class="smallexample">     int main (int <var>argc</var>, char *<var>argv</var>[], char *<var>envp</var>[])
+</pre>
+   <p>The first two arguments are just the same.  The third argument
+<var>envp</var> gives the program's environment; it is the same as the value
+of <code>environ</code>.  See <a href="Environment-Variables.html#Environment-Variables">Environment Variables</a>.  POSIX.1 does not
+allow this three-argument form, so to be portable it is best to write
+<code>main</code> to take two arguments, and use the value of <code>environ</code>.
+
+<ul class="menu">
+<li><a accesskey="1" href="Argument-Syntax.html#Argument-Syntax">Argument Syntax</a>:              By convention, options start with a hyphen. 
+<li><a accesskey="2" href="Parsing-Program-Arguments.html#Parsing-Program-Arguments">Parsing Program Arguments</a>:    Ways to parse program options and arguments. 
+</ul>
+
+   </body></html>
+

@@ -1,0 +1,205 @@
+<html lang="en">
+<head>
+<title>Allocation - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Pseudo_002dTerminals.html#Pseudo_002dTerminals" title="Pseudo-Terminals">
+<link rel="next" href="Pseudo_002dTerminal-Pairs.html#Pseudo_002dTerminal-Pairs" title="Pseudo-Terminal Pairs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Allocation"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Pseudo_002dTerminal-Pairs.html#Pseudo_002dTerminal-Pairs">Pseudo-Terminal Pairs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Pseudo_002dTerminals.html#Pseudo_002dTerminals">Pseudo-Terminals</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.8.1 Allocating Pseudo-Terminals</h4>
+
+<p><a name="index-allocating-pseudo_002dterminals-2023"></a>
+<a name="index-stdlib_002eh-2024"></a>This subsection describes functions for allocating a pseudo-terminal,
+and for making this pseudo-terminal available for actual use.  These
+functions are declared in the header file <samp><span class="file">stdlib.h</span></samp>.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>getpt</b> (<var>void</var>)<var><a name="index-getpt-2025"></a></var><br>
+<blockquote><p>The <code>getpt</code> function returns a new file descriptor for the next
+available master pseudo-terminal.  The normal return value from
+<code>getpt</code> is a non-negative integer file descriptor.  In the case of
+an error, a value of -1 is returned instead.  The following
+<code>errno</code> conditions are defined for this function:
+
+          <dl>
+<dt><code>ENOENT</code><dd>There are no free master pseudo-terminals available. 
+</dl>
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, XPG4.2 -->
+<div class="defun">
+&mdash; Function: int <b>grantpt</b> (<var>int filedes</var>)<var><a name="index-grantpt-2026"></a></var><br>
+<blockquote><p>The <code>grantpt</code> function changes the ownership and access permission
+of the slave pseudo-terminal device corresponding to the master
+pseudo-terminal device associated with the file descriptor
+<var>filedes</var>.  The owner is set from the real user ID of the calling
+process (see <a href="Process-Persona.html#Process-Persona">Process Persona</a>), and the group is set to a special
+group (typically <dfn>tty</dfn>) or from the real group ID of the calling
+process.  The access permission is set such that the file is both
+readable and writable by the owner and only writable by the group.
+
+        <p>On some systems this function is implemented by invoking a special
+<code>setuid</code> root program (see <a href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>).  As a
+consequence, installing a signal handler for the <code>SIGCHLD</code> signal
+(see <a href="Job-Control-Signals.html#Job-Control-Signals">Job Control Signals</a>) may interfere with a call to
+<code>grantpt</code>.
+
+        <p>The normal return value from <code>grantpt</code> is 0; a value of
+-1 is returned in case of failure.  The following <code>errno</code>
+error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EINVAL</code><dd>The <var>filedes</var> argument is not associated with a master pseudo-terminal
+device.
+
+          <br><dt><code>EACCES</code><dd>The slave pseudo-terminal device corresponding to the master associated
+with <var>filedes</var> could not be accessed. 
+</dl>
+
+        </blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, XPG4.2 -->
+<div class="defun">
+&mdash; Function: int <b>unlockpt</b> (<var>int filedes</var>)<var><a name="index-unlockpt-2027"></a></var><br>
+<blockquote><p>The <code>unlockpt</code> function unlocks the slave pseudo-terminal device
+corresponding to the master pseudo-terminal device associated with the
+file descriptor <var>filedes</var>.  On many systems, the slave can only be
+opened after unlocking, so portable applications should always call
+<code>unlockpt</code> before trying to open the slave.
+
+        <p>The normal return value from <code>unlockpt</code> is 0; a value of
+-1 is returned in case of failure.  The following <code>errno</code>
+error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>EINVAL</code><dd>The <var>filedes</var> argument is not associated with a master pseudo-terminal
+device. 
+</dl>
+        </p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID, XPG4.2 -->
+<div class="defun">
+&mdash; Function: char * <b>ptsname</b> (<var>int filedes</var>)<var><a name="index-ptsname-2028"></a></var><br>
+<blockquote><p>If the file descriptor <var>filedes</var> is associated with a
+master pseudo-terminal device, the <code>ptsname</code> function returns a
+pointer to a statically-allocated, null-terminated string containing the
+file name of the associated slave pseudo-terminal file.  This string
+might be overwritten by subsequent calls to <code>ptsname</code>. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>ptsname_r</b> (<var>int filedes, char *buf, size_t len</var>)<var><a name="index-ptsname_005fr-2029"></a></var><br>
+<blockquote><p>The <code>ptsname_r</code> function is similar to the <code>ptsname</code> function
+except that it places its result into the user-specified buffer starting
+at <var>buf</var> with length <var>len</var>.
+
+        <p>This function is a GNU extension. 
+</p></blockquote></div>
+
+   <p><strong>Portability Note:</strong> On System&nbsp;V<!-- /@w --> derived systems, the file
+returned by the <code>ptsname</code> and <code>ptsname_r</code> functions may be
+STREAMS-based, and therefore require additional processing after opening
+before it actually behaves as a pseudo terminal. 
+<!-- FIXME: xref STREAMS -->
+
+   <p>Typical usage of these functions is illustrated by the following example:
+<pre class="smallexample">     int
+     open_pty_pair (int *amaster, int *aslave)
+     {
+       int master, slave;
+       char *name;
+     
+       master = getpt ();
+       if (master &lt; 0)
+         return 0;
+     
+       if (grantpt (master) &lt; 0 || unlockpt (master) &lt; 0)
+         goto close_master;
+       name = ptsname (master);
+       if (name == NULL)
+         goto close_master;
+     
+       slave = open (name, O_RDWR);
+       if (slave == -1)
+         goto close_master;
+     
+       if (isastream (slave))
+         {
+           if (ioctl (slave, I_PUSH, "ptem") &lt; 0
+               || ioctl (slave, I_PUSH, "ldterm") &lt; 0)
+             goto close_slave;
+         }
+     
+       *amaster = master;
+       *aslave = slave;
+       return 1;
+     
+     close_slave:
+       close (slave);
+     
+     close_master:
+       close (master);
+       return 0;
+     }
+</pre>
+   </body></html>
+

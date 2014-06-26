@@ -1,0 +1,251 @@
+<html lang="en">
+<head>
+<title>Symbolic Links - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Hard-Links.html#Hard-Links" title="Hard Links">
+<link rel="next" href="Deleting-Files.html#Deleting-Files" title="Deleting Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Symbolic-Links"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Deleting-Files.html#Deleting-Files">Deleting Files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hard-Links.html#Hard-Links">Hard Links</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.5 Symbolic Links</h3>
+
+<p><a name="index-soft-link-1461"></a><a name="index-link_002c-soft-1462"></a><a name="index-symbolic-link-1463"></a><a name="index-link_002c-symbolic-1464"></a>
+The GNU system supports <dfn>soft links</dfn> or <dfn>symbolic links</dfn>.  This
+is a kind of &ldquo;file&rdquo; that is essentially a pointer to another file
+name.  Unlike hard links, symbolic links can be made to directories or
+across file systems with no restrictions.  You can also make a symbolic
+link to a name which is not the name of any file.  (Opening this link
+will fail until a file by that name is created.)  Likewise, if the
+symbolic link points to an existing file which is later deleted, the
+symbolic link continues to point to the same file name even though the
+name no longer names any file.
+
+   <p>The reason symbolic links work the way they do is that special things
+happen when you try to open the link.  The <code>open</code> function realizes
+you have specified the name of a link, reads the file name contained in
+the link, and opens that file name instead.  The <code>stat</code> function
+likewise operates on the file that the symbolic link points to, instead
+of on the link itself.
+
+   <p>By contrast, other operations such as deleting or renaming the file
+operate on the link itself.  The functions <code>readlink</code> and
+<code>lstat</code> also refrain from following symbolic links, because their
+purpose is to obtain information about the link.  <code>link</code>, the
+function that makes a hard link, does too.  It makes a hard link to the
+symbolic link, which one rarely wants.
+
+   <p>Some systems have for some functions operating on files have a limit on
+how many symbolic links are followed when resolving a path name.  The
+limit if it exists is published in the <samp><span class="file">sys/param.h</span></samp> header file.
+
+<!-- sys/param.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>MAXSYMLINKS</b><var><a name="index-MAXSYMLINKS-1465"></a></var><br>
+<blockquote>
+        <p>The macro <code>MAXSYMLINKS</code> specifies how many symlinks some function
+will follow before returning <code>ELOOP</code>.  Not all functions behave the
+same and this value is not the same a that returned for
+<code>_SC_SYMLOOP</code> by <code>sysconf</code>.  In fact, the <code>sysconf</code>
+result can indicate that there is no fixed limit although
+<code>MAXSYMLINKS</code> exists and has a finite value. 
+</p></blockquote></div>
+
+   <p>Prototypes for most of the functions listed in this section are in
+<samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-1466"></a>
+<!-- unistd.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>symlink</b> (<var>const char *oldname, const char *newname</var>)<var><a name="index-symlink-1467"></a></var><br>
+<blockquote><p>The <code>symlink</code> function makes a symbolic link to <var>oldname</var> named
+<var>newname</var>.
+
+        <p>The normal return value from <code>symlink</code> is <code>0</code>.  A return value
+of <code>-1</code> indicates an error.  In addition to the usual file name
+syntax errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following <code>errno</code>
+error conditions are defined for this function:
+
+          <dl>
+<dt><code>EEXIST</code><dd>There is already an existing file named <var>newname</var>.
+
+          <br><dt><code>EROFS</code><dd>The file <var>newname</var> would exist on a read-only file system.
+
+          <br><dt><code>ENOSPC</code><dd>The directory or file system cannot be extended to make the new link.
+
+          <br><dt><code>EIO</code><dd>A hardware error occurred while reading or writing data on the disk.
+
+        </dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>readlink</b> (<var>const char *filename, char *buffer, size_t size</var>)<var><a name="index-readlink-1468"></a></var><br>
+<blockquote><p>The <code>readlink</code> function gets the value of the symbolic link
+<var>filename</var>.  The file name that the link points to is copied into
+<var>buffer</var>.  This file name string is <em>not</em> null-terminated;
+<code>readlink</code> normally returns the number of characters copied.  The
+<var>size</var> argument specifies the maximum number of characters to copy,
+usually the allocation size of <var>buffer</var>.
+
+        <p>If the return value equals <var>size</var>, you cannot tell whether or not
+there was room to return the entire name.  So make a bigger buffer and
+call <code>readlink</code> again.  Here is an example:
+
+     <pre class="smallexample">          char *
+          readlink_malloc (const char *filename)
+          {
+            int size = 100;
+            char *buffer = NULL;
+          
+            while (1)
+              {
+                buffer = (char *) xrealloc (buffer, size);
+                int nchars = readlink (filename, buffer, size);
+                if (nchars &lt; 0)
+                  {
+                    free (buffer);
+                    return NULL;
+                  }
+                if (nchars &lt; size)
+                  return buffer;
+                size *= 2;
+              }
+          }
+</pre>
+        <!-- @group  Invalid outside example. -->
+        <p>A value of <code>-1</code> is returned in case of error.  In addition to the
+usual file name errors (see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following
+<code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EINVAL</code><dd>The named file is not a symbolic link.
+
+          <br><dt><code>EIO</code><dd>A hardware error occurred while reading or writing data on the disk. 
+</dl>
+        <!-- @end group -->
+</p></blockquote></div>
+
+   <p>In some situations it is desirable to resolve all the
+symbolic links to get the real
+name of a file where no prefix names a symbolic link which is followed
+and no filename in the path is <code>.</code> or <code>..</code>.  This is for
+instance desirable if files have to be compare in which case different
+names can refer to the same inode.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>canonicalize_file_name</b> (<var>const char *name</var>)<var><a name="index-canonicalize_005ffile_005fname-1469"></a></var><br>
+<blockquote>
+        <p>The <code>canonicalize_file_name</code> function returns the absolute name of
+the file named by <var>name</var> which contains no <code>.</code>, <code>..</code>
+components nor any repeated path separators (<code>/</code>) or symlinks.  The
+result is passed back as the return value of the function in a block of
+memory allocated with <code>malloc</code>.  If the result is not used anymore
+the memory should be freed with a call to <code>free</code>.
+
+        <p>If any of the path components is missing the function returns a NULL
+pointer.  This is also what is returned if the length of the path
+reaches or exceeds <code>PATH_MAX</code> characters.  In any case
+<code>errno</code> is set accordingly.
+
+          <dl>
+<dt><code>ENAMETOOLONG</code><dd>The resulting path is too long.  This error only occurs on systems which
+have a limit on the file name length.
+
+          <br><dt><code>EACCES</code><dd>At least one of the path components is not readable.
+
+          <br><dt><code>ENOENT</code><dd>The input file name is empty.
+
+          <br><dt><code>ENOENT</code><dd>At least one of the path components does not exist.
+
+          <br><dt><code>ELOOP</code><dd>More than <code>MAXSYMLINKS</code> many symlinks have been followed. 
+</dl>
+
+        <p>This function is a GNU extension and is declared in <samp><span class="file">stdlib.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>The Unix standard includes a similar function which differs from
+<code>canonicalize_file_name</code> in that the user has to provide the buffer
+where the result is placed in.
+
+<!-- stdlib.h -->
+<!-- XPG -->
+<div class="defun">
+&mdash; Function: char * <b>realpath</b> (<var>const char *restrict name, char *restrict resolved</var>)<var><a name="index-realpath-1470"></a></var><br>
+<blockquote>
+        <p>A call to <code>realpath</code> where the <var>resolved</var> parameter is
+<code>NULL</code> behaves exactly like <code>canonicalize_file_name</code>.  The
+function allocates a buffer for the file name and returns a pointer to
+it.  If <var>resolved</var> is not <code>NULL</code> it points to a buffer into
+which the result is copied.  It is the callers responsibility to
+allocate a buffer which is large enough.  On systems which define
+<code>PATH_MAX</code> this means the buffer must be large enough for a
+pathname of this size.  For systems without limitations on the pathname
+length the requirement cannot be met and programs should not call
+<code>realpath</code> with anything but <code>NULL</code> for the second parameter.
+
+        <p>One other difference is that the buffer <var>resolved</var> (if nonzero) will
+contain the part of the path component which does not exist or is not
+readable if the function returns <code>NULL</code> and <code>errno</code> is set to
+<code>EACCES</code> or <code>ENOENT</code>.
+
+        <p>This function is declared in <samp><span class="file">stdlib.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>The advantage of using this function is that it is more widely
+available.  The drawback is that it reports failures for long path on
+systems which have no limits on the file name length.
+
+   </body></html>
+

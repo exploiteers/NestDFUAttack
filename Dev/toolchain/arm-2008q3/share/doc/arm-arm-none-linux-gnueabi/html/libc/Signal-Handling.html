@@ -1,0 +1,98 @@
+<html lang="en">
+<head>
+<title>Signal Handling - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits" title="Non-Local Exits">
+<link rel="next" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Signal-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Program-Basics.html#Program-Basics">Program Basics</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<!-- %MENU% How to send, block, and handle signals -->
+<h2 class="chapter">24 Signal Handling</h2>
+
+<p><a name="index-signal-2809"></a>A <dfn>signal</dfn> is a software interrupt delivered to a process.  The
+operating system uses signals to report exceptional situations to an
+executing program.  Some signals report errors such as references to
+invalid memory addresses; others report asynchronous events, such as
+disconnection of a phone line.
+
+   <p>The GNU C library defines a variety of signal types, each for a
+particular kind of event.  Some kinds of events make it inadvisable or
+impossible for the program to proceed as usual, and the corresponding
+signals normally abort the program.  Other kinds of signals that report
+harmless events are ignored by default.
+
+   <p>If you anticipate an event that causes signals, you can define a handler
+function and tell the operating system to run it when that particular
+type of signal arrives.
+
+   <p>Finally, one process can send a signal to another process; this allows a
+parent process to abort a child, or two related processes to communicate
+and synchronize.
+
+<ul class="menu">
+<li><a accesskey="1" href="Concepts-of-Signals.html#Concepts-of-Signals">Concepts of Signals</a>:          Introduction to the signal facilities. 
+<li><a accesskey="2" href="Standard-Signals.html#Standard-Signals">Standard Signals</a>:             Particular kinds of signals with
+                                 standard names and meanings. 
+<li><a accesskey="3" href="Signal-Actions.html#Signal-Actions">Signal Actions</a>:               Specifying what happens when a
+                                 particular signal is delivered. 
+<li><a accesskey="4" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>:            How to write a signal handler function. 
+<li><a accesskey="5" href="Interrupted-Primitives.html#Interrupted-Primitives">Interrupted Primitives</a>: 	Signal handlers affect use of <code>open</code>,
+				 <code>read</code>, <code>write</code> and other functions. 
+<li><a accesskey="6" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>:           How to send a signal to a process. 
+<li><a accesskey="7" href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>:             Making the system hold signals temporarily. 
+<li><a accesskey="8" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>:         Suspending your program until a signal
+                                 arrives. 
+<li><a accesskey="9" href="Signal-Stack.html#Signal-Stack">Signal Stack</a>:                 Using a Separate Signal Stack. 
+<li><a href="BSD-Signal-Handling.html#BSD-Signal-Handling">BSD Signal Handling</a>:          Additional functions for backward
+			         compatibility with BSD. 
+</ul>
+
+   </body></html>
+

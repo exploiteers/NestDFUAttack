@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+<title>Shell Commands - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Invocation.html#Invocation" title="Invocation">
+<link rel="prev" href="Quitting-GDB.html#Quitting-GDB" title="Quitting GDB">
+<link rel="next" href="Logging-Output.html#Logging-Output" title="Logging Output">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Shell-Commands"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Logging-Output.html#Logging-Output">Logging Output</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Quitting-GDB.html#Quitting-GDB">Quitting GDB</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Invocation.html#Invocation">Invocation</a>
+<hr>
+</div>
+
+<h3 class="section">2.3 Shell Commands</h3>
+
+<p>If you need to execute occasional shell commands during your
+debugging session, there is no need to leave or suspend <span class="sc">gdb</span>; you can
+just use the <code>shell</code> command.
+
+     
+<a name="index-shell-59"></a>
+<a name="index-shell-escape-60"></a>
+<dl><dt><code>shell </code><var>command string</var><dd>Invoke a standard shell to execute <var>command string</var>. 
+If it exists, the environment variable <code>SHELL</code> determines which
+shell to run.  Otherwise <span class="sc">gdb</span> uses the default shell
+(<samp><span class="file">/bin/sh</span></samp> on Unix systems, <samp><span class="file">COMMAND.COM</span></samp> on MS-DOS, etc.). 
+</dl>
+
+   <p>The utility <code>make</code> is often needed in development environments. 
+You do not have to use the <code>shell</code> command for this purpose in
+<span class="sc">gdb</span>:
+
+     
+<a name="index-make-61"></a>
+<a name="index-calling-make-62"></a>
+<dl><dt><code>make </code><var>make-args</var><dd>Execute the <code>make</code> program with the specified
+arguments.  This is equivalent to &lsquo;<samp><span class="samp">shell make </span><var>make-args</var></samp>&rsquo;. 
+</dl>
+
+   </body></html>
+

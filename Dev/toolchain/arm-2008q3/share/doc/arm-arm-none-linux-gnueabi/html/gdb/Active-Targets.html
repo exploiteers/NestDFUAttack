@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>Active Targets - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Targets.html#Targets" title="Targets">
+<link rel="next" href="Target-Commands.html#Target-Commands" title="Target Commands">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Active-Targets"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Target-Commands.html#Target-Commands">Target Commands</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Targets.html#Targets">Targets</a>
+<hr>
+</div>
+
+<h3 class="section">17.1 Active Targets</h3>
+
+<p><a name="index-stacking-targets-891"></a><a name="index-active-targets-892"></a><a name="index-multiple-targets-893"></a>
+There are three classes of targets: processes, core files, and
+executable files.  <span class="sc">gdb</span> can work concurrently on up to three
+active targets, one in each class.  This allows you to (for example)
+start a process and inspect its activity without abandoning your work on
+a core file.
+
+   <p>For example, if you execute &lsquo;<samp><span class="samp">gdb a.out</span></samp>&rsquo;, then the executable file
+<code>a.out</code> is the only active target.  If you designate a core file as
+well&mdash;presumably from a prior run that crashed and coredumped&mdash;then
+<span class="sc">gdb</span> has two active targets and uses them in tandem, looking
+first in the corefile target, then in the executable file, to satisfy
+requests for memory addresses.  (Typically, these two classes of target
+are complementary, since core files contain only a program's
+read-write memory&mdash;variables and so on&mdash;plus machine status, while
+executable files contain only the program text and initialized data.)
+
+   <p>When you type <code>run</code>, your executable file becomes an active process
+target as well.  When a process target is active, all <span class="sc">gdb</span>
+commands requesting memory addresses refer to that target; addresses in
+an active core file or executable file target are obscured while the
+process target is active.
+
+   <p>Use the <code>core-file</code> and <code>exec-file</code> commands to select a new
+core file or executable target (see <a href="Files.html#Files">Commands to Specify Files</a>).  To specify as a target a process that is already running, use
+the <code>attach</code> command (see <a href="Attach.html#Attach">Debugging an Already-running Process</a>).
+
+   </body></html>
+

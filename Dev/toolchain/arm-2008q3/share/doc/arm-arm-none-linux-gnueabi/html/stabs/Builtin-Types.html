@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+<title>Builtin Types - Untitled</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Untitled">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Types.html#Types" title="Types">
+<link rel="next" href="Miscellaneous-Types.html#Miscellaneous-Types" title="Miscellaneous Types">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Builtin-Types"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Miscellaneous-Types.html#Miscellaneous-Types">Miscellaneous Types</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Types.html#Types">Types</a>
+<hr>
+</div>
+
+<h3 class="section">5.1 Builtin Types</h3>
+
+<p>Certain types are built in (<code>int</code>, <code>short</code>, <code>void</code>,
+<code>float</code>, etc.); the debugger recognizes these types and knows how
+to handle them.  Thus, don't be surprised if some of the following ways
+of specifying builtin types do not specify everything that a debugger
+would need to know about the type&mdash;in some cases they merely specify
+enough information to distinguish the type from other types.
+
+   <p>The traditional way to define builtin types is convoluted, so new ways
+have been invented to describe them.  Sun's <code>acc</code> uses special
+builtin type descriptors (&lsquo;<samp><span class="samp">b</span></samp>&rsquo; and &lsquo;<samp><span class="samp">R</span></samp>&rsquo;), and IBM uses negative
+type numbers.  GDB accepts all three ways, as of version 4.8; dbx just
+accepts the traditional builtin types and perhaps one of the other two
+formats.  The following sections describe each of these formats.
+
+<ul class="menu">
+<li><a accesskey="1" href="Traditional-Builtin-Types.html#Traditional-Builtin-Types">Traditional Builtin Types</a>: 	Put on your seat belts and prepare for kludgery
+<li><a accesskey="2" href="Builtin-Type-Descriptors.html#Builtin-Type-Descriptors">Builtin Type Descriptors</a>: 	Builtin types with special type descriptors
+<li><a accesskey="3" href="Negative-Type-Numbers.html#Negative-Type-Numbers">Negative Type Numbers</a>: 	Builtin types using negative type numbers
+</ul>
+
+   </body></html>
+

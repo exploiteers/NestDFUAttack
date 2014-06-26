@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+<title>Floating Point Numbers - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Integer-Division.html#Integer-Division" title="Integer Division">
+<link rel="next" href="Floating-Point-Classes.html#Floating-Point-Classes" title="Floating Point Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Floating-Point-Numbers"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating-Point-Classes.html#Floating-Point-Classes">Floating Point Classes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Integer-Division.html#Integer-Division">Integer Division</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.3 Floating Point Numbers</h3>
+
+<p><a name="index-floating-point-2334"></a><a name="index-IEEE-754-2335"></a><a name="index-IEEE-floating-point-2336"></a>
+Most computer hardware has support for two different kinds of numbers:
+integers (<small class="dots">...</small>-3, -2, -1, 0, 1, 2, 3<small class="dots">...</small>) and
+floating-point numbers.  Floating-point numbers have three parts: the
+<dfn>mantissa</dfn>, the <dfn>exponent</dfn>, and the <dfn>sign bit</dfn>.  The real
+number represented by a floating-point value is given by
+(s ? -1 : 1) &amp;middot; 2^e &amp;middot; M
+where s is the sign bit, e the exponent, and M
+the mantissa.  See <a href="Floating-Point-Concepts.html#Floating-Point-Concepts">Floating Point Concepts</a>, for details.  (It is
+possible to have a different <dfn>base</dfn> for the exponent, but all modern
+hardware uses 2.)
+
+   <p>Floating-point numbers can represent a finite subset of the real
+numbers.  While this subset is large enough for most purposes, it is
+important to remember that the only reals that can be represented
+exactly are rational numbers that have a terminating binary expansion
+shorter than the width of the mantissa.  Even simple fractions such as
+1/5 can only be approximated by floating point.
+
+   <p>Mathematical operations and functions frequently need to produce values
+that are not representable.  Often these values can be approximated
+closely enough for practical purposes, but sometimes they can't. 
+Historically there was no way to tell when the results of a calculation
+were inaccurate.  Modern computers implement the IEEE&nbsp;754<!-- /@w --> standard
+for numerical computations, which defines a framework for indicating to
+the program when the results of calculation are not trustworthy.  This
+framework consists of a set of <dfn>exceptions</dfn> that indicate why a
+result could not be represented, and the special values <dfn>infinity</dfn>
+and <dfn>not a number</dfn> (NaN).
+
+   </body></html>
+

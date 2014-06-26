@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Envz Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Argz-and-Envz-Vectors.html#Argz-and-Envz-Vectors" title="Argz and Envz Vectors">
+<link rel="prev" href="Argz-Functions.html#Argz-Functions" title="Argz Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Envz-Functions"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Argz-Functions.html#Argz-Functions">Argz Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Argz-and-Envz-Vectors.html#Argz-and-Envz-Vectors">Argz and Envz Vectors</a>
+<hr>
+</div>
+
+<h4 class="subsection">5.12.2 Envz Functions</h4>
+
+<p>Envz vectors are just argz vectors with additional constraints on the form
+of each element; as such, argz functions can also be used on them, where it
+makes sense.
+
+   <p>Each element in an envz vector is a name-value pair, separated by a <code>'='</code>
+character; if multiple <code>'='</code> characters are present in an element, those
+after the first are considered part of the value, and treated like all other
+non-<code>'\0'</code> characters.
+
+   <p>If <em>no</em> <code>'='</code> characters are present in an element, that element is
+considered the name of a &ldquo;null&rdquo; entry, as distinct from an entry with an
+empty value: <code>envz_get</code> will return <code>0</code> if given the name of null
+entry, whereas an entry with an empty value would result in a value of
+<code>""</code>; <code>envz_entry</code> will still find such entries, however.  Null
+entries can be removed with <code>envz_strip</code> function.
+
+   <p>As with argz functions, envz functions that may allocate memory (and thus
+fail) have a return type of <code>error_t</code>, and return either <code>0</code> or
+<code>ENOMEM</code>.
+
+   <p><a name="index-envz_002eh-603"></a>These functions are declared in the standard include file <samp><span class="file">envz.h</span></samp>.
+
+<!-- envz.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>envz_entry</b> (<var>const char *envz, size_t envz_len, const char *name</var>)<var><a name="index-envz_005fentry-604"></a></var><br>
+<blockquote><p>The <code>envz_entry</code> function finds the entry in <var>envz</var> with the name
+<var>name</var>, and returns a pointer to the whole entry&mdash;that is, the argz
+element which begins with <var>name</var> followed by a <code>'='</code> character.  If
+there is no entry with that name, <code>0</code> is returned. 
+</p></blockquote></div>
+
+<!-- envz.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: char * <b>envz_get</b> (<var>const char *envz, size_t envz_len, const char *name</var>)<var><a name="index-envz_005fget-605"></a></var><br>
+<blockquote><p>The <code>envz_get</code> function finds the entry in <var>envz</var> with the name
+<var>name</var> (like <code>envz_entry</code>), and returns a pointer to the value
+portion of that entry (following the <code>'='</code>).  If there is no entry with
+that name (or only a null entry), <code>0</code> is returned. 
+</p></blockquote></div>
+
+<!-- envz.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: error_t <b>envz_add</b> (<var>char **envz, size_t *envz_len, const char *name, const char *value</var>)<var><a name="index-envz_005fadd-606"></a></var><br>
+<blockquote><p>The <code>envz_add</code> function adds an entry to <code>*</code><var>envz</var>
+(updating <code>*</code><var>envz</var> and <code>*</code><var>envz_len</var>) with the name
+<var>name</var>, and value <var>value</var>.  If an entry with the same name
+already exists in <var>envz</var>, it is removed first.  If <var>value</var> is
+<code>0</code>, then the new entry will the special null type of entry
+(mentioned above). 
+</p></blockquote></div>
+
+<!-- envz.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: error_t <b>envz_merge</b> (<var>char **envz, size_t *envz_len, const char *envz2, size_t envz2_len, int override</var>)<var><a name="index-envz_005fmerge-607"></a></var><br>
+<blockquote><p>The <code>envz_merge</code> function adds each entry in <var>envz2</var> to <var>envz</var>,
+as if with <code>envz_add</code>, updating <code>*</code><var>envz</var> and
+<code>*</code><var>envz_len</var>.  If <var>override</var> is true, then values in <var>envz2</var>
+will supersede those with the same name in <var>envz</var>, otherwise not.
+
+        <p>Null entries are treated just like other entries in this respect, so a null
+entry in <var>envz</var> can prevent an entry of the same name in <var>envz2</var> from
+being added to <var>envz</var>, if <var>override</var> is false. 
+</p></blockquote></div>
+
+<!-- envz.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: void <b>envz_strip</b> (<var>char **envz, size_t *envz_len</var>)<var><a name="index-envz_005fstrip-608"></a></var><br>
+<blockquote><p>The <code>envz_strip</code> function removes any null entries from <var>envz</var>,
+updating <code>*</code><var>envz</var> and <code>*</code><var>envz_len</var>. 
+</p></blockquote></div>
+
+   </body></html>
+

@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Mode Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Mode-Data-Types.html#Mode-Data-Types" title="Mode Data Types">
+<link rel="next" href="Setting-Modes.html#Setting-Modes" title="Setting Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Mode-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Setting-Modes.html#Setting-Modes">Setting Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Mode-Data-Types.html#Mode-Data-Types">Mode Data Types</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.2 Terminal Mode Functions</h4>
+
+<p><a name="index-terminal-mode-functions-1861"></a>
+<!-- termios.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Function: int <b>tcgetattr</b> (<var>int filedes, struct termios *termios-p</var>)<var><a name="index-tcgetattr-1862"></a></var><br>
+<blockquote><p>This function is used to examine the attributes of the terminal
+device with file descriptor <var>filedes</var>.  The attributes are returned
+in the structure that <var>termios-p</var> points to.
+
+        <p>If successful, <code>tcgetattr</code> returns 0.  A return value of -1
+indicates an error.  The following <code>errno</code> error conditions are
+defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal. 
+</dl>
+        </p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>tcsetattr</b> (<var>int filedes, int when, const struct termios *termios-p</var>)<var><a name="index-tcsetattr-1863"></a></var><br>
+<blockquote><p>This function sets the attributes of the terminal device with file
+descriptor <var>filedes</var>.  The new attributes are taken from the
+structure that <var>termios-p</var> points to.
+
+        <p>The <var>when</var> argument specifies how to deal with input and output
+already queued.  It can be one of the following values:
+
+          <dl>
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<dt><code>TCSANOW</code><dd><a name="index-TCSANOW-1864"></a>Make the change immediately.
+
+          <!-- termios.h -->
+          <!-- POSIX.1 -->
+          <br><dt><code>TCSADRAIN</code><dd><a name="index-TCSADRAIN-1865"></a>Make the change after waiting until all queued output has been written. 
+You should usually use this option when changing parameters that affect
+output.
+
+          <!-- termios.h -->
+          <!-- POSIX.1 -->
+          <br><dt><code>TCSAFLUSH</code><dd><a name="index-TCSAFLUSH-1866"></a>This is like <code>TCSADRAIN</code>, but also discards any queued input.
+
+          <!-- termios.h -->
+          <!-- BSD -->
+          <br><dt><code>TCSASOFT</code><dd><a name="index-TCSASOFT-1867"></a>This is a flag bit that you can add to any of the above alternatives. 
+Its meaning is to inhibit alteration of the state of the terminal
+hardware.  It is a BSD extension; it is only supported on BSD systems
+and the GNU system.
+
+          <p>Using <code>TCSASOFT</code> is exactly the same as setting the <code>CIGNORE</code>
+bit in the <code>c_cflag</code> member of the structure <var>termios-p</var> points
+to.  See <a href="Control-Modes.html#Control-Modes">Control Modes</a>, for a description of <code>CIGNORE</code>. 
+</dl>
+
+        <p>If this function is called from a background process on its controlling
+terminal, normally all processes in the process group are sent a
+<code>SIGTTOU</code> signal, in the same way as if the process were trying to
+write to the terminal.  The exception is if the calling process itself
+is ignoring or blocking <code>SIGTTOU</code> signals, in which case the
+operation is performed and no signal is sent.  See <a href="Job-Control.html#Job-Control">Job Control</a>.
+
+        <p>If successful, <code>tcsetattr</code> returns 0.  A return value of
+-1 indicates an error.  The following <code>errno</code> error
+conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>filedes</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTTY</code><dd>The <var>filedes</var> is not associated with a terminal.
+
+          <br><dt><code>EINVAL</code><dd>Either the value of the <code>when</code> argument is not valid, or there is
+something wrong with the data in the <var>termios-p</var> argument. 
+</dl>
+        </p></blockquote></div>
+
+   <p>Although <code>tcgetattr</code> and <code>tcsetattr</code> specify the terminal
+device with a file descriptor, the attributes are those of the terminal
+device itself and not of the file descriptor.  This means that the
+effects of changing terminal attributes are persistent; if another
+process opens the terminal file later on, it will see the changed
+attributes even though it doesn't have anything to do with the open file
+descriptor you originally specified in changing the attributes.
+
+   <p>Similarly, if a single process has multiple or duplicated file
+descriptors for the same terminal device, changing the terminal
+attributes affects input and output to all of these file
+descriptors.  This means, for example, that you can't open one file
+descriptor or stream to read from a terminal in the normal
+line-buffered, echoed mode; and simultaneously have another file
+descriptor for the same terminal that you use to read from it in
+single-character, non-echoed mode.  Instead, you have to explicitly
+switch the terminal back and forth between the two modes.
+
+   </body></html>
+

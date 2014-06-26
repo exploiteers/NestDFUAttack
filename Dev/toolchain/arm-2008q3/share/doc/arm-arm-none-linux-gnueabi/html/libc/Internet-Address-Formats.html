@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>Internet Address Formats - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Internet-Namespace.html#Internet-Namespace" title="Internet Namespace">
+<link rel="next" href="Host-Addresses.html#Host-Addresses" title="Host Addresses">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Internet-Address-Formats"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Host-Addresses.html#Host-Addresses">Host Addresses</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.6.1 Internet Socket Address Formats</h4>
+
+<p>In the Internet namespace, for both IPv4 (<code>AF_INET</code>) and IPv6
+(<code>AF_INET6</code>), a socket address consists of a host address
+and a port on that host.  In addition, the protocol you choose serves
+effectively as a part of the address because local port numbers are
+meaningful only within a particular protocol.
+
+   <p>The data types for representing socket addresses in the Internet namespace
+are defined in the header file <samp><span class="file">netinet/in.h</span></samp>. 
+<a name="index-netinet_002fin_002eh-1683"></a>
+<!-- netinet/in.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct sockaddr_in</b><var><a name="index-struct-sockaddr_005fin-1684"></a></var><br>
+<blockquote><p>This is the data type used to represent socket addresses in the
+Internet namespace.  It has the following members:
+
+          <dl>
+<dt><code>sa_family_t sin_family</code><dd>This identifies the address family or format of the socket address. 
+You should store the value <code>AF_INET</code> in this member. 
+See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>.
+
+          <br><dt><code>struct in_addr sin_addr</code><dd>This is the Internet address of the host machine.  See <a href="Host-Addresses.html#Host-Addresses">Host Addresses</a>, and <a href="Host-Names.html#Host-Names">Host Names</a>, for how to get a value to store
+here.
+
+          <br><dt><code>unsigned short int sin_port</code><dd>This is the port number.  See <a href="Ports.html#Ports">Ports</a>. 
+</dl>
+        </p></blockquote></div>
+
+   <p>When you call <code>bind</code> or <code>getsockname</code>, you should specify
+<code>sizeof (struct sockaddr_in)</code> as the <var>length</var> parameter if
+you are using an IPv4 Internet namespace socket address.
+
+<div class="defun">
+&mdash; Data Type: <b>struct sockaddr_in6</b><var><a name="index-struct-sockaddr_005fin6-1685"></a></var><br>
+<blockquote><p>This is the data type used to represent socket addresses in the IPv6
+namespace.  It has the following members:
+
+          <dl>
+<dt><code>sa_family_t sin6_family</code><dd>This identifies the address family or format of the socket address. 
+You should store the value of <code>AF_INET6</code> in this member. 
+See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>.
+
+          <br><dt><code>struct in6_addr sin6_addr</code><dd>This is the IPv6 address of the host machine.  See <a href="Host-Addresses.html#Host-Addresses">Host Addresses</a>, and <a href="Host-Names.html#Host-Names">Host Names</a>, for how to get a value to store
+here.
+
+          <br><dt><code>uint32_t sin6_flowinfo</code><dd>This is a currently unimplemented field.
+
+          <br><dt><code>uint16_t sin6_port</code><dd>This is the port number.  See <a href="Ports.html#Ports">Ports</a>.
+
+        </dl>
+        </p></blockquote></div>
+
+   </body></html>
+

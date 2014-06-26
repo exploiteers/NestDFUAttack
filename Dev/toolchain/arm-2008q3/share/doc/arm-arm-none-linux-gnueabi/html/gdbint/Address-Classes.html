@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+<title>Address Classes - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Pointers-and-Addresses.html#Pointers-and-Addresses" title="Pointers and Addresses">
+<link rel="next" href="Raw-and-Virtual-Registers.html#Raw-and-Virtual-Registers" title="Raw and Virtual Registers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Address-Classes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Raw-and-Virtual-Registers.html#Raw-and-Virtual-Registers">Raw and Virtual Registers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Pointers-and-Addresses.html#Pointers-and-Addresses">Pointers and Addresses</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.5 Address Classes</h3>
+
+<p><a name="index-address-classes-242"></a><a name="index-DW_005fAT_005fbyte_005fsize-243"></a><a name="index-DW_005fAT_005faddress_005fclass-244"></a>
+Sometimes information about different kinds of addresses is available
+via the debug information.  For example, some programming environments
+define addresses of several different sizes.  If the debug information
+distinguishes these kinds of address classes through either the size
+info (e.g, <code>DW_AT_byte_size</code> in DWARF&nbsp;2<!-- /@w -->) or through an explicit
+address class attribute (e.g, <code>DW_AT_address_class</code> in DWARF&nbsp;2<!-- /@w -->), the
+following macros should be defined in order to disambiguate these
+types within <span class="sc">gdb</span> as well as provide the added information to
+a <span class="sc">gdb</span> user when printing type expressions.
+
+<div class="defun">
+&mdash; Function: int <b>gdbarch_address_class_type_flags</b> (<var>struct gdbarch *current_gdbarch, int byte_size, int dwarf2_addr_class</var>)<var><a name="index-gdbarch_005faddress_005fclass_005ftype_005fflags-245"></a></var><br>
+<blockquote><p>Returns the type flags needed to construct a pointer type whose size
+is <var>byte_size</var> and whose address class is <var>dwarf2_addr_class</var>. 
+This function is normally called from within a symbol reader.  See
+<samp><span class="file">dwarf2read.c</span></samp>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: char <b>*gdbarch_address_class_type_flags_to_name</b> (<var>struct gdbarch *current_gdbarch, int type_flags</var>)<var><a name="index-g_t_002agdbarch_005faddress_005fclass_005ftype_005fflags_005fto_005fname-246"></a></var><br>
+<blockquote><p>Given the type flags representing an address class qualifier, return
+its name. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: int <b>gdbarch_address_class_name_to_type_flags</b> (<var>struct gdbarch *current_gdbarch, int name, int *type_flags_ptr</var>)<var><a name="index-gdbarch_005faddress_005fclass_005fname_005fto_005ftype_005fflags-247"></a></var><br>
+<blockquote><p>Given an address qualifier name, set the <code>int</code> referenced by <var>type_flags_ptr</var> to the type flags
+for that address class qualifier. 
+</p></blockquote></div>
+
+   <p>Since the need for address classes is rather rare, none of
+the address class functions are defined by default.  Predicate
+functions are provided to detect when they are defined.
+
+   <p>Consider a hypothetical architecture in which addresses are normally
+32-bits wide, but 16-bit addresses are also supported.  Furthermore,
+suppose that the DWARF&nbsp;2<!-- /@w --> information for this architecture simply
+uses a <code>DW_AT_byte_size</code> value of 2 to indicate the use of one
+of these "short" pointers.  The following functions could be defined
+to implement the address class functions:
+
+<pre class="smallexample">     somearch_address_class_type_flags (int byte_size,
+                                        int dwarf2_addr_class)
+     {
+       if (byte_size == 2)
+         return TYPE_FLAG_ADDRESS_CLASS_1;
+       else
+         return 0;
+     }
+     
+     static char *
+     somearch_address_class_type_flags_to_name (int type_flags)
+     {
+       if (type_flags &amp; TYPE_FLAG_ADDRESS_CLASS_1)
+         return "short";
+       else
+         return NULL;
+     }
+     
+     int
+     somearch_address_class_name_to_type_flags (char *name,
+                                                int *type_flags_ptr)
+     {
+       if (strcmp (name, "short") == 0)
+         {
+           *type_flags_ptr = TYPE_FLAG_ADDRESS_CLASS_1;
+           return 1;
+         }
+       else
+         return 0;
+     }
+</pre>
+   <p>The qualifier <code>@short</code> is used in <span class="sc">gdb</span>'s type expressions
+to indicate the presence of one of these "short" pointers.  E.g, if
+the debug information indicates that <code>short_ptr_var</code> is one of these
+short pointers, <span class="sc">gdb</span> might show the following behavior:
+
+<pre class="smallexample">     (gdb) ptype short_ptr_var
+     type = int * @short
+</pre>
+   </body></html>
+

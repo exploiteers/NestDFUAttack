@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+<title>Resizing the Data Segment - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Memory.html#Memory" title="Memory">
+<link rel="prev" href="Locking-Pages.html#Locking-Pages" title="Locking Pages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Resizing-the-Data-Segment"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Locking-Pages.html#Locking-Pages">Locking Pages</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Memory.html#Memory">Memory</a>
+<hr>
+</div>
+
+<h3 class="section">3.3 Resizing the Data Segment</h3>
+
+<p>The symbols in this section are declared in <samp><span class="file">unistd.h</span></samp>.
+
+   <p>You will not normally use the functions in this section, because the
+functions described in <a href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a> are easier to use.  Those
+are interfaces to a GNU C Library memory allocator that uses the
+functions below itself.  The functions below are simple interfaces to
+system calls.
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>brk</b> (<var>void *addr</var>)<var><a name="index-brk-349"></a></var><br>
+<blockquote>
+        <p><code>brk</code> sets the high end of the calling process' data segment to
+<var>addr</var>.
+
+        <p>The address of the end of a segment is defined to be the address of the
+last byte in the segment plus 1.
+
+        <p>The function has no effect if <var>addr</var> is lower than the low end of
+the data segment.  (This is considered success, by the way).
+
+        <p>The function fails if it would cause the data segment to overlap another
+segment or exceed the process' data storage limit (see <a href="Limits-on-Resources.html#Limits-on-Resources">Limits on Resources</a>).
+
+        <p>The function is named for a common historical case where data storage
+and the stack are in the same segment.  Data storage allocation grows
+upward from the bottom of the segment while the stack grows downward
+toward it from the top of the segment and the curtain between them is
+called the <dfn>break</dfn>.
+
+        <p>The return value is zero on success.  On failure, the return value is
+<code>-1</code> and <code>errno</code> is set accordingly.  The following <code>errno</code>
+values are specific to this function:
+
+          <dl>
+<dt><code>ENOMEM</code><dd>The request would cause the data segment to overlap another segment or
+exceed the process' data storage limit. 
+</dl>
+
+     <!-- The Brk system call in Linux (as opposed to the GNU C Library function) -->
+     <!-- is considerably different.  It always returns the new end of the data -->
+     <!-- segment, whether it succeeds or fails.  The GNU C library Brk determines -->
+     <!-- it's a failure if and only if if the system call returns an address less -->
+     <!-- than the address requested. -->
+        </blockquote></div>
+
+<!-- unistd.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>*sbrk</b> (<var>ptrdiff_t delta</var>)<var><a name="index-g_t_002asbrk-350"></a></var><br>
+<blockquote><p>This function is the same as <code>brk</code> except that you specify the new
+end of the data segment as an offset <var>delta</var> from the current end
+and on success the return value is the address of the resulting end of
+the data segment instead of zero.
+
+        <p>This means you can use &lsquo;<samp><span class="samp">sbrk(0)</span></samp>&rsquo; to find out what the current end
+of the data segment is.
+
+        </blockquote></div>
+
+   </body></html>
+

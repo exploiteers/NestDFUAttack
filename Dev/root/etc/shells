@@ -1,0 +1,30 @@
+#
+#    Copyright (c) 2010 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file is the configuration for valid login shells. This is
+#      generally consulted by chsh(1) and various FTP servers.
+#
+
+/bin/ash
+/bin/bash
+/bin/csh
+/bin/false
+/bin/hush
+/bin/ksh
+/bin/lash
+/bin/msh
+/bin/rbash
+/bin/sash
+/bin/sh
+/bin/tcsh
+/sbin/ash
+/sbin/hush
+/sbin/lash
+/sbin/msh
+/sbin/sash
+/sbin/sh
+/usr/bin/csh
+/usr/bin/ksh
+/usr/bin/tcsh

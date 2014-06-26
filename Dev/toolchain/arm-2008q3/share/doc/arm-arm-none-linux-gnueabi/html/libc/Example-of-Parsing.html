@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+<title>Example of Parsing - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Parsing-a-Template-String.html#Parsing-a-Template-String" title="Parsing a Template String">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Example-of-Parsing"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Parsing-a-Template-String.html#Parsing-a-Template-String">Parsing a Template String</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.11 Example of Parsing a Template String</h4>
+
+<p>Here is an example of decoding argument types for a format string.  We
+assume this is part of an interpreter which contains arguments of type
+<code>NUMBER</code>, <code>CHAR</code>, <code>STRING</code> and <code>STRUCTURE</code> (and
+perhaps others which are not valid here).
+
+<pre class="smallexample">     /* <span class="roman">Test whether the </span><var>nargs</var><span class="roman"> specified objects</span>
+        <span class="roman">in the vector </span><var>args</var><span class="roman"> are valid</span>
+        <span class="roman">for the format string </span><var>format</var><span class="roman">:</span>
+        <span class="roman">if so, return 1.</span>
+        <span class="roman">If not, return 0 after printing an error message.</span>  */
+     
+     int
+     validate_args (char *format, int nargs, OBJECT *args)
+     {
+       int *argtypes;
+       int nwanted;
+     
+       /* <span class="roman">Get the information about the arguments.</span>
+          <span class="roman">Each conversion specification must be at least two characters</span>
+          <span class="roman">long, so there cannot be more specifications than half the</span>
+          <span class="roman">length of the string.</span>  */
+     
+       argtypes = (int *) alloca (strlen (format) / 2 * sizeof (int));
+       nwanted = parse_printf_format (string, nelts, argtypes);
+     
+       /* <span class="roman">Check the number of arguments.</span>  */
+       if (nwanted &gt; nargs)
+         {
+           error ("too few arguments (at least %d required)", nwanted);
+           return 0;
+         }
+     
+       /* <span class="roman">Check the C type wanted for each argument</span>
+          <span class="roman">and see if the object given is suitable.</span>  */
+       for (i = 0; i &lt; nwanted; i++)
+         {
+           int wanted;
+     
+           if (argtypes[i] &amp; PA_FLAG_PTR)
+             wanted = STRUCTURE;
+           else
+             switch (argtypes[i] &amp; ~PA_FLAG_MASK)
+               {
+               case PA_INT:
+               case PA_FLOAT:
+               case PA_DOUBLE:
+                 wanted = NUMBER;
+                 break;
+               case PA_CHAR:
+                 wanted = CHAR;
+                 break;
+               case PA_STRING:
+                 wanted = STRING;
+                 break;
+               case PA_POINTER:
+                 wanted = STRUCTURE;
+                 break;
+               }
+           if (TYPE (args[i]) != wanted)
+             {
+               error ("type mismatch for arg number %d", i);
+               return 0;
+             }
+         }
+       return 1;
+     }
+</pre>
+   </body></html>
+

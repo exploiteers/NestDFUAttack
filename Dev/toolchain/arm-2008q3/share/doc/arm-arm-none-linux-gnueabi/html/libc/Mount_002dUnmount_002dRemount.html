@@ -1,0 +1,306 @@
+<html lang="en">
+<head>
+<title>Mount-Unmount-Remount - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Filesystem-Handling.html#Filesystem-Handling" title="Filesystem Handling">
+<link rel="prev" href="Mount-Information.html#Mount-Information" title="Mount Information">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Mount-Unmount-Remount"></a>
+<a name="Mount_002dUnmount_002dRemount"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Mount-Information.html#Mount-Information">Mount Information</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Filesystem-Handling.html#Filesystem-Handling">Filesystem Handling</a>
+<hr>
+</div>
+
+<h4 class="subsection">30.3.2 Mount, Unmount, Remount</h4>
+
+<p>This section describes the functions for mounting, unmounting, and
+remounting filesystems.
+
+   <p>Only the superuser can mount, unmount, or remount a filesystem.
+
+   <p>These functions do not access the <samp><span class="file">fstab</span></samp> and <samp><span class="file">mtab</span></samp> files.  You
+should maintain and use these separately.  See <a href="Mount-Information.html#Mount-Information">Mount Information</a>.
+
+   <p>The symbols in this section are declared in <samp><span class="file">sys/mount.h</span></samp>.
+
+<!-- sys/mount.h -->
+<!-- SVID, BSD -->
+<div class="defun">
+&mdash; Function: int <b>mount</b> (<var>const char *special_file, const char *dir, const char *fstype, unsigned long int options, const void *data</var>)<var><a name="index-mount-3490"></a></var><br>
+<blockquote>
+        <p><code>mount</code> mounts or remounts a filesystem.  The two operations are
+quite different and are merged rather unnaturally into this one function. 
+The <code>MS_REMOUNT</code> option, explained below, determines whether
+<code>mount</code> mounts or remounts.
+
+        <p>For a mount, the filesystem on the block device represented by the
+device special file named <var>special_file</var> gets mounted over the mount
+point <var>dir</var>.  This means that the directory <var>dir</var> (along with any
+files in it) is no longer visible; in its place (and still with the name
+<var>dir</var>) is the root directory of the filesystem on the device.
+
+        <p>As an exception, if the filesystem type (see below) is one which is not
+based on a device (e.g. &ldquo;proc&rdquo;), <code>mount</code> instantiates a
+filesystem and mounts it over <var>dir</var> and ignores <var>special_file</var>.
+
+        <p>For a remount, <var>dir</var> specifies the mount point where the filesystem
+to be remounted is (and remains) mounted and <var>special_file</var> is
+ignored.  Remounting a filesystem means changing the options that control
+operations on the filesystem while it is mounted.  It does not mean
+unmounting and mounting again.
+
+        <p>For a mount, you must identify the type of the filesystem as
+<var>fstype</var>.  This type tells the kernel how to access the filesystem
+and can be thought of as the name of a filesystem driver.  The
+acceptable values are system dependent.  On a system with a Linux kernel
+and the <code>proc</code> filesystem, the list of possible values is in the
+file <samp><span class="file">filesystems</span></samp> in the <code>proc</code> filesystem (e.g. type
+<kbd>cat /proc/filesystems</kbd> to see the list).  With a Linux kernel, the
+types of filesystems that <code>mount</code> can mount, and their type names,
+depends on what filesystem drivers are configured into the kernel or
+loaded as loadable kernel modules.  An example of a common value for
+<var>fstype</var> is <code>ext2</code>.
+
+        <p>For a remount, <code>mount</code> ignores <var>fstype</var>.
+
+     <!-- This is traditionally called "rwflag" for historical reasons. -->
+     <!-- No point in confusing people today, though. -->
+        <p><var>options</var> specifies a variety of options that apply until the
+filesystem is unmounted or remounted.  The precise meaning of an option
+depends on the filesystem and with some filesystems, an option may have
+no effect at all.  Furthermore, for some filesystems, some of these
+options (but never <code>MS_RDONLY</code>) can be overridden for individual
+file accesses via <code>ioctl</code>.
+
+        <p><var>options</var> is a bit string with bit fields defined using the
+following mask and masked value macros:
+
+          <dl>
+<dt><code>MS_MGC_MASK</code><dd>This multibit field contains a magic number.  If it does not have the value
+<code>MS_MGC_VAL</code>, <code>mount</code> assumes all the following bits are zero and
+the <var>data</var> argument is a null string, regardless of their actual values.
+
+          <br><dt><code>MS_REMOUNT</code><dd>This bit on means to remount the filesystem.  Off means to mount it. 
+<!-- There is a mask MS_RMT_MASK in mount.h that says only two of the options -->
+<!-- can be reset by remount.  But the Linux kernel has its own version of -->
+<!-- MS_RMT_MASK that says they all can be reset.  As far as I can tell, -->
+<!-- libc just passes the arguments straight through to the kernel. -->
+
+          <br><dt><code>MS_RDONLY</code><dd>This bit on specifies that no writing to the filesystem shall be allowed
+while it is mounted.  This cannot be overridden by <code>ioctl</code>.  This
+option is available on nearly all filesystems.
+
+          <br><dt><code>S_IMMUTABLE</code><dd>This bit on specifies that no writing to the files in the filesystem
+shall be allowed while it is mounted.  This can be overridden for a
+particular file access by a properly privileged call to <code>ioctl</code>. 
+This option is a relatively new invention and is not available on many
+filesystems.
+
+          <br><dt><code>S_APPEND</code><dd>This bit on specifies that the only file writing that shall be allowed
+while the filesystem is mounted is appending.  Some filesystems allow
+this to be overridden for a particular process by a properly privileged
+call to <code>ioctl</code>.  This is a relatively new invention and is not
+available on many filesystems.
+
+          <br><dt><code>MS_NOSUID</code><dd>This bit on specifies that Setuid and Setgid permissions on files in the
+filesystem shall be ignored while it is mounted.
+
+          <br><dt><code>MS_NOEXEC</code><dd>This bit on specifies that no files in the filesystem shall be executed
+while the filesystem is mounted.
+
+          <br><dt><code>MS_NODEV</code><dd>This bit on specifies that no device special files in the filesystem
+shall be accessible while the filesystem is mounted.
+
+          <br><dt><code>MS_SYNCHRONOUS</code><dd>This bit on specifies that all writes to the filesystem while it is
+mounted shall be synchronous; i.e., data shall be synced before each
+write completes rather than held in the buffer cache.
+
+          <br><dt><code>MS_MANDLOCK</code><dd>This bit on specifies that mandatory locks on files shall be permitted while
+the filesystem is mounted.
+
+          <br><dt><code>MS_NOATIME</code><dd>This bit on specifies that access times of files shall not be updated when
+the files are accessed while the filesystem is mounted.
+
+          <br><dt><code>MS_NODIRATIME</code><dd>This bit on specifies that access times of directories shall not be updated
+when the directories are accessed while the filesystem in mounted.
+
+          <!-- there is also S_QUOTA Linux fs.h (mount.h still uses its former name -->
+          <!-- S_WRITE), but I can't see what it does.  Turns on quotas, I guess. -->
+        </dl>
+
+        <p>Any bits not covered by the above masks should be set off; otherwise,
+results are undefined.
+
+        <p>The meaning of <var>data</var> depends on the filesystem type and is controlled
+entirely by the filesystem driver in the kernel.
+
+        <p>Example:
+
+     <pre class="smallexample">          #include &lt;sys/mount.h&gt;
+          
+          mount("/dev/hdb", "/cdrom", MS_MGC_VAL | MS_RDONLY | MS_NOSUID, "");
+          
+          mount("/dev/hda2", "/mnt", MS_MGC_VAL | MS_REMOUNT, "");
+</pre>
+        <p>Appropriate arguments for <code>mount</code> are conventionally recorded in
+the <samp><span class="file">fstab</span></samp> table.  See <a href="Mount-Information.html#Mount-Information">Mount Information</a>.
+
+        <p>The return value is zero if the mount or remount is successful.  Otherwise,
+it is <code>-1</code> and <code>errno</code> is set appropriately.  The values of
+<code>errno</code> are filesystem dependent, but here is a general list:
+
+          <dl>
+<dt><code>EPERM</code><dd>The process is not superuser. 
+<br><dt><code>ENODEV</code><dd>The file system type <var>fstype</var> is not known to the kernel. 
+<br><dt><code>ENOTBLK</code><dd>The file <var>dev</var> is not a block device special file. 
+<br><dt><code>EBUSY</code><dd>
+               <ul>
+<li>The device is already mounted.
+
+               <li>The mount point is busy.  (E.g. it is some process' working directory or
+has a filesystem mounted on it already).
+
+               <li>The request is to remount read-only, but there are files open for write. 
+</ul>
+
+          <br><dt><code>EINVAL</code><dd>
+               <ul>
+<li>A remount was attempted, but there is no filesystem mounted over the
+specified mount point.
+
+               <li>The supposed filesystem has an invalid superblock.
+
+          </ul>
+
+          <br><dt><code>EACCES</code><dd>
+               <ul>
+<li>The filesystem is inherently read-only (possibly due to a switch on the
+device) and the process attempted to mount it read/write (by setting the
+<code>MS_RDONLY</code> bit off).
+
+               <li><var>special_file</var> or <var>dir</var> is not accessible due to file permissions.
+
+               <li><var>special_file</var> is not accessible because it is in a filesystem that is
+mounted with the <code>MS_NODEV</code> option.
+
+          </ul>
+
+          <br><dt><code>EM_FILE</code><dd>The table of dummy devices is full.  <code>mount</code> needs to create a
+dummy device (aka &ldquo;unnamed&rdquo; device) if the filesystem being mounted is
+not one that uses a device.
+
+        </dl>
+
+        </blockquote></div>
+
+<!-- sys/mount.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>umount2</b> (<var>const char *file, int flags</var>)<var><a name="index-umount2-3491"></a></var><br>
+<blockquote>
+        <p><code>umount2</code> unmounts a filesystem.
+
+        <p>You can identify the filesystem to unmount either by the device special
+file that contains the filesystem or by the mount point.  The effect is
+the same.  Specify either as the string <var>file</var>.
+
+        <p><var>flags</var> contains the one-bit field identified by the following
+mask macro:
+
+          <dl>
+<dt><code>MNT_FORCE</code><dd>This bit on means to force the unmounting even if the filesystem is
+busy, by making it unbusy first.  If the bit is off and the filesystem is
+busy, <code>umount2</code> fails with <code>errno</code> = <code>EBUSY</code>.  Depending
+on the filesystem, this may override all, some, or no busy conditions.
+
+        </dl>
+
+        <p>All other bits in <var>flags</var> should be set to zero; otherwise, the result
+is undefined.
+
+        <p>Example:
+
+     <pre class="smallexample">          #include &lt;sys/mount.h&gt;
+          
+          umount2("/mnt", MNT_FORCE);
+          
+          umount2("/dev/hdd1", 0);
+</pre>
+        <p>After the filesystem is unmounted, the directory that was the mount point
+is visible, as are any files in it.
+
+        <p>As part of unmounting, <code>umount2</code> syncs the filesystem.
+
+        <p>If the unmounting is successful, the return value is zero.  Otherwise, it
+is <code>-1</code> and <code>errno</code> is set accordingly:
+
+          <dl>
+<dt><code>EPERM</code><dd>The process is not superuser. 
+<br><dt><code>EBUSY</code><dd>The filesystem cannot be unmounted because it is busy.  E.g. it contains
+a directory that is some process's working directory or a file that some
+process has open.  With some filesystems in some cases, you can avoid
+this failure with the <code>MNT_FORCE</code> option.
+
+          <br><dt><code>EINVAL</code><dd><var>file</var> validly refers to a file, but that file is neither a mount
+point nor a device special file of a currently mounted filesystem.
+
+        </dl>
+
+        <p>This function is not available on all systems. 
+</p></blockquote></div>
+
+<!-- sys/mount.h -->
+<!-- SVID, GNU -->
+<div class="defun">
+&mdash; Function: int <b>umount</b> (<var>const char *file</var>)<var><a name="index-umount-3492"></a></var><br>
+<blockquote>
+        <p><code>umount</code> does the same thing as <code>umount2</code> with <var>flags</var> set
+to zeroes.  It is more widely available than <code>umount2</code> but since it
+lacks the possibility to forcefully unmount a filesystem is deprecated
+when <code>umount2</code> is also available. 
+</p></blockquote></div>
+
+   </body></html>
+

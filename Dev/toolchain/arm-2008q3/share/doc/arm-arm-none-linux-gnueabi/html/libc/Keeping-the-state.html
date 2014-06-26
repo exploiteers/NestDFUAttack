@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+<title>Keeping the state - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion" title="Restartable multibyte conversion">
+<link rel="prev" href="Selecting-the-Conversion.html#Selecting-the-Conversion" title="Selecting the Conversion">
+<link rel="next" href="Converting-a-Character.html#Converting-a-Character" title="Converting a Character">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Keeping-the-state"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Converting-a-Character.html#Converting-a-Character">Converting a Character</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Selecting-the-Conversion.html#Selecting-the-Conversion">Selecting the Conversion</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.3.2 Representing the state of the conversion</h4>
+
+<p><a name="index-stateful-637"></a>In the introduction of this chapter it was said that certain character
+sets use a <dfn>stateful</dfn> encoding.  That is, the encoded values depend
+in some way on the previous bytes in the text.
+
+   <p>Since the conversion functions allow converting a text in more than one
+step we must have a way to pass this information from one call of the
+functions to another.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Data type: <b>mbstate_t</b><var><a name="index-mbstate_005ft-638"></a></var><br>
+<blockquote><p><a name="index-shift-state-639"></a>A variable of type <code>mbstate_t</code> can contain all the information
+about the <dfn>shift state</dfn> needed from one call to a conversion
+function to another.
+
+        <p><a name="index-wchar_002eh-640"></a><code>mbstate_t</code> is defined in <samp><span class="file">wchar.h</span></samp>.  It was introduced in
+Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w -->. 
+</p></blockquote></div>
+
+   <p>To use objects of type <code>mbstate_t</code> the programmer has to define such
+objects (normally as local variables on the stack) and pass a pointer to
+the object to the conversion functions.  This way the conversion function
+can update the object if the current multibyte character set is stateful.
+
+   <p>There is no specific function or initializer to put the state object in
+any specific state.  The rules are that the object should always
+represent the initial state before the first use, and this is achieved by
+clearing the whole variable with code such as follows:
+
+<pre class="smallexample">     {
+       mbstate_t state;
+       memset (&amp;state, '\0', sizeof (state));
+       /* <span class="roman">from now on </span><var>state</var><span class="roman"> can be used.</span>  */
+       ...
+     }
+</pre>
+   <p>When using the conversion functions to generate output it is often
+necessary to test whether the current state corresponds to the initial
+state.  This is necessary, for example, to decide whether to emit
+escape sequences to set the state to the initial state at certain
+sequence points.  Communication protocols often require this.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>mbsinit</b> (<var>const mbstate_t *ps</var>)<var><a name="index-mbsinit-641"></a></var><br>
+<blockquote><p>The <code>mbsinit</code> function determines whether the state object pointed
+to by <var>ps</var> is in the initial state.  If <var>ps</var> is a null pointer or
+the object is in the initial state the return value is nonzero.  Otherwise
+it is zero.
+
+        <p><a name="index-wchar_002eh-642"></a><code>mbsinit</code> was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> and is
+declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Code using <code>mbsinit</code> often looks similar to this:
+
+<!-- Fix the example to explicitly say how to generate the escape sequence -->
+<!-- to restore the initial state. -->
+<pre class="smallexample">     {
+       mbstate_t state;
+       memset (&amp;state, '\0', sizeof (state));
+       /* <span class="roman">Use </span><var>state</var><span class="roman">.</span>  */
+       ...
+       if (! mbsinit (&amp;state))
+         {
+           /* <span class="roman">Emit code to return to initial state.</span>  */
+           const wchar_t empty[] = L"";
+           const wchar_t *srcp = empty;
+           wcsrtombs (outbuf, &amp;srcp, outbuflen, &amp;state);
+         }
+       ...
+     }
+</pre>
+   <p>The code to emit the escape sequence to get back to the initial state is
+interesting.  The <code>wcsrtombs</code> function can be used to determine the
+necessary output code (see <a href="Converting-Strings.html#Converting-Strings">Converting Strings</a>).  Please note that on
+GNU systems it is not necessary to perform this extra action for the
+conversion from multibyte text to wide character text since the wide
+character encoding is not stateful.  But there is nothing mentioned in
+any standard that prohibits making <code>wchar_t</code> using a stateful
+encoding.
+
+   </body></html>
+

@@ -1,0 +1,174 @@
+<html lang="en">
+<head>
+<title>Noncanonical Input - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Special-Characters.html#Special-Characters" title="Special Characters">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Noncanonical-Input"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Special-Characters.html#Special-Characters">Special Characters</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.10 Noncanonical Input</h4>
+
+<p>In noncanonical input mode, the special editing characters such as
+ERASE and KILL are ignored.  The system facilities for the user to edit
+input are disabled in noncanonical mode, so that all input characters
+(unless they are special for signal or flow-control purposes) are passed
+to the application program exactly as typed.  It is up to the
+application program to give the user ways to edit the input, if
+appropriate.
+
+   <p>Noncanonical mode offers special parameters called MIN and TIME for
+controlling whether and how long to wait for input to be available.  You
+can even use them to avoid ever waiting&mdash;to return immediately with
+whatever input is available, or with no input.
+
+   <p>The MIN and TIME are stored in elements of the <code>c_cc</code> array, which
+is a member of the <code>struct&nbsp;termios</code><!-- /@w --> structure.  Each element of
+this array has a particular role, and each element has a symbolic
+constant that stands for the index of that element.  <code>VMIN</code> and
+<code>VMAX</code> are the names for the indices in the array of the MIN and
+TIME slots.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VMIN</b><var><a name="index-VMIN-1991"></a></var><br>
+<blockquote><p><a name="index-MIN-termios-slot-1992"></a>This is the subscript for the MIN slot in the <code>c_cc</code> array.  Thus,
+<var>termios</var><code>.c_cc[VMIN]</code> is the value itself.
+
+        <p>The MIN slot is only meaningful in noncanonical input mode; it
+specifies the minimum number of bytes that must be available in the
+input queue in order for <code>read</code> to return. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>VTIME</b><var><a name="index-VTIME-1993"></a></var><br>
+<blockquote><p><a name="index-TIME-termios-slot-1994"></a>This is the subscript for the TIME slot in the <code>c_cc</code> array.  Thus,
+<var>termios</var><code>.c_cc[VTIME]</code> is the value itself.
+
+        <p>The TIME slot is only meaningful in noncanonical input mode; it
+specifies how long to wait for input before returning, in units of 0.1
+seconds. 
+</p></blockquote></div>
+
+   <p>The MIN and TIME values interact to determine the criterion for when
+<code>read</code> should return; their precise meanings depend on which of
+them are nonzero.  There are four possible cases:
+
+     <ul>
+<li>Both TIME and MIN are nonzero.
+
+     <p>In this case, TIME specifies how long to wait after each input character
+to see if more input arrives.  After the first character received,
+<code>read</code> keeps waiting until either MIN bytes have arrived in all, or
+TIME elapses with no further input.
+
+     <p><code>read</code> always blocks until the first character arrives, even if
+TIME elapses first.  <code>read</code> can return more than MIN characters if
+more than MIN happen to be in the queue.
+
+     <li>Both MIN and TIME are zero.
+
+     <p>In this case, <code>read</code> always returns immediately with as many
+characters as are available in the queue, up to the number requested. 
+If no input is immediately available, <code>read</code> returns a value of
+zero.
+
+     <li>MIN is zero but TIME has a nonzero value.
+
+     <p>In this case, <code>read</code> waits for time TIME for input to become
+available; the availability of a single byte is enough to satisfy the
+read request and cause <code>read</code> to return.  When it returns, it
+returns as many characters as are available, up to the number requested. 
+If no input is available before the timer expires, <code>read</code> returns a
+value of zero.
+
+     <li>TIME is zero but MIN has a nonzero value.
+
+     <p>In this case, <code>read</code> waits until at least MIN bytes are available
+in the queue.  At that time, <code>read</code> returns as many characters as
+are available, up to the number requested.  <code>read</code> can return more
+than MIN characters if more than MIN happen to be in the queue. 
+</ul>
+
+   <p>What happens if MIN is 50 and you ask to read just 10 bytes? 
+Normally, <code>read</code> waits until there are 50 bytes in the buffer (or,
+more generally, the wait condition described above is satisfied), and
+then reads 10 of them, leaving the other 40 buffered in the operating
+system for a subsequent call to <code>read</code>.
+
+   <p><strong>Portability note:</strong> On some systems, the MIN and TIME slots are
+actually the same as the EOF and EOL slots.  This causes no serious
+problem because the MIN and TIME slots are used only in noncanonical
+input and the EOF and EOL slots are used only in canonical input, but it
+isn't very clean.  The GNU library allocates separate slots for these
+uses.
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: void <b>cfmakeraw</b> (<var>struct termios *termios-p</var>)<var><a name="index-cfmakeraw-1995"></a></var><br>
+<blockquote><p>This function provides an easy way to set up <code>*</code><var>termios-p</var> for
+what has traditionally been called &ldquo;raw mode&rdquo; in BSD.  This uses
+noncanonical input, and turns off most processing to give an unmodified
+channel to the terminal.
+
+        <p>It does exactly this:
+     <pre class="smallexample">            <var>termios-p</var>-&gt;c_iflag &amp;= ~(IGNBRK|BRKINT|PARMRK|ISTRIP
+                                          |INLCR|IGNCR|ICRNL|IXON);
+            <var>termios-p</var>-&gt;c_oflag &amp;= ~OPOST;
+            <var>termios-p</var>-&gt;c_lflag &amp;= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
+            <var>termios-p</var>-&gt;c_cflag &amp;= ~(CSIZE|PARENB);
+            <var>termios-p</var>-&gt;c_cflag |= CS8;
+</pre>
+        </blockquote></div>
+
+   </body></html>
+

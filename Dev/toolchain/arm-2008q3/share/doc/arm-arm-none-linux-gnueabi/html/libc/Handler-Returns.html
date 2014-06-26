@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Handler Returns - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link rel="next" href="Termination-in-Handler.html#Termination-in-Handler" title="Termination in Handler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Handler-Returns"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Termination-in-Handler.html#Termination-in-Handler">Termination in Handler</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.4.1 Signal Handlers that Return</h4>
+
+<p>Handlers which return normally are usually used for signals such as
+<code>SIGALRM</code> and the I/O and interprocess communication signals.  But
+a handler for <code>SIGINT</code> might also return normally after setting a
+flag that tells the program to exit at a convenient time.
+
+   <p>It is not safe to return normally from the handler for a program error
+signal, because the behavior of the program when the handler function
+returns is not defined after a program error.  See <a href="Program-Error-Signals.html#Program-Error-Signals">Program Error Signals</a>.
+
+   <p>Handlers that return normally must modify some global variable in order
+to have any effect.  Typically, the variable is one that is examined
+periodically by the program during normal operation.  Its data type
+should be <code>sig_atomic_t</code> for reasons described in <a href="Atomic-Data-Access.html#Atomic-Data-Access">Atomic Data Access</a>.
+
+   <p>Here is a simple example of such a program.  It executes the body of
+the loop until it has noticed that a <code>SIGALRM</code> signal has arrived. 
+This technique is useful because it allows the iteration in progress
+when the signal arrives to complete before the loop exits.
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     
+     /* <span class="roman">This flag controls termination of the main loop.</span> */
+     volatile sig_atomic_t keep_going = 1;
+     
+     /* <span class="roman">The signal handler just clears the flag and re-enables itself.</span> */
+     void
+     catch_alarm (int sig)
+     {
+       keep_going = 0;
+       signal (sig, catch_alarm);
+     }
+     
+     void
+     do_stuff (void)
+     {
+       puts ("Doing stuff while waiting for alarm....");
+     }
+     
+     int
+     main (void)
+     {
+       /* <span class="roman">Establish a handler for SIGALRM signals.</span> */
+       signal (SIGALRM, catch_alarm);
+     
+       /* <span class="roman">Set an alarm to go off in a little while.</span> */
+       alarm (2);
+     
+       /* <span class="roman">Check the flag once in a while to see when to quit.</span> */
+       while (keep_going)
+         do_stuff ();
+     
+       return EXIT_SUCCESS;
+     }
+</pre>
+   </body></html>
+

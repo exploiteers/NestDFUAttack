@@ -1,0 +1,110 @@
+<html lang="en">
+<head>
+<title>Setting Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Mode-Functions.html#Mode-Functions" title="Mode Functions">
+<link rel="next" href="Input-Modes.html#Input-Modes" title="Input Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Setting-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Input-Modes.html#Input-Modes">Input Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Mode-Functions.html#Mode-Functions">Mode Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.3 Setting Terminal Modes Properly</h4>
+
+<p>When you set terminal modes, you should call <code>tcgetattr</code> first to
+get the current modes of the particular terminal device, modify only
+those modes that you are really interested in, and store the result with
+<code>tcsetattr</code>.
+
+   <p>It's a bad idea to simply initialize a <code>struct termios</code> structure
+to a chosen set of attributes and pass it directly to <code>tcsetattr</code>. 
+Your program may be run years from now, on systems that support members
+not documented in this manual.  The way to avoid setting these members
+to unreasonable values is to avoid changing them.
+
+   <p>What's more, different terminal devices may require different mode
+settings in order to function properly.  So you should avoid blindly
+copying attributes from one terminal device to another.
+
+   <p>When a member contains a collection of independent flags, as the
+<code>c_iflag</code>, <code>c_oflag</code> and <code>c_cflag</code> members do, even
+setting the entire member is a bad idea, because particular operating
+systems have their own flags.  Instead, you should start with the
+current value of the member and alter only the flags whose values matter
+in your program, leaving any other flags unchanged.
+
+   <p>Here is an example of how to set one flag (<code>ISTRIP</code>) in the
+<code>struct termios</code> structure while properly preserving all the other
+data in the structure:
+
+<pre class="smallexample">     int
+     set_istrip (int desc, int value)
+     {
+       struct termios settings;
+       int result;
+     
+       result = tcgetattr (desc, &amp;settings);
+       if (result &lt; 0)
+         {
+           perror ("error in tcgetattr");
+           return 0;
+         }
+       settings.c_iflag &amp;= ~ISTRIP;
+       if (value)
+         settings.c_iflag |= ISTRIP;
+       result = tcsetattr (desc, TCSANOW, &amp;settings);
+       if (result &lt; 0)
+         {
+           perror ("error in tcsetattr");
+           return 0;
+        }
+       return 1;
+     }
+</pre>
+   </body></html>
+

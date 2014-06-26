@@ -1,0 +1,138 @@
+<html lang="en">
+<head>
+<title>Table of Input Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Input.html#Formatted-Input" title="Formatted Input">
+<link rel="prev" href="Input-Conversion-Syntax.html#Input-Conversion-Syntax" title="Input Conversion Syntax">
+<link rel="next" href="Numeric-Input-Conversions.html#Numeric-Input-Conversions" title="Numeric Input Conversions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Table-of-Input-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Input-Conversion-Syntax.html#Input-Conversion-Syntax">Input Conversion Syntax</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Input.html#Formatted-Input">Formatted Input</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.14.3 Table of Input Conversions</h4>
+
+<p><a name="index-input-conversions_002c-for-_0040code_007bscanf_007d-1080"></a>
+Here is a table that summarizes the various conversion specifications:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">%d</span></samp>&rsquo;<dd>Matches an optionally signed integer written in decimal.  See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%i</span></samp>&rsquo;<dd>Matches an optionally signed integer in any of the formats that the C
+language defines for specifying an integer constant.  See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%o</span></samp>&rsquo;<dd>Matches an unsigned integer written in octal radix. 
+See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%u</span></samp>&rsquo;<dd>Matches an unsigned integer written in decimal radix. 
+See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%x</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%X</span></samp>&rsquo;<dd>Matches an unsigned integer written in hexadecimal radix. 
+See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%e</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%f</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%g</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%E</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%G</span></samp>&rsquo;<dd>Matches an optionally signed floating-point number.  See <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%s</span></samp>&rsquo;<dd>
+Matches a string containing only non-whitespace characters. 
+See <a href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>.  The presence of the &lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier
+determines whether the output is stored as a wide character string or a
+multibyte string.  If &lsquo;<samp><span class="samp">%s</span></samp>&rsquo; is used in a wide character function the
+string is converted as with multiple calls to <code>wcrtomb</code> into a
+multibyte string.  This means that the buffer must provide room for
+<code>MB_CUR_MAX</code> bytes for each wide character read.  In case
+&lsquo;<samp><span class="samp">%ls</span></samp>&rsquo; is used in a multibyte function the result is converted into
+wide characters as with multiple calls of <code>mbrtowc</code> before being
+stored in the user provided buffer.
+
+     <br><dt>&lsquo;<samp><span class="samp">%S</span></samp>&rsquo;<dd>This is an alias for &lsquo;<samp><span class="samp">%ls</span></samp>&rsquo; which is supported for compatibility
+with the Unix standard.
+
+     <br><dt>&lsquo;<samp><span class="samp">%[</span></samp>&rsquo;<dd>Matches a string of characters that belong to a specified set. 
+See <a href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>.  The presence of the &lsquo;<samp><span class="samp">l</span></samp>&rsquo; modifier
+determines whether the output is stored as a wide character string or a
+multibyte string.  If &lsquo;<samp><span class="samp">%[</span></samp>&rsquo; is used in a wide character function the
+string is converted as with multiple calls to <code>wcrtomb</code> into a
+multibyte string.  This means that the buffer must provide room for
+<code>MB_CUR_MAX</code> bytes for each wide character read.  In case
+&lsquo;<samp><span class="samp">%l[</span></samp>&rsquo; is used in a multibyte function the result is converted into
+wide characters as with multiple calls of <code>mbrtowc</code> before being
+stored in the user provided buffer.
+
+     <br><dt>&lsquo;<samp><span class="samp">%c</span></samp>&rsquo;<dd>Matches a string of one or more characters; the number of characters
+read is controlled by the maximum field width given for the conversion. 
+See <a href="String-Input-Conversions.html#String-Input-Conversions">String Input Conversions</a>.
+
+     <p>If the &lsquo;<samp><span class="samp">%c</span></samp>&rsquo; is used in a wide stream function the read value is
+converted from a wide character to the corresponding multibyte character
+before storing it.  Note that this conversion can produce more than one
+byte of output and therefore the provided buffer be large enough for up
+to <code>MB_CUR_MAX</code> bytes for each character.  If &lsquo;<samp><span class="samp">%lc</span></samp>&rsquo; is used in
+a multibyte function the input is treated as a multibyte sequence (and
+not bytes) and the result is converted as with calls to <code>mbrtowc</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%C</span></samp>&rsquo;<dd>This is an alias for &lsquo;<samp><span class="samp">%lc</span></samp>&rsquo; which is supported for compatibility
+with the Unix standard.
+
+     <br><dt>&lsquo;<samp><span class="samp">%p</span></samp>&rsquo;<dd>Matches a pointer value in the same implementation-defined format used
+by the &lsquo;<samp><span class="samp">%p</span></samp>&rsquo; output conversion for <code>printf</code>.  See <a href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%n</span></samp>&rsquo;<dd>This conversion doesn't read any characters; it records the number of
+characters read so far by this call.  See <a href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>.
+
+     <br><dt>&lsquo;<samp><span class="samp">%%</span></samp>&rsquo;<dd>This matches a literal &lsquo;<samp><span class="samp">%</span></samp>&rsquo; character in the input stream.  No
+corresponding argument is used.  See <a href="Other-Input-Conversions.html#Other-Input-Conversions">Other Input Conversions</a>. 
+</dl>
+
+   <p>If the syntax of a conversion specification is invalid, the behavior is
+undefined.  If there aren't enough function arguments provided to supply
+addresses for all the conversion specifications in the template strings
+that perform assignments, or if the arguments are not of the correct
+types, the behavior is also undefined.  On the other hand, extra
+arguments are simply ignored.
+
+   </body></html>
+

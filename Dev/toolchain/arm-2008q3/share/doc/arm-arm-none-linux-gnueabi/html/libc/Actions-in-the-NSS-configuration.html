@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Actions in the NSS configuration - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="NSS-Configuration-File.html#NSS-Configuration-File" title="NSS Configuration File">
+<link rel="prev" href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration" title="Services in the NSS configuration">
+<link rel="next" href="Notes-on-NSS-Configuration-File.html#Notes-on-NSS-Configuration-File" title="Notes on NSS Configuration File">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Actions-in-the-NSS-configuration"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Notes-on-NSS-Configuration-File.html#Notes-on-NSS-Configuration-File">Notes on NSS Configuration File</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">Services in the NSS configuration</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a>
+<hr>
+</div>
+
+<h4 class="subsection">28.2.2 Actions in the NSS configuration</h4>
+
+<p>The second item in the specification gives the user much finer control
+on the lookup process.  Action items are placed between two service
+names and are written within brackets.  The general form is
+
+<pre class="display">     <code>[</code> ( <code>!</code>? <var>status</var> <code>=</code> <var>action</var> )+ <code>]</code>
+</pre>
+   <p class="noindent">where
+
+<pre class="smallexample">     <var>status</var> &rArr; success | notfound | unavail | tryagain
+     <var>action</var> &rArr; return | continue
+</pre>
+   <p>The case of the keywords is insignificant.  The <var>status</var>
+values are the results of a call to a lookup function of a specific
+service.  They mean
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">success</span></samp>&rsquo;<a name="index-success-3274"></a><dd>No error occurred and the wanted entry is returned.  The default action
+for this is <code>return</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">notfound</span></samp>&rsquo;<a name="index-notfound-3275"></a><dd>The lookup process works ok but the needed value was not found.  The
+default action is <code>continue</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">unavail</span></samp>&rsquo;<a name="index-unavail-3276"></a><dd><a name="index-DNS-server-unavailable-3277"></a>The service is permanently unavailable.  This can either mean the needed
+file is not available, or, for DNS, the server is not available or does
+not allow queries.  The default action is <code>continue</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">tryagain</span></samp>&rsquo;<a name="index-tryagain-3278"></a><dd>The service is temporarily unavailable.  This could mean a file is
+locked or a server currently cannot accept more connections.  The
+default action is <code>continue</code>. 
+</dl>
+
+<p class="noindent">If we have a line like
+
+<pre class="smallexample">     ethers: nisplus [NOTFOUND=return] db files
+</pre>
+   <p class="noindent">this is equivalent to
+
+<pre class="smallexample">     ethers: nisplus [SUCCESS=return NOTFOUND=return UNAVAIL=continue
+                      TRYAGAIN=continue]
+             db      [SUCCESS=return NOTFOUND=continue UNAVAIL=continue
+                      TRYAGAIN=continue]
+             files
+</pre>
+   <p class="noindent">(except that it would have to be written on one line).  The default
+value for the actions are normally what you want, and only need to be
+changed in exceptional cases.
+
+   <p>If the optional <code>!</code> is placed before the <var>status</var> this means
+the following action is used for all statuses but <var>status</var> itself. 
+I.e., <code>!</code> is negation as in the C language (and others).
+
+   <p>Before we explain the exception which makes this action item necessary
+one more remark: obviously it makes no sense to add another action
+item after the <code>files</code> service.  Since there is no other service
+following the action <em>always</em> is <code>return</code>.
+
+   <p><a name="index-nisplus_002c-and-completeness-3279"></a>Now, why is this <code>[NOTFOUND=return]</code> action useful?  To understand
+this we should know that the <code>nisplus</code> service is often
+complete; i.e., if an entry is not available in the NIS+ tables it is
+not available anywhere else.  This is what is expressed by this action
+item: it is useless to examine further services since they will not give
+us a result.
+
+   <p><a name="index-nisplus_002c-and-booting-3280"></a><a name="index-bootstrapping_002c-and-services-3281"></a>The situation would be different if the NIS+ service is not available
+because the machine is booting.  In this case the return value of the
+lookup function is not <code>notfound</code> but instead <code>unavail</code>.  And
+as you can see in the complete form above: in this situation the
+<code>db</code> and <code>files</code> services are used.  Neat, isn't it?  The
+system administrator need not pay special care for the time the system
+is not completely ready to work (while booting or shutdown or
+network problems).
+
+   </body></html>
+

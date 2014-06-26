@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>Blocking Signals - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Signal-Handling.html#Signal-Handling" title="Signal Handling">
+<link rel="prev" href="Generating-Signals.html#Generating-Signals" title="Generating Signals">
+<link rel="next" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal" title="Waiting for a Signal">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Blocking-Signals"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Generating-Signals.html#Generating-Signals">Generating Signals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Signal-Handling.html#Signal-Handling">Signal Handling</a>
+<hr>
+</div>
+
+<h3 class="section">24.7 Blocking Signals</h3>
+
+<p><a name="index-blocking-signals-2955"></a>
+Blocking a signal means telling the operating system to hold it and
+deliver it later.  Generally, a program does not block signals
+indefinitely&mdash;it might as well ignore them by setting their actions to
+<code>SIG_IGN</code>.  But it is useful to block signals briefly, to prevent
+them from interrupting sensitive operations.  For instance:
+
+     <ul>
+<li>You can use the <code>sigprocmask</code> function to block signals while you
+modify global variables that are also modified by the handlers for these
+signals.
+
+     <li>You can set <code>sa_mask</code> in your <code>sigaction</code> call to block
+certain signals while a particular signal handler runs.  This way, the
+signal handler can run without being interrupted itself by signals. 
+</ul>
+
+<ul class="menu">
+<li><a accesskey="1" href="Why-Block.html#Why-Block">Why Block</a>:                            The purpose of blocking signals. 
+<li><a accesskey="2" href="Signal-Sets.html#Signal-Sets">Signal Sets</a>:                          How to specify which signals to
+                                         block. 
+<li><a accesskey="3" href="Process-Signal-Mask.html#Process-Signal-Mask">Process Signal Mask</a>:                  Blocking delivery of signals to your
+				         process during normal execution. 
+<li><a accesskey="4" href="Testing-for-Delivery.html#Testing-for-Delivery">Testing for Delivery</a>:                 Blocking to Test for Delivery of
+                                         a Signal. 
+<li><a accesskey="5" href="Blocking-for-Handler.html#Blocking-for-Handler">Blocking for Handler</a>:                 Blocking additional signals while a
+				         handler is being run. 
+<li><a accesskey="6" href="Checking-for-Pending-Signals.html#Checking-for-Pending-Signals">Checking for Pending Signals</a>:         Checking for Pending Signals
+<li><a accesskey="7" href="Remembering-a-Signal.html#Remembering-a-Signal">Remembering a Signal</a>:                 How you can get almost the same
+                                         effect as blocking a signal, by
+                                         handling it and setting a flag
+                                         to be tested later. 
+</ul>
+
+   </body></html>
+

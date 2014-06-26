@@ -1,0 +1,192 @@
+<html lang="en">
+<head>
+<title>Control Functions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Arithmetic.html#Arithmetic" title="Arithmetic">
+<link rel="prev" href="Rounding.html#Rounding" title="Rounding">
+<link rel="next" href="Arithmetic-Functions.html#Arithmetic-Functions" title="Arithmetic Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Control-Functions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Arithmetic-Functions.html#Arithmetic-Functions">Arithmetic Functions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Rounding.html#Rounding">Rounding</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Arithmetic.html#Arithmetic">Arithmetic</a>
+<hr>
+</div>
+
+<h3 class="section">20.7 Floating-Point Control Functions</h3>
+
+<p>IEEE&nbsp;754<!-- /@w --> floating-point implementations allow the programmer to
+decide whether traps will occur for each of the exceptions, by setting
+bits in the <dfn>control word</dfn>.  In C, traps result in the program
+receiving the <code>SIGFPE</code> signal; see <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.
+
+   <p><strong>Note:</strong> IEEE&nbsp;754<!-- /@w --> says that trap handlers are given details of
+the exceptional situation, and can set the result value.  C signals do
+not provide any mechanism to pass this information back and forth. 
+Trapping exceptions in C is therefore not very useful.
+
+   <p>It is sometimes necessary to save the state of the floating-point unit
+while you perform some calculation.  The library provides functions
+which save and restore the exception flags, the set of exceptions that
+generate traps, and the rounding mode.  This information is known as the
+<dfn>floating-point environment</dfn>.
+
+   <p>The functions to save and restore the floating-point environment all use
+a variable of type <code>fenv_t</code> to store information.  This type is
+defined in <samp><span class="file">fenv.h</span></samp>.  Its size and contents are
+implementation-defined.  You should not attempt to manipulate a variable
+of this type directly.
+
+   <p>To save the state of the FPU, use one of these functions:
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fegetenv</b> (<var>fenv_t *envp</var>)<var><a name="index-fegetenv-2394"></a></var><br>
+<blockquote><p>Store the floating-point environment in the variable pointed to by
+<var>envp</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>feholdexcept</b> (<var>fenv_t *envp</var>)<var><a name="index-feholdexcept-2395"></a></var><br>
+<blockquote><p>Store the current floating-point environment in the object pointed to by
+<var>envp</var>.  Then clear all exception flags, and set the FPU to trap no
+exceptions.  Not all FPUs support trapping no exceptions; if
+<code>feholdexcept</code> cannot set this mode, it returns nonzero value.  If it
+succeeds, it returns zero. 
+</p></blockquote></div>
+
+   <p>The functions which restore the floating-point environment can take these
+kinds of arguments:
+
+     <ul>
+<li>Pointers to <code>fenv_t</code> objects, which were initialized previously by a
+call to <code>fegetenv</code> or <code>feholdexcept</code>. 
+<li><a name="index-FE_005fDFL_005fENV-2396"></a>The special macro <code>FE_DFL_ENV</code> which represents the floating-point
+environment as it was available at program start. 
+<li>Implementation defined macros with names starting with <code>FE_</code> and
+having type <code>fenv_t *</code>.
+
+     <p><a name="index-FE_005fNOMASK_005fENV-2397"></a>If possible, the GNU C Library defines a macro <code>FE_NOMASK_ENV</code>
+which represents an environment where every exception raised causes a
+trap to occur.  You can test for this macro using <code>#ifdef</code>.  It is
+only defined if <code>_GNU_SOURCE</code> is defined.
+
+     <p>Some platforms might define other predefined environments. 
+</ul>
+
+<p class="noindent">To set the floating-point environment, you can use either of these
+functions:
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>fesetenv</b> (<var>const fenv_t *envp</var>)<var><a name="index-fesetenv-2398"></a></var><br>
+<blockquote><p>Set the floating-point environment to that described by <var>envp</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>feupdateenv</b> (<var>const fenv_t *envp</var>)<var><a name="index-feupdateenv-2399"></a></var><br>
+<blockquote><p>Like <code>fesetenv</code>, this function sets the floating-point environment
+to that described by <var>envp</var>.  However, if any exceptions were
+flagged in the status word before <code>feupdateenv</code> was called, they
+remain flagged after the call.  In other words, after <code>feupdateenv</code>
+is called, the status word is the bitwise OR of the previous status word
+and the one saved in <var>envp</var>.
+
+        <p>The function returns zero in case the operation was successful, a
+non-zero value otherwise. 
+</p></blockquote></div>
+
+<p class="noindent">To control for individual exceptions if raising them causes a trap to
+occur, you can use the following two functions.
+
+   <p><strong>Portability Note:</strong> These functions are all GNU extensions.
+
+<!-- fenv.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>feenableexcept</b> (<var>int excepts</var>)<var><a name="index-feenableexcept-2400"></a></var><br>
+<blockquote><p>This functions enables traps for each of the exceptions as indicated by
+the parameter <var>except</var>.  The individual excepetions are described in
+<a href="Status-bit-operations.html#Status-bit-operations">Status bit operations</a>.  Only the specified exceptions are
+enabled, the status of the other exceptions is not changed.
+
+        <p>The function returns the previous enabled exceptions in case the
+operation was successful, <code>-1</code> otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fedisableexcept</b> (<var>int excepts</var>)<var><a name="index-fedisableexcept-2401"></a></var><br>
+<blockquote><p>This functions disables traps for each of the exceptions as indicated by
+the parameter <var>except</var>.  The individual excepetions are described in
+<a href="Status-bit-operations.html#Status-bit-operations">Status bit operations</a>.  Only the specified exceptions are
+disabled, the status of the other exceptions is not changed.
+
+        <p>The function returns the previous enabled exceptions in case the
+operation was successful, <code>-1</code> otherwise. 
+</p></blockquote></div>
+
+<!-- fenv.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>fegetexcept</b> (<var>int excepts</var>)<var><a name="index-fegetexcept-2402"></a></var><br>
+<blockquote><p>The function returns a bitmask of all currently enabled exceptions.  It
+returns <code>-1</code> in case of failure. 
+</p></blockquote></div>
+
+   </body></html>
+

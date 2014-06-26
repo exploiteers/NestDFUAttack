@@ -1,0 +1,162 @@
+<html lang="en">
+<head>
+<title>Example of Getopt - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Getopt.html#Getopt" title="Getopt">
+<link rel="prev" href="Using-Getopt.html#Using-Getopt" title="Using Getopt">
+<link rel="next" href="Getopt-Long-Options.html#Getopt-Long-Options" title="Getopt Long Options">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Example-of-Getopt"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Getopt-Long-Options.html#Getopt-Long-Options">Getopt Long Options</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Getopt.html#Using-Getopt">Using Getopt</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Getopt.html#Getopt">Getopt</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.2.2 Example of Parsing Arguments with <code>getopt</code></h4>
+
+<p>Here is an example showing how <code>getopt</code> is typically used.  The
+key points to notice are:
+
+     <ul>
+<li>Normally, <code>getopt</code> is called in a loop.  When <code>getopt</code> returns
+<code>-1</code>, indicating no more options are present, the loop terminates.
+
+     <li>A <code>switch</code> statement is used to dispatch on the return value from
+<code>getopt</code>.  In typical use, each case just sets a variable that
+is used later in the program.
+
+     <li>A second loop is used to process the remaining non-option arguments. 
+</ul>
+
+<pre class="smallexample">     #include &lt;ctype.h&gt;
+     #include &lt;stdio.h&gt;
+     #include &lt;stdlib.h&gt;
+     #include &lt;unistd.h&gt;
+     
+     int
+     main (int argc, char **argv)
+     {
+       int aflag = 0;
+       int bflag = 0;
+       char *cvalue = NULL;
+       int index;
+       int c;
+     
+       opterr = 0;
+     
+       while ((c = getopt (argc, argv, "abc:")) != -1)
+         switch (c)
+           {
+           case 'a':
+             aflag = 1;
+             break;
+           case 'b':
+             bflag = 1;
+             break;
+           case 'c':
+             cvalue = optarg;
+             break;
+           case '?':
+             if (optopt == 'c')
+               fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+             else if (isprint (optopt))
+               fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+             else
+               fprintf (stderr,
+                        "Unknown option character `\\x%x'.\n",
+                        optopt);
+             return 1;
+           default:
+             abort ();
+           }
+     
+       printf ("aflag = %d, bflag = %d, cvalue = %s\n",
+               aflag, bflag, cvalue);
+     
+       for (index = optind; index &lt; argc; index++)
+         printf ("Non-option argument %s\n", argv[index]);
+       return 0;
+     }
+</pre>
+   <p>Here are some examples showing what this program prints with different
+combinations of arguments:
+
+<pre class="smallexample">     % testopt
+     aflag = 0, bflag = 0, cvalue = (null)
+     
+     % testopt -a -b
+     aflag = 1, bflag = 1, cvalue = (null)
+     
+     % testopt -ab
+     aflag = 1, bflag = 1, cvalue = (null)
+     
+     % testopt -c foo
+     aflag = 0, bflag = 0, cvalue = foo
+     
+     % testopt -cfoo
+     aflag = 0, bflag = 0, cvalue = foo
+     
+     % testopt arg1
+     aflag = 0, bflag = 0, cvalue = (null)
+     Non-option argument arg1
+     
+     % testopt -a arg1
+     aflag = 1, bflag = 0, cvalue = (null)
+     Non-option argument arg1
+     
+     % testopt -c foo arg1
+     aflag = 0, bflag = 0, cvalue = foo
+     Non-option argument arg1
+     
+     % testopt -a -- -b
+     aflag = 1, bflag = 0, cvalue = (null)
+     Non-option argument -b
+     
+     % testopt -a -
+     aflag = 1, bflag = 0, cvalue = (null)
+     Non-option argument -
+</pre>
+   </body></html>
+

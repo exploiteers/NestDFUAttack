@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+<title>OS ABI Variant Handling - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="next" href="Initialize-New-Architecture.html#Initialize-New-Architecture" title="Initialize New Architecture">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="OS-ABI-Variant-Handling"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Initialize-New-Architecture.html#Initialize-New-Architecture">Initialize New Architecture</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.1 Operating System ABI Variant Handling</h3>
+
+<p><a name="index-OS-ABI-variants-198"></a>
+<span class="sc">gdb</span> provides a mechanism for handling variations in OS
+ABIs.  An OS ABI variant may have influence over any number of
+variables in the target architecture definition.  There are two major
+components in the OS ABI mechanism: sniffers and handlers.
+
+   <p>A <dfn>sniffer</dfn> examines a file matching a BFD architecture/flavour pair
+(the architecture may be wildcarded) in an attempt to determine the
+OS ABI of that file.  Sniffers with a wildcarded architecture are considered
+to be <dfn>generic</dfn>, while sniffers for a specific architecture are
+considered to be <dfn>specific</dfn>.  A match from a specific sniffer
+overrides a match from a generic sniffer.  Multiple sniffers for an
+architecture/flavour may exist, in order to differentiate between two
+different operating systems which use the same basic file format.  The
+OS ABI framework provides a generic sniffer for ELF-format files which
+examines the <code>EI_OSABI</code> field of the ELF header, as well as note
+sections known to be used by several operating systems.
+
+   <p><a name="index-fine_002dtuning-_0040code_007bgdbarch_007d-structure-199"></a>A <dfn>handler</dfn> is used to fine-tune the <code>gdbarch</code> structure for the
+selected OS ABI.  There may be only one handler for a given OS ABI
+for each BFD architecture.
+
+   <p>The following OS ABI variants are defined in <samp><span class="file">defs.h</span></samp>:
+
+     
+<a name="index-GDB_005fOSABI_005fUNINITIALIZED-200"></a>
+<dl><dt><code>GDB_OSABI_UNINITIALIZED</code><dd>Used for struct gdbarch_info if ABI is still uninitialized.
+
+     <p><a name="index-GDB_005fOSABI_005fUNKNOWN-201"></a><br><dt><code>GDB_OSABI_UNKNOWN</code><dd>The ABI of the inferior is unknown.  The default <code>gdbarch</code>
+settings for the architecture will be used.
+
+     <p><a name="index-GDB_005fOSABI_005fSVR4-202"></a><br><dt><code>GDB_OSABI_SVR4</code><dd>UNIX System V Release 4.
+
+     <p><a name="index-GDB_005fOSABI_005fHURD-203"></a><br><dt><code>GDB_OSABI_HURD</code><dd>GNU using the Hurd kernel.
+
+     <p><a name="index-GDB_005fOSABI_005fSOLARIS-204"></a><br><dt><code>GDB_OSABI_SOLARIS</code><dd>Sun Solaris.
+
+     <p><a name="index-GDB_005fOSABI_005fOSF1-205"></a><br><dt><code>GDB_OSABI_OSF1</code><dd>OSF/1, including Digital UNIX and Compaq Tru64 UNIX.
+
+     <p><a name="index-GDB_005fOSABI_005fLINUX-206"></a><br><dt><code>GDB_OSABI_LINUX</code><dd>GNU using the Linux kernel.
+
+     <p><a name="index-GDB_005fOSABI_005fFREEBSD_005fAOUT-207"></a><br><dt><code>GDB_OSABI_FREEBSD_AOUT</code><dd>FreeBSD using the <code>a.out</code> executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fFREEBSD_005fELF-208"></a><br><dt><code>GDB_OSABI_FREEBSD_ELF</code><dd>FreeBSD using the ELF executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fNETBSD_005fAOUT-209"></a><br><dt><code>GDB_OSABI_NETBSD_AOUT</code><dd>NetBSD using the <code>a.out</code> executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fNETBSD_005fELF-210"></a><br><dt><code>GDB_OSABI_NETBSD_ELF</code><dd>NetBSD using the ELF executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fOPENBSD_005fELF-211"></a><br><dt><code>GDB_OSABI_OPENBSD_ELF</code><dd>OpenBSD using the ELF executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fWINCE-212"></a><br><dt><code>GDB_OSABI_WINCE</code><dd>Windows CE.
+
+     <p><a name="index-GDB_005fOSABI_005fGO32-213"></a><br><dt><code>GDB_OSABI_GO32</code><dd>DJGPP.
+
+     <p><a name="index-GDB_005fOSABI_005fIRIX-214"></a><br><dt><code>GDB_OSABI_IRIX</code><dd>Irix.
+
+     <p><a name="index-GDB_005fOSABI_005fINTERIX-215"></a><br><dt><code>GDB_OSABI_INTERIX</code><dd>Interix (Posix layer for MS-Windows systems).
+
+     <p><a name="index-GDB_005fOSABI_005fHPUX_005fELF-216"></a><br><dt><code>GDB_OSABI_HPUX_ELF</code><dd>HP/UX using the ELF executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fHPUX_005fSOM-217"></a><br><dt><code>GDB_OSABI_HPUX_SOM</code><dd>HP/UX using the SOM executable format.
+
+     <p><a name="index-GDB_005fOSABI_005fQNXNTO-218"></a><br><dt><code>GDB_OSABI_QNXNTO</code><dd>QNX Neutrino.
+
+     <p><a name="index-GDB_005fOSABI_005fCYGWIN-219"></a><br><dt><code>GDB_OSABI_CYGWIN</code><dd>Cygwin.
+
+     <p><a name="index-GDB_005fOSABI_005fAIX-220"></a><br><dt><code>GDB_OSABI_AIX</code><dd>AIX.
+
+   </dl>
+
+   <p>Here are the functions that make up the OS ABI framework:
+
+<div class="defun">
+&mdash; Function: const <b>char</b><var> *gdbarch_osabi_name </var>(<var>enum gdb_osabi osabi</var>)<var><a name="index-char-221"></a></var><br>
+<blockquote><p>Return the name of the OS ABI corresponding to <var>osabi</var>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>gdbarch_register_osabi</b> (<var>enum bfd_architecture arch, unsigned long machine, enum gdb_osabi osabi, void </var>(<var>*init_osabi</var>)(<var>struct gdbarch_info info, struct gdbarch *gdbarch</var>))<var><a name="index-gdbarch_005fregister_005fosabi-222"></a></var><br>
+<blockquote><p>Register the OS ABI handler specified by <var>init_osabi</var> for the
+architecture, machine type and OS ABI specified by <var>arch</var>,
+<var>machine</var> and <var>osabi</var>.  In most cases, a value of zero for the
+machine type, which implies the architecture's default machine type,
+will suffice. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>gdbarch_register_osabi_sniffer</b> (<var>enum bfd_architecture arch, enum bfd_flavour flavour, enum gdb_osabi </var>(<var>*sniffer</var>)(<var>bfd *abfd</var>))<var><a name="index-gdbarch_005fregister_005fosabi_005fsniffer-223"></a></var><br>
+<blockquote><p>Register the OS ABI file sniffer specified by <var>sniffer</var> for the
+BFD architecture/flavour pair specified by <var>arch</var> and <var>flavour</var>. 
+If <var>arch</var> is <code>bfd_arch_unknown</code>, the sniffer is considered to
+be generic, and is allowed to examine <var>flavour</var>-flavoured files for
+any architecture. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: enum <b>gdb_osabi</b><var> gdbarch_lookup_osabi </var>(<var>bfd *abfd</var>)<var><a name="index-gdb_005fosabi-224"></a></var><br>
+<blockquote><p>Examine the file described by <var>abfd</var> to determine its OS ABI. 
+The value <code>GDB_OSABI_UNKNOWN</code> is returned if the OS ABI cannot
+be determined. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>gdbarch_init_osabi</b> (<var>struct gdbarch info info, struct gdbarch *gdbarch, enum gdb_osabi osabi</var>)<var><a name="index-gdbarch_005finit_005fosabi-225"></a></var><br>
+<blockquote><p>Invoke the OS ABI handler corresponding to <var>osabi</var> to fine-tune the
+<code>gdbarch</code> structure specified by <var>gdbarch</var>.  If a handler
+corresponding to <var>osabi</var> has not been registered for <var>gdbarch</var>'s
+architecture, a warning will be issued and the debugging session will continue
+with the defaults already established for <var>gdbarch</var>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>generic_elf_osabi_sniff_abi_tag_sections</b> (<var>bfd *abfd, asection *sect, void *obj</var>)<var><a name="index-generic_005felf_005fosabi_005fsniff_005fabi_005ftag_005fsections-226"></a></var><br>
+<blockquote><p>Helper routine for ELF file sniffers.  Examine the file described by
+<var>abfd</var> and look at ABI tag note sections to determine the OS ABI
+from the note.  This function should be called via
+<code>bfd_map_over_sections</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

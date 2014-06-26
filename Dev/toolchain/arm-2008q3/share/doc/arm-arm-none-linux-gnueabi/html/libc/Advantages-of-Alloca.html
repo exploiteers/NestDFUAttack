@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Advantages of Alloca - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Variable-Size-Automatic.html#Variable-Size-Automatic" title="Variable Size Automatic">
+<link rel="prev" href="Alloca-Example.html#Alloca-Example" title="Alloca Example">
+<link rel="next" href="Disadvantages-of-Alloca.html#Disadvantages-of-Alloca" title="Disadvantages of Alloca">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Advantages-of-Alloca"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Disadvantages-of-Alloca.html#Disadvantages-of-Alloca">Disadvantages of Alloca</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Alloca-Example.html#Alloca-Example">Alloca Example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Variable-Size-Automatic.html#Variable-Size-Automatic">Variable Size Automatic</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">3.2.5.2 Advantages of <code>alloca</code></h5>
+
+<p>Here are the reasons why <code>alloca</code> may be preferable to <code>malloc</code>:
+
+     <ul>
+<li>Using <code>alloca</code> wastes very little space and is very fast.  (It is
+open-coded by the GNU C compiler.)
+
+     <li>Since <code>alloca</code> does not have separate pools for different sizes of
+block, space used for any size block can be reused for any other size. 
+<code>alloca</code> does not cause memory fragmentation.
+
+     <li><a name="index-longjmp-345"></a>Nonlocal exits done with <code>longjmp</code> (see <a href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>)
+automatically free the space allocated with <code>alloca</code> when they exit
+through the function that called <code>alloca</code>.  This is the most
+important reason to use <code>alloca</code>.
+
+     <p>To illustrate this, suppose you have a function
+<code>open_or_report_error</code> which returns a descriptor, like
+<code>open</code>, if it succeeds, but does not return to its caller if it
+fails.  If the file cannot be opened, it prints an error message and
+jumps out to the command level of your program using <code>longjmp</code>. 
+Let's change <code>open2</code> (see <a href="Alloca-Example.html#Alloca-Example">Alloca Example</a>) to use this
+subroutine:
+
+     <pre class="smallexample">          int
+          open2 (char *str1, char *str2, int flags, int mode)
+          {
+            char *name = (char *) alloca (strlen (str1) + strlen (str2) + 1);
+            stpcpy (stpcpy (name, str1), str2);
+            return open_or_report_error (name, flags, mode);
+          }
+</pre>
+     <p class="noindent">Because of the way <code>alloca</code> works, the memory it allocates is
+freed even when an error occurs, with no special effort required.
+
+     <p>By contrast, the previous definition of <code>open2</code> (which uses
+<code>malloc</code> and <code>free</code>) would develop a memory leak if it were
+changed in this way.  Even if you are willing to make more changes to
+fix it, there is no easy way to do so. 
+</ul>
+
+   </body></html>
+

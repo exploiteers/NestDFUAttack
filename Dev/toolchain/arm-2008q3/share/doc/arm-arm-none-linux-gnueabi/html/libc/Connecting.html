@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Connecting - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Connections.html#Connections" title="Connections">
+<link rel="next" href="Listening.html#Listening" title="Listening">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Connecting"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Listening.html#Listening">Listening</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Connections.html#Connections">Connections</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.9.1 Making a Connection</h4>
+
+<p><a name="index-connecting-a-socket-1790"></a><a name="index-socket_002c-connecting-1791"></a><a name="index-socket_002c-initiating-a-connection-1792"></a><a name="index-socket_002c-client-actions-1793"></a>
+In making a connection, the client makes a connection while the server
+waits for and accepts the connection.  Here we discuss what the client
+program must do with the <code>connect</code> function, which is declared in
+<samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>connect</b> (<var>int socket, struct sockaddr *addr, socklen_t length</var>)<var><a name="index-connect-1794"></a></var><br>
+<blockquote><p>The <code>connect</code> function initiates a connection from the socket
+with file descriptor <var>socket</var> to the socket whose address is
+specified by the <var>addr</var> and <var>length</var> arguments.  (This socket
+is typically on another machine, and it must be already set up as a
+server.)  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>, for information about how these
+arguments are interpreted.
+
+        <p>Normally, <code>connect</code> waits until the server responds to the request
+before it returns.  You can set nonblocking mode on the socket
+<var>socket</var> to make <code>connect</code> return immediately without waiting
+for the response.  See <a href="File-Status-Flags.html#File-Status-Flags">File Status Flags</a>, for information about
+nonblocking mode. 
+<!-- !!! how do you tell when it has finished connecting?  I suspect the -->
+<!-- way you do it is select for writing. -->
+
+        <p>The normal return value from <code>connect</code> is <code>0</code>.  If an error
+occurs, <code>connect</code> returns <code>-1</code>.  The following <code>errno</code>
+error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The socket <var>socket</var> is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>File descriptor <var>socket</var> is not a socket.
+
+          <br><dt><code>EADDRNOTAVAIL</code><dd>The specified address is not available on the remote machine.
+
+          <br><dt><code>EAFNOSUPPORT</code><dd>The namespace of the <var>addr</var> is not supported by this socket.
+
+          <br><dt><code>EISCONN</code><dd>The socket <var>socket</var> is already connected.
+
+          <br><dt><code>ETIMEDOUT</code><dd>The attempt to establish the connection timed out.
+
+          <br><dt><code>ECONNREFUSED</code><dd>The server has actively refused to establish the connection.
+
+          <br><dt><code>ENETUNREACH</code><dd>The network of the given <var>addr</var> isn't reachable from this host.
+
+          <br><dt><code>EADDRINUSE</code><dd>The socket address of the given <var>addr</var> is already in use.
+
+          <br><dt><code>EINPROGRESS</code><dd>The socket <var>socket</var> is non-blocking and the connection could not be
+established immediately.  You can determine when the connection is
+completely established with <code>select</code>; see <a href="Waiting-for-I_002fO.html#Waiting-for-I_002fO">Waiting for I/O</a>. 
+Another <code>connect</code> call on the same socket, before the connection is
+completely established, will fail with <code>EALREADY</code>.
+
+          <br><dt><code>EALREADY</code><dd>The socket <var>socket</var> is non-blocking and already has a pending
+connection in progress (see <code>EINPROGRESS</code> above). 
+</dl>
+
+        <p>This function is defined as a cancellation point in multi-threaded
+programs, so one has to be prepared for this and make sure that
+allocated resources (like memory, files descriptors, semaphores or
+whatever) are freed even if the thread is canceled. 
+<!-- @xref{pthread_cleanup_push}, for a method how to do this. -->
+</p></blockquote></div>
+
+   </body></html>
+

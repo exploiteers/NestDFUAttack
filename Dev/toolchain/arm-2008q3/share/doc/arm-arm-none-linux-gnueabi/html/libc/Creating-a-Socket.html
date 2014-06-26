@@ -1,0 +1,101 @@
+<html lang="en">
+<head>
+<title>Creating a Socket - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets" title="Open/Close Sockets">
+<link rel="next" href="Closing-a-Socket.html#Closing-a-Socket" title="Closing a Socket">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Creating-a-Socket"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Closing-a-Socket.html#Closing-a-Socket">Closing a Socket</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">Open/Close Sockets</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.8.1 Creating a Socket</h4>
+
+<p><a name="index-creating-a-socket-1771"></a><a name="index-socket_002c-creating-1772"></a><a name="index-opening-a-socket-1773"></a>
+The primitive for creating a socket is the <code>socket</code> function,
+declared in <samp><span class="file">sys/socket.h</span></samp>. 
+<a name="index-sys_002fsocket_002eh-1774"></a>
+<!-- sys/socket.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Function: int <b>socket</b> (<var>int namespace, int style, int protocol</var>)<var><a name="index-socket-1775"></a></var><br>
+<blockquote><p>This function creates a socket and specifies communication style
+<var>style</var>, which should be one of the socket styles listed in
+<a href="Communication-Styles.html#Communication-Styles">Communication Styles</a>.  The <var>namespace</var> argument specifies
+the namespace; it must be <code>PF_LOCAL</code> (see <a href="Local-Namespace.html#Local-Namespace">Local Namespace</a>) or
+<code>PF_INET</code> (see <a href="Internet-Namespace.html#Internet-Namespace">Internet Namespace</a>).  <var>protocol</var>
+designates the specific protocol (see <a href="Socket-Concepts.html#Socket-Concepts">Socket Concepts</a>); zero is
+usually right for <var>protocol</var>.
+
+        <p>The return value from <code>socket</code> is the file descriptor for the new
+socket, or <code>-1</code> in case of error.  The following <code>errno</code> error
+conditions are defined for this function:
+
+          <dl>
+<dt><code>EPROTONOSUPPORT</code><dd>The <var>protocol</var> or <var>style</var> is not supported by the
+<var>namespace</var> specified.
+
+          <br><dt><code>EMFILE</code><dd>The process already has too many file descriptors open.
+
+          <br><dt><code>ENFILE</code><dd>The system already has too many file descriptors open.
+
+          <br><dt><code>EACCES</code><dd>The process does not have the privilege to create a socket of the specified
+<var>style</var> or <var>protocol</var>.
+
+          <br><dt><code>ENOBUFS</code><dd>The system ran out of internal buffer space. 
+</dl>
+
+        <p>The file descriptor returned by the <code>socket</code> function supports both
+read and write operations.  However, like pipes, sockets do not support file
+positioning operations. 
+</p></blockquote></div>
+
+   <p>For examples of how to call the <code>socket</code> function,
+see <a href="Local-Socket-Example.html#Local-Socket-Example">Local Socket Example</a>, or <a href="Inet-Example.html#Inet-Example">Inet Example</a>.
+
+   </body></html>
+

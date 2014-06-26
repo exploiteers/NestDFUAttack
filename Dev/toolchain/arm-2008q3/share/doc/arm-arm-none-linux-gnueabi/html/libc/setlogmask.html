@@ -1,0 +1,107 @@
+<html lang="en">
+<head>
+<title>setlogmask - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages" title="Submitting Syslog Messages">
+<link rel="prev" href="closelog.html#closelog" title="closelog">
+<link rel="next" href="Syslog-Example.html#Syslog-Example" title="Syslog Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="setlogmask"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Syslog-Example.html#Syslog-Example">Syslog Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="closelog.html#closelog">closelog</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Submitting-Syslog-Messages.html#Submitting-Syslog-Messages">Submitting Syslog Messages</a>
+<hr>
+</div>
+
+<h4 class="subsection">18.2.4 setlogmask</h4>
+
+<p>The symbols referred to in this section are declared in the file
+<samp><span class="file">syslog.h</span></samp>.
+
+<!-- syslog.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setlogmask</b> (<var>int mask</var>)<var><a name="index-setlogmask-2064"></a></var><br>
+<blockquote>
+        <p><code>setlogmask</code> sets a mask (the &ldquo;logmask&rdquo;) that determines which
+future <code>syslog</code> calls shall be ignored.  If a program has not
+called <code>setlogmask</code>, <code>syslog</code> doesn't ignore any calls.  You
+can use <code>setlogmask</code> to specify that messages of particular
+priorities shall be ignored in the future.
+
+        <p>A <code>setlogmask</code> call overrides any previous <code>setlogmask</code> call.
+
+        <p>Note that the logmask exists entirely independently of opening and
+closing of Syslog connections.
+
+        <p>Setting the logmask has a similar effect to, but is not the same as,
+configuring Syslog.  The Syslog configuration may cause Syslog to
+discard certain messages it receives, but the logmask causes certain
+messages never to get submitted to Syslog in the first place.
+
+        <p><var>mask</var> is a bit string with one bit corresponding to each of the
+possible message priorities.  If the bit is on, <code>syslog</code> handles
+messages of that priority normally.  If it is off, <code>syslog</code>
+discards messages of that priority.  Use the message priority macros
+described in <a href="syslog_003b-vsyslog.html#syslog_003b-vsyslog">syslog; vsyslog</a> and the <code>LOG_MASK</code> to construct
+an appropriate <var>mask</var> value, as in this example:
+
+     <pre class="smallexample">          LOG_MASK(LOG_EMERG) | LOG_MASK(LOG_ERROR)
+</pre>
+        <p>or
+
+     <pre class="smallexample">          ~(LOG_MASK(LOG_INFO))
+</pre>
+        <p>There is also a <code>LOG_UPTO</code> macro, which generates a mask with the bits
+on for a certain priority and all priorities above it:
+
+     <pre class="smallexample">          LOG_UPTO(LOG_ERROR)
+</pre>
+        <p>The unfortunate naming of the macro is due to the fact that internally,
+higher numbers are used for lower message priorities.
+
+        </blockquote></div>
+
+   </body></html>
+

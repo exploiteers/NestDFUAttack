@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+<title>Patching - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Altering.html#Altering" title="Altering">
+<link rel="prev" href="Calling.html#Calling" title="Calling">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Patching"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Calling.html#Calling">Calling</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Altering.html#Altering">Altering</a>
+<hr>
+</div>
+
+<h3 class="section">15.6 Patching Programs</h3>
+
+<p><a name="index-patching-binaries-812"></a><a name="index-writing-into-executables-813"></a><a name="index-writing-into-corefiles-814"></a>
+By default, <span class="sc">gdb</span> opens the file containing your program's
+executable code (or the corefile) read-only.  This prevents accidental
+alterations to machine code; but it also prevents you from intentionally
+patching your program's binary.
+
+   <p>If you'd like to be able to patch the binary, you can specify that
+explicitly with the <code>set write</code> command.  For example, you might
+want to turn on internal debugging flags, or even to make emergency
+repairs.
+
+     
+<a name="index-set-write-815"></a>
+<dl><dt><code>set write on</code><dt><code>set write off</code><dd>If you specify &lsquo;<samp><span class="samp">set write on</span></samp>&rsquo;, <span class="sc">gdb</span> opens executable and
+core files for both reading and writing; if you specify &lsquo;<samp><span class="samp">set write
+off</span></samp>&rsquo; (the default), <span class="sc">gdb</span> opens them read-only.
+
+     <p>If you have already loaded a file, you must load it again (using the
+<code>exec-file</code> or <code>core-file</code> command) after changing <code>set
+write</code>, for your new setting to take effect.
+
+     <br><dt><code>show write</code><dd><a name="index-show-write-816"></a>Display whether executable files and core files are opened for writing
+as well as reading. 
+</dl>
+
+   </body></html>
+

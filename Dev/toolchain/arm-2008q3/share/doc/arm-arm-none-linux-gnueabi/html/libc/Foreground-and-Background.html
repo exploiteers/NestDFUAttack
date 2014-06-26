@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+<title>Foreground and Background - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Implementing-a-Shell.html#Implementing-a-Shell" title="Implementing a Shell">
+<link rel="prev" href="Launching-Jobs.html#Launching-Jobs" title="Launching Jobs">
+<link rel="next" href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs" title="Stopped and Terminated Jobs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Foreground-and-Background"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs">Stopped and Terminated Jobs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Launching-Jobs.html#Launching-Jobs">Launching Jobs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Implementing-a-Shell.html#Implementing-a-Shell">Implementing a Shell</a>
+<hr>
+</div>
+
+<h4 class="subsection">27.6.4 Foreground and Background</h4>
+
+<p>Now let's consider what actions must be taken by the shell when it
+launches a job into the foreground, and how this differs from what
+must be done when a background job is launched.
+
+   <p><a name="index-foreground-job_002c-launching-3219"></a>When a foreground job is launched, the shell must first give it access
+to the controlling terminal by calling <code>tcsetpgrp</code>.  Then, the
+shell should wait for processes in that process group to terminate or
+stop.  This is discussed in more detail in <a href="Stopped-and-Terminated-Jobs.html#Stopped-and-Terminated-Jobs">Stopped and Terminated Jobs</a>.
+
+   <p>When all of the processes in the group have either completed or stopped,
+the shell should regain control of the terminal for its own process
+group by calling <code>tcsetpgrp</code> again.  Since stop signals caused by
+I/O from a background process or a SUSP character typed by the user
+are sent to the process group, normally all the processes in the job
+stop together.
+
+   <p>The foreground job may have left the terminal in a strange state, so the
+shell should restore its own saved terminal modes before continuing.  In
+case the job is merely stopped, the shell should first save the current
+terminal modes so that it can restore them later if the job is
+continued.  The functions for dealing with terminal modes are
+<code>tcgetattr</code> and <code>tcsetattr</code>; these are described in
+<a href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>.
+
+   <p>Here is the sample shell's function for doing all of this.
+
+<pre class="smallexample">     /* <span class="roman">Put job </span><var>j</var><span class="roman"> in the foreground.  If </span><var>cont</var><span class="roman"> is nonzero,</span>
+        <span class="roman">restore the saved terminal modes and send the process group a</span>
+        <code>SIGCONT</code><span class="roman"> signal to wake it up before we block.</span>  */
+     
+     void
+     put_job_in_foreground (job *j, int cont)
+     {
+       /* <span class="roman">Put the job into the foreground.</span>  */
+       tcsetpgrp (shell_terminal, j-&gt;pgid);
+     
+       /* <span class="roman">Send the job a continue signal, if necessary.</span>  */
+       if (cont)
+         {
+           tcsetattr (shell_terminal, TCSADRAIN, &amp;j-&gt;tmodes);
+           if (kill (- j-&gt;pgid, SIGCONT) &lt; 0)
+             perror ("kill (SIGCONT)");
+         }
+     
+       /* <span class="roman">Wait for it to report.</span>  */
+       wait_for_job (j);
+     
+       /* <span class="roman">Put the shell back in the foreground.</span>  */
+       tcsetpgrp (shell_terminal, shell_pgid);
+     
+       /* <span class="roman">Restore the shell's terminal modes.</span>  */
+       tcgetattr (shell_terminal, &amp;j-&gt;tmodes);
+       tcsetattr (shell_terminal, TCSADRAIN, &amp;shell_tmodes);
+     }
+</pre>
+   <p><a name="index-background-job_002c-launching-3220"></a>If the process group is launched as a background job, the shell should
+remain in the foreground itself and continue to read commands from
+the terminal.
+
+   <p>In the sample shell, there is not much that needs to be done to put
+a job into the background.  Here is the function it uses:
+
+<pre class="smallexample">     /* <span class="roman">Put a job in the background.  If the cont argument is true, send</span>
+        <span class="roman">the process group a </span><code>SIGCONT</code><span class="roman"> signal to wake it up.</span>  */
+     
+     void
+     put_job_in_background (job *j, int cont)
+     {
+       /* <span class="roman">Send the job a continue signal, if necessary.</span>  */
+       if (cont)
+         if (kill (-j-&gt;pgid, SIGCONT) &lt; 0)
+           perror ("kill (SIGCONT)");
+     }
+</pre>
+   </body></html>
+

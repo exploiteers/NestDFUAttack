@@ -1,0 +1,257 @@
+<html lang="en">
+<head>
+<title>mtab - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Mount-Information.html#Mount-Information" title="Mount Information">
+<link rel="prev" href="fstab.html#fstab" title="fstab">
+<link rel="next" href="Other-Mount-Information.html#Other-Mount-Information" title="Other Mount Information">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="mtab"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Other-Mount-Information.html#Other-Mount-Information">Other Mount Information</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="fstab.html#fstab">fstab</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Mount-Information.html#Mount-Information">Mount Information</a>
+<hr>
+</div>
+
+<h5 class="subsubsection">30.3.1.2 The <samp><span class="file">mtab</span></samp> file</h5>
+
+<p>The following functions and data structure access the <samp><span class="file">mtab</span></samp> file.
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct mntent</b><var><a name="index-struct-mntent-3474"></a></var><br>
+<blockquote><p>This structure is used with the <code>getmntent</code>, <code>getmntent_t</code>,
+<code>addmntent</code>, and <code>hasmntopt</code> functions.
+
+          <dl>
+<dt><code>char *mnt_fsname</code><dd>This element contains a pointer to a string describing the name of the
+special device from which the filesystem is mounted.  It corresponds to
+the <code>fs_spec</code> element in <code>struct fstab</code>.
+
+          <br><dt><code>char *mnt_dir</code><dd>This element points to a string describing the mount point of the
+filesystem.  It corresponds to the <code>fs_file</code> element in
+<code>struct fstab</code>.
+
+          <br><dt><code>char *mnt_type</code><dd><code>mnt_type</code> describes the filesystem type and is therefore
+equivalent to <code>fs_vfstype</code> in <code>struct fstab</code>.  <samp><span class="file">mntent.h</span></samp>
+defines a few symbolic names for some of the values this string can have. 
+But since the kernel can support arbitrary filesystems it does not
+make much sense to give them symbolic names.  If one knows the symbol
+name one also knows the filesystem name.  Nevertheless here follows the
+list of the symbols provided in <samp><span class="file">mntent.h</span></samp>.
+
+               <dl>
+<dt><code>MNTTYPE_IGNORE</code><a name="index-MNTTYPE_005fIGNORE-3475"></a><dd>This symbol expands to <code>"ignore"</code>.  The value is sometime used in
+<samp><span class="file">fstab</span></samp> files to make sure entries are not used without removing them. 
+<br><dt><code>MNTTYPE_NFS</code><a name="index-MNTTYPE_005fNFS-3476"></a><dd>Expands to <code>"nfs"</code>.  Using this macro sometimes could make sense
+since it names the default NFS implementation, in case both version 2
+and 3 are supported. 
+<br><dt><code>MNTTYPE_SWAP</code><a name="index-MNTTYPE_005fSWAP-3477"></a><dd>This symbol expands to <code>"swap"</code>.  It names the special <samp><span class="file">fstab</span></samp>
+entry which names one of the possibly multiple swap partitions. 
+</dl>
+
+          <br><dt><code>char *mnt_opts</code><dd>The element contains a string describing the options used while mounting
+the filesystem.  As for the equivalent element <code>fs_mntops</code> of
+<code>struct fstab</code> it is best to use the function <code>getsubopt</code>
+(see <a href="Suboptions.html#Suboptions">Suboptions</a>) to access the parts of this string.
+
+          <p>The <samp><span class="file">mntent.h</span></samp> file defines a number of macros with string values
+which correspond to some of the options understood by the kernel.  There
+might be many more options which are possible so it doesn't make much sense
+to rely on these macros but to be consistent here is the list:
+
+               <dl>
+<dt><code>MNTOPT_DEFAULTS</code><a name="index-MNTOPT_005fDEFAULTS-3478"></a><dd>Expands to <code>"defaults"</code>.  This option should be used alone since it
+indicates all values for the customizable values are chosen to be the
+default. 
+<br><dt><code>MNTOPT_RO</code><a name="index-MNTOPT_005fRO-3479"></a><dd>Expands to <code>"ro"</code>.  See the <code>FSTAB_RO</code> value, it means the
+filesystem is mounted read-only. 
+<br><dt><code>MNTOPT_RW</code><a name="index-MNTOPT_005fRW-3480"></a><dd>Expand to <code>"rw"</code>.  See the <code>FSTAB_RW</code> value, it means the
+filesystem is mounted with read and write permissions. 
+<br><dt><code>MNTOPT_SUID</code><a name="index-MNTOPT_005fSUID-3481"></a><dd>Expands to <code>"suid"</code>.  This means that the SUID bit (see <a href="How-Change-Persona.html#How-Change-Persona">How Change Persona</a>) is respected when a program from the filesystem is
+started. 
+<br><dt><code>MNTOPT_NOSUID</code><a name="index-MNTOPT_005fNOSUID-3482"></a><dd>Expands to <code>"nosuid"</code>.  This is the opposite of <code>MNTOPT_SUID</code>,
+the SUID bit for all files from the filesystem is ignored. 
+<br><dt><code>MNTOPT_NOAUTO</code><a name="index-MNTOPT_005fNOAUTO-3483"></a><dd>Expands to <code>"noauto"</code>.  At startup time the <code>mount</code> program
+will ignore this entry if it is started with the <code>-a</code> option to
+mount all filesystems mentioned in the <samp><span class="file">fstab</span></samp> file. 
+</dl>
+
+          <p>As for the <code>FSTAB_*</code> entries introduced above it is important to
+use <code>strcmp</code> to check for equality.
+
+          <br><dt><code>mnt_freq</code><dd>This elements corresponds to <code>fs_freq</code> and also specifies the
+frequency in days in which dumps are made.
+
+          <br><dt><code>mnt_passno</code><dd>This element is equivalent to <code>fs_passno</code> with the same meaning
+which is uninteresting for all programs beside <code>dump</code>. 
+</dl>
+        </p></blockquote></div>
+
+   <p>For accessing the <samp><span class="file">mtab</span></samp> file there is again a set of three
+functions to access all entries in a row.  Unlike the functions to
+handle <samp><span class="file">fstab</span></samp> these functions do not access a fixed file and there
+is even a thread safe variant of the get function.  Beside this the GNU
+libc contains functions to alter the file and test for specific options.
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: FILE * <b>setmntent</b> (<var>const char *file, const char *mode</var>)<var><a name="index-setmntent-3484"></a></var><br>
+<blockquote><p>The <code>setmntent</code> function prepares the file named <var>FILE</var> which
+must be in the format of a <samp><span class="file">fstab</span></samp> and <samp><span class="file">mtab</span></samp> file for the
+upcoming processing through the other functions of the family.  The
+<var>mode</var> parameter can be chosen in the way the <var>opentype</var>
+parameter for <code>fopen</code> (see <a href="Opening-Streams.html#Opening-Streams">Opening Streams</a>) can be chosen.  If
+the file is opened for writing the file is also allowed to be empty.
+
+        <p>If the file was successfully opened <code>setmntent</code> returns a file
+descriptor for future use.  Otherwise the return value is <code>NULL</code>
+and <code>errno</code> is set accordingly. 
+</p></blockquote></div>
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>endmntent</b> (<var>FILE *stream</var>)<var><a name="index-endmntent-3485"></a></var><br>
+<blockquote><p>This function takes for the <var>stream</var> parameter a file handle which
+previously was returned from the <code>setmntent</code> call. 
+<code>endmntent</code> closes the stream and frees all resources.
+
+        <p>The return value is 1 unless an error occurred in which case it
+is 0. 
+</p></blockquote></div>
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct mntent * <b>getmntent</b> (<var>FILE *stream</var>)<var><a name="index-getmntent-3486"></a></var><br>
+<blockquote><p>The <code>getmntent</code> function takes as the parameter a file handle
+previously returned by successful call to <code>setmntent</code>.  It returns
+a pointer to a static variable of type <code>struct mntent</code> which is
+filled with the information from the next entry from the file currently
+read.
+
+        <p>The file format used prescribes the use of spaces or tab characters to
+separate the fields.  This makes it harder to use name containing one
+of these characters (e.g., mount points using spaces).  Therefore
+these characters are encoded in the files and the <code>getmntent</code>
+function takes care of the decoding while reading the entries back in. 
+<code>'\040'</code> is used to encode a space character, <code>'\011'</code> to
+encode a tab character, <code>'\012'</code> to encode a newline character,
+and <code>'\\'</code> to encode a backslash.
+
+        <p>If there was an error or the end of the file is reached the return value
+is <code>NULL</code>.
+
+        <p>This function is not thread-safe since all calls to this function return
+a pointer to the same static variable.  <code>getmntent_r</code> should be
+used in situations where multiple threads access the file. 
+</p></blockquote></div>
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: struct mntent * <b>getmntent_r</b> (<var>FILE *stream, struct mentent *result, char *buffer, int bufsize</var>)<var><a name="index-getmntent_005fr-3487"></a></var><br>
+<blockquote><p>The <code>getmntent_r</code> function is the reentrant variant of
+<code>getmntent</code>.  It also returns the next entry from the file and
+returns a pointer.  The actual variable the values are stored in is not
+static, though.  Instead the function stores the values in the variable
+pointed to by the <var>result</var> parameter.  Additional information (e.g.,
+the strings pointed to by the elements of the result) are kept in the
+buffer of size <var>bufsize</var> pointed to by <var>buffer</var>.
+
+        <p>Escaped characters (space, tab, backslash) are converted back in the
+same way as it happens for <code>getmentent</code>.
+
+        <p>The function returns a <code>NULL</code> pointer in error cases.  Errors could be:
+          <ul>
+<li>error while reading the file,
+<li>end of file reached,
+<li><var>bufsize</var> is too small for reading a complete new entry. 
+</ul>
+        </p></blockquote></div>
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>addmntent</b> (<var>FILE *stream, const struct mntent *mnt</var>)<var><a name="index-addmntent-3488"></a></var><br>
+<blockquote><p>The <code>addmntent</code> function allows adding a new entry to the file
+previously opened with <code>setmntent</code>.  The new entries are always
+appended.  I.e., even if the position of the file descriptor is not at
+the end of the file this function does not overwrite an existing entry
+following the current position.
+
+        <p>The implication of this is that to remove an entry from a file one has
+to create a new file while leaving out the entry to be removed and after
+closing the file remove the old one and rename the new file to the
+chosen name.
+
+        <p>This function takes care of spaces and tab characters in the names to be
+written to the file.  It converts them and the backslash character into
+the format describe in the <code>getmntent</code> description above.
+
+        <p>This function returns 0 in case the operation was successful. 
+Otherwise the return value is 1 and <code>errno</code> is set
+appropriately. 
+</p></blockquote></div>
+
+<!-- mntent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: char * <b>hasmntopt</b> (<var>const struct mntent *mnt, const char *opt</var>)<var><a name="index-hasmntopt-3489"></a></var><br>
+<blockquote><p>This function can be used to check whether the string pointed to by the
+<code>mnt_opts</code> element of the variable pointed to by <var>mnt</var> contains
+the option <var>opt</var>.  If this is true a pointer to the beginning of the
+option in the <code>mnt_opts</code> element is returned.  If no such option
+exists the function returns <code>NULL</code>.
+
+        <p>This function is useful to test whether a specific option is present but
+when all options have to be processed one is better off with using the
+<code>getsubopt</code> function to iterate over all options in the string. 
+</p></blockquote></div>
+
+   </body></html>
+

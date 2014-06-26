@@ -1,0 +1,134 @@
+#!/bin/sh
+
+#
+#    Copyright (c) 2010-2012 Nest Labs, Inc.
+#    All rights reserved.
+#
+#    Description:
+#      This file defines common, shared functions and variables used
+#      by all system initialization scripts.
+#
+
+#
+# Common directories
+#
+
+ROOTDIR=${PREFIX}/
+
+BINDIR=${ROOTDIR}bin
+CONFDIR=${ROOTDIR}etc
+DATADIR=${ROOTDIR}share
+DEVDIR=${ROOTDIR}dev
+LIBDIR=${ROOTDIR}lib
+LIBEXECDIR=${ROOTDIR}libexec
+MANDIR=${ROOTDIR}man
+SBINDIR=${ROOTDIR}sbin
+TMPDIR=${ROOTDIR}tmp
+VARDIR=${ROOTDIR}var
+LOGDIR=${VARDIR}/log
+
+USRDIR=${ROOTDIR}usr
+USRBINDIR=${USRDIR}/bin
+USRDATADIR=${USRDIR}/share
+USRLIBDIR=${USRDIR}/lib
+USRLIBEXECDIR=${USRDIR}/libexec
+USRSBINDIR=${USRDIR}/sbin
+
+NESTLABSDIR=${ROOTDIR}nestlabs
+NESTLABSBINDIR=${NESTLABSDIR}/bin
+NESTLABSCONFDIR=${NESTLABSDIR}/etc
+NESTLABSDATADIR=${NESTLABSDIR}/share
+NESTLABSLIBDIR=${NESTLABSDIR}/lib
+NESTLABSLIBEXECDIR=${NESTLABSDIR}/libexec
+NESTLABSLOGDIR=${NESTLABSDIR}/log
+NESTLABSSBINDIR=${NESTLABSDIR}/sbin
+NESTLABSVARDIR=${NESTLABSDIR}/var
+
+INITDIR=${CONFDIR}/init.d
+
+#
+# Common executables and files
+#
+
+BASENAME=${USRBINDIR}/basename
+BOOTGETENV=${SBINDIR}/fw_printenv
+BOOTSETENV=${SBINDIR}/fw_setenv
+CAT="${BINDIR}/cat"
+DAEMONIZE="${SBINDIR}/start-stop-daemon -o"
+LOGGER=${USRBINDIR}/logger
+GREP="${BINDIR}/grep"
+HOSTNAME="${BINDIR}/hostname"
+IP="${BINDIR}/ip"
+KILLALL="${USRBINDIR}/killall -q"
+MKDIR="${BINDIR}/mkdir"
+MODPROBE=${SBINDIR}/modprobe
+MOUNT="${BINDIR}/mount"
+MV="${BINDIR}/mv"
+RM="${BINDIR}/rm -f"
+RMMOD=${SBINDIR}/rmmod
+ROUTE="${SBINDIR}/route"
+SED="${BINDIR}/sed"
+SLEEP="${BINDIR}/sleep"
+STARTDAEMON="${DAEMONIZE} --start"
+STOPDAEMON="${DAEMONIZE} --stop"
+TR="${USRBINDIR}/tr"
+TRUE="${BINDIR}/true"
+UNMOUNT="${BINDIR}/umount"
+
+TOLOWER="${TR} '[[:upper:]]' '[[:lower:]]'"
+TOUPPER="${TR} '[[:lower:]]' '[[:upper:]]'"
+
+CHECK="${TRUE}"
+
+NULL="${DEVDIR}/null"
+
+if $CHECK verbose; then
+    ECHO="${BINDIR}/echo -e"
+    VERBOSE='-v'
+    QUIET=:
+else
+    ECHO=:
+    VERBOSE=:
+    QUIET='-q'
+fi
+
+#
+# Other common variables
+#
+
+LOCALHOST="localhost"
+
+#
+# is_network_root
+#
+# Determines whether or not this system is running a network booted
+# NFS root file system.
+#
+
+is_network_root() {
+    ${GREP} ' / nfs' ${ROOTDIR}proc/mounts > ${NULL} 2>&1
+}
+
+#
+# Logging macros
+#
+
+log() {
+	local args="${1}"
+	local priority="${2}"
+	shift 2
+
+	${LOGGER} ${args} -p "${priority}" -t "${PROGRAM}[$$]" "${@}"
+}
+
+log_error() {
+	log "-s" "user.err" "${@}"
+}
+
+log_info() {
+	log "" "user.info" "${@}"
+}
+
+log_debug() {
+	log "-s" "user.debug" "${@}"
+}

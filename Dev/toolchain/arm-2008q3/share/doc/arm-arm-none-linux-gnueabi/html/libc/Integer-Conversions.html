@@ -1,0 +1,187 @@
+<html lang="en">
+<head>
+<title>Integer Conversions - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Formatted-Output.html#Formatted-Output" title="Formatted Output">
+<link rel="prev" href="Table-of-Output-Conversions.html#Table-of-Output-Conversions" title="Table of Output Conversions">
+<link rel="next" href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions" title="Floating-Point Conversions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Integer-Conversions"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Floating_002dPoint-Conversions.html#Floating_002dPoint-Conversions">Floating-Point Conversions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Table-of-Output-Conversions.html#Table-of-Output-Conversions">Table of Output Conversions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Formatted-Output.html#Formatted-Output">Formatted Output</a>
+<hr>
+</div>
+
+<h4 class="subsection">12.12.4 Integer Conversions</h4>
+
+<p>This section describes the options for the &lsquo;<samp><span class="samp">%d</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%i</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%o</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%u</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%x</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">%X</span></samp>&rsquo; conversion
+specifications.  These conversions print integers in various formats.
+
+   <p>The &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; and &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversion specifications both print an
+<code>int</code> argument as a signed decimal number; while &lsquo;<samp><span class="samp">%o</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%u</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; print the argument as an unsigned octal,
+decimal, or hexadecimal number (respectively).  The &lsquo;<samp><span class="samp">%X</span></samp>&rsquo; conversion
+specification is just like &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; except that it uses the characters
+&lsquo;<samp><span class="samp">ABCDEF</span></samp>&rsquo; as digits instead of &lsquo;<samp><span class="samp">abcdef</span></samp>&rsquo;.
+
+   <p>The following flags are meaningful:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">-</span></samp>&rsquo;<dd>Left-justify the result in the field (instead of the normal
+right-justification).
+
+     <br><dt>&lsquo;<samp><span class="samp">+</span></samp>&rsquo;<dd>For the signed &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; and &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversions, print a
+plus sign if the value is positive.
+
+     <br><dt>&lsquo;<samp> </samp>&rsquo;<dd>For the signed &lsquo;<samp><span class="samp">%d</span></samp>&rsquo; and &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversions, if the result
+doesn't start with a plus or minus sign, prefix it with a space
+character instead.  Since the &lsquo;<samp><span class="samp">+</span></samp>&rsquo; flag ensures that the result
+includes a sign, this flag is ignored if you supply both of them.
+
+     <br><dt>&lsquo;<samp><span class="samp">#</span></samp>&rsquo;<dd>For the &lsquo;<samp><span class="samp">%o</span></samp>&rsquo; conversion, this forces the leading digit to be
+&lsquo;<samp><span class="samp">0</span></samp>&rsquo;, as if by increasing the precision.  For &lsquo;<samp><span class="samp">%x</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">%X</span></samp>&rsquo;, this prefixes a leading &lsquo;<samp><span class="samp">0x</span></samp>&rsquo; or &lsquo;<samp><span class="samp">0X</span></samp>&rsquo; (respectively)
+to the result.  This doesn't do anything useful for the &lsquo;<samp><span class="samp">%d</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%i</span></samp>&rsquo;, or &lsquo;<samp><span class="samp">%u</span></samp>&rsquo; conversions.  Using this flag produces output
+which can be parsed by the <code>strtoul</code> function (see <a href="Parsing-of-Integers.html#Parsing-of-Integers">Parsing of Integers</a>) and <code>scanf</code> with the &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; conversion
+(see <a href="Numeric-Input-Conversions.html#Numeric-Input-Conversions">Numeric Input Conversions</a>).
+
+     <br><dt>&lsquo;<samp><span class="samp">'</span></samp>&rsquo;<dd>Separate the digits into groups as specified by the locale specified for
+the <code>LC_NUMERIC</code> category; see <a href="General-Numeric.html#General-Numeric">General Numeric</a>.  This flag is a
+GNU extension.
+
+     <br><dt>&lsquo;<samp><span class="samp">0</span></samp>&rsquo;<dd>Pad the field with zeros instead of spaces.  The zeros are placed after
+any indication of sign or base.  This flag is ignored if the &lsquo;<samp><span class="samp">-</span></samp>&rsquo;
+flag is also specified, or if a precision is specified. 
+</dl>
+
+   <p>If a precision is supplied, it specifies the minimum number of digits to
+appear; leading zeros are produced if necessary.  If you don't specify a
+precision, the number is printed with as many digits as it needs.  If
+you convert a value of zero with an explicit precision of zero, then no
+characters at all are produced.
+
+   <p>Without a type modifier, the corresponding argument is treated as an
+<code>int</code> (for the signed conversions &lsquo;<samp><span class="samp">%i</span></samp>&rsquo; and &lsquo;<samp><span class="samp">%d</span></samp>&rsquo;) or
+<code>unsigned int</code> (for the unsigned conversions &lsquo;<samp><span class="samp">%o</span></samp>&rsquo;, &lsquo;<samp><span class="samp">%u</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">%x</span></samp>&rsquo;, and &lsquo;<samp><span class="samp">%X</span></samp>&rsquo;).  Recall that since <code>printf</code> and friends
+are variadic, any <code>char</code> and <code>short</code> arguments are
+automatically converted to <code>int</code> by the default argument
+promotions.  For arguments of other integer types, you can use these
+modifiers:
+
+     <dl>
+<dt>&lsquo;<samp><span class="samp">hh</span></samp>&rsquo;<dd>Specifies that the argument is a <code>signed char</code> or <code>unsigned
+char</code>, as appropriate.  A <code>char</code> argument is converted to an
+<code>int</code> or <code>unsigned int</code> by the default argument promotions
+anyway, but the &lsquo;<samp><span class="samp">h</span></samp>&rsquo; modifier says to convert it back to a
+<code>char</code> again.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">h</span></samp>&rsquo;<dd>Specifies that the argument is a <code>short int</code> or <code>unsigned
+short int</code>, as appropriate.  A <code>short</code> argument is converted to an
+<code>int</code> or <code>unsigned int</code> by the default argument promotions
+anyway, but the &lsquo;<samp><span class="samp">h</span></samp>&rsquo; modifier says to convert it back to a
+<code>short</code> again.
+
+     <br><dt>&lsquo;<samp><span class="samp">j</span></samp>&rsquo;<dd>Specifies that the argument is a <code>intmax_t</code> or <code>uintmax_t</code>, as
+appropriate.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">l</span></samp>&rsquo;<dd>Specifies that the argument is a <code>long int</code> or <code>unsigned long
+int</code>, as appropriate.  Two &lsquo;<samp><span class="samp">l</span></samp>&rsquo; characters is like the &lsquo;<samp><span class="samp">L</span></samp>&rsquo;
+modifier, below.
+
+     <p>If used with &lsquo;<samp><span class="samp">%c</span></samp>&rsquo; or &lsquo;<samp><span class="samp">%s</span></samp>&rsquo; the corresponding parameter is
+considered as a wide character or wide character string respectively. 
+This use of &lsquo;<samp><span class="samp">l</span></samp>&rsquo; was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">L</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">ll</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">q</span></samp>&rsquo;<dd>Specifies that the argument is a <code>long long int</code>.  (This type is
+an extension supported by the GNU C compiler.  On systems that don't
+support extra-long integers, this is the same as <code>long int</code>.)
+
+     <p>The &lsquo;<samp><span class="samp">q</span></samp>&rsquo; modifier is another name for the same thing, which comes
+from 4.4 BSD; a <code>long&nbsp;long&nbsp;int</code><!-- /@w --> is sometimes called a &ldquo;quad&rdquo;
+<code>int</code>.
+
+     <br><dt>&lsquo;<samp><span class="samp">t</span></samp>&rsquo;<dd>Specifies that the argument is a <code>ptrdiff_t</code>.
+
+     <p>This modifier was introduced in ISO&nbsp;C99<!-- /@w -->.
+
+     <br><dt>&lsquo;<samp><span class="samp">z</span></samp>&rsquo;<dt>&lsquo;<samp><span class="samp">Z</span></samp>&rsquo;<dd>Specifies that the argument is a <code>size_t</code>.
+
+     <p>&lsquo;<samp><span class="samp">z</span></samp>&rsquo; was introduced in ISO&nbsp;C99<!-- /@w -->.  &lsquo;<samp><span class="samp">Z</span></samp>&rsquo; is a GNU extension
+predating this addition and should not be used in new code. 
+</dl>
+
+   <p>Here is an example.  Using the template string:
+
+<pre class="smallexample">     "|%5d|%-5d|%+5d|%+-5d|% 5d|%05d|%5.0d|%5.2d|%d|\n"
+</pre>
+   <p class="noindent">to print numbers using the different options for the &lsquo;<samp><span class="samp">%d</span></samp>&rsquo;
+conversion gives results like:
+
+<pre class="smallexample">     |    0|0    |   +0|+0   |    0|00000|     |   00|0|
+     |    1|1    |   +1|+1   |    1|00001|    1|   01|1|
+     |   -1|-1   |   -1|-1   |   -1|-0001|   -1|  -01|-1|
+     |100000|100000|+100000|+100000| 100000|100000|100000|100000|100000|
+</pre>
+   <p>In particular, notice what happens in the last case where the number
+is too large to fit in the minimum field width specified.
+
+   <p>Here are some more examples showing how unsigned integers print under
+various format options, using the template string:
+
+<pre class="smallexample">     "|%5u|%5o|%5x|%5X|%#5o|%#5x|%#5X|%#10.8x|\n"
+</pre>
+   <pre class="smallexample">     |    0|    0|    0|    0|    0|    0|    0|  00000000|
+     |    1|    1|    1|    1|   01|  0x1|  0X1|0x00000001|
+     |100000|303240|186a0|186A0|0303240|0x186a0|0X186A0|0x000186a0|
+</pre>
+   </body></html>
+

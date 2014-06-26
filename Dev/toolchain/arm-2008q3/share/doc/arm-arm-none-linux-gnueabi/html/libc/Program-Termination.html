@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+<title>Program Termination - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Program-Basics.html#Program-Basics" title="Program Basics">
+<link rel="prev" href="System-Calls.html#System-Calls" title="System Calls">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Program-Termination"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="System-Calls.html#System-Calls">System Calls</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Program-Basics.html#Program-Basics">Program Basics</a>
+<hr>
+</div>
+
+<h3 class="section">25.6 Program Termination</h3>
+
+<p><a name="index-program-termination-3130"></a><a name="index-process-termination-3131"></a>
+<a name="index-exit-status-value-3132"></a>The usual way for a program to terminate is simply for its <code>main</code>
+function to return.  The <dfn>exit status value</dfn> returned from the
+<code>main</code> function is used to report information back to the process's
+parent process or shell.
+
+   <p>A program can also terminate normally by calling the <code>exit</code>
+function.
+
+   <p>In addition, programs can be terminated by signals; this is discussed in
+more detail in <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.  The <code>abort</code> function causes
+a signal that kills the program.
+
+<ul class="menu">
+<li><a accesskey="1" href="Normal-Termination.html#Normal-Termination">Normal Termination</a>:           If a program calls <code>exit</code>, a
+                                 process terminates normally. 
+<li><a accesskey="2" href="Exit-Status.html#Exit-Status">Exit Status</a>:                  The <code>exit status</code> provides information
+                                 about why the process terminated. 
+<li><a accesskey="3" href="Cleanups-on-Exit.html#Cleanups-on-Exit">Cleanups on Exit</a>:             A process can run its own cleanup
+                                 functions upon normal termination. 
+<li><a accesskey="4" href="Aborting-a-Program.html#Aborting-a-Program">Aborting a Program</a>:           The <code>abort</code> function causes
+                                 abnormal program termination. 
+<li><a accesskey="5" href="Termination-Internals.html#Termination-Internals">Termination Internals</a>:        What happens when a process terminates. 
+</ul>
+
+   </body></html>
+

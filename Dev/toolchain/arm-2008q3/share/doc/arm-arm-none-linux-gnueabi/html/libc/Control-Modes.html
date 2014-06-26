@@ -1,0 +1,218 @@
+<html lang="en">
+<head>
+<title>Control Modes - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="prev" href="Output-Modes.html#Output-Modes" title="Output Modes">
+<link rel="next" href="Local-Modes.html#Local-Modes" title="Local Modes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Control-Modes"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Local-Modes.html#Local-Modes">Local Modes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Output-Modes.html#Output-Modes">Output Modes</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.6 Control Modes</h4>
+
+<p>This section describes the terminal flags and fields that control
+parameters usually associated with asynchronous serial data
+transmission.  These flags may not make sense for other kinds of
+terminal ports (such as a network connection pseudo-terminal).  All of
+these are contained in the <code>c_cflag</code> member of the <code>struct
+termios</code> structure.
+
+   <p>The <code>c_cflag</code> member itself is an integer, and you change the flags
+and fields using the operators <code>&amp;</code>, <code>|</code>, and <code>^</code>.  Don't
+try to specify the entire value for <code>c_cflag</code>&mdash;instead, change
+only specific flags and leave the rest untouched (see <a href="Setting-Modes.html#Setting-Modes">Setting Modes</a>).
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CLOCAL</b><var><a name="index-CLOCAL-1887"></a></var><br>
+<blockquote><p>If this bit is set, it indicates that the terminal is connected
+&ldquo;locally&rdquo; and that the modem status lines (such as carrier detect)
+should be ignored. 
+<a name="index-modem-status-lines-1888"></a><a name="index-carrier-detect-1889"></a>
+On many systems if this bit is not set and you call <code>open</code> without
+the <code>O_NONBLOCK</code> flag set, <code>open</code> blocks until a modem
+connection is established.
+
+        <p>If this bit is not set and a modem disconnect is detected, a
+<code>SIGHUP</code> signal is sent to the controlling process group for the
+terminal (if it has one).  Normally, this causes the process to exit;
+see <a href="Signal-Handling.html#Signal-Handling">Signal Handling</a>.  Reading from the terminal after a disconnect
+causes an end-of-file condition, and writing causes an <code>EIO</code> error
+to be returned.  The terminal device must be closed and reopened to
+clear the condition. 
+<a name="index-modem-disconnect-1890"></a></p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>HUPCL</b><var><a name="index-HUPCL-1891"></a></var><br>
+<blockquote><p>If this bit is set, a modem disconnect is generated when all processes
+that have the terminal device open have either closed the file or exited. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CREAD</b><var><a name="index-CREAD-1892"></a></var><br>
+<blockquote><p>If this bit is set, input can be read from the terminal.  Otherwise,
+input is discarded when it arrives. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CSTOPB</b><var><a name="index-CSTOPB-1893"></a></var><br>
+<blockquote><p>If this bit is set, two stop bits are used.  Otherwise, only one stop bit
+is used. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>PARENB</b><var><a name="index-PARENB-1894"></a></var><br>
+<blockquote><p>If this bit is set, generation and detection of a parity bit are enabled. 
+See <a href="Input-Modes.html#Input-Modes">Input Modes</a>, for information on how input parity errors are handled.
+
+        <p>If this bit is not set, no parity bit is added to output characters, and
+input characters are not checked for correct parity. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>PARODD</b><var><a name="index-PARODD-1895"></a></var><br>
+<blockquote><p>This bit is only useful if <code>PARENB</code> is set.  If <code>PARODD</code> is set,
+odd parity is used, otherwise even parity is used. 
+</p></blockquote></div>
+
+   <p>The control mode flags also includes a field for the number of bits per
+character.  You can use the <code>CSIZE</code> macro as a mask to extract the
+value, like this: <code>settings.c_cflag &amp; CSIZE</code>.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CSIZE</b><var><a name="index-CSIZE-1896"></a></var><br>
+<blockquote><p>This is a mask for the number of bits per character. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CS5</b><var><a name="index-CS5-1897"></a></var><br>
+<blockquote><p>This specifies five bits per byte. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CS6</b><var><a name="index-CS6-1898"></a></var><br>
+<blockquote><p>This specifies six bits per byte. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CS7</b><var><a name="index-CS7-1899"></a></var><br>
+<blockquote><p>This specifies seven bits per byte. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CS8</b><var><a name="index-CS8-1900"></a></var><br>
+<blockquote><p>This specifies eight bits per byte. 
+</p></blockquote></div>
+
+   <p>The following four bits are BSD extensions; this exist only on BSD
+systems and the GNU system.
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CCTS_OFLOW</b><var><a name="index-CCTS_005fOFLOW-1901"></a></var><br>
+<blockquote><p>If this bit is set, enable flow control of output based on the CTS wire
+(RS232 protocol). 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CRTS_IFLOW</b><var><a name="index-CRTS_005fIFLOW-1902"></a></var><br>
+<blockquote><p>If this bit is set, enable flow control of input based on the RTS wire
+(RS232 protocol). 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>MDMBUF</b><var><a name="index-MDMBUF-1903"></a></var><br>
+<blockquote><p>If this bit is set, enable carrier-based flow control of output. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: tcflag_t <b>CIGNORE</b><var><a name="index-CIGNORE-1904"></a></var><br>
+<blockquote><p>If this bit is set, it says to ignore the control modes and line speed
+values entirely.  This is only meaningful in a call to <code>tcsetattr</code>.
+
+        <p>The <code>c_cflag</code> member and the line speed values returned by
+<code>cfgetispeed</code> and <code>cfgetospeed</code> will be unaffected by the
+call.  <code>CIGNORE</code> is useful if you want to set all the software
+modes in the other members, but leave the hardware details in
+<code>c_cflag</code> unchanged.  (This is how the <code>TCSASOFT</code> flag to
+<code>tcsettattr</code> works.)
+
+        <p>This bit is never set in the structure filled in by <code>tcgetattr</code>. 
+</p></blockquote></div>
+
+   </body></html>
+

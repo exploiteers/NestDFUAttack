@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Longjmp in Handler - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Defining-Handlers.html#Defining-Handlers" title="Defining Handlers">
+<link rel="prev" href="Termination-in-Handler.html#Termination-in-Handler" title="Termination in Handler">
+<link rel="next" href="Signals-in-Handler.html#Signals-in-Handler" title="Signals in Handler">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Longjmp-in-Handler"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Signals-in-Handler.html#Signals-in-Handler">Signals in Handler</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Termination-in-Handler.html#Termination-in-Handler">Termination in Handler</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Defining-Handlers.html#Defining-Handlers">Defining Handlers</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.4.3 Nonlocal Control Transfer in Handlers</h4>
+
+<p><a name="index-non_002dlocal-exit_002c-from-signal-handler-2930"></a>
+You can do a nonlocal transfer of control out of a signal handler using
+the <code>setjmp</code> and <code>longjmp</code> facilities (see <a href="Non_002dLocal-Exits.html#Non_002dLocal-Exits">Non-Local Exits</a>).
+
+   <p>When the handler does a nonlocal control transfer, the part of the
+program that was running will not continue.  If this part of the program
+was in the middle of updating an important data structure, the data
+structure will remain inconsistent.  Since the program does not
+terminate, the inconsistency is likely to be noticed later on.
+
+   <p>There are two ways to avoid this problem.  One is to block the signal
+for the parts of the program that update important data structures. 
+Blocking the signal delays its delivery until it is unblocked, once the
+critical updating is finished.  See <a href="Blocking-Signals.html#Blocking-Signals">Blocking Signals</a>.
+
+   <p>The other way to re-initialize the crucial data structures in the signal
+handler, or make their values consistent.
+
+   <p>Here is a rather schematic example showing the reinitialization of one
+global variable.
+
+<pre class="smallexample">     #include &lt;signal.h&gt;
+     #include &lt;setjmp.h&gt;
+     
+     jmp_buf return_to_top_level;
+     
+     volatile sig_atomic_t waiting_for_input;
+     
+     void
+     handle_sigint (int signum)
+     {
+       /* <span class="roman">We may have been waiting for input when the signal arrived,</span>
+          <span class="roman">but we are no longer waiting once we transfer control.</span> */
+       waiting_for_input = 0;
+       longjmp (return_to_top_level, 1);
+     }
+     
+     int
+     main (void)
+     {
+       ...
+       signal (SIGINT, sigint_handler);
+       ...
+       while (1) {
+         prepare_for_command ();
+         if (setjmp (return_to_top_level) == 0)
+           read_and_execute_command ();
+       }
+     }
+     
+     /* <span class="roman">Imagine this is a subroutine used by various commands.</span> */
+     char *
+     read_data ()
+     {
+       if (input_from_terminal) {
+         waiting_for_input = 1;
+         ...
+         waiting_for_input = 0;
+       } else {
+         ...
+       }
+     }
+</pre>
+   </body></html>
+

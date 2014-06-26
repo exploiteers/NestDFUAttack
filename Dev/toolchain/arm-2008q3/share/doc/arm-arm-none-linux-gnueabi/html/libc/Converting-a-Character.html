@@ -1,0 +1,436 @@
+<html lang="en">
+<head>
+<title>Converting a Character - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion" title="Restartable multibyte conversion">
+<link rel="prev" href="Keeping-the-state.html#Keeping-the-state" title="Keeping the state">
+<link rel="next" href="Converting-Strings.html#Converting-Strings" title="Converting Strings">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Converting-a-Character"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Converting-Strings.html#Converting-Strings">Converting Strings</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Keeping-the-state.html#Keeping-the-state">Keeping the state</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Restartable-multibyte-conversion.html#Restartable-multibyte-conversion">Restartable multibyte conversion</a>
+<hr>
+</div>
+
+<h4 class="subsection">6.3.3 Converting Single Characters</h4>
+
+<p>The most fundamental of the conversion functions are those dealing with
+single characters.  Please note that this does not always mean single
+bytes.  But since there is very often a subset of the multibyte
+character set that consists of single byte sequences, there are
+functions to help with converting bytes.  Frequently, ASCII is a subpart
+of the multibyte character set.  In such a scenario, each ASCII character
+stands for itself, and all other characters have at least a first byte
+that is beyond the range 0 to 127.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: wint_t <b>btowc</b> (<var>int c</var>)<var><a name="index-btowc-643"></a></var><br>
+<blockquote><p>The <code>btowc</code> function (&ldquo;byte to wide character&rdquo;) converts a valid
+single byte character <var>c</var> in the initial shift state into the wide
+character equivalent using the conversion rules from the currently
+selected locale of the <code>LC_CTYPE</code> category.
+
+        <p>If <code>(unsigned char) </code><var>c</var> is no valid single byte multibyte
+character or if <var>c</var> is <code>EOF</code>, the function returns <code>WEOF</code>.
+
+        <p>Please note the restriction of <var>c</var> being tested for validity only in
+the initial shift state.  No <code>mbstate_t</code> object is used from
+which the state information is taken, and the function also does not use
+any static state.
+
+        <p><a name="index-wchar_002eh-644"></a>The <code>btowc</code> function was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w -->
+and is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Despite the limitation that the single byte value always is interpreted
+in the initial state this function is actually useful most of the time. 
+Most characters are either entirely single-byte character sets or they
+are extension to ASCII.  But then it is possible to write code like this
+(not that this specific example is very useful):
+
+<pre class="smallexample">     wchar_t *
+     itow (unsigned long int val)
+     {
+       static wchar_t buf[30];
+       wchar_t *wcp = &amp;buf[29];
+       *wcp = L'\0';
+       while (val != 0)
+         {
+           *--wcp = btowc ('0' + val % 10);
+           val /= 10;
+         }
+       if (wcp == &amp;buf[29])
+         *--wcp = L'0';
+       return wcp;
+     }
+</pre>
+   <p>Why is it necessary to use such a complicated implementation and not
+simply cast <code>'0' + val % 10</code> to a wide character?  The answer is
+that there is no guarantee that one can perform this kind of arithmetic
+on the character of the character set used for <code>wchar_t</code>
+representation.  In other situations the bytes are not constant at
+compile time and so the compiler cannot do the work.  In situations like
+this it is necessary <code>btowc</code>.
+
+<p class="noindent">There also is a function for the conversion in the other direction.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>wctob</b> (<var>wint_t c</var>)<var><a name="index-wctob-645"></a></var><br>
+<blockquote><p>The <code>wctob</code> function (&ldquo;wide character to byte&rdquo;) takes as the
+parameter a valid wide character.  If the multibyte representation for
+this character in the initial state is exactly one byte long, the return
+value of this function is this character.  Otherwise the return value is
+<code>EOF</code>.
+
+        <p><a name="index-wchar_002eh-646"></a><code>wctob</code> was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> and
+is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>There are more general functions to convert single character from
+multibyte representation to wide characters and vice versa.  These
+functions pose no limit on the length of the multibyte representation
+and they also do not require it to be in the initial state.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>mbrtowc</b> (<var>wchar_t *restrict pwc, const char *restrict s, size_t n, mbstate_t *restrict ps</var>)<var><a name="index-mbrtowc-647"></a></var><br>
+<blockquote><p><a name="index-stateful-648"></a>The <code>mbrtowc</code> function (&ldquo;multibyte restartable to wide
+character&rdquo;) converts the next multibyte character in the string pointed
+to by <var>s</var> into a wide character and stores it in the wide character
+string pointed to by <var>pwc</var>.  The conversion is performed according
+to the locale currently selected for the <code>LC_CTYPE</code> category.  If
+the conversion for the character set used in the locale requires a state,
+the multibyte string is interpreted in the state represented by the
+object pointed to by <var>ps</var>.  If <var>ps</var> is a null pointer, a static,
+internal state variable used only by the <code>mbrtowc</code> function is
+used.
+
+        <p>If the next multibyte character corresponds to the NUL wide character,
+the return value of the function is 0 and the state object is
+afterwards in the initial state.  If the next <var>n</var> or fewer bytes
+form a correct multibyte character, the return value is the number of
+bytes starting from <var>s</var> that form the multibyte character.  The
+conversion state is updated according to the bytes consumed in the
+conversion.  In both cases the wide character (either the <code>L'\0'</code>
+or the one found in the conversion) is stored in the string pointed to
+by <var>pwc</var> if <var>pwc</var> is not null.
+
+        <p>If the first <var>n</var> bytes of the multibyte string possibly form a valid
+multibyte character but there are more than <var>n</var> bytes needed to
+complete it, the return value of the function is <code>(size_t) -2</code> and
+no value is stored.  Please note that this can happen even if <var>n</var>
+has a value greater than or equal to <code>MB_CUR_MAX</code> since the input
+might contain redundant shift sequences.
+
+        <p>If the first <code>n</code> bytes of the multibyte string cannot possibly form
+a valid multibyte character, no value is stored, the global variable
+<code>errno</code> is set to the value <code>EILSEQ</code>, and the function returns
+<code>(size_t) -1</code>.  The conversion state is afterwards undefined.
+
+        <p><a name="index-wchar_002eh-649"></a><code>mbrtowc</code> was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> and
+is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Use of <code>mbrtowc</code> is straightforward.  A function that copies a
+multibyte string into a wide character string while at the same time
+converting all lowercase characters into uppercase could look like this
+(this is not the final version, just an example; it has no error
+checking, and sometimes leaks memory):
+
+<pre class="smallexample">     wchar_t *
+     mbstouwcs (const char *s)
+     {
+       size_t len = strlen (s);
+       wchar_t *result = malloc ((len + 1) * sizeof (wchar_t));
+       wchar_t *wcp = result;
+       wchar_t tmp[1];
+       mbstate_t state;
+       size_t nbytes;
+     
+       memset (&amp;state, '\0', sizeof (state));
+       while ((nbytes = mbrtowc (tmp, s, len, &amp;state)) &gt; 0)
+         {
+           if (nbytes &gt;= (size_t) -2)
+             /* Invalid input string.  */
+             return NULL;
+           *wcp++ = towupper (tmp[0]);
+           len -= nbytes;
+           s += nbytes;
+         }
+       return result;
+     }
+</pre>
+   <p>The use of <code>mbrtowc</code> should be clear.  A single wide character is
+stored in <var>tmp</var><code>[0]</code>, and the number of consumed bytes is stored
+in the variable <var>nbytes</var>.  If the conversion is successful, the
+uppercase variant of the wide character is stored in the <var>result</var>
+array and the pointer to the input string and the number of available
+bytes is adjusted.
+
+   <p>The only non-obvious thing about <code>mbrtowc</code> might be the way memory
+is allocated for the result.  The above code uses the fact that there
+can never be more wide characters in the converted results than there are
+bytes in the multibyte input string.  This method yields a pessimistic
+guess about the size of the result, and if many wide character strings
+have to be constructed this way or if the strings are long, the extra
+memory required to be allocated because the input string contains
+multibyte characters might be significant.  The allocated memory block can
+be resized to the correct size before returning it, but a better solution
+might be to allocate just the right amount of space for the result right
+away.  Unfortunately there is no function to compute the length of the wide
+character string directly from the multibyte string.  There is, however, a
+function that does part of the work.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>mbrlen</b> (<var>const char *restrict s, size_t n, mbstate_t *ps</var>)<var><a name="index-mbrlen-650"></a></var><br>
+<blockquote><p>The <code>mbrlen</code> function (&ldquo;multibyte restartable length&rdquo;) computes
+the number of at most <var>n</var> bytes starting at <var>s</var>, which form the
+next valid and complete multibyte character.
+
+        <p>If the next multibyte character corresponds to the NUL wide character,
+the return value is 0.  If the next <var>n</var> bytes form a valid
+multibyte character, the number of bytes belonging to this multibyte
+character byte sequence is returned.
+
+        <p>If the first <var>n</var> bytes possibly form a valid multibyte
+character but the character is incomplete, the return value is
+<code>(size_t) -2</code>.  Otherwise the multibyte character sequence is invalid
+and the return value is <code>(size_t) -1</code>.
+
+        <p>The multibyte sequence is interpreted in the state represented by the
+object pointed to by <var>ps</var>.  If <var>ps</var> is a null pointer, a state
+object local to <code>mbrlen</code> is used.
+
+        <p><a name="index-wchar_002eh-651"></a><code>mbrlen</code> was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> and
+is declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>The attentive reader now will note that <code>mbrlen</code> can be implemented
+as
+
+<pre class="smallexample">     mbrtowc (NULL, s, n, ps != NULL ? ps : &amp;internal)
+</pre>
+   <p>This is true and in fact is mentioned in the official specification. 
+How can this function be used to determine the length of the wide
+character string created from a multibyte character string?  It is not
+directly usable, but we can define a function <code>mbslen</code> using it:
+
+<pre class="smallexample">     size_t
+     mbslen (const char *s)
+     {
+       mbstate_t state;
+       size_t result = 0;
+       size_t nbytes;
+       memset (&amp;state, '\0', sizeof (state));
+       while ((nbytes = mbrlen (s, MB_LEN_MAX, &amp;state)) &gt; 0)
+         {
+           if (nbytes &gt;= (size_t) -2)
+             /* <span class="roman">Something is wrong.</span>  */
+             return (size_t) -1;
+           s += nbytes;
+           ++result;
+         }
+       return result;
+     }
+</pre>
+   <p>This function simply calls <code>mbrlen</code> for each multibyte character
+in the string and counts the number of function calls.  Please note that
+we here use <code>MB_LEN_MAX</code> as the size argument in the <code>mbrlen</code>
+call.  This is acceptable since a) this value is larger then the length of
+the longest multibyte character sequence and b) we know that the string
+<var>s</var> ends with a NUL byte, which cannot be part of any other multibyte
+character sequence but the one representing the NUL wide character. 
+Therefore, the <code>mbrlen</code> function will never read invalid memory.
+
+   <p>Now that this function is available (just to make this clear, this
+function is <em>not</em> part of the GNU C library) we can compute the
+number of wide character required to store the converted multibyte
+character string <var>s</var> using
+
+<pre class="smallexample">     wcs_bytes = (mbslen (s) + 1) * sizeof (wchar_t);
+</pre>
+   <p>Please note that the <code>mbslen</code> function is quite inefficient.  The
+implementation of <code>mbstouwcs</code> with <code>mbslen</code> would have to
+perform the conversion of the multibyte character input string twice, and
+this conversion might be quite expensive.  So it is necessary to think
+about the consequences of using the easier but imprecise method before
+doing the work twice.
+
+<!-- wchar.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: size_t <b>wcrtomb</b> (<var>char *restrict s, wchar_t wc, mbstate_t *restrict ps</var>)<var><a name="index-wcrtomb-652"></a></var><br>
+<blockquote><p>The <code>wcrtomb</code> function (&ldquo;wide character restartable to
+multibyte&rdquo;) converts a single wide character into a multibyte string
+corresponding to that wide character.
+
+        <p>If <var>s</var> is a null pointer, the function resets the state stored in
+the objects pointed to by <var>ps</var> (or the internal <code>mbstate_t</code>
+object) to the initial state.  This can also be achieved by a call like
+this:
+
+     <pre class="smallexample">          wcrtombs (temp_buf, L'\0', ps)
+</pre>
+        <p class="noindent">since, if <var>s</var> is a null pointer, <code>wcrtomb</code> performs as if it
+writes into an internal buffer, which is guaranteed to be large enough.
+
+        <p>If <var>wc</var> is the NUL wide character, <code>wcrtomb</code> emits, if
+necessary, a shift sequence to get the state <var>ps</var> into the initial
+state followed by a single NUL byte, which is stored in the string
+<var>s</var>.
+
+        <p>Otherwise a byte sequence (possibly including shift sequences) is written
+into the string <var>s</var>.  This only happens if <var>wc</var> is a valid wide
+character (i.e., it has a multibyte representation in the character set
+selected by locale of the <code>LC_CTYPE</code> category).  If <var>wc</var> is no
+valid wide character, nothing is stored in the strings <var>s</var>,
+<code>errno</code> is set to <code>EILSEQ</code>, the conversion state in <var>ps</var>
+is undefined and the return value is <code>(size_t) -1</code>.
+
+        <p>If no error occurred the function returns the number of bytes stored in
+the string <var>s</var>.  This includes all bytes representing shift
+sequences.
+
+        <p>One word about the interface of the function: there is no parameter
+specifying the length of the array <var>s</var>.  Instead the function
+assumes that there are at least <code>MB_CUR_MAX</code> bytes available since
+this is the maximum length of any byte sequence representing a single
+character.  So the caller has to make sure that there is enough space
+available, otherwise buffer overruns can occur.
+
+        <p><a name="index-wchar_002eh-653"></a><code>wcrtomb</code> was introduced in Amendment&nbsp;1<!-- /@w --> to ISO&nbsp;C90<!-- /@w --> and is
+declared in <samp><span class="file">wchar.h</span></samp>. 
+</p></blockquote></div>
+
+   <p>Using <code>wcrtomb</code> is as easy as using <code>mbrtowc</code>.  The following
+example appends a wide character string to a multibyte character string. 
+Again, the code is not really useful (or correct), it is simply here to
+demonstrate the use and some problems.
+
+<pre class="smallexample">     char *
+     mbscatwcs (char *s, size_t len, const wchar_t *ws)
+     {
+       mbstate_t state;
+       /* <span class="roman">Find the end of the existing string.</span>  */
+       char *wp = strchr (s, '\0');
+       len -= wp - s;
+       memset (&amp;state, '\0', sizeof (state));
+       do
+         {
+           size_t nbytes;
+           if (len &lt; MB_CUR_LEN)
+             {
+               /* <span class="roman">We cannot guarantee that the next</span>
+                  <span class="roman">character fits into the buffer, so</span>
+                  <span class="roman">return an error.</span>  */
+               errno = E2BIG;
+               return NULL;
+             }
+           nbytes = wcrtomb (wp, *ws, &amp;state);
+           if (nbytes == (size_t) -1)
+             /* <span class="roman">Error in the conversion.</span>  */
+             return NULL;
+           len -= nbytes;
+           wp += nbytes;
+         }
+       while (*ws++ != L'\0');
+       return s;
+     }
+</pre>
+   <p>First the function has to find the end of the string currently in the
+array <var>s</var>.  The <code>strchr</code> call does this very efficiently since a
+requirement for multibyte character representations is that the NUL byte
+is never used except to represent itself (and in this context, the end
+of the string).
+
+   <p>After initializing the state object the loop is entered where the first
+task is to make sure there is enough room in the array <var>s</var>.  We
+abort if there are not at least <code>MB_CUR_LEN</code> bytes available.  This
+is not always optimal but we have no other choice.  We might have less
+than <code>MB_CUR_LEN</code> bytes available but the next multibyte character
+might also be only one byte long.  At the time the <code>wcrtomb</code> call
+returns it is too late to decide whether the buffer was large enough.  If
+this solution is unsuitable, there is a very slow but more accurate
+solution.
+
+<pre class="smallexample">       ...
+       if (len &lt; MB_CUR_LEN)
+         {
+           mbstate_t temp_state;
+           memcpy (&amp;temp_state, &amp;state, sizeof (state));
+           if (wcrtomb (NULL, *ws, &amp;temp_state) &gt; len)
+             {
+               /* <span class="roman">We cannot guarantee that the next</span>
+                  <span class="roman">character fits into the buffer, so</span>
+                  <span class="roman">return an error.</span>  */
+               errno = E2BIG;
+               return NULL;
+             }
+         }
+       ...
+</pre>
+   <p>Here we perform the conversion that might overflow the buffer so that
+we are afterwards in the position to make an exact decision about the
+buffer size.  Please note the <code>NULL</code> argument for the destination
+buffer in the new <code>wcrtomb</code> call; since we are not interested in the
+converted text at this point, this is a nice way to express this.  The
+most unusual thing about this piece of code certainly is the duplication
+of the conversion state object, but if a change of the state is necessary
+to emit the next multibyte character, we want to have the same shift state
+change performed in the real conversion.  Therefore, we have to preserve
+the initial shift state information.
+
+   <p>There are certainly many more and even better solutions to this problem. 
+This example is only provided for educational purposes.
+
+   </body></html>
+

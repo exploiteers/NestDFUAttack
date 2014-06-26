@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+<title>Pause Problems - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal" title="Waiting for a Signal">
+<link rel="prev" href="Using-Pause.html#Using-Pause" title="Using Pause">
+<link rel="next" href="Sigsuspend.html#Sigsuspend" title="Sigsuspend">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pause-Problems"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Sigsuspend.html#Sigsuspend">Sigsuspend</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Pause.html#Using-Pause">Using Pause</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Waiting-for-a-Signal.html#Waiting-for-a-Signal">Waiting for a Signal</a>
+<hr>
+</div>
+
+<h4 class="subsection">24.8.2 Problems with <code>pause</code></h4>
+
+<p>The simplicity of <code>pause</code> can conceal serious timing errors that
+can make a program hang mysteriously.
+
+   <p>It is safe to use <code>pause</code> if the real work of your program is done
+by the signal handlers themselves, and the &ldquo;main program&rdquo; does nothing
+but call <code>pause</code>.  Each time a signal is delivered, the handler
+will do the next batch of work that is to be done, and then return, so
+that the main loop of the program can call <code>pause</code> again.
+
+   <p>You can't safely use <code>pause</code> to wait until one more signal arrives,
+and then resume real work.  Even if you arrange for the signal handler
+to cooperate by setting a flag, you still can't use <code>pause</code>
+reliably.  Here is an example of this problem:
+
+<pre class="smallexample">     /* <code>usr_interrupt</code><span class="roman"> is set by the signal handler.</span>  */
+     if (!usr_interrupt)
+       pause ();
+     
+     /* <span class="roman">Do work once the signal arrives.</span>  */
+     ...
+</pre>
+   <p class="noindent">This has a bug: the signal could arrive after the variable
+<code>usr_interrupt</code> is checked, but before the call to <code>pause</code>. 
+If no further signals arrive, the process would never wake up again.
+
+   <p>You can put an upper limit on the excess waiting by using <code>sleep</code>
+in a loop, instead of using <code>pause</code>.  (See <a href="Sleeping.html#Sleeping">Sleeping</a>, for more
+about <code>sleep</code>.)  Here is what this looks like:
+
+<pre class="smallexample">     /* <code>usr_interrupt</code><span class="roman"> is set by the signal handler.</span>
+     while (!usr_interrupt)
+       sleep (1);
+     
+     /* <span class="roman">Do work once the signal arrives.</span>  */
+     ...
+</pre>
+   <p>For some purposes, that is good enough.  But with a little more
+complexity, you can wait reliably until a particular signal handler is
+run, using <code>sigsuspend</code>.
+
+   </body></html>
+

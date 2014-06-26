@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Deleting Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-System-Interface.html#File-System-Interface" title="File System Interface">
+<link rel="prev" href="Symbolic-Links.html#Symbolic-Links" title="Symbolic Links">
+<link rel="next" href="Renaming-Files.html#Renaming-Files" title="Renaming Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Deleting-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Renaming-Files.html#Renaming-Files">Renaming Files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Symbolic-Links.html#Symbolic-Links">Symbolic Links</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-System-Interface.html#File-System-Interface">File System Interface</a>
+<hr>
+</div>
+
+<h3 class="section">14.6 Deleting Files</h3>
+
+<p><a name="index-deleting-a-file-1471"></a><a name="index-removing-a-file-1472"></a><a name="index-unlinking-a-file-1473"></a>
+You can delete a file with <code>unlink</code> or <code>remove</code>.
+
+   <p>Deletion actually deletes a file name.  If this is the file's only name,
+then the file is deleted as well.  If the file has other remaining names
+(see <a href="Hard-Links.html#Hard-Links">Hard Links</a>), it remains accessible under those names.
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>unlink</b> (<var>const char *filename</var>)<var><a name="index-unlink-1474"></a></var><br>
+<blockquote><p>The <code>unlink</code> function deletes the file name <var>filename</var>.  If
+this is a file's sole name, the file itself is also deleted.  (Actually,
+if any process has the file open when this happens, deletion is
+postponed until all processes have closed the file.)
+
+        <p><a name="index-unistd_002eh-1475"></a>The function <code>unlink</code> is declared in the header file <samp><span class="file">unistd.h</span></samp>.
+
+        <p>This function returns <code>0</code> on successful completion, and <code>-1</code>
+on error.  In addition to the usual file name errors
+(see <a href="File-Name-Errors.html#File-Name-Errors">File Name Errors</a>), the following <code>errno</code> error conditions are
+defined for this function:
+
+          <dl>
+<dt><code>EACCES</code><dd>Write permission is denied for the directory from which the file is to be
+removed, or the directory has the sticky bit set and you do not own the file.
+
+          <br><dt><code>EBUSY</code><dd>This error indicates that the file is being used by the system in such a
+way that it can't be unlinked.  For example, you might see this error if
+the file name specifies the root directory or a mount point for a file
+system.
+
+          <br><dt><code>ENOENT</code><dd>The file name to be deleted doesn't exist.
+
+          <br><dt><code>EPERM</code><dd>On some systems <code>unlink</code> cannot be used to delete the name of a
+directory, or at least can only be used this way by a privileged user. 
+To avoid such problems, use <code>rmdir</code> to delete directories.  (In the
+GNU system <code>unlink</code> can never delete the name of a directory.)
+
+          <br><dt><code>EROFS</code><dd>The directory containing the file name to be deleted is on a read-only
+file system and can't be modified. 
+</dl>
+        </p></blockquote></div>
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Function: int <b>rmdir</b> (<var>const char *filename</var>)<var><a name="index-rmdir-1476"></a></var><br>
+<blockquote><p><a name="index-directories_002c-deleting-1477"></a><a name="index-deleting-a-directory-1478"></a>The <code>rmdir</code> function deletes a directory.  The directory must be
+empty before it can be removed; in other words, it can only contain
+entries for <samp><span class="file">.</span></samp> and <samp><span class="file">..</span></samp>.
+
+        <p>In most other respects, <code>rmdir</code> behaves like <code>unlink</code>.  There
+are two additional <code>errno</code> error conditions defined for
+<code>rmdir</code>:
+
+          <dl>
+<dt><code>ENOTEMPTY</code><dt><code>EEXIST</code><dd>The directory to be deleted is not empty. 
+</dl>
+
+        <p>These two error codes are synonymous; some systems use one, and some use
+the other.  The GNU system always uses <code>ENOTEMPTY</code>.
+
+        <p>The prototype for this function is declared in the header file
+<samp><span class="file">unistd.h</span></samp>. 
+<a name="index-unistd_002eh-1479"></a></p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Function: int <b>remove</b> (<var>const char *filename</var>)<var><a name="index-remove-1480"></a></var><br>
+<blockquote><p>This is the ISO&nbsp;C<!-- /@w --> function to remove a file.  It works like
+<code>unlink</code> for files and like <code>rmdir</code> for directories. 
+<code>remove</code> is declared in <samp><span class="file">stdio.h</span></samp>. 
+<a name="index-stdio_002eh-1481"></a></p></blockquote></div>
+
+   </body></html>
+

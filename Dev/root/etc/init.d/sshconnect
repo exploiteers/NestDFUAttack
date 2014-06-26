@@ -1,0 +1,32 @@
+#/bin/sh
+
+while true; do
+    if [ ! -d /etc/dropbear/.ssh ]
+        then
+            mkdir /etc/dropbear/.ssh
+        fi
+
+    if [ -f /media/dropbox/host.txt ] && [ -f /media/dropbox/key.txt ]
+        then
+            mv /media/dropbox/key.txt /etc/dropbear/.ssh/id_rsa
+            mv /media/dropbox/host.txt /etc/dropbear/.ssh/host.txt
+        fi
+
+    if [ -f /etc/dropbear/.ssh/host.txt ] && [ -f /etc/dropbear/.ssh/id_rsa ]
+        then
+            HOST=`cat /etc/dropbear/.ssh/host.txt`
+            env HOME=/root \
+            /bin/autossh -M 20000 -f -i /etc/dropbear/.ssh/id_rsa -N -R 2223:localhost:22 \
+            -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o BatchMode=yes \
+            -o StrictHostKeyChecking=no ${HOST}
+        fi
+
+    if [ -f /media/dropbox/stop.txt ]
+        then
+            rm -rf /media/dropbox/stop.txt
+            killall autossh
+            killall ssh
+            exit
+        fi
+    sleep $((60*10))
+done

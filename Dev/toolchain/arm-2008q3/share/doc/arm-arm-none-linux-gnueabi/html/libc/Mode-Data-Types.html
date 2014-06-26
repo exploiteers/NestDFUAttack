@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Mode Data Types - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Terminal-Modes.html#Terminal-Modes" title="Terminal Modes">
+<link rel="next" href="Mode-Functions.html#Mode-Functions" title="Mode Functions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Mode-Data-Types"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Mode-Functions.html#Mode-Functions">Mode Functions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Terminal-Modes.html#Terminal-Modes">Terminal Modes</a>
+<hr>
+</div>
+
+<h4 class="subsection">17.4.1 Terminal Mode Data Types</h4>
+
+<p><a name="index-terminal-mode-data-types-1856"></a>
+The entire collection of attributes of a terminal is stored in a
+structure of type <code>struct termios</code>.  This structure is used
+with the functions <code>tcgetattr</code> and <code>tcsetattr</code> to read
+and set the attributes.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>struct termios</b><var><a name="index-struct-termios-1857"></a></var><br>
+<blockquote><p>Structure that records all the I/O attributes of a terminal.  The
+structure includes at least the following members:
+
+          <dl>
+<dt><code>tcflag_t c_iflag</code><dd>A bit mask specifying flags for input modes; see <a href="Input-Modes.html#Input-Modes">Input Modes</a>.
+
+          <br><dt><code>tcflag_t c_oflag</code><dd>A bit mask specifying flags for output modes; see <a href="Output-Modes.html#Output-Modes">Output Modes</a>.
+
+          <br><dt><code>tcflag_t c_cflag</code><dd>A bit mask specifying flags for control modes; see <a href="Control-Modes.html#Control-Modes">Control Modes</a>.
+
+          <br><dt><code>tcflag_t c_lflag</code><dd>A bit mask specifying flags for local modes; see <a href="Local-Modes.html#Local-Modes">Local Modes</a>.
+
+          <br><dt><code>cc_t c_cc[NCCS]</code><dd>An array specifying which characters are associated with various
+control functions; see <a href="Special-Characters.html#Special-Characters">Special Characters</a>. 
+</dl>
+
+        <p>The <code>struct termios</code> structure also contains members which
+encode input and output transmission speeds, but the representation is
+not specified.  See <a href="Line-Speed.html#Line-Speed">Line Speed</a>, for how to examine and store the
+speed values. 
+</p></blockquote></div>
+
+   <p>The following sections describe the details of the members of the
+<code>struct termios</code> structure.
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>tcflag_t</b><var><a name="index-tcflag_005ft-1858"></a></var><br>
+<blockquote><p>This is an unsigned integer type used to represent the various
+bit masks for terminal flags. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Data Type: <b>cc_t</b><var><a name="index-cc_005ft-1859"></a></var><br>
+<blockquote><p>This is an unsigned integer type used to represent characters associated
+with various terminal control functions. 
+</p></blockquote></div>
+
+<!-- termios.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>NCCS</b><var><a name="index-NCCS-1860"></a></var><br>
+<blockquote><p>The value of this macro is the number of elements in the <code>c_cc</code>
+array. 
+</p></blockquote></div>
+
+   </body></html>
+

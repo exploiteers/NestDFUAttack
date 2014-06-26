@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+<title>Scatter-Gather - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO" title="Low-Level I/O">
+<link rel="prev" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions" title="Stream/Descriptor Precautions">
+<link rel="next" href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO" title="Memory-mapped I/O">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Scatter-Gather"></a>
+<a name="Scatter_002dGather"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO">Memory-mapped I/O</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Stream_002fDescriptor-Precautions.html#Stream_002fDescriptor-Precautions">Stream/Descriptor Precautions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Low_002dLevel-I_002fO.html#Low_002dLevel-I_002fO">Low-Level I/O</a>
+<hr>
+</div>
+
+<h3 class="section">13.6 Fast Scatter-Gather I/O</h3>
+
+<p><a name="index-scatter_002dgather-1249"></a>
+Some applications may need to read or write data to multiple buffers,
+which are separated in memory.  Although this can be done easily enough
+with multiple calls to <code>read</code> and <code>write</code>, it is inefficient
+because there is overhead associated with each kernel call.
+
+   <p>Instead, many platforms provide special high-speed primitives to perform
+these <dfn>scatter-gather</dfn> operations in a single kernel call.  The GNU C
+library will provide an emulation on any system that lacks these
+primitives, so they are not a portability threat.  They are defined in
+<code>sys/uio.h</code>.
+
+   <p>These functions are controlled with arrays of <code>iovec</code> structures,
+which describe the location and size of each buffer.
+
+<!-- sys/uio.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Data Type: <b>struct iovec</b><var><a name="index-struct-iovec-1250"></a></var><br>
+<blockquote>
+        <p>The <code>iovec</code> structure describes a buffer. It contains two fields:
+
+          <dl>
+<dt><code>void *iov_base</code><dd>Contains the address of a buffer.
+
+          <br><dt><code>size_t iov_len</code><dd>Contains the length of the buffer.
+
+        </dl>
+        </p></blockquote></div>
+
+<!-- sys/uio.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: ssize_t <b>readv</b> (<var>int filedes, const struct iovec *vector, int count</var>)<var><a name="index-readv-1251"></a></var><br>
+<blockquote>
+        <p>The <code>readv</code> function reads data from <var>filedes</var> and scatters it
+into the buffers described in <var>vector</var>, which is taken to be
+<var>count</var> structures long.  As each buffer is filled, data is sent to the
+next.
+
+        <p>Note that <code>readv</code> is not guaranteed to fill all the buffers. 
+It may stop at any point, for the same reasons <code>read</code> would.
+
+        <p>The return value is a count of bytes (<em>not</em> buffers) read, 0
+indicating end-of-file, or -1 indicating an error.  The possible
+errors are the same as in <code>read</code>.
+
+        </blockquote></div>
+
+<!-- sys/uio.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: ssize_t <b>writev</b> (<var>int filedes, const struct iovec *vector, int count</var>)<var><a name="index-writev-1252"></a></var><br>
+<blockquote>
+        <p>The <code>writev</code> function gathers data from the buffers described in
+<var>vector</var>, which is taken to be <var>count</var> structures long, and writes
+them to <code>filedes</code>.  As each buffer is written, it moves on to the
+next.
+
+        <p>Like <code>readv</code>, <code>writev</code> may stop midstream under the same
+conditions <code>write</code> would.
+
+        <p>The return value is a count of bytes written, or -1 indicating an
+error.  The possible errors are the same as in <code>write</code>.
+
+        </blockquote></div>
+
+<!-- Note - I haven't read this anywhere. I surmised it from my knowledge -->
+<!-- of computer science. Thus, there could be subtleties I'm missing. -->
+   <p>Note that if the buffers are small (under about 1kB), high-level streams
+may be easier to use than these functions.  However, <code>readv</code> and
+<code>writev</code> are more efficient when the individual buffers themselves
+(as opposed to the total output), are large.  In that case, a high-level
+stream would not be able to cache the data effectively.
+
+   </body></html>
+

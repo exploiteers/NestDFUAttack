@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+<title>TUI Commands - Debugging with GDB</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Debugging with GDB">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="TUI.html#TUI" title="TUI">
+<link rel="prev" href="TUI-Single-Key-Mode.html#TUI-Single-Key-Mode" title="TUI Single Key Mode">
+<link rel="next" href="TUI-Configuration.html#TUI-Configuration" title="TUI Configuration">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="TUI-Commands"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="TUI-Configuration.html#TUI-Configuration">TUI Configuration</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="TUI-Single-Key-Mode.html#TUI-Single-Key-Mode">TUI Single Key Mode</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="TUI.html#TUI">TUI</a>
+<hr>
+</div>
+
+<h3 class="section">23.4 TUI-specific Commands</h3>
+
+<p><a name="index-TUI-commands-1443"></a>
+The TUI has specific commands to control the text windows. 
+These commands are always available, even when <span class="sc">gdb</span> is not in
+the TUI mode.  When <span class="sc">gdb</span> is in the standard mode, most
+of these commands will automatically switch to the TUI mode.
+
+     <dl>
+<dt><code>info win</code><dd><a name="index-info-win-1444"></a>List and give the size of all displayed windows.
+
+     <br><dt><code>layout next</code><dd><a name="index-layout-1445"></a>Display the next layout.
+
+     <br><dt><code>layout prev</code><dd>Display the previous layout.
+
+     <br><dt><code>layout src</code><dd>Display the source window only.
+
+     <br><dt><code>layout asm</code><dd>Display the assembly window only.
+
+     <br><dt><code>layout split</code><dd>Display the source and assembly window.
+
+     <br><dt><code>layout regs</code><dd>Display the register window together with the source or assembly window.
+
+     <br><dt><code>focus next</code><dd><a name="index-focus-1446"></a>Make the next window active for scrolling.
+
+     <br><dt><code>focus prev</code><dd>Make the previous window active for scrolling.
+
+     <br><dt><code>focus src</code><dd>Make the source window active for scrolling.
+
+     <br><dt><code>focus asm</code><dd>Make the assembly window active for scrolling.
+
+     <br><dt><code>focus regs</code><dd>Make the register window active for scrolling.
+
+     <br><dt><code>focus cmd</code><dd>Make the command window active for scrolling.
+
+     <br><dt><code>refresh</code><dd><a name="index-refresh-1447"></a>Refresh the screen.  This is similar to typing <kbd>C-L</kbd>.
+
+     <br><dt><code>tui reg float</code><dd><a name="index-tui-reg-1448"></a>Show the floating point registers in the register window.
+
+     <br><dt><code>tui reg general</code><dd>Show the general registers in the register window.
+
+     <br><dt><code>tui reg next</code><dd>Show the next register group.  The list of register groups as well as
+their order is target specific.  The predefined register groups are the
+following: <code>general</code>, <code>float</code>, <code>system</code>, <code>vector</code>,
+<code>all</code>, <code>save</code>, <code>restore</code>.
+
+     <br><dt><code>tui reg system</code><dd>Show the system registers in the register window.
+
+     <br><dt><code>update</code><dd><a name="index-update-1449"></a>Update the source window and the current execution point.
+
+     <br><dt><code>winheight </code><var>name</var><code> +</code><var>count</var><dt><code>winheight </code><var>name</var><code> -</code><var>count</var><dd><a name="index-winheight-1450"></a>Change the height of the window <var>name</var> by <var>count</var>
+lines.  Positive counts increase the height, while negative counts
+decrease it.
+
+     <br><dt><code>tabset </code><var>nchars</var><dd><a name="index-tabset-1451"></a>Set the width of tab stops to be <var>nchars</var> characters. 
+</dl>
+
+   </body></html>
+

@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Limits for Files - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="System-Configuration.html#System-Configuration" title="System Configuration">
+<link rel="prev" href="Minimums.html#Minimums" title="Minimums">
+<link rel="next" href="Options-for-Files.html#Options-for-Files" title="Options for Files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Limits-for-Files"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Options-for-Files.html#Options-for-Files">Options for Files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Minimums.html#Minimums">Minimums</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="System-Configuration.html#System-Configuration">System Configuration</a>
+<hr>
+</div>
+
+<h3 class="section">31.6 Limits on File System Capacity</h3>
+
+<p>The POSIX.1 standard specifies a number of parameters that describe the
+limitations of the file system.  It's possible for the system to have a
+fixed, uniform limit for a parameter, but this isn't the usual case.  On
+most systems, it's possible for different file systems (and, for some
+parameters, even different files) to have different maximum limits.  For
+example, this is very likely if you use NFS to mount some of the file
+systems from other machines.
+
+   <p><a name="index-limits_002eh-3646"></a>Each of the following macros is defined in <samp><span class="file">limits.h</span></samp> only if the
+system has a fixed, uniform limit for the parameter in question.  If the
+system allows different file systems or files to have different limits,
+then the macro is undefined; use <code>pathconf</code> or <code>fpathconf</code> to
+find out the limit that applies to a particular file.  See <a href="Pathconf.html#Pathconf">Pathconf</a>.
+
+   <p>Each parameter also has another macro, with a name starting with
+&lsquo;<samp><span class="samp">_POSIX</span></samp>&rsquo;, which gives the lowest value that the limit is allowed to
+have on <em>any</em> POSIX system.  See <a href="File-Minimums.html#File-Minimums">File Minimums</a>.
+
+   <p><a name="index-limits_002c-link-count-of-files-3647"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>LINK_MAX</b><var><a name="index-LINK_005fMAX-3648"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the number of names for a given
+file.  See <a href="Hard-Links.html#Hard-Links">Hard Links</a>. 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-terminal-input-queue-3649"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>MAX_CANON</b><var><a name="index-MAX_005fCANON-3650"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the amount of text in a line of
+input when input editing is enabled.  See <a href="Canonical-or-Not.html#Canonical-or-Not">Canonical or Not</a>. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>MAX_INPUT</b><var><a name="index-MAX_005fINPUT-3651"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the total number of characters
+typed ahead as input.  See <a href="I_002fO-Queues.html#I_002fO-Queues">I/O Queues</a>. 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-file-name-length-3652"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>NAME_MAX</b><var><a name="index-NAME_005fMAX-3653"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the length of a file name component. 
+</p></blockquote></div>
+
+<!-- limits.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Macro: int <b>PATH_MAX</b><var><a name="index-PATH_005fMAX-3654"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the length of an entire file name (that
+is, the argument given to system calls such as <code>open</code>). 
+</p></blockquote></div>
+
+   <p><a name="index-limits_002c-pipe-buffer-size-3655"></a><!-- limits.h -->
+<!-- POSIX.1 -->
+
+<div class="defun">
+&mdash; Macro: int <b>PIPE_BUF</b><var><a name="index-PIPE_005fBUF-3656"></a></var><br>
+<blockquote><p>The uniform system limit (if any) for the number of bytes that can be
+written atomically to a pipe.  If multiple processes are writing to the
+same pipe simultaneously, output from different processes might be
+interleaved in chunks of this size.  See <a href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>. 
+</p></blockquote></div>
+
+   <p>These are alternative macro names for some of the same information.
+
+<!-- dirent.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>MAXNAMLEN</b><var><a name="index-MAXNAMLEN-3657"></a></var><br>
+<blockquote><p>This is the BSD name for <code>NAME_MAX</code>.  It is defined in
+<samp><span class="file">dirent.h</span></samp>. 
+</p></blockquote></div>
+
+<!-- stdio.h -->
+<!-- ISO -->
+<div class="defun">
+&mdash; Macro: int <b>FILENAME_MAX</b><var><a name="index-FILENAME_005fMAX-3658"></a></var><br>
+<blockquote><p>The value of this macro is an integer constant expression that
+represents the maximum length of a file name string.  It is defined in
+<samp><span class="file">stdio.h</span></samp>.
+
+        <p>Unlike <code>PATH_MAX</code>, this macro is defined even if there is no actual
+limit imposed.  In such a case, its value is typically a very large
+number.  <strong>This is always the case on the GNU system.</strong>
+
+        <p><strong>Usage Note:</strong> Don't use <code>FILENAME_MAX</code> as the size of an
+array in which to store a file name!  You can't possibly make an array
+that big!  Use dynamic allocation (see <a href="Memory-Allocation.html#Memory-Allocation">Memory Allocation</a>) instead. 
+</p></blockquote></div>
+
+   </body></html>
+

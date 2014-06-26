@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Reading Address - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Socket-Addresses.html#Socket-Addresses" title="Socket Addresses">
+<link rel="prev" href="Setting-Address.html#Setting-Address" title="Setting Address">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Reading-Address"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Setting-Address.html#Setting-Address">Setting Address</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.3.3 Reading the Address of a Socket</h4>
+
+<p><a name="index-sys_002fsocket_002eh-1663"></a>Use the function <code>getsockname</code> to examine the address of an
+Internet socket.  The prototype for this function is in the header file
+<samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>getsockname</b> (<var>int socket, struct sockaddr *addr, socklen_t *length-ptr</var>)<var><a name="index-getsockname-1664"></a></var><br>
+<blockquote><p>The <code>getsockname</code> function returns information about the
+address of the socket <var>socket</var> in the locations specified by the
+<var>addr</var> and <var>length-ptr</var> arguments.  Note that the
+<var>length-ptr</var> is a pointer; you should initialize it to be the
+allocation size of <var>addr</var>, and on return it contains the actual
+size of the address data.
+
+        <p>The format of the address data depends on the socket namespace.  The
+length of the information is usually fixed for a given namespace, so
+normally you can know exactly how much space is needed and can provide
+that much.  The usual practice is to allocate a place for the value
+using the proper data type for the socket's namespace, then cast its
+address to <code>struct sockaddr *</code> to pass it to <code>getsockname</code>.
+
+        <p>The return value is <code>0</code> on success and <code>-1</code> on error.  The
+following <code>errno</code> error conditions are defined for this function:
+
+          <dl>
+<dt><code>EBADF</code><dd>The <var>socket</var> argument is not a valid file descriptor.
+
+          <br><dt><code>ENOTSOCK</code><dd>The descriptor <var>socket</var> is not a socket.
+
+          <br><dt><code>ENOBUFS</code><dd>There are not enough internal buffers available for the operation. 
+</dl>
+        </p></blockquote></div>
+
+   <p>You can't read the address of a socket in the file namespace.  This is
+consistent with the rest of the system; in general, there's no way to
+find a file's name from a descriptor for that file.
+
+   </body></html>
+

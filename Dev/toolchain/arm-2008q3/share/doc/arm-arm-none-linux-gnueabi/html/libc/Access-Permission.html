@@ -1,0 +1,78 @@
+<html lang="en">
+<head>
+<title>Access Permission - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="File-Attributes.html#File-Attributes" title="File Attributes">
+<link rel="prev" href="Permission-Bits.html#Permission-Bits" title="Permission Bits">
+<link rel="next" href="Setting-Permissions.html#Setting-Permissions" title="Setting Permissions">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Access-Permission"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Setting-Permissions.html#Setting-Permissions">Setting Permissions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Permission-Bits.html#Permission-Bits">Permission Bits</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="File-Attributes.html#File-Attributes">File Attributes</a>
+<hr>
+</div>
+
+<h4 class="subsection">14.9.6 How Your Access to a File is Decided</h4>
+
+<p><a name="index-permission-to-access-a-file-1558"></a><a name="index-access-permission-for-a-file-1559"></a><a name="index-file-access-permission-1560"></a>
+Recall that the operating system normally decides access permission for
+a file based on the effective user and group IDs of the process and its
+supplementary group IDs, together with the file's owner, group and
+permission bits.  These concepts are discussed in detail in <a href="Process-Persona.html#Process-Persona">Process Persona</a>.
+
+   <p>If the effective user ID of the process matches the owner user ID of the
+file, then permissions for read, write, and execute/search are
+controlled by the corresponding &ldquo;user&rdquo; (or &ldquo;owner&rdquo;) bits.  Likewise,
+if any of the effective group ID or supplementary group IDs of the
+process matches the group owner ID of the file, then permissions are
+controlled by the &ldquo;group&rdquo; bits.  Otherwise, permissions are controlled
+by the &ldquo;other&rdquo; bits.
+
+   <p>Privileged users, like &lsquo;<samp><span class="samp">root</span></samp>&rsquo;, can access any file regardless of
+its permission bits.  As a special case, for a file to be executable
+even by a privileged user, at least one of its execute bits must be set.
+
+   </body></html>
+

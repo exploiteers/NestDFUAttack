@@ -1,0 +1,182 @@
+<html lang="en">
+<head>
+<title>Environment Access - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Environment-Variables.html#Environment-Variables" title="Environment Variables">
+<link rel="next" href="Standard-Environment.html#Standard-Environment" title="Standard Environment">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Environment-Access"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Standard-Environment.html#Standard-Environment">Standard Environment</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Environment-Variables.html#Environment-Variables">Environment Variables</a>
+<hr>
+</div>
+
+<h4 class="subsection">25.4.1 Environment Access</h4>
+
+<p><a name="index-environment-access-3099"></a><a name="index-environment-representation-3100"></a>
+The value of an environment variable can be accessed with the
+<code>getenv</code> function.  This is declared in the header file
+<samp><span class="file">stdlib.h</span></samp>.  Modifications of enviroment variables are not
+allowed in Multi-threaded programs.  The <code>getenv</code> function
+can be safely used in multi-threaded programs
+<a name="index-stdlib_002eh-3101"></a>
+<!-- stdlib.h -->
+<!-- ISO -->
+
+<div class="defun">
+&mdash; Function: char * <b>getenv</b> (<var>const char *name</var>)<var><a name="index-getenv-3102"></a></var><br>
+<blockquote><p>This function returns a string that is the value of the environment
+variable <var>name</var>.  You must not modify this string.  In some non-Unix
+systems not using the GNU library, it might be overwritten by subsequent
+calls to <code>getenv</code> (but not by any other library function).  If the
+environment variable <var>name</var> is not defined, the value is a null
+pointer. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- SVID -->
+<div class="defun">
+&mdash; Function: int <b>putenv</b> (<var>char *string</var>)<var><a name="index-putenv-3103"></a></var><br>
+<blockquote><p>The <code>putenv</code> function adds or removes definitions from the environment. 
+If the <var>string</var> is of the form &lsquo;<samp><var>name</var><span class="samp">=</span><var>value</var></samp>&rsquo;, the
+definition is added to the environment.  Otherwise, the <var>string</var> is
+interpreted as the name of an environment variable, and any definition
+for this variable in the environment is removed.
+
+        <p>The difference to the <code>setenv</code> function is that the exact string
+given as the parameter <var>string</var> is put into the environment.  If the
+user should change the string after the <code>putenv</code> call this will
+reflect in automatically in the environment.  This also requires that
+<var>string</var> is no automatic variable which scope is left before the
+variable is removed from the environment.  The same applies of course to
+dynamically allocated variables which are freed later.
+
+        <p>This function is part of the extended Unix interface.  Since it was also
+available in old SVID libraries you should define either
+<var>_XOPEN_SOURCE</var> or <var>_SVID_SOURCE</var> before including any header. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>setenv</b> (<var>const char *name, const char *value, int replace</var>)<var><a name="index-setenv-3104"></a></var><br>
+<blockquote><p>The <code>setenv</code> function can be used to add a new definition to the
+environment.  The entry with the name <var>name</var> is replaced by the
+value &lsquo;<samp><var>name</var><span class="samp">=</span><var>value</var></samp>&rsquo;.  Please note that this is also true
+if <var>value</var> is the empty string.  To do this a new string is created
+and the strings <var>name</var> and <var>value</var> are copied.  A null pointer
+for the <var>value</var> parameter is illegal.  If the environment already
+contains an entry with key <var>name</var> the <var>replace</var> parameter
+controls the action.  If replace is zero, nothing happens.  Otherwise
+the old entry is replaced by the new one.
+
+        <p>Please note that you cannot remove an entry completely using this function.
+
+        <p>This function was originally part of the BSD library but is now part of
+the Unix standard. 
+</p></blockquote></div>
+
+<!-- stdlib.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>unsetenv</b> (<var>const char *name</var>)<var><a name="index-unsetenv-3105"></a></var><br>
+<blockquote><p>Using this function one can remove an entry completely from the
+environment.  If the environment contains an entry with the key
+<var>name</var> this whole entry is removed.  A call to this function is
+equivalent to a call to <code>putenv</code> when the <var>value</var> part of the
+string is empty.
+
+        <p>The function return <code>-1</code> if <var>name</var> is a null pointer, points to
+an empty string, or points to a string containing a <code>=</code> character. 
+It returns <code>0</code> if the call succeeded.
+
+        <p>This function was originally part of the BSD library but is now part of
+the Unix standard.  The BSD version had no return value, though. 
+</p></blockquote></div>
+
+   <p>There is one more function to modify the whole environment.  This
+function is said to be used in the POSIX.9 (POSIX bindings for Fortran
+77) and so one should expect it did made it into POSIX.1.  But this
+never happened.  But we still provide this function as a GNU extension
+to enable writing standard compliant Fortran environments.
+
+<!-- stdlib.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Function: int <b>clearenv</b> (<var>void</var>)<var><a name="index-clearenv-3106"></a></var><br>
+<blockquote><p>The <code>clearenv</code> function removes all entries from the environment. 
+Using <code>putenv</code> and <code>setenv</code> new entries can be added again
+later.
+
+        <p>If the function is successful it returns <code>0</code>.  Otherwise the return
+value is nonzero. 
+</p></blockquote></div>
+
+   <p>You can deal directly with the underlying representation of environment
+objects to add more variables to the environment (for example, to
+communicate with another program you are about to execute;
+see <a href="Executing-a-File.html#Executing-a-File">Executing a File</a>).
+
+<!-- unistd.h -->
+<!-- POSIX.1 -->
+<div class="defun">
+&mdash; Variable: char ** <b>environ</b><var><a name="index-environ-3107"></a></var><br>
+<blockquote><p>The environment is represented as an array of strings.  Each string is
+of the format &lsquo;<samp><var>name</var><span class="samp">=</span><var>value</var></samp>&rsquo;.  The order in which
+strings appear in the environment is not significant, but the same
+<var>name</var> must not appear more than once.  The last element of the
+array is a null pointer.
+
+        <p>This variable is declared in the header file <samp><span class="file">unistd.h</span></samp>.
+
+        <p>If you just want to get the value of an environment variable, use
+<code>getenv</code>. 
+</p></blockquote></div>
+
+   <p>Unix systems, and the GNU system, pass the initial value of
+<code>environ</code> as the third argument to <code>main</code>. 
+See <a href="Program-Arguments.html#Program-Arguments">Program Arguments</a>.
+
+   </body></html>
+

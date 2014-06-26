@@ -1,0 +1,124 @@
+<html lang="en">
+<head>
+<title>Local Namespace Details - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Local-Namespace.html#Local-Namespace" title="Local Namespace">
+<link rel="prev" href="Local-Namespace-Concepts.html#Local-Namespace-Concepts" title="Local Namespace Concepts">
+<link rel="next" href="Local-Socket-Example.html#Local-Socket-Example" title="Local Socket Example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Local-Namespace-Details"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Local-Socket-Example.html#Local-Socket-Example">Local Socket Example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Local-Namespace-Concepts.html#Local-Namespace-Concepts">Local Namespace Concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Local-Namespace.html#Local-Namespace">Local Namespace</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.5.2 Details of Local Namespace</h4>
+
+<p><a name="index-sys_002fsocket_002eh-1672"></a>To create a socket in the local namespace, use the constant
+<code>PF_LOCAL</code> as the <var>namespace</var> argument to <code>socket</code> or
+<code>socketpair</code>.  This constant is defined in <samp><span class="file">sys/socket.h</span></samp>.
+
+<!-- sys/socket.h -->
+<!-- POSIX -->
+<div class="defun">
+&mdash; Macro: int <b>PF_LOCAL</b><var><a name="index-PF_005fLOCAL-1673"></a></var><br>
+<blockquote><p>This designates the local namespace, in which socket addresses are local
+names, and its associated family of protocols.  <code>PF_Local</code> is the
+macro used by Posix.1g. 
+</p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>PF_UNIX</b><var><a name="index-PF_005fUNIX-1674"></a></var><br>
+<blockquote><p>This is a synonym for <code>PF_LOCAL</code>, for compatibility's sake. 
+</p></blockquote></div>
+
+<!-- sys/socket.h -->
+<!-- GNU -->
+<div class="defun">
+&mdash; Macro: int <b>PF_FILE</b><var><a name="index-PF_005fFILE-1675"></a></var><br>
+<blockquote><p>This is a synonym for <code>PF_LOCAL</code>, for compatibility's sake. 
+</p></blockquote></div>
+
+   <p>The structure for specifying socket names in the local namespace is
+defined in the header file <samp><span class="file">sys/un.h</span></samp>:
+<a name="index-sys_002fun_002eh-1676"></a>
+<!-- sys/un.h -->
+<!-- BSD -->
+
+<div class="defun">
+&mdash; Data Type: <b>struct sockaddr_un</b><var><a name="index-struct-sockaddr_005fun-1677"></a></var><br>
+<blockquote><p>This structure is used to specify local namespace socket addresses.  It has
+the following members:
+
+          <dl>
+<dt><code>short int sun_family</code><dd>This identifies the address family or format of the socket address. 
+You should store the value <code>AF_LOCAL</code> to designate the local
+namespace.  See <a href="Socket-Addresses.html#Socket-Addresses">Socket Addresses</a>.
+
+          <br><dt><code>char sun_path[108]</code><dd>This is the file name to use.
+
+          <p><strong>Incomplete:</strong>  Why is 108 a magic number?  RMS suggests making
+this a zero-length array and tweaking the following example to use
+<code>alloca</code> to allocate an appropriate amount of storage based on
+the length of the filename. 
+</dl>
+        </p></blockquote></div>
+
+   <p>You should compute the <var>length</var> parameter for a socket address in
+the local namespace as the sum of the size of the <code>sun_family</code>
+component and the string length (<em>not</em> the allocation size!) of
+the file name string.  This can be done using the macro <code>SUN_LEN</code>:
+
+<!-- sys/un.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Macro: int <b>SUN_LEN</b> (<em>struct sockaddr_un *</em><var> ptr</var>)<var><a name="index-SUN_005fLEN-1678"></a></var><br>
+<blockquote><p>The macro computes the length of socket address in the local namespace. 
+</p></blockquote></div>
+
+   </body></html>
+

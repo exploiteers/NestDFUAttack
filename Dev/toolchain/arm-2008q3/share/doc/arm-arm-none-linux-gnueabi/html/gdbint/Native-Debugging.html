@@ -1,0 +1,213 @@
+<html lang="en">
+<head>
+<title>Native Debugging - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Target-Vector-Definition.html#Target-Vector-Definition" title="Target Vector Definition">
+<link rel="next" href="Support-Libraries.html#Support-Libraries" title="Support Libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Native-Debugging"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Support-Libraries.html#Support-Libraries">Support Libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Target-Vector-Definition.html#Target-Vector-Definition">Target Vector Definition</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">13 Native Debugging</h2>
+
+<p><a name="index-native-debugging-370"></a>
+Several files control <span class="sc">gdb</span>'s configuration for native support:
+
+     
+<a name="index-NATDEPFILES-371"></a>
+<dl><dt><samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/</span><var>xyz</var><span class="file">.mh</span></samp><dd>Specifies Makefile fragments needed by a <em>native</em> configuration on
+machine <var>xyz</var>.  In particular, this lists the required
+native-dependent object files, by defining &lsquo;<samp><span class="samp">NATDEPFILES=...</span></samp>&rsquo;. 
+Also specifies the header file which describes native support on
+<var>xyz</var>, by defining &lsquo;<samp><span class="samp">NAT_FILE= nm-</span><var>xyz</var><span class="samp">.h</span></samp>&rsquo;.  You can also
+define &lsquo;<samp><span class="samp">NAT_CFLAGS</span></samp>&rsquo;, &lsquo;<samp><span class="samp">NAT_ADD_FILES</span></samp>&rsquo;, &lsquo;<samp><span class="samp">NAT_CLIBS</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">NAT_CDEPS</span></samp>&rsquo;, etc.; see <samp><span class="file">Makefile.in</span></samp>.
+
+     <p><em>Maintainer's note: The </em><samp><span class="file">.mh</span></samp><em> suffix is because this file
+originally contained </em><samp><span class="file">Makefile</span></samp><em> fragments for hosting </em><span class="sc">gdb</span><em>
+on machine </em><var>xyz</var><em>.  While the file is no longer used for this
+purpose, the </em><samp><span class="file">.mh</span></samp><em> suffix remains.  Perhaps someone will
+eventually rename these fragments so that they have a </em><samp><span class="file">.mn</span></samp><em>
+suffix.</em>
+
+     <br><dt><samp><span class="file">gdb/config/</span><var>arch</var><span class="file">/nm-</span><var>xyz</var><span class="file">.h</span></samp><dd>(<samp><span class="file">nm.h</span></samp> is a link to this file, created by <code>configure</code>).  Contains C
+macro definitions describing the native system environment, such as
+child process control and core file support.
+
+     <br><dt><samp><span class="file">gdb/</span><var>xyz</var><span class="file">-nat.c</span></samp><dd>Contains any miscellaneous C code required for this native support of
+this machine.  On some machines it doesn't exist at all. 
+</dl>
+
+   <p>There are some &ldquo;generic&rdquo; versions of routines that can be used by
+various systems.  These can be customized in various ways by macros
+defined in your <samp><span class="file">nm-</span><var>xyz</var><span class="file">.h</span></samp> file.  If these routines work for
+the <var>xyz</var> host, you can just include the generic file's name (with
+&lsquo;<samp><span class="samp">.o</span></samp>&rsquo;, not &lsquo;<samp><span class="samp">.c</span></samp>&rsquo;) in <code>NATDEPFILES</code>.
+
+   <p>Otherwise, if your machine needs custom support routines, you will need
+to write routines that perform the same functions as the generic file. 
+Put them into <samp><var>xyz</var><span class="file">-nat.c</span></samp>, and put <samp><var>xyz</var><span class="file">-nat.o</span></samp>
+into <code>NATDEPFILES</code>.
+
+     <dl>
+<dt><samp><span class="file">inftarg.c</span></samp><dd>This contains the <em>target_ops vector</em> that supports Unix child
+processes on systems which use ptrace and wait to control the child.
+
+     <br><dt><samp><span class="file">procfs.c</span></samp><dd>This contains the <em>target_ops vector</em> that supports Unix child
+processes on systems which use /proc to control the child.
+
+     <br><dt><samp><span class="file">fork-child.c</span></samp><dd>This does the low-level grunge that uses Unix system calls to do a &ldquo;fork
+and exec&rdquo; to start up a child process.
+
+     <br><dt><samp><span class="file">infptrace.c</span></samp><dd>This is the low level interface to inferior processes for systems using
+the Unix <code>ptrace</code> call in a vanilla way. 
+</dl>
+
+<h3 class="section">13.1 Native core file Support</h3>
+
+<p><a name="index-native-core-files-372"></a>
+     
+<a name="index-fetch_005fcore_005fregisters-373"></a>
+<dl><dt><samp><span class="file">core-aout.c::fetch_core_registers()</span></samp><dd>Support for reading registers out of a core file.  This routine calls
+<code>register_addr()</code>, see below.  Now that BFD is used to read core
+files, virtually all machines should use <code>core-aout.c</code>, and should
+just provide <code>fetch_core_registers</code> in <var>xyz</var><code>-nat.c</code> (or
+<code>REGISTER_U_ADDR</code> in <code>nm-</code><var>xyz</var><code>.h</code>).
+
+     <br><dt><samp><span class="file">core-aout.c::register_addr()</span></samp><dd>If your <code>nm-</code><var>xyz</var><code>.h</code> file defines the macro
+<code>REGISTER_U_ADDR(addr, blockend, regno)</code>, it should be defined to
+set <code>addr</code> to the offset within the &lsquo;<samp><span class="samp">user</span></samp>&rsquo; struct of <span class="sc">gdb</span>
+register number <code>regno</code>.  <code>blockend</code> is the offset within the
+&ldquo;upage&rdquo; of <code>u.u_ar0</code>.  If <code>REGISTER_U_ADDR</code> is defined,
+<samp><span class="file">core-aout.c</span></samp> will define the <code>register_addr()</code> function and
+use the macro in it.  If you do not define <code>REGISTER_U_ADDR</code>, but
+you are using the standard <code>fetch_core_registers()</code>, you will need
+to define your own version of <code>register_addr()</code>, put it into your
+<var>xyz</var><code>-nat.c</code> file, and be sure <var>xyz</var><code>-nat.o</code> is in
+the <code>NATDEPFILES</code> list.  If you have your own
+<code>fetch_core_registers()</code>, you may not need a separate
+<code>register_addr()</code>.  Many custom <code>fetch_core_registers()</code>
+implementations simply locate the registers themselves. 
+</dl>
+
+   <p>When making <span class="sc">gdb</span> run native on a new operating system, to make it
+possible to debug core files, you will need to either write specific
+code for parsing your OS's core files, or customize
+<samp><span class="file">bfd/trad-core.c</span></samp>.  First, use whatever <code>#include</code> files your
+machine uses to define the struct of registers that is accessible
+(possibly in the u-area) in a core file (rather than
+<samp><span class="file">machine/reg.h</span></samp>), and an include file that defines whatever header
+exists on a core file (e.g., the u-area or a <code>struct core</code>).  Then
+modify <code>trad_unix_core_file_p</code> to use these values to set up the
+section information for the data segment, stack segment, any other
+segments in the core file (perhaps shared library contents or control
+information), &ldquo;registers&rdquo; segment, and if there are two discontiguous
+sets of registers (e.g., integer and float), the &ldquo;reg2&rdquo; segment.  This
+section information basically delimits areas in the core file in a
+standard way, which the section-reading routines in BFD know how to seek
+around in.
+
+   <p>Then back in <span class="sc">gdb</span>, you need a matching routine called
+<code>fetch_core_registers</code>.  If you can use the generic one, it's in
+<samp><span class="file">core-aout.c</span></samp>; if not, it's in your <samp><var>xyz</var><span class="file">-nat.c</span></samp> file. 
+It will be passed a char pointer to the entire &ldquo;registers&rdquo; segment,
+its length, and a zero; or a char pointer to the entire &ldquo;regs2&rdquo;
+segment, its length, and a 2.  The routine should suck out the supplied
+register values and install them into <span class="sc">gdb</span>'s &ldquo;registers&rdquo; array.
+
+   <p>If your system uses <samp><span class="file">/proc</span></samp> to control processes, and uses ELF
+format core files, then you may be able to use the same routines for
+reading the registers out of processes and out of core files.
+
+<h3 class="section">13.2 ptrace</h3>
+
+<h3 class="section">13.3 /proc</h3>
+
+<h3 class="section">13.4 win32</h3>
+
+<h3 class="section">13.5 shared libraries</h3>
+
+<h3 class="section">13.6 Native Conditionals</h3>
+
+<p><a name="index-native-conditionals-374"></a>
+When <span class="sc">gdb</span> is configured and compiled, various macros are
+defined or left undefined, to control compilation when the host and
+target systems are the same.  These macros should be defined (or left
+undefined) in <samp><span class="file">nm-</span><var>system</var><span class="file">.h</span></samp>.
+
+     <dl>
+<dt><code>CHILD_PREPARE_TO_STORE</code><dd><a name="index-CHILD_005fPREPARE_005fTO_005fSTORE-375"></a>If the machine stores all registers at once in the child process, then
+define this to ensure that all values are correct.  This usually entails
+a read from the child.
+
+     <p>[Note that this is incorrectly defined in <samp><span class="file">xm-</span><var>system</var><span class="file">.h</span></samp> files
+currently.]
+
+     <br><dt><code>FETCH_INFERIOR_REGISTERS</code><dd><a name="index-FETCH_005fINFERIOR_005fREGISTERS-376"></a>Define this if the native-dependent code will provide its own routines
+<code>fetch_inferior_registers</code> and <code>store_inferior_registers</code> in
+<samp><var>host</var><span class="file">-nat.c</span></samp>.  If this symbol is <em>not</em> defined, and
+<samp><span class="file">infptrace.c</span></samp> is included in this configuration, the default
+routines in <samp><span class="file">infptrace.c</span></samp> are used for these functions.
+
+     <br><dt><code>int gdbarch_fp0_regnum (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005ffp0_005fregnum-377"></a>This functions normally returns the number of the first floating
+point register, if the machine has such registers.  As such, it would
+appear only in target-specific code.  However, <samp><span class="file">/proc</span></samp> support uses this
+to decide whether floats are in use on this target.
+
+     <br><dt><code>int gdbarch_get_longjmp_target (</code><var>gdbarch</var><code>)</code><dd><a name="index-gdbarch_005fget_005flongjmp_005ftarget-378"></a>This function determines the target PC address that <code>longjmp</code> will jump to,
+assuming that we have just stopped at a longjmp breakpoint.  It takes a
+<code>CORE_ADDR *</code> as argument, and stores the target PC value through this
+pointer.  It examines the current state of the machine as needed.
+
+     <br><dt><code>I386_USE_GENERIC_WATCHPOINTS</code><dd>An x86-based machine can define this to use the generic x86 watchpoint
+support; see <a href="Algorithms.html#Algorithms">I386_USE_GENERIC_WATCHPOINTS</a>.
+
+     <br><dt><code>ONE_PROCESS_WRITETEXT</code><dd><a name="index-ONE_005fPROCESS_005fWRITETEXT-379"></a>Define this to be able to, when a breakpoint insertion fails, warn the
+user that another process may be running with the same executable.
+
+     <br><dt><code>PROC_NAME_FMT</code><dd><a name="index-PROC_005fNAME_005fFMT-380"></a>Defines the format for the name of a <samp><span class="file">/proc</span></samp> device.  Should be
+defined in <samp><span class="file">nm.h</span></samp> <em>only</em> in order to override the default
+definition in <samp><span class="file">procfs.c</span></samp>.
+
+     <br><dt><code>SOLIB_ADD (</code><var>filename</var><code>, </code><var>from_tty</var><code>, </code><var>targ</var><code>, </code><var>readsyms</var><code>)</code><dd><a name="index-SOLIB_005fADD-381"></a>Define this to expand into an expression that will cause the symbols in
+<var>filename</var> to be added to <span class="sc">gdb</span>'s symbol table. If
+<var>readsyms</var> is zero symbols are not read but any necessary low level
+processing for <var>filename</var> is still done.
+
+     <br><dt><code>SOLIB_CREATE_INFERIOR_HOOK</code><dd><a name="index-SOLIB_005fCREATE_005fINFERIOR_005fHOOK-382"></a>Define this to expand into any shared-library-relocation code that you
+want to be run just after the child process has been forked.
+
+     <br><dt><code>START_INFERIOR_TRAPS_EXPECTED</code><dd><a name="index-START_005fINFERIOR_005fTRAPS_005fEXPECTED-383"></a>When starting an inferior, <span class="sc">gdb</span> normally expects to trap
+twice; once when
+the shell execs, and once when the program itself execs.  If the actual
+number of traps is something other than 2, then define this macro to
+expand into the number expected.
+
+   </dl>
+
+   </body></html>
+

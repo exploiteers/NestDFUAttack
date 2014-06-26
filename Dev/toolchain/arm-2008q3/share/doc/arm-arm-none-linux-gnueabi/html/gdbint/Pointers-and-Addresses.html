@@ -1,0 +1,173 @@
+<html lang="en">
+<head>
+<title>Pointers and Addresses - GDB Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="GDB Internals">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Target-Architecture-Definition.html#Target-Architecture-Definition" title="Target Architecture Definition">
+<link rel="prev" href="Registers-and-Memory.html#Registers-and-Memory" title="Registers and Memory">
+<link rel="next" href="Address-Classes.html#Address-Classes" title="Address Classes">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Pointers-and-Addresses"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Address-Classes.html#Address-Classes">Address Classes</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Registers-and-Memory.html#Registers-and-Memory">Registers and Memory</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Target-Architecture-Definition.html#Target-Architecture-Definition">Target Architecture Definition</a>
+<hr>
+</div>
+
+<h3 class="section">10.4 Pointers Are Not Always Addresses</h3>
+
+<p><a name="index-pointer-representation-227"></a><a name="index-address-representation-228"></a><a name="index-word_002daddressed-machines-229"></a><a name="index-separate-data-and-code-address-spaces-230"></a><a name="index-spaces_002c-separate-data-and-code-address-231"></a><a name="index-address-spaces_002c-separate-data-and-code-232"></a><a name="index-code-pointers_002c-word_002daddressed-233"></a><a name="index-converting-between-pointers-and-addresses-234"></a><a name="index-D10V-addresses-235"></a>
+On almost all 32-bit architectures, the representation of a pointer is
+indistinguishable from the representation of some fixed-length number
+whose value is the byte address of the object pointed to.  On such
+machines, the words &ldquo;pointer&rdquo; and &ldquo;address&rdquo; can be used interchangeably. 
+However, architectures with smaller word sizes are often cramped for
+address space, so they may choose a pointer representation that breaks this
+identity, and allows a larger code address space.
+
+<!-- D10V is gone from sources - more current example? -->
+   <p>For example, the Renesas D10V is a 16-bit VLIW processor whose
+instructions are 32 bits long<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>. 
+If the D10V used ordinary byte addresses to refer to code locations,
+then the processor would only be able to address 64kb of instructions. 
+However, since instructions must be aligned on four-byte boundaries, the
+low two bits of any valid instruction's byte address are always
+zero&mdash;byte addresses waste two bits.  So instead of byte addresses,
+the D10V uses word addresses&mdash;byte addresses shifted right two bits&mdash;to
+refer to code.  Thus, the D10V can use 16-bit words to address 256kb of
+code space.
+
+   <p>However, this means that code pointers and data pointers have different
+forms on the D10V.  The 16-bit word <code>0xC020</code> refers to byte address
+<code>0xC020</code> when used as a data address, but refers to byte address
+<code>0x30080</code> when used as a code address.
+
+   <p>(The D10V also uses separate code and data address spaces, which also
+affects the correspondence between pointers and addresses, but we're
+going to ignore that here; this example is already too long.)
+
+   <p>To cope with architectures like this&mdash;the D10V is not the only
+one!&mdash;<span class="sc">gdb</span> tries to distinguish between <dfn>addresses</dfn>, which are
+byte numbers, and <dfn>pointers</dfn>, which are the target's representation
+of an address of a particular type of data.  In the example above,
+<code>0xC020</code> is the pointer, which refers to one of the addresses
+<code>0xC020</code> or <code>0x30080</code>, depending on the type imposed upon it. 
+<span class="sc">gdb</span> provides functions for turning a pointer into an address
+and vice versa, in the appropriate way for the current architecture.
+
+   <p>Unfortunately, since addresses and pointers are identical on almost all
+processors, this distinction tends to bit-rot pretty quickly.  Thus,
+each time you port <span class="sc">gdb</span> to an architecture which does
+distinguish between pointers and addresses, you'll probably need to
+clean up some architecture-independent code.
+
+   <p>Here are functions which convert between pointers and addresses:
+
+<div class="defun">
+&mdash; Function: CORE_ADDR <b>extract_typed_address</b> (<var>void *buf, struct type *type</var>)<var><a name="index-extract_005ftyped_005faddress-236"></a></var><br>
+<blockquote><p>Treat the bytes at <var>buf</var> as a pointer or reference of type
+<var>type</var>, and return the address it represents, in a manner
+appropriate for the current architecture.  This yields an address
+<span class="sc">gdb</span> can use to read target memory, disassemble, etc.  Note that
+<var>buf</var> refers to a buffer in <span class="sc">gdb</span>'s memory, not the
+inferior's.
+
+        <p>For example, if the current architecture is the Intel x86, this function
+extracts a little-endian integer of the appropriate length from
+<var>buf</var> and returns it.  However, if the current architecture is the
+D10V, this function will return a 16-bit integer extracted from
+<var>buf</var>, multiplied by four if <var>type</var> is a pointer to a function.
+
+        <p>If <var>type</var> is not a pointer or reference type, then this function
+will signal an internal error. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: CORE_ADDR <b>store_typed_address</b> (<var>void *buf, struct type *type, CORE_ADDR addr</var>)<var><a name="index-store_005ftyped_005faddress-237"></a></var><br>
+<blockquote><p>Store the address <var>addr</var> in <var>buf</var>, in the proper format for a
+pointer of type <var>type</var> in the current architecture.  Note that
+<var>buf</var> refers to a buffer in <span class="sc">gdb</span>'s memory, not the
+inferior's.
+
+        <p>For example, if the current architecture is the Intel x86, this function
+stores <var>addr</var> unmodified as a little-endian integer of the
+appropriate length in <var>buf</var>.  However, if the current architecture
+is the D10V, this function divides <var>addr</var> by four if <var>type</var> is
+a pointer to a function, and then stores it in <var>buf</var>.
+
+        <p>If <var>type</var> is not a pointer or reference type, then this function
+will signal an internal error. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: CORE_ADDR <b>value_as_address</b> (<var>struct value *val</var>)<var><a name="index-value_005fas_005faddress-238"></a></var><br>
+<blockquote><p>Assuming that <var>val</var> is a pointer, return the address it represents,
+as appropriate for the current architecture.
+
+        <p>This function actually works on integral values, as well as pointers. 
+For pointers, it performs architecture-specific conversions as
+described above for <code>extract_typed_address</code>. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: CORE_ADDR <b>value_from_pointer</b> (<var>struct type *type, CORE_ADDR addr</var>)<var><a name="index-value_005ffrom_005fpointer-239"></a></var><br>
+<blockquote><p>Create and return a value representing a pointer of type <var>type</var> to
+the address <var>addr</var>, as appropriate for the current architecture. 
+This function performs architecture-specific conversions as described
+above for <code>store_typed_address</code>. 
+</p></blockquote></div>
+
+   <p>Here are two functions which architectures can define to indicate the
+relationship between pointers and addresses.  These have default
+definitions, appropriate for architectures on which all pointers are
+simple unsigned byte addresses.
+
+<div class="defun">
+&mdash; Function: CORE_ADDR <b>gdbarch_pointer_to_address</b> (<var>struct gdbarch *current_gdbarch, struct type *type, char *buf</var>)<var><a name="index-gdbarch_005fpointer_005fto_005faddress-240"></a></var><br>
+<blockquote><p>Assume that <var>buf</var> holds a pointer of type <var>type</var>, in the
+appropriate format for the current architecture.  Return the byte
+address the pointer refers to.
+
+        <p>This function may safely assume that <var>type</var> is either a pointer or a
+C<tt>++</tt> reference type. 
+</p></blockquote></div>
+
+<div class="defun">
+&mdash; Function: void <b>gdbarch_address_to_pointer</b> (<var>struct gdbarch *current_gdbarch, struct type *type, char *buf, CORE_ADDR addr</var>)<var><a name="index-gdbarch_005faddress_005fto_005fpointer-241"></a></var><br>
+<blockquote><p>Store in <var>buf</var> a pointer of type <var>type</var> representing the address
+<var>addr</var>, in the appropriate format for the current architecture.
+
+        <p>This function may safely assume that <var>type</var> is either a pointer or a
+C<tt>++</tt> reference type. 
+</p></blockquote></div>
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Some D10V instructions are
+actually pairs of 16-bit sub-instructions.  However, since you can't
+jump into the middle of such a pair, code addresses can only refer to
+full 32 bit instructions, which is what matters in this explanation.</p>
+
+   <hr></div>
+
+   </body></html>
+

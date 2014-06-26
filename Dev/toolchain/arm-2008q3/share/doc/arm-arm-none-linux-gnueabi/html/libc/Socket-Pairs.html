@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+<title>Socket Pairs - The GNU C Library</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The GNU C Library">
+<meta name="generator" content="makeinfo 4.12">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets" title="Open/Close Sockets">
+<link rel="prev" href="Closing-a-Socket.html#Closing-a-Socket" title="Closing a Socket">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<!--
+This file documents the GNU C library.
+
+This is Edition 0.12, last updated 2007-10-27,
+of `The GNU C Library Reference Manual', for version 2.8.
+
+Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001, 2002,
+2003, 2007, 2008 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being ``Free Software Needs Free Documentation''
+and ``GNU Lesser General Public License'', the Front-Cover texts being
+``A GNU Manual'', and with the Back-Cover Texts as in (a) below.  A
+copy of the license is included in the section entitled "GNU Free
+Documentation License".
+
+(a) The FSF's Back-Cover Text is: ``You have the freedom to
+copy and modify this GNU manual.  Buying copies from the FSF
+supports it in developing GNU and promoting software freedom.''-->
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+<link rel="stylesheet" type="text/css" href="../cs.css">
+</head>
+<body>
+<div class="node">
+<p>
+<a name="Socket-Pairs"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Closing-a-Socket.html#Closing-a-Socket">Closing a Socket</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Open_002fClose-Sockets.html#Open_002fClose-Sockets">Open/Close Sockets</a>
+<hr>
+</div>
+
+<h4 class="subsection">16.8.3 Socket Pairs</h4>
+
+<p><a name="index-creating-a-socket-pair-1782"></a><a name="index-socket-pair-1783"></a><a name="index-opening-a-socket-pair-1784"></a>
+<a name="index-sys_002fsocket_002eh-1785"></a>A <dfn>socket pair</dfn> consists of a pair of connected (but unnamed)
+sockets.  It is very similar to a pipe and is used in much the same
+way.  Socket pairs are created with the <code>socketpair</code> function,
+declared in <samp><span class="file">sys/socket.h</span></samp>.  A socket pair is much like a pipe; the
+main difference is that the socket pair is bidirectional, whereas the
+pipe has one input-only end and one output-only end (see <a href="Pipes-and-FIFOs.html#Pipes-and-FIFOs">Pipes and FIFOs</a>).
+
+<!-- sys/socket.h -->
+<!-- BSD -->
+<div class="defun">
+&mdash; Function: int <b>socketpair</b> (<var>int namespace, int style, int protocol, int filedes</var><tt>[2]</tt>)<var><a name="index-socketpair-1786"></a></var><br>
+<blockquote><p>This function creates a socket pair, returning the file descriptors in
+<var>filedes</var><code>[0]</code> and <var>filedes</var><code>[1]</code>.  The socket pair
+is a full-duplex communications channel, so that both reading and writing
+may be performed at either end.
+
+        <p>The <var>namespace</var>, <var>style</var> and <var>protocol</var> arguments are
+interpreted as for the <code>socket</code> function.  <var>style</var> should be
+one of the communication styles listed in <a href="Communication-Styles.html#Communication-Styles">Communication Styles</a>. 
+The <var>namespace</var> argument specifies the namespace, which must be
+<code>AF_LOCAL</code> (see <a href="Local-Namespace.html#Local-Namespace">Local Namespace</a>); <var>protocol</var> specifies the
+communications protocol, but zero is the only meaningful value.
+
+        <p>If <var>style</var> specifies a connectionless communication style, then
+the two sockets you get are not <em>connected</em>, strictly speaking,
+but each of them knows the other as the default destination address,
+so they can send packets to each other.
+
+        <p>The <code>socketpair</code> function returns <code>0</code> on success and <code>-1</code>
+on failure.  The following <code>errno</code> error conditions are defined
+for this function:
+
+          <dl>
+<dt><code>EMFILE</code><dd>The process has too many file descriptors open.
+
+          <br><dt><code>EAFNOSUPPORT</code><dd>The specified namespace is not supported.
+
+          <br><dt><code>EPROTONOSUPPORT</code><dd>The specified protocol is not supported.
+
+          <br><dt><code>EOPNOTSUPP</code><dd>The specified protocol does not support the creation of socket pairs. 
+</dl>
+        </p></blockquote></div>
+
+   </body></html>
+
